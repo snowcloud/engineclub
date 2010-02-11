@@ -1,0 +1,25 @@
+.. Engineclub documentation master file, created by
+   sphinx-quickstart on Thu Feb 11 18:44:30 2010.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+======================================
+Engineclub documentation
+======================================
+
+.. rubric:: Everything you need to know about Engineclub (and then some).
+
+Contents:
+
+We'll get something here soon...
+
+.. toctree::
+   :maxdepth: 2
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
