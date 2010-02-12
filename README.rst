@@ -7,7 +7,7 @@ About
 -----
 Engineclub was started in January 2010 as part of the ALISS project for the National Health Service in Scotland. It requires `Django <http://djangoproject.com>`_.
 
-See `the ALISS project blog <http://www.aliss.scot.nhs.uk/>` for background information.
+See `the ALISS project blog <http://www.aliss.scot.nhs.uk/>`_ for background information.
 
 All documentation is in the "docs" directory- see docs/_build/html/index.html
 
