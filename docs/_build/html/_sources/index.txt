@@ -48,19 +48,29 @@ There are two ways to install this application for use by your
 projects; the easiest in most cases is to do a Subversion checkout
 into a directory that's on your Python path::
 
-    svn co http://django-contact-form.googlecode.com/svn/trunk/contact_form/
+    git clone http://github.com/snowcloud/engineclub.git
 
 The other method is to download a packaged version and use Python's
 ``distutils`` to install it onto your Python path::
 
-    wget http://django-contact-form.googlecode.com/files/contact_form-0.3.tar.gz
-    tar zxvf contact_form-0.3.tar.gz
-    cd contact-form-0.3
+    wget http://github.com/snowcloud/engineclub/tarball/master
+    # get the name of the downloaded file and to use in the following steps
+    ls snowcloud-engineclub*
+    tar zxvf snowcloud-engineclub...
+    cd snowcloud-engineclub...
     python setup.py install
 
 Depending on your system configuration, you may need to prefix the
 last command with ``sudo`` and supply your password to perform a
 system-wide installation.
+
+Following installation, you can do:
+
+    cd ecengine
+    ./manage.py syncdb --noinput
+
+This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
+You can then log in with username: admin and password: admin
 
 
 .. toctree::

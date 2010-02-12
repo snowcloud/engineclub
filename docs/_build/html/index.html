@@ -87,18 +87,26 @@
 <p>There are two ways to install this application for use by your
 projects; the easiest in most cases is to do a Subversion checkout
 into a directory that&#8217;s on your Python path:</p>
-<div class="highlight-python"><pre>svn co http://django-contact-form.googlecode.com/svn/trunk/contact_form/</pre>
+<div class="highlight-python"><pre>git clone http://github.com/snowcloud/engineclub.git</pre>
 </div>
 <p>The other method is to download a packaged version and use Python&#8217;s
 <tt class="docutils literal"><span class="pre">distutils</span></tt> to install it onto your Python path:</p>
-<div class="highlight-python"><pre>wget http://django-contact-form.googlecode.com/files/contact_form-0.3.tar.gz
-tar zxvf contact_form-0.3.tar.gz
-cd contact-form-0.3
+<div class="highlight-python"><pre>wget http://github.com/snowcloud/engineclub/tarball/master
+# get the name of the downloaded file and to use in the following steps
+ls snowcloud-engineclub*
+tar zxvf snowcloud-engineclub...
+cd snowcloud-engineclub...
 python setup.py install</pre>
 </div>
 <p>Depending on your system configuration, you may need to prefix the
 last command with <tt class="docutils literal"><span class="pre">sudo</span></tt> and supply your password to perform a
 system-wide installation.</p>
+<p>Following installation, you can do:</p>
+<blockquote>
+cd ecengine
+./manage.py syncdb &#8211;noinput</blockquote>
+<p>This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
+You can then log in with username: admin and password: admin</p>
 <ul class="simple">
 </ul>
 <div class="section" id="indices-and-tables">
