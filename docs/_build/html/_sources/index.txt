@@ -7,11 +7,16 @@
 Engineclub documentation
 ======================================
 
-.. rubric:: Everything you need to know about Engineclub (and then some).
+.. rubric:: Everything you need to know about Engineclub.
 
 Contents:
 
-We'll get something here soon...
+There are four applications:
+
+* aliss - the home page for aliss.engineclub.org which will host information, demos etc
+* depot - storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff)
+* enginecab - admin app for the engineclub
+* firebox - for data collection code
 
 .. toctree::
    :maxdepth: 2
