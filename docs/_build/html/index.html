@@ -74,7 +74,31 @@
 </dd>
 </dl>
 </li>
+<li><dl class="first docutils">
+<dt><strong>ecutils</strong></dt>
+<dd><p class="first last">for utility code</p>
+</dd>
+</dl>
+</li>
 </ul>
+</div>
+<div class="section" id="installation-instructions">
+<h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p>There are two ways to install this application for use by your
+projects; the easiest in most cases is to do a Subversion checkout
+into a directory that&#8217;s on your Python path:</p>
+<div class="highlight-python"><pre>svn co http://django-contact-form.googlecode.com/svn/trunk/contact_form/</pre>
+</div>
+<p>The other method is to download a packaged version and use Python&#8217;s
+<tt class="docutils literal"><span class="pre">distutils</span></tt> to install it onto your Python path:</p>
+<div class="highlight-python"><pre>wget http://django-contact-form.googlecode.com/files/contact_form-0.3.tar.gz
+tar zxvf contact_form-0.3.tar.gz
+cd contact-form-0.3
+python setup.py install</pre>
+</div>
+<p>Depending on your system configuration, you may need to prefix the
+last command with <tt class="docutils literal"><span class="pre">sudo</span></tt> and supply your password to perform a
+system-wide installation.</p>
 <ul class="simple">
 </ul>
 <div class="section" id="indices-and-tables">
@@ -95,7 +119,8 @@
         <div class="sphinxsidebarwrapper">
             <h3><a href="#">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#">Engineclub</a><ul>
+<li><a class="reference external" href="#">Engineclub</a></li>
+<li><a class="reference external" href="#installation-instructions">Installation instructions</a><ul>
 <li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>

@@ -1,0 +1,5 @@
+{% load humanize %}
+sender: {{ name }}
+email: {{ email }}
+
+{{ body }} 

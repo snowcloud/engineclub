@@ -35,6 +35,35 @@ There are four applications:
     admin app for the engineclub
 * **firebox**
     for data collection code
+* **ecutils**
+    for utility code
+
+
+
+=========================
+Installation instructions
+=========================
+
+There are two ways to install this application for use by your
+projects; the easiest in most cases is to do a Subversion checkout
+into a directory that's on your Python path::
+
+    git clone http://github.com/snowcloud/engineclub.git
+
+The other method is to download a packaged version and use Python's
+``distutils`` to install it onto your Python path::
+
+    wget http://github.com/snowcloud/engineclub/tarball/master
+    # get the name of the downloaded file and to use in the following steps
+    ls snowcloud-engineclub*
+    tar zxvf snowcloud-engineclub...
+    cd snowcloud-engineclub...
+    python setup.py install
+
+Depending on your system configuration, you may need to prefix the
+last command with ``sudo`` and supply your password to perform a
+system-wide installation.
+
 
 .. toctree::
    :maxdepth: 2

@@ -7,7 +7,7 @@ ADMINS = (
     # ('your name', 'email@exmaple.com'),
 )
 
-MANAGERS = ADMINS
+CONTACT_EMAILS = MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -29,7 +29,7 @@ SITE_ID = 1
 from os import path as os_path
 PROJECT_PATH = os_path.abspath(os_path.split(__file__)[0])
 
-MEDIA_ROOT = os_path.join(PROJECT_PATH, 'media')
+MEDIA_ROOT = os_path.join(PROJECT_PATH, 'static')
 TEMPLATE_DIRS = (
     os_path.join(PROJECT_PATH, 'sitetemplates')
 )
@@ -50,6 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'ecengine.urls'
@@ -58,13 +59,20 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.flatpages',
+    'django.contrib.humanize',
+    'django.contrib.markup',
+    'django.contrib.messages',
+    'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
     'apps.aliss',
     'apps.enginecab',
-    # 'apps.depot',
-    # 'apps.bunker'
+    'apps.depot',
+    'apps.firebox',
+    'apps.ecutils',
+    'contact_form',
+    
 )
 # override any of the above in your own settings_local.py
 try:
