@@ -64,6 +64,14 @@ Depending on your system configuration, you may need to prefix the
 last command with ``sudo`` and supply your password to perform a
 system-wide installation.
 
+Following installation, you can do:
+
+    cd ecengine
+    ./manage.py syncdb --noinput
+
+This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
+You can then log in with username: admin and password: admin
+
 
 .. toctree::
    :maxdepth: 2

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{# {%load forms %} #}
+
+{% block title %}Log in{% endblock %}
+
+
+{% block content %}
+
+{% if form.errors %}
+<p class="error">The login didn't work. Please keep in mind: usernames and passwords are case sensitive!</p>
+{% endif %}
+
+<h2>Please log in:</h2>
+
+{% comment %}
+<p>If you don't have an account, you can <a href="/accounts/register/">sign up</a> for one.</p> 
+<p>It's free, and you'll be able to enrol in classes, buy tickets, and leave comments.</p>
+{% endcomment %}
+<p class="notice">Please note, this site is currently in closed beta testing</p>
+
+<form class="form" method="post" action="">{% csrf_token %}
+    <fieldset>
+        <ol>
+        <li><label for="id_username">Username:</label> {{ form.username }}</li>
+        <li><label for="id_password">Password:</label> {{ form.password }}</li>
+        </ol>
+    </fieldset>
+    <fieldset class="submit">
+        <input type="submit" value="Log in">
+        <input type="hidden" name="next" value="{% if next %}{{ next|urlencode }}{% else %}/{% endif %}">
+    </fieldset>
+
+
+</form>
+<br>
+<p><a href="/password_reset/">I've forgotten my password.</a></p>
+
+
+{% endblock %}

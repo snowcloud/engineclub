@@ -29,9 +29,8 @@
 	<div id="login-nav">
 	    {% if user.is_authenticated %}
 	        <p>Logged in:
-	          {{ user.username }} | <a href="/logout/">log out</a>
-	              | <a href="/accounts/profile/">your details</a>
-	              | <a href="/accounts/password/change/">change password</a>
+	          {{ user.username }} | <a href="/accounts/logout/">log out</a>
+	              | <a href="/accounts/password_change/">change password</a>
 				{% if user.is_staff %}| <a href="/admin/">admin</a>{% endif %}
 			</p>
 	    {% else %}

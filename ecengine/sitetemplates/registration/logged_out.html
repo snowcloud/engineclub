@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{# {%load forms %} #}
+
+{% block title %}Logged out{% endblock %}
+
+{% block content_header %}Logged out{% endblock %}
+
+{% block content %}
+
+<h2>You've been logged out.</h2>
+
+<p>Thanks for using this site.</p>
+<p>When you come back, don't forget to <a href="/accounts/login/?next=/">log in</a> again.</p>
+
+{% endblock %}

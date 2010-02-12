@@ -26,6 +26,17 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
 )
 
+urlpatterns += patterns('django.contrib.auth.views',
+    (r'^logout/$', 'logout' ) ,
+    (r'^accounts/login/', 'login' ),
+    (r'^password_reset/$','password_reset' ),
+    (r'^password_reset/done/$', 'password_reset_done' ),
+    (r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'password_reset_confirm'),
+    (r'^reset/done/$', 'password_reset_complete'),
+    (r'^accounts/password_change/$', 'password_change' ),
+    (r'^accounts/password_change/done/$', 'password_change_done' ),
+)
+
 if settings.DEBUG:
   urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$',

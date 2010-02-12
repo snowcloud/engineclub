@@ -1,0 +1,36 @@
+[
+  {
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+      "username": "admin", 
+      "first_name": "", 
+      "last_name": "", 
+      "is_active": true, 
+      "is_superuser": true, 
+      "is_staff": true, 
+      "last_login": "2010-02-12 18:57:11", 
+      "groups": [], 
+      "user_permissions": [], 
+      "password": "sha1$de749$abe3c1595fa5daa3da46be425c278e619478a800", 
+      "email": "admin@example.com", 
+      "date_joined": "2010-02-12 18:57:03"
+    }
+  },
+  {
+    "pk": 1, 
+    "model": "flatpages.flatpage", 
+    "fields": {
+      "registration_required": false, 
+      "title": "Information", 
+      "url": "/info/", 
+      "template_name": "", 
+      "sites": [
+        1
+      ], 
+      "content": "info here.", 
+      "enable_comments": false
+    }
+  }
+
+]
