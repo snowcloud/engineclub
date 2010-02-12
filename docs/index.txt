@@ -7,7 +7,14 @@
 Engineclub documentation
 ======================================
 
-.. rubric:: Everything you need to know about Engineclub.
+.. rubric:: All about Engineclub.
+
+Engineclub was started in January 2010 as part of the ALISS project for the National Health Service in Scotland.
+
+See the `ALISS Project blog`_ and follow `@ALISSproject`_ on Twitter.
+
+.. _ALISS Project blog: http://www.aliss.scot.nhs.uk/
+.. _@ALISSproject: http://twitter.com/alissproject
 
 Contents:
 
