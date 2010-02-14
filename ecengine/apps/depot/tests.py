@@ -32,34 +32,3 @@ class ItemTest(TestCase):
         print form
         
 
-
-
-# # from django.db import models
-# 
-# # Create your models here.
-# 
-# 
-# from django.core.management import setup_environ
-# 
-# import sys, os
-# sys.path.append('/Users/derek/dev_django')
-# sys.path.append('/Users/derek/dev_django/shared_apps')
-# 
-# from ecengine import settings
-# 
-# setup_environ(settings)
-# 
-# from django.db import models
-# 
-# class TestItem(models.Model):
-# 
-#     name = models.CharField(blank=True, max_length=80)
-#     
-#     # class Meta:
-#     #     abstract = True
-# 
-# # from smgclasses.models import SMGClass
-# print 'blah'
-# 
-
-
