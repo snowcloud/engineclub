@@ -86,3 +86,5 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Theme: `Nature <http://github.com/bartTC/sphinx-schemes>`_
+
