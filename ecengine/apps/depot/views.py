@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -29,12 +30,16 @@ def item_detail(request, object_id):
     return render_to_response('depot/item_detail.html',
         RequestContext( request, { 'object': object }))
         
+
+@login_required
 def item_edit(request, object_id):
     pass
     
+@login_required
 def item_remove(request, object_id):
     pass
     
+@login_required
 def item_add(request):
 
     if request.method == 'POST':
