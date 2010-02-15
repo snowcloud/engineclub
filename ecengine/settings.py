@@ -20,6 +20,11 @@ DATABASES = {
     }
 }
 
+#mongoDB settings
+from mongoengine import connect
+connect('aliss', host='localhost', port=27017)
+
+
 TIME_ZONE = 'Europe/London'
 DATE_FORMAT='%d %B %Y, %H:%M'
 LANGUAGE_CODE = 'en-gb'

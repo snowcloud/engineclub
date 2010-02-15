@@ -1,10 +1,17 @@
 
-from django.forms import ModelForm
+from django import forms
 
-from apps.depot.models import TestItem
+from apps.depot.models import Item
 
 
-class ItemForm(ModelForm):
-    class Meta:
-        model = TestItem
+class ItemForm(forms.Form):
+    
+    name = forms.CharField(max_length=100)
+    
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(Item.objects(name=data)):
+            raise forms.ValidationError("There is already an item with this name")
 
+        return data
+        

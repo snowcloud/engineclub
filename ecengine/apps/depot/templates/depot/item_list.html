@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}items{% endblock %}
+
+{% block content %}
+<h1>Items</h1>
+
+<ul>
+	{% for object in objects %}
+		<li><a href="{% url item object.id %}">{{ object.name }}</a></li>
+	{% empty %}
+		<li>no items found</li>
+	{% endfor %}
+</ul>
+
+
+<p><a href="/depot/item/add/">add new item</a></p>
+
+{% endblock %}

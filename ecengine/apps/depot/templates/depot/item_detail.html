@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+
+<p><a href="{% url item-list %}">all items</a></p>
+
+<h1>{{ object.name }}</h1>
+
+
+{% endblock %}
