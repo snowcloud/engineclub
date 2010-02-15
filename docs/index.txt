@@ -38,7 +38,10 @@ There are four applications:
 * **ecutils**
     for utility code
 
+Engineclub is a `Django`_ project, and uses `MongoDB`_ for the main resource data.
 
+.. _Django: http://djangoproject.com/
+.. _MongoDB: http://mongodb.org/
 
 =========================
 Installation instructions
