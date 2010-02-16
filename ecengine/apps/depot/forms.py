@@ -20,7 +20,7 @@ class ItemForm(forms.Form):
 
     def clean_url(self):
         data = self.cleaned_data['url']
-        if len(Item.objects(url=data)):
+        if Item.objects(url=data).count() > 0:
             raise forms.ValidationError("There is already an item with this url")
 
         return data
