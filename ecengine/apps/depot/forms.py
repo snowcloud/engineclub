@@ -19,14 +19,14 @@ class ItemForm(forms.Form):
     # status = forms.CharField(required=False)
     # admin_note = forms.CharField(required=False)
 
-    # def clean_url(self):
-    #     data = self.cleaned_data['url']
-    #     # Item.objects.get(url=data)
-    #     print data
-    #     try:
-    #         Item.objects.get(url=data)
-    #         raise forms.ValidationError("There is already an item with this url")
-    #     except DoesNotExist:
-    #         pass
-    #     return data
+    def clean_url(self):
+        data = self.cleaned_data['url']
+        # Item.objects.get(url=data)
+        print data
+        try:
+            Item.objects.get(url=data)
+            raise forms.ValidationError("There is already an item with this url")
+        except DoesNotExist:
+            pass
+        return data
         
