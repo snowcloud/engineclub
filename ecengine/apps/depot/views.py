@@ -47,7 +47,7 @@ def item_add(request):
 
     template = 'depot/item_edit.html'
     if request.method == 'POST':
-        popup = request.POST.get('popup', False)
+        popup = request.POST.get('popup', '')
         form = ItemForm(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
@@ -65,9 +65,10 @@ def item_add(request):
         title = request.GET.get('title', '')
         
         form = ItemForm(initial={'url': url, 'title': title})
-        
-        if popup:
-            template = 'depot/item_edit_popup.html'
+    
+    # here to catch POST validation fail or GET
+    if popup:
+        template = 'depot/item_edit_popup.html'
             
     return render_to_response(template,
         RequestContext( request, {'form': form,  }))
