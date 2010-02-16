@@ -61,10 +61,13 @@ def item_add(request):
             
     else:
         popup = request.GET.get('popup', '')
-        url = request.GET.get('page', '')
-        title = request.GET.get('title', '')
-        
-        form = ItemForm(initial={'url': url, 'title': title})
+        initial = {
+            'url': request.GET.get('page', ''),
+            'title': request.GET.get('title', ''),
+            'description': request.GET.get('t', '').replace('||', '\n'),
+            }
+        # print initial['description']
+        form = ItemForm(initial=initial)
     
     # here to catch POST validation fail or GET
     if popup:

@@ -22,4 +22,6 @@
 	<h2>ALISS bookmark</h2>
 	<p>Drag the link below to your bookmarks</p>
 	<p><a href="javascript:var%20w=window.open('http://aliss.engineclub.org/depot/item/add/?popup=true&title='+encodeURIComponent(document.title)+'&page='+encodeURIComponent(location.href),'ALISS','scrollbars=1,status=0,resizable=1,location=0,toolbar=0,width=660,height=480');">ALISS It!</a></p>
+	<p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://aliss.engineclub.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();
+	">New bookmark</a> - lets you select text on page for item description</p>
 {% endblock secondary-content %}

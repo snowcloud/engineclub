@@ -9,7 +9,7 @@ class ItemForm(forms.Form):
     
     url = forms.CharField()
     title = forms.CharField()
-    description = forms.CharField(required=False)
+    description = forms.CharField(widget=forms.Textarea, required=False)
     postcode = forms.CharField(required=False)
     area = forms.CharField(required=False)
     tags = forms.CharField(required=False)
@@ -21,8 +21,6 @@ class ItemForm(forms.Form):
 
     def clean_url(self):
         data = self.cleaned_data['url']
-        # Item.objects.get(url=data)
-        print data
         try:
             Item.objects.get(url=data)
             raise forms.ValidationError("There is already an item with this url")

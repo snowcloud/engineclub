@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load markup %}
 
 {% block title %}{{ object.name }}{% endblock %}
 
@@ -9,6 +10,7 @@
 <h1>{{ object.title }}</h1>
 
 <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
+{{ object.description|linebreaks }}
 
 <hr>
 <p><a href="{% url item-remove object.id %}">delete item</a></p>
