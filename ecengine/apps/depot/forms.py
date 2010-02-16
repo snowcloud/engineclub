@@ -2,6 +2,7 @@
 from django import forms
 
 from apps.depot.models import Item
+from mongoengine.queryset import DoesNotExist
 
 
 class ItemForm(forms.Form):
@@ -20,8 +21,11 @@ class ItemForm(forms.Form):
 
     def clean_url(self):
         data = self.cleaned_data['url']
-        if Item.objects(url=data).count() > 0:
+        # Item.objects.get(url=data)
+        try:
+            Item.objects.get(url=data)
             raise forms.ValidationError("There is already an item with this url")
-
+        except DoesNotExist:
+            pass
         return data
         
