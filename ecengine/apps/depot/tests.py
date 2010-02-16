@@ -46,8 +46,8 @@ class ItemTest(TestCase):
         
     def test_form(self):
         """test form creation"""
-        # item = Item()
-        # item.name = 'fred'
-        form = ItemForm({'name': 'joe'})
+        url = 'http://test.example.com/10/'
+        title = 'test title'
+        form = ItemForm({'url': url, 'title': title})
         self.assertTrue(form.is_valid())
 
