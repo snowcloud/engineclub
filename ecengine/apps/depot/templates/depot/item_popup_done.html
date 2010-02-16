@@ -1,0 +1,12 @@
+{% extends "base_popup.html" %}
+
+{% block title %}item added{% endblock %}
+
+{% block body_extra %}onLoad="setTimeout('self.close()',3000)"{% endblock body_extra %}
+{% block content %}
+<h1>Item added</h1>
+
+<p>Thank you</p>
+
+<p><a href="javascript:window.close();">close this window</a></p>
+{% endblock %}
