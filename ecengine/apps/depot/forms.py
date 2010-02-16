@@ -7,8 +7,8 @@ from mongoengine.queryset import DoesNotExist
 
 class ItemForm(forms.Form):
     
-    url = forms.CharField(required=False)
-    title = forms.CharField(required=False)
+    url = forms.CharField()
+    title = forms.CharField()
     # description = forms.CharField(required=False)
     # postcode = forms.CharField(required=False)
     # area = forms.CharField(required=False)
