@@ -37,11 +37,15 @@ def item_edit(request, object_id):
     
 @login_required
 def item_remove(request, object_id):
-    pass
+    
+    object = get_one_or_404(id=object_id)
+    object.delete()
+    return HttpResponseRedirect(reverse('item-list'))
     
 @login_required
 def item_add(request):
 
+    template = 'depot/item_edit.html'
     if request.method == 'POST':
         form = ItemForm(request.POST)
         if form.is_valid():
@@ -53,8 +57,15 @@ def item_add(request):
                 pass
             
     else:
-        form = ItemForm(initial={'name': 'fred'})
+        popup = request.GET.get('popup', '')
+        url = request.GET.get('page', '')
+        title = request.GET.get('title', '')
         
-    return render_to_response('depot/item_edit.html',
+        form = ItemForm(initial={'url': url, 'title': title})
+        
+        if popup:
+            template = 'depot/item_edit_popup.html'
+            
+    return render_to_response(template,
         RequestContext( request, {'form': form,  }))
 

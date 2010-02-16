@@ -1,0 +1,21 @@
+{% extends "base_popup.html" %}
+
+{% block title %}edit item{% endblock %}
+
+{% block content %}
+<h1>Edit item</h1>
+
+<form class="form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Item details:</span></legend>
+        <ol>
+             {{ form.as_ul }}
+        </ol>
+    </fieldset>
+     <fieldset class="submit">
+        <input type="submit" name="result" value="Submit">
+    </fieldset>
+</form>
+
+
+{% endblock %}

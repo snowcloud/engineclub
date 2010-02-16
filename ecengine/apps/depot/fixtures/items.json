@@ -1,21 +1,27 @@
 [
     {
-      "name": "item 1"
+        "url": "http://example.com/1/",
+        "title": "title 1"
     },
     {
-      "name": "item 2"
+        "url": "http://example.com/2/",
+        "title": "title 2"
     },
     {
-      "name": "item 3"
+        "url": "http://example.com/3/",
+        "title": "title 3"
     },
     {
-      "name": "item 4"
+        "url": "http://example.com/4/",
+        "title": "title 4"
     },
     {
-      "name": "item 5"
+        "url": "http://example.com/5/",
+        "title": "title 5"
     },
     {
-      "name": "item 6"
+        "url": "http://example.com/6/",
+        "title": "title 6"
     }
   
 ]

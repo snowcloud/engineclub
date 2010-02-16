@@ -7,7 +7,7 @@
 
 <ul>
 	{% for object in objects %}
-		<li><a href="{% url item object.id %}">{{ object.name }}</a></li>
+		<li><a href="{% url item object.id %}">{{ object.title }}</a> ({{ object.url }})</li>
 	{% empty %}
 		<li>no items found</li>
 	{% endfor %}
@@ -17,3 +17,9 @@
 <p><a href="/depot/item/add/">add new item</a></p>
 
 {% endblock %}
+
+{% block secondary-content %}
+	<h2>ALISS bookmark</h2>
+	<p>Drag the link below to your bookmarks</p>
+	<p><a href="javascript:var%20w=window.open('http://aliss.engineclub.org/depot/item/add/?popup=true&title='+encodeURIComponent(document.title)+'&page='+encodeURIComponent(location.href),'ALISS','scrollbars=1,status=0,resizable=1,location=0,toolbar=0,width=660,height=480');">ALISS It!</a></p>
+{% endblock secondary-content %}

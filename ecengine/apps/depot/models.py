@@ -2,35 +2,27 @@
 
 
 from mongoengine import *
-import datetime
+from datetime import datetime
 
 class Item(Document):
-    name = StringField(unique=True, required=True)
+    url = StringField(unique=True, required=True)
+    title = StringField(required=True)
+    description = StringField()
+    postcode = StringField()
+    area = StringField()
+    tags = StringField()
+    last_modified = DateTimeField(default=datetime.now)
+    shelflife = StringField()
+    source = StringField()
+    status = StringField()
+    admin_note = StringField()
 
    
-# class Item(models.Model):
-# 
-#     id = models.AutoField(primary_key=True)
-#     name = models.CharField(blank=True, max_length=80)
-#     
-#     class Meta:
-#         # data will be in mongodb
-#         managed = False
-# 
-#     def save(self, *args, **kwargs):
-#         pass
-#         print kwargs.get('db', 'defaultdb') # read this from settings
-#         print 'saving: %s' % self.name
-#         
-#     def __unicode__(self):
-#         return '%s: %s' % (self.id, self.name)
-#   
-   
-# from django.core import serializers
 from django.utils.simplejson import *
 
 def load_item_data(item_data):
     pass
     items = load(item_data)
     for item in items:
-        Item.objects.get_or_create(name=item['name'])
+        # can't pass in dict as kwargs cos won't take unicode strings
+        Item.objects.get_or_create(**{'url': item['url'], 'title': item['title']})

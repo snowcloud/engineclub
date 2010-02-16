@@ -6,7 +6,11 @@
 
 <p><a href="{% url item-list %}">all items</a></p>
 
-<h1>{{ object.name }}</h1>
+<h1>{{ object.title }}</h1>
 
+<p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
+
+<hr>
+<p><a href="{% url item-remove object.id %}">delete item</a></p>
 
 {% endblock %}

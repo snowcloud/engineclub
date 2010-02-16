@@ -37,8 +37,11 @@ class ItemTest(TestCase):
         """
         Tests create a new item.
         """
-        item = Item.objects.get_or_create(name='fred', defaults={})
-        self.assertEqual(item.name, 'fred')
+        url = 'http://test.example.com/1/'
+        title = 'test title'
+        item = Item.objects.get_or_create(url=url, defaults={'title': title})
+        self.assertEqual(item.url, url)
+        self.assertEqual(item.title, title)
         
         
     def test_form(self):
