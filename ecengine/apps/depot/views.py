@@ -67,7 +67,7 @@ def item_add(request):
                 pass
             
     else:
-        description= request.GET.get('t', '').replace('||', '\n'),
+        description= request.GET.get('t', '').replace('||', '\n')
         initial = {
             'url': request.GET.get('page', ''),
             'title': request.GET.get('title', ''),
