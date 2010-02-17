@@ -10,7 +10,7 @@ register = Library()
 
 @register.simple_tag
 def site_base():
-	return Site.objects.get_current()
+	return Site.objects.get_current().domain
 
 @register.filter
 def date_tz(value, arg=settings.DATE_FORMAT, tz=settings.TIME_ZONE):
