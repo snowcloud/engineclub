@@ -1,11 +1,16 @@
 from django.template import Library, Node
 from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
+from django.contrib.sites.models import Site
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
 register = Library()
+
+@register.simple_tag
+def site_base():
+	return Site.objects.get_current()
 
 @register.filter
 def date_tz(value, arg=settings.DATE_FORMAT, tz=settings.TIME_ZONE):
@@ -142,6 +147,11 @@ def get_object_url(value, arg):
     model = models.get_model(*value.split(".", 1))
     target = model._default_manager.get(pk=arg)
     return target.get_absolute_url()
+
+@register.filter
+def user_name(user):
+    
+    return user.get_full_name() or user.username
 
 @register.filter
 def first_name(user):
