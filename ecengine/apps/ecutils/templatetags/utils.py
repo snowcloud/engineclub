@@ -1,5 +1,6 @@
 from django.template import Library, Node
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
 from django.db import models
@@ -150,8 +151,14 @@ def get_object_url(value, arg):
 
 @register.filter
 def user_name(user):
-    
-    return user.get_full_name() or user.username
+    if isinstance(user, User):
+        u = user
+    else:
+        try:
+            u = User.objects.get(pk=user)
+        except User.DoesNotExist:
+            return ''
+    return u.get_full_name() or u.username
 
 @register.filter
 def first_name(user):

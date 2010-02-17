@@ -57,7 +57,7 @@ def item_add(request):
         form = formclass(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
-            item.author = request.user.id
+            item.author = str(request.user.id)
             try:
                 item.save()
                 if popup:
@@ -71,7 +71,7 @@ def item_add(request):
         initial = {
             'url': request.GET.get('page', ''),
             'title': request.GET.get('title', ''),
-            'description': description[:250]
+            'description': description[:1250]
             }
         form = formclass(initial=initial)
     
