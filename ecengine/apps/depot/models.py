@@ -13,7 +13,7 @@ class Item(Document):
     tags = StringField()
     last_modified = DateTimeField(default=datetime.now)
     shelflife = StringField()
-    source = StringField()
+    author = StringField()
     status = StringField()
     admin_note = StringField()
 
