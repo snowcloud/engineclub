@@ -24,6 +24,8 @@ DATABASES = {
 from mongoengine import connect
 connect('aliss', host='localhost', port=27017)
 
+YAHOO_KEY = 'your_key_here...'
+
 
 TIME_ZONE = 'Europe/London'
 DATE_FORMAT='%d %B %Y, %H:%M'
