@@ -31,12 +31,17 @@ LANGUAGE_CODE = 'en-gb'
 
 SITE_ID = 1
 
-from os import path as os_path
-PROJECT_PATH = os_path.abspath(os_path.split(__file__)[0])
+import os
+import sys
 
-MEDIA_ROOT = os_path.join(PROJECT_PATH, 'static')
+PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
+
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
+
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
 TEMPLATE_DIRS = (
-    os_path.join(PROJECT_PATH, 'sitetemplates')
+    os.path.join(PROJECT_PATH, 'sitetemplates')
 )
 
 USE_I18N = True
@@ -72,11 +77,11 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'apps.aliss',
-    'apps.enginecab',
-    'apps.depot',
-    'apps.firebox',
-    'apps.ecutils',
+    'aliss',
+    'enginecab',
+    'depot',
+    'firebox',
+    'ecutils',
     'contact_form',
     
 )
