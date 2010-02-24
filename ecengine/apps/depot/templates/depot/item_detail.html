@@ -13,6 +13,8 @@
 {{ object.description|linebreaks }}
 
 <p>author: {{ object.author|user_name }}</p>
+<p><a href="{% url item-edit object.id %}">edit item</a></p>
+<p>&nbsp;</p>
 <hr>
 <p><a href="{% url item-remove object.id %}">delete item</a></p>
 

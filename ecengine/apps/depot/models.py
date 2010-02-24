@@ -4,6 +4,13 @@
 from mongoengine import *
 from datetime import datetime
 
+COLL_STATUS_NEW = 'new'
+COLL_STATUS_LOC_CONF = 'location_confirm'
+COLL_STATUS_ = ''
+COLL_STATUS_ = ''
+COLL_STATUS_COMPLETE = 'complete'
+# COLLECTION_STATUS = ('new', )
+
 class Item(Document):
     url = StringField(unique=True, required=True)
     title = StringField(required=True)
@@ -15,6 +22,7 @@ class Item(Document):
     shelflife = StringField()
     author = StringField()
     status = StringField()
+    collection_status = StringField()
     admin_note = StringField()
 
     def save(self, *args, **kwargs):
@@ -22,7 +30,6 @@ class Item(Document):
         super(Item, self).save(*args, **kwargs)
         if created:
             print 'i am new- email me'
-            
    
 from django.utils.simplejson import *
 from ecutils.utils import dict_to_string_keys

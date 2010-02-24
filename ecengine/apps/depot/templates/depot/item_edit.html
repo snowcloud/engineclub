@@ -1,4 +1,4 @@
-{% extends template_extends %}
+{% extends template_info.base %}
 
 {% block title %}edit item{% endblock %}
 
@@ -14,7 +14,7 @@
         </ol>
     </fieldset>
      <fieldset class="submit">
-		<input type="hidden" name="popup" value="{{ popup }}">
+		<input type="hidden" name="popup" value="{{ template_info.popup }}">
         <input type="submit" name="result" value="Submit">
     </fieldset>
 </form>

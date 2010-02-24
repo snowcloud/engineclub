@@ -4,15 +4,18 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from depot.models import Item
-from depot.forms import *
+from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
+
+from depot.models import Item, COLL_STATUS_NEW, COLL_STATUS_LOC_CONF,  COLL_STATUS_COMPLETE
+from depot.forms import *
+from firebox.views import *
 
 def get_one_or_404(**kwargs):
     try:
        object = Item.objects.get(**kwargs)
        return object
-    except (MultipleObjectsReturned, DoesNotExist):
+    except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
     
     
@@ -31,27 +34,18 @@ def item_detail(request, object_id):
         RequestContext( request, { 'object': object }))
         
 
-@login_required
-def item_edit(request, object_id):
-    pass
-    
-@login_required
-def item_remove(request, object_id):
-    
-    object = get_one_or_404(id=object_id)
-    object.delete()
-    return HttpResponseRedirect(reverse('item-list'))
-    
+def _template_info(popup):
+    """docstring for _template_info"""
+    if popup:
+        return {'popup': popup, 'base': 'base_popup.html'}
+    else:
+        return {'popup': popup, 'base': 'base.html'}
+        
 @login_required
 def item_add(request):
 
-    popup = request.REQUEST.get('popup', '')
-    if popup:
-        formclass = ShortItemForm
-        template_extends = 'base_popup.html'
-    else:       
-        formclass= ItemForm
-        template_extends = 'base.html'
+    template_info = _template_info(request.REQUEST.get('popup', ''))
+    formclass = ShortItemForm
     template = 'depot/item_edit.html'
 
     if request.method == 'POST':
@@ -60,10 +54,11 @@ def item_add(request):
             item = Item(**form.cleaned_data)
             item.author = str(request.user.id)
             try:
+                item.collection_status = COLL_STATUS_LOC_CONF
                 item.save()
-                if popup:
-                    return HttpResponseRedirect(reverse('item-popup-close'))
-                return HttpResponseRedirect(reverse('item', args=[item.id]))
+                # if popup:
+                #     return HttpResponseRedirect(reverse('item-popup-close'))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
             except OperationError:
                 pass
             
@@ -77,7 +72,63 @@ def item_add(request):
         form = formclass(initial=initial)
     
     return render_to_response(template,
-        RequestContext( request, {'form': form, 'template_extends': template_extends, 'popup': popup }))
+        RequestContext( request, {'form': form, 'template_info': template_info }))
 
-def popup_close(request):
-    pass
+@login_required
+def item_remove(request, object_id):
+    object = get_one_or_404(id=object_id)
+    object.delete()
+    return HttpResponseRedirect(reverse('item-list'))
+    
+@login_required
+def item_edit(request, object_id):
+    
+    item = get_one_or_404(id=object_id)
+    
+    template_info = _template_info(request.REQUEST.get('popup', ''))
+
+    fn = globals().get('item_%s' % item.collection_status, None)
+    if fn:
+        return fn(request, item, template_info)
+
+    if request.method == 'POST':
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            # item = Item(**form.cleaned_data)
+            # item.author = str(request.user.id)
+            try:
+                item.collection_status = COLL_STATUS_LOC_CONF
+                item.save()
+                # if popup:
+                #     return HttpResponseRedirect(reverse('item-popup-close'))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+            except OperationError:
+                pass
+
+    else:
+        description= request.GET.get('t', '').replace('||', '\n')
+        initial = {
+            'url': item.url,
+            'title': item.title,
+            'description': item.description
+            }
+        form = ItemForm(initial=initial)
+
+    
+    return render_to_response('depot/item_edit.html',
+        RequestContext( request, { 'template_info': template_info, 'form': form, 'object': object }))
+
+@login_required
+def item_location_confirm(request, object, template_info):
+
+    if request.method == 'POST':
+        if template_info['popup']:
+            return HttpResponseRedirect(reverse('item-popup-close'))
+        return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[object.id]), template_info['popup']))
+
+
+    p = geomaker(object.url)
+    
+    return render_to_response('depot/item_edit_location.html',
+        RequestContext( request, { 'template_info': template_info, 'object': object, 'places': p.places }))
+

@@ -164,6 +164,12 @@ def user_name(user):
 def first_name(user):
     return user.first_name or user.username
 
+@register.filter
+def placetype(pt):
+    if pt == 'Zip':
+        return "Post code"
+    else:
+        return pt
 
 """
 from James Bennet blog: http://www.b-list.org/weblog/2006/jun/07/django-tips-write-better-template-tags/
