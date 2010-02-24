@@ -1,9 +1,10 @@
-{% extends "base.html" %}
+{% extends template_extends %}
 
 {% block title %}edit item{% endblock %}
 
 {% block content %}
-<h1>Edit item</h1>
+
+{% if not popup %}<h1>Edit item</h1>{% endif %}
 
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
@@ -13,9 +14,9 @@
         </ol>
     </fieldset>
      <fieldset class="submit">
+		<input type="hidden" name="popup" value="{{ popup }}">
         <input type="submit" name="result" value="Submit">
     </fieldset>
 </form>
-
 
 {% endblock %}

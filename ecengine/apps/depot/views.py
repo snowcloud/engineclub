@@ -48,11 +48,12 @@ def item_add(request):
     popup = request.REQUEST.get('popup', '')
     if popup:
         formclass = ShortItemForm
-        template = 'depot/item_edit_popup.html'
+        template_extends = 'base_popup.html'
     else:       
         formclass= ItemForm
-        template = 'depot/item_edit.html'
-        
+        template_extends = 'base.html'
+    template = 'depot/item_edit.html'
+
     if request.method == 'POST':
         form = formclass(request.POST)
         if form.is_valid():
@@ -76,7 +77,7 @@ def item_add(request):
         form = formclass(initial=initial)
     
     return render_to_response(template,
-        RequestContext( request, {'form': form,  }))
+        RequestContext( request, {'form': form, 'template_extends': template_extends, 'popup': popup }))
 
 def popup_close(request):
     pass
