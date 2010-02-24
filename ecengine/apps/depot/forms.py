@@ -1,7 +1,7 @@
 
 from django import forms
 
-from apps.depot.models import Item
+from depot.models import Item
 from mongoengine.queryset import DoesNotExist
 
 

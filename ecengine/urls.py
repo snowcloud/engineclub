@@ -3,7 +3,7 @@ from django.conf import settings
 from django.views.generic.simple import direct_to_template
 
 from contact_form.views import contact_form
-from apps.ecutils.forms import SCContactForm
+from ecutils.forms import SCContactForm
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -12,9 +12,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Example:
     
-    (r'^$', 'apps.aliss.views.index'),
-    (r'^cab/', include('apps.enginecab.urls')),
-    (r'^depot/', include('apps.depot.urls')),
+    (r'^$', 'aliss.views.index'),
+    (r'^cab/', include('enginecab.urls')),
+    (r'^depot/', include('depot.urls')),
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact_form'),
     url(r'^contact/sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' },

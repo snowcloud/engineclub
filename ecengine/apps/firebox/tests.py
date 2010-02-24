@@ -1,6 +1,6 @@
 
 from django.test import TestCase
-from apps.firebox.views import *
+from firebox.views import *
 
 # TEST_URL = "http://www.gilmerton.btik.com/p_Pilates.ikml"
 TEST_URL = "http://www.gilmerton.btik.com/"

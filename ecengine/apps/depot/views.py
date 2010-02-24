@@ -4,8 +4,8 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from apps.depot.models import Item
-from apps.depot.forms import *
+from depot.models import Item
+from depot.forms import *
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
 def get_one_or_404(**kwargs):

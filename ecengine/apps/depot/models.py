@@ -25,7 +25,7 @@ class Item(Document):
             
    
 from django.utils.simplejson import *
-from apps.ecutils.utils import dict_to_string_keys
+from ecutils.utils import dict_to_string_keys
 
 def load_item_data(item_data):
     items = load(item_data)

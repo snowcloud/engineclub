@@ -5,8 +5,8 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from apps.depot.models import Item, load_item_data
-from apps.depot.forms import ItemForm
+from depot.models import Item, load_item_data
+from depot.forms import ItemForm
 from mongoengine import connect
 
 ITEM_COLLECTION = 'test_items'
