@@ -1,23 +1,24 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
 
 from django.test import TestCase
+from apps.firebox.views import *
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+# TEST_URL = "http://www.gilmerton.btik.com/p_Pilates.ikml"
+TEST_URL = "http://www.gilmerton.btik.com/"
+
+class PlacemakerTest(TestCase):
+    def test_url(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Tests that 3 places are found in page at TEST_URL.
         """
-        self.failUnlessEqual(1 + 1, 2)
-
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
+        p = geomaker(TEST_URL)
+        print 'testing geomaker...'
+        if p.places:
+            print  p.geographic_scope
+            print  p.administrative_scope
+            for place in p.places:
+                print '%s: %s, %s/%s - %s (%s)' % (place.placetype, place.name, place.centroid.latitude, place.centroid.longitude, place.woeid, place.confidence)
+        else:
+            print 'no places found'
+        
+        self.assertEqual(len(p.places), 3)
 

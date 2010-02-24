@@ -4,3 +4,4 @@ textile>=2.1
 mongodb>=1.2.2
 pymongo>=1.4
 mongoengine>=0.2.2
+python-placemaker>=0.1
