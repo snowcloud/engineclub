@@ -1,5 +1,8 @@
 # Django settings for ecengine project.
 
+import os
+import sys
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -20,9 +23,18 @@ DATABASES = {
     }
 }
 
-#mongoDB settings
-from mongoengine import connect
-connect('aliss', host='localhost', port=27017)
+# using this to get round a bug in mongoengine where setting connection doesn't change to test_db
+# so live DB was cleared in testing teardown
+# to use:
+# export DJANGO_SETTINGS_MODULE=ecengine.settings_test
+# django-admin.py test
+
+MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
+
+if not MONGO_TESTING:
+    # mongoDB settings
+    from mongoengine import connect
+    connect('aliss', host='localhost', port=27017)
 
 YAHOO_KEY = 'your_key_here...'
 
@@ -32,9 +44,6 @@ DATE_FORMAT='%d %B %Y, %H:%M'
 LANGUAGE_CODE = 'en-gb'
 
 SITE_ID = 1
-
-import os
-import sys
 
 PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 
