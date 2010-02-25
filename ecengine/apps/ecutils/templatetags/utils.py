@@ -171,6 +171,12 @@ def placetype(pt):
     else:
         return pt
 
+from depot.models import place_as_cb_value
+
+@register.filter
+def place_values(place):
+    return place_as_cb_value(place)
+
 """
 from James Bennet blog: http://www.b-list.org/weblog/2006/jun/07/django-tips-write-better-template-tags/
 

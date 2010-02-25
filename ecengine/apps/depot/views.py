@@ -7,7 +7,8 @@ from django.template import RequestContext
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
-from depot.models import Item, COLL_STATUS_NEW, COLL_STATUS_LOC_CONF,  COLL_STATUS_COMPLETE
+from depot.models import Item, COLL_STATUS_NEW, COLL_STATUS_LOC_CONF,  COLL_STATUS_COMPLETE, \
+    location_from_cb_value
 from depot.forms import *
 from firebox.views import *
 
@@ -122,6 +123,13 @@ def item_edit(request, object_id):
 def item_location_confirm(request, object, template_info):
 
     if request.method == 'POST':
+        cb_places = request.POST.getlist('cb_places')
+        locations = []
+        for loc in cb_places:
+            locations.append(location_from_cb_value(loc))
+        if len(locations) > 0:
+            object.locations = locations
+            object.save()
         if template_info['popup']:
             return HttpResponseRedirect(reverse('item-popup-close'))
         return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[object.id]), template_info['popup']))

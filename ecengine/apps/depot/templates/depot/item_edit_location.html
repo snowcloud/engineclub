@@ -10,10 +10,13 @@
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Choose the best location:</span></legend>
+
         <ol>
             {% for place in places %}
-            	<li><input type="checkbox">({{ place.placetype|placetype }}) {{ place.name }}</input> </li>
-				{# place.placetype, place.name, place.centroid.latitude, place.centroid.longitude, place.woeid, place.confidence) #}
+            	<li><input type="checkbox" name="cb_places"
+					value="{{ place|place_values }}">
+					({{ place.placetype|placetype }}) {{ place.name }}</li>
+				{# place.confidence #}
             {% endfor %} 
         </ol>
     </fieldset>

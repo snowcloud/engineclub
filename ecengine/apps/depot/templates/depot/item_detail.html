@@ -13,6 +13,15 @@
 {{ object.description|linebreaks }}
 
 <p>author: {{ object.author|user_name }}</p>
+
+<ul>
+{% for loc in object.locations %}
+	<li>{{ loc.name }}</li>
+{% empty %}
+	<li>no locations found</li>
+{% endfor %}	
+</ul>
+
 <p><a href="{% url item-edit object.id %}">edit item</a></p>
 <p>&nbsp;</p>
 <hr>
