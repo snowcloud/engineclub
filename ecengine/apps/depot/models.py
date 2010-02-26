@@ -59,9 +59,9 @@ class Item(Document):
     locations = ListField(EmbeddedDocumentField(Location), default=[])
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-    def __init__(self, *args, **kwargs):
-        super(Item, self).__init__(*args, **kwargs)
-        print 'item __init__'
+    # def __init__(self, *args, **kwargs):
+    #     super(Item, self).__init__(*args, **kwargs)
+    #     print 'item __init__'
         
     def save(self, *args, **kwargs):
         self.metadata.last_modified = datetime.now()
@@ -83,4 +83,10 @@ def load_item_data(item_data):
     items = json.load(item_data)
     for item in items:
         # can't pass in item dict as kwargs cos won't take unicode keys
-        Item.objects.get_or_create(**dict_to_string_keys(item))
+        item_fields = dict_to_string_keys(item)
+        metadata = item_fields.pop('metadata', {})
+        new_item = Item.objects.get_or_create(**item_fields)
+        new_item.metadata = ItemMetadata(**metadata)
+        new_item.save()
+        # print new_item.metadata.author
+        
