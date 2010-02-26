@@ -11,6 +11,13 @@ COLL_STATUS_ = ''
 COLL_STATUS_COMPLETE = 'complete'
 # COLLECTION_STATUS = ('new', )
 
+class ItemMetadata(EmbeddedDocument):
+    last_modified = DateTimeField(default=datetime.now)
+    shelflife = StringField()
+    author = StringField()
+    status = StringField()
+    admin_note = StringField()
+    
 class Location(EmbeddedDocument):
     """docstring for Place"""
     woeid = StringField()
@@ -48,18 +55,20 @@ class Item(Document):
     postcode = StringField()
     area = StringField()
     tags = StringField()
-    last_modified = DateTimeField(default=datetime.now)
-    shelflife = StringField()
-    author = StringField()
-    status = StringField()
     collection_status = StringField()
-    admin_note = StringField()
     locations = ListField(EmbeddedDocumentField(Location), default=[])
+    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
+    def __init__(self, *args, **kwargs):
+        super(Item, self).__init__(*args, **kwargs)
+        print 'item __init__'
+        
     def save(self, *args, **kwargs):
+        self.metadata.last_modified = datetime.now()
         created = (self.id is None) and not self.url.startswith('http://test.example.com')
         super(Item, self).save(*args, **kwargs)
         if created:
+            # TODO
             print 'i am new- email me'
 
 

@@ -53,7 +53,7 @@ def item_add(request):
         form = formclass(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
-            item.author = str(request.user.id)
+            item.metadata.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
                 item.save()

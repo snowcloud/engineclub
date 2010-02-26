@@ -12,7 +12,7 @@
 <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
 {{ object.description|linebreaks }}
 
-<p>author: {{ object.author|user_name }}</p>
+<p>author: {{ object.metadata.author|user_name }}</p>
 
 <ul>
 {% for loc in object.locations %}
