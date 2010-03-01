@@ -51,6 +51,8 @@ def item_add(request):
     template = 'depot/item_edit.html'
 
     if request.method == 'POST':
+        if request.POST.get('result', '') == 'Cancel':
+            return item_edit_complete(request, None, template_info)
         form = ShortItemForm(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
@@ -95,7 +97,7 @@ def item_edit(request, object_id):
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
-            item_edit_complete(request, item, template_info)
+            return item_edit_complete(request, item, template_info)
             
         form = ShortItemForm(request.POST, instance=item)
         form.instance = item
@@ -120,7 +122,7 @@ def item_location_confirm(request, item, template_info):
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
-            item_edit_complete(request, item, template_info)
+            return item_edit_complete(request, item, template_info)
         cb_places = request.POST.getlist('cb_places')
         locations = []
         for loc in cb_places:
@@ -147,7 +149,7 @@ def item_tags_confirm(request, item, template_info):
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
-            item_edit_complete(request, item, template_info)
+            return item_edit_complete(request, item, template_info)
 
         tags = request.POST.getlist('tags')
 
@@ -160,14 +162,20 @@ def item_tags_confirm(request, item, template_info):
     return render_to_response('depot/item_edit_tags.html',
         RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
 
-.
 @login_required
 def item_edit_complete(request, item, template_info):
-    item.collection_status = COLL_STATUS_COMPLETE
-    item.save()
-    if template_info['popup']:
-        return HttpResponseRedirect(reverse('item-popup-close'))
-    return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
+    if item:
+        item.collection_status = COLL_STATUS_COMPLETE
+        item.save()
+        popup_url = reverse('item-popup-close')
+        url = reverse('item', args=[item.id])
+    else: # been cancelled
+        popup_url = reverse('item-popup-cancel')
+        url = reverse('item-list')
     
+    if template_info['popup']:
+        return HttpResponseRedirect(popup_url)
+    else:
+        return HttpResponseRedirect(url)
 
 
