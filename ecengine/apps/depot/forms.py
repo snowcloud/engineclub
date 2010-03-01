@@ -6,13 +6,35 @@ from mongoengine.queryset import DoesNotExist
 
 class FormHasNoInstanceException(Exception):
     pass
-    
-class ShortItemForm(forms.Form):
+
+class DocumentForm(forms.Form):
+    """docstring for DocumentForm"""
+
+    instance = None
+
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.pop('instance', None)
+        if instance:
+            self.instance = instance
+            kwargs.setdefault('initial', {}).update(instance.to_mongo())
+        super(DocumentForm, self).__init__(*args, **kwargs)
+
+    def save(self, do_save=False):
+        if self.instance is None:
+            raise FormHasNoInstanceException("Form cannot save- document instance is None.")
+        for f in self.fields:
+            self.instance[f] = self.cleaned_data[f]
+        if do_save:
+            self.instance.save()
+        return self.instance
+
+        
+class ShortItemForm(DocumentForm):
     
     url = forms.CharField()
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
-    instance = None
     
     def clean_url(self):
         data = self.cleaned_data['url']
@@ -24,28 +46,13 @@ class ShortItemForm(forms.Form):
             pass
         return data
     
-    def save(self, do_save=True):
-        if self.instance is None:
-            raise FormHasNoInstanceException("Form cannot save- document instance is None.")
-        # TODO update fields dynamically
-        # for field in self.instance:
-        #     print field
-        # for field in self.fields:
-        #     print field
-        for f in self.fields:
-            self.instance[f] = self.cleaned_data[f]
-            
-        if do_save:
-            self.instance.save()
-        return self.instance
-
 class ItemForm(ShortItemForm):
     
     postcode = forms.CharField(required=False)
     area = forms.CharField(required=False)
     tags = forms.CharField(required=False)
     
-class MetadataForm(forms.Form):
+class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
         
     last_modified = forms.DateField(required=False)

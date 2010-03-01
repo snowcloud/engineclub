@@ -94,10 +94,10 @@ def item_edit(request, object_id):
         return fn(request, item, template_info)
 
     if request.method == 'POST':
-        form = ItemForm(request.POST)
+        form = ItemForm(request.POST, instance=item)
         form.instance = item
         if form.is_valid():
-            item = form.save(do_save=False)
+            item = form.save()
             item.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
@@ -107,14 +107,7 @@ def item_edit(request, object_id):
                 pass
 
     else:
-        description= request.GET.get('t', '').replace('||', '\n')
-        initial = {
-            'url': item.url,
-            'title': item.title,
-            'description': item.description
-            }
-        # print item.to_mongo()
-        form = ItemForm(initial=item.to_mongo())
+        form = ItemForm(instance= item)
     
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'form': form, 'object': item }))
