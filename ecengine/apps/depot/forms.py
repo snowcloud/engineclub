@@ -44,14 +44,15 @@ class ShortItemForm(DocumentForm):
             pass
         return data
     
-class LocationForm(DocumentForm):
+class LocationUpdateForm(DocumentForm):
     
-    postcode = forms.CharField(required=False)
+    # postcode = forms.CharField(required=False)
     address = forms.CharField(widget=forms.Textarea, required=False)
     # tags = forms.CharField(required=False)
     
     def content(self):
-        return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
+        # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
+        return self.cleaned_data['address']
     
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""

@@ -131,13 +131,13 @@ def item_location_confirm(request, item, template_info):
 
     doc = ''
     if request.method == 'POST':
-        form = LocationForm(request.POST)
+        form = LocationUpdateForm(request.POST)
         result = request.POST.get('result', '')
         if result == 'Cancel':
             return item_edit_complete(request, item, template_info)
         elif result.startswith('Update'):
             if form.is_valid():
-                doc = form.content()
+                doc = (form.content() or item.url)
         else:
             cb_places = request.POST.getlist('cb_places')
             locations = []
@@ -150,7 +150,7 @@ def item_location_confirm(request, item, template_info):
 
             return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
     else:
-        form = LocationForm()
+        form = LocationUpdateForm()
         doc = item.url
     try:
         p = geomaker(doc)
