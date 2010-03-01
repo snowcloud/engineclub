@@ -42,7 +42,11 @@ def _template_info(popup):
         return {'popup': popup, 'base': 'base_popup.html'}
     else:
         return {'popup': popup, 'base': 'base.html'}
-        
+
+def update_item_metadata(self, item, request):
+    """docstring for update_item_metadata"""
+    item.metadata.author = str(request.user.id)
+     
 @login_required
 def item_add(request):
 
@@ -56,10 +60,10 @@ def item_add(request):
         form = ShortItemForm(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
-            item.metadata.author = str(request.user.id)
+            # item.metadata.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
-                item.save()
+                item.save(str(request.user.id))
                 # if popup:
                 #     return HttpResponseRedirect(reverse('item-popup-close'))
                 return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
@@ -103,10 +107,10 @@ def item_edit(request, object_id):
         form.instance = item
         if form.is_valid():
             item = form.save()
-            item.author = str(request.user.id)
+            # item.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
-                item.save()
+                item.save(str(request.user.id))
                 return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
             except OperationError:
                 pass
@@ -130,7 +134,7 @@ def item_location_confirm(request, item, template_info):
         if len(locations) > 0:
             item.locations = locations
         item.collection_status = COLL_STATUS_TAGS_CONF
-        item.save()
+        item.save(str(request.user.id))
 
         return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
 
@@ -153,7 +157,7 @@ def item_tags_confirm(request, item, template_info):
 
         tags = request.POST.getlist('tags')
 
-        item_edit_complete(request, item, template_info)
+        return item_edit_complete(request, item, template_info)
         
     else:
         tags = []
@@ -166,7 +170,7 @@ def item_tags_confirm(request, item, template_info):
 def item_edit_complete(request, item, template_info):
     if item:
         item.collection_status = COLL_STATUS_COMPLETE
-        item.save()
+        item.save(str(request.user.id))
         popup_url = reverse('item-popup-close')
         url = reverse('item', args=[item.id])
     else: # been cancelled
