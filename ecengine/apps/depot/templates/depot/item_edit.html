@@ -4,7 +4,7 @@
 
 {% block content %}
 
-{% if not popup %}<h1>{% if object %}Edit{% else %}Add new{% endif %} item</h1>{% endif %}
+{% if not template_info.popup %}<h1>{% if object %}Edit{% else %}Add new{% endif %} item</h1>{% endif %}
 
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
