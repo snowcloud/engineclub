@@ -47,11 +47,11 @@ def _template_info(popup):
 def item_add(request):
 
     template_info = _template_info(request.REQUEST.get('popup', ''))
-    formclass = ShortItemForm
+    # formclass = ShortItemForm
     template = 'depot/item_edit.html'
 
     if request.method == 'POST':
-        form = formclass(request.POST)
+        form = ShortItemForm(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
             item.metadata.author = str(request.user.id)
@@ -71,7 +71,7 @@ def item_add(request):
             'title': request.GET.get('title', ''),
             'description': description[:1250]
             }
-        form = formclass(initial=initial)
+        form = ShortItemForm(initial=initial)
     
     return render_to_response(template,
         RequestContext( request, {'form': form, 'template_info': template_info }))
@@ -94,7 +94,10 @@ def item_edit(request, object_id):
         return fn(request, item, template_info)
 
     if request.method == 'POST':
-        form = ItemForm(request.POST, instance=item)
+        if request.POST.get('result', '') == 'Cancel':
+            item_edit_complete(request, item, template_info)
+            
+        form = ShortItemForm(request.POST, instance=item)
         form.instance = item
         if form.is_valid():
             item = form.save()
@@ -107,7 +110,7 @@ def item_edit(request, object_id):
                 pass
 
     else:
-        form = ItemForm(instance= item)
+        form = ShortItemForm(instance=item)
     
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'form': form, 'object': item }))
@@ -116,6 +119,8 @@ def item_edit(request, object_id):
 def item_location_confirm(request, item, template_info):
 
     if request.method == 'POST':
+        if request.POST.get('result', '') == 'Cancel':
+            item_edit_complete(request, item, template_info)
         cb_places = request.POST.getlist('cb_places')
         locations = []
         for loc in cb_places:
@@ -141,18 +146,28 @@ def item_location_confirm(request, item, template_info):
 def item_tags_confirm(request, item, template_info):
 
     if request.method == 'POST':
+        if request.POST.get('result', '') == 'Cancel':
+            item_edit_complete(request, item, template_info)
+
         tags = request.POST.getlist('tags')
 
-        item.collection_status = COLL_STATUS_COMPLETE
-        item.save()
-        if template_info['popup']:
-            return HttpResponseRedirect(reverse('item-popup-close'))
-        return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
-
+        item_edit_complete(request, item, template_info)
+        
     else:
         tags = []
     # TODO get tags from Yahoo along with locations
     
     return render_to_response('depot/item_edit_tags.html',
         RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
+
+.
+@login_required
+def item_edit_complete(request, item, template_info):
+    item.collection_status = COLL_STATUS_COMPLETE
+    item.save()
+    if template_info['popup']:
+        return HttpResponseRedirect(reverse('item-popup-close'))
+    return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
+    
+
 

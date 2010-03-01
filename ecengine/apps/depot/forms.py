@@ -12,7 +12,6 @@ class DocumentForm(forms.Form):
 
     instance = None
 
-
     def __init__(self, *args, **kwargs):
         instance = kwargs.pop('instance', None)
         if instance:
@@ -29,7 +28,6 @@ class DocumentForm(forms.Form):
             self.instance.save()
         return self.instance
 
-        
 class ShortItemForm(DocumentForm):
     
     url = forms.CharField()
