@@ -17,6 +17,8 @@
 					value="{{ place|place_values }}">
 					({{ place.placetype|placetype }}) {{ place.name }}</li>
 				{# place.confidence #}
+			{% empty %}
+			    <li>no locations found</li>
             {% endfor %} 
         </ol>
     </fieldset>

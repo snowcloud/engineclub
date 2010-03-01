@@ -1,0 +1,31 @@
+{% extends template_info.base %}
+{% load utils %}
+{% block title %}edit item{% endblock %}
+
+{% block content %}
+<h1>Choose tags</h1>
+
+<p>{{ object.title }}</p>
+
+<form class="form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Choose your tags:</span></legend>
+
+            {#         <ol> #}
+            {#             {% for place in places %} #}
+            {#              <li><input type="checkbox" name="cb_places" #}
+            {#      value="{{ place|place_values }}"> #}
+            {#      ({{ place.placetype|placetype }}) {{ place.name }}</li> #}
+            {# {% empty %} #}
+            {#     <li>no locations found</li> #}
+            {#             {% endfor %}  #}
+            {#         </ol> #}
+    </fieldset>
+     <fieldset class="submit">
+		<input type="hidden" name="popup" value="{{ template_info.popup }}">
+        <input type="submit" name="result" value="Submit">
+    </fieldset>
+</form>
+
+
+{% endblock %}

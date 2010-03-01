@@ -11,12 +11,13 @@ from mongoengine import connect
 
 # *******   WARNING  *********
 # mongoengine.connect not resetting the db, so tearDown is clearing main DB
+# unless settings_test used
 
 class ItemTest(TestCase):
     
     def setUp(self):
         if not settings.MONGO_TESTING:
-            raise Exception('must use ecengine.settings_testing for these tests')
+            raise Exception('must use ecengine.settings_test for these tests')
         connect('test_db', host='localhost', port=27017)
         
     def tearDown(self):
@@ -27,6 +28,9 @@ class ItemTest(TestCase):
         load_item_data(item_data)
         item_data.close()
         self.assertEqual(Item.objects.count(), 6)
+        item = Item.objects.get(url='http://test.example.com/1/')
+        self.assertEqual(item.url, 'http://test.example.com/1/')
+        self.assertEqual(item.metadata.author, '1')
         
     def test_newitem(self):
         """
@@ -34,10 +38,12 @@ class ItemTest(TestCase):
         """
         url = 'http://test.example.com/1/'
         title = 'test title'
+        author = "1"
         item = Item.objects.get_or_create(url=url, defaults={'title': title})
+        item.metadata.author = author
         self.assertEqual(item.url, url)
         self.assertEqual(item.title, title)
-        
+        self.assertEqual(item.metadata.author, author)
         
     def test_form(self):
         """test form creation"""

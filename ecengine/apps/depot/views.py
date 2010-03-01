@@ -8,8 +8,8 @@ from django.template import RequestContext
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
-from depot.models import Item, COLL_STATUS_NEW, COLL_STATUS_LOC_CONF,  COLL_STATUS_COMPLETE, \
-    location_from_cb_value
+from depot.models import Item, location_from_cb_value, \
+    COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE
 from depot.forms import *
 from firebox.views import *
 
@@ -54,7 +54,7 @@ def item_add(request):
         form = formclass(request.POST)
         if form.is_valid():
             item = Item(**form.cleaned_data)
-            item.author = str(request.user.id)
+            item.metadata.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
                 item.save()
@@ -95,6 +95,7 @@ def item_edit(request, object_id):
 
     if request.method == 'POST':
         form = ItemForm(request.POST)
+        form.instance = item
         if form.is_valid():
             # item = Item(**form.cleaned_data)
             # item.author = str(request.user.id)
@@ -115,13 +116,12 @@ def item_edit(request, object_id):
             'description': item.description
             }
         form = ItemForm(initial=initial)
-
     
     return render_to_response('depot/item_edit.html',
-        RequestContext( request, { 'template_info': template_info, 'form': form, 'object': object }))
+        RequestContext( request, { 'template_info': template_info, 'form': form, 'object': item }))
 
 @login_required
-def item_location_confirm(request, object, template_info):
+def item_location_confirm(request, item, template_info):
 
     if request.method == 'POST':
         cb_places = request.POST.getlist('cb_places')
@@ -129,15 +129,38 @@ def item_location_confirm(request, object, template_info):
         for loc in cb_places:
             locations.append(location_from_cb_value(loc))
         if len(locations) > 0:
-            object.locations = locations
-            object.save()
+            item.locations = locations
+        item.collection_status = COLL_STATUS_TAGS_CONF
+        item.save()
+
+        return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+
+    try:
+        p = geomaker(item.url)
+        places= p.places
+    except:
+        places = None
+        # TODO add user message
+        
+    return render_to_response('depot/item_edit_location.html',
+        RequestContext( request, { 'template_info': template_info, 'object': item, 'places': places }))
+
+@login_required
+def item_tags_confirm(request, item, template_info):
+
+    if request.method == 'POST':
+        tags = request.POST.getlist('tags')
+
+        item.collection_status = COLL_STATUS_COMPLETE
+        item.save()
         if template_info['popup']:
             return HttpResponseRedirect(reverse('item-popup-close'))
-        return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[object.id]), template_info['popup']))
+        return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
 
-
-    p = geomaker(object.url)
+    else:
+        tags = []
+    # TODO get tags from Yahoo along with locations
     
-    return render_to_response('depot/item_edit_location.html',
-        RequestContext( request, { 'template_info': template_info, 'object': object, 'places': p.places }))
+    return render_to_response('depot/item_edit_tags.html',
+        RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
 

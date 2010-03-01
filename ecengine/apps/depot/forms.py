@@ -18,12 +18,14 @@ class ShortItemForm(forms.Form):
     author = forms.CharField(widget=forms.HiddenInput, required=False)
     # status = forms.CharField(required=False)
     # admin_note = forms.CharField(required=False)
-
+    instance = None
+    
     def clean_url(self):
         data = self.cleaned_data['url']
         try:
-            Item.objects.get(url=data)
-            raise forms.ValidationError("There is already an item with this url")
+            item =Item.objects.get(url=data)
+            if not (self.instance and (self.instance.url == data)):
+                raise forms.ValidationError("There is already an item with this url")
         except DoesNotExist:
             pass
         return data

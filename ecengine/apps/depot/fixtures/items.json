@@ -1,27 +1,33 @@
 [
     {
         "url": "http://test.example.com/1/",
-        "title": "title 1"
+        "title": "title 1",
+		"metadata": { "author": "1"}
     },
     {
         "url": "http://test.example.com/2/",
-        "title": "title 2"
+        "title": "title 2",
+		"metadata": { "author": "1"}
     },
     {
         "url": "http://test.example.com/3/",
-        "title": "title 3"
+        "title": "title 3",
+		"metadata": { "author": "1"}
     },
     {
         "url": "http://test.example.com/4/",
-        "title": "title 4"
+        "title": "title 4",
+		"metadata": { "author": "1"}
     },
     {
         "url": "http://test.example.com/5/",
-        "title": "title 5"
+        "title": "title 5",
+		"metadata": { "author": "1"}
     },
     {
         "url": "http://test.example.com/6/",
-        "title": "title 6"
+        "title": "title 6",
+		"metadata": { "author": "1"}
     }
   
 ]

@@ -6,11 +6,18 @@ from datetime import datetime
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
-COLL_STATUS_ = ''
+COLL_STATUS_TAGS_CONF = 'tags_confirm'
 COLL_STATUS_ = ''
 COLL_STATUS_COMPLETE = 'complete'
 # COLLECTION_STATUS = ('new', )
 
+class ItemMetadata(EmbeddedDocument):
+    last_modified = DateTimeField(default=datetime.now)
+    shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
+    author = StringField()
+    status = StringField()
+    admin_note = StringField()
+    
 class Location(EmbeddedDocument):
     """docstring for Place"""
     woeid = StringField()
@@ -48,18 +55,20 @@ class Item(Document):
     postcode = StringField()
     area = StringField()
     tags = StringField()
-    last_modified = DateTimeField(default=datetime.now)
-    shelflife = StringField()
-    author = StringField()
-    status = StringField()
     collection_status = StringField()
-    admin_note = StringField()
     locations = ListField(EmbeddedDocumentField(Location), default=[])
+    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
+    # def __init__(self, *args, **kwargs):
+    #     super(Item, self).__init__(*args, **kwargs)
+    #     print 'item __init__'
+        
     def save(self, *args, **kwargs):
+        self.metadata.last_modified = datetime.now()
         created = (self.id is None) and not self.url.startswith('http://test.example.com')
         super(Item, self).save(*args, **kwargs)
         if created:
+            # TODO
             print 'i am new- email me'
 
 
@@ -74,4 +83,10 @@ def load_item_data(item_data):
     items = json.load(item_data)
     for item in items:
         # can't pass in item dict as kwargs cos won't take unicode keys
-        Item.objects.get_or_create(**dict_to_string_keys(item))
+        item_fields = dict_to_string_keys(item)
+        metadata = item_fields.pop('metadata', {})
+        new_item = Item.objects.get_or_create(**item_fields)
+        new_item.metadata = ItemMetadata(**metadata)
+        new_item.save()
+        # print new_item.metadata.author
+        
