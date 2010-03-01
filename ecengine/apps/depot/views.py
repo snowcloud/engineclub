@@ -97,13 +97,11 @@ def item_edit(request, object_id):
         form = ItemForm(request.POST)
         form.instance = item
         if form.is_valid():
-            # item = Item(**form.cleaned_data)
-            # item.author = str(request.user.id)
+            item = form.save(do_save=False)
+            item.author = str(request.user.id)
             try:
                 item.collection_status = COLL_STATUS_LOC_CONF
                 item.save()
-                # if popup:
-                #     return HttpResponseRedirect(reverse('item-popup-close'))
                 return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
             except OperationError:
                 pass
@@ -115,7 +113,8 @@ def item_edit(request, object_id):
             'title': item.title,
             'description': item.description
             }
-        form = ItemForm(initial=initial)
+        # print item.to_mongo()
+        form = ItemForm(initial=item.to_mongo())
     
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'form': form, 'object': item }))
