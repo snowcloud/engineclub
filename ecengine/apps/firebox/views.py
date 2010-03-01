@@ -19,8 +19,11 @@ def get_url_content(url):
 
 from placemaker.placemaker import placemaker
 
-def geomaker(url):
-    content = get_url_content(url)
+def geomaker(content):
+    if content.startswith('http'):
+        data = get_url_content(content)
+    else:
+        data = content
     p = placemaker(settings.YAHOO_KEY)
-    p.find_places(content)
+    p.find_places(data)
     return p

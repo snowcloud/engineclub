@@ -49,7 +49,8 @@ def update_item_metadata(self, item, request):
      
 @login_required
 def item_add(request):
-
+    """adds a new item"""
+    
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortItemForm
     template = 'depot/item_edit.html'
@@ -90,15 +91,19 @@ def item_remove(request, object_id):
     
 @login_required
 def item_edit(request, object_id):
-    
+    """ edits an existing item. Uses a wizard-like approach, so checks item.collection_status
+        and hands off to item_* function handler
+    """
     item = get_one_or_404(id=object_id)
     
     template_info = _template_info(request.REQUEST.get('popup', ''))
 
+    # pass on to item_* handler if it exists, otherwise drop through to code that follows
     fn = globals().get('item_%s' % item.collection_status, None)
     if fn:
         return fn(request, item, template_info)
 
+    # default handler for item_edit
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
             return item_edit_complete(request, item, template_info)
@@ -124,29 +129,39 @@ def item_edit(request, object_id):
 @login_required
 def item_location_confirm(request, item, template_info):
 
+    doc = ''
     if request.method == 'POST':
-        if request.POST.get('result', '') == 'Cancel':
+        form = LocationForm(request.POST)
+        result = request.POST.get('result', '')
+        if result == 'Cancel':
             return item_edit_complete(request, item, template_info)
-        cb_places = request.POST.getlist('cb_places')
-        locations = []
-        for loc in cb_places:
-            locations.append(location_from_cb_value(loc))
-        if len(locations) > 0:
-            item.locations = locations
-        item.collection_status = COLL_STATUS_TAGS_CONF
-        item.save(str(request.user.id))
+        elif result.startswith('Update'):
+            if form.is_valid():
+                doc = form.content()
+        else:
+            cb_places = request.POST.getlist('cb_places')
+            locations = []
+            for loc in cb_places:
+                locations.append(location_from_cb_value(loc))
+            if len(locations) > 0:
+                item.locations = locations
+            item.collection_status = COLL_STATUS_TAGS_CONF
+            item.save(str(request.user.id))
 
-        return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
-
+            return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+    else:
+        form = LocationForm()
+        doc = item.url
     try:
-        p = geomaker(item.url)
+        p = geomaker(doc)
         places= p.places
     except:
         places = None
         # TODO add user message
         
     return render_to_response('depot/item_edit_location.html',
-        RequestContext( request, { 'template_info': template_info, 'object': item, 'places': places }))
+        RequestContext( request, { 'template_info': template_info, 'object': item,
+            'places': places, 'form': form }))
 
 @login_required
 def item_tags_confirm(request, item, template_info):
