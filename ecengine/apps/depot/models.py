@@ -6,14 +6,14 @@ from datetime import datetime
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
-COLL_STATUS_ = ''
+COLL_STATUS_TAGS_CONF = 'tags_confirm'
 COLL_STATUS_ = ''
 COLL_STATUS_COMPLETE = 'complete'
 # COLLECTION_STATUS = ('new', )
 
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
-    shelflife = StringField()
+    shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     author = StringField()
     status = StringField()
     admin_note = StringField()
