@@ -6,7 +6,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from depot.models import Item, load_item_data
-from depot.forms import ItemForm
+from depot.forms import ShortItemForm
 from mongoengine import connect
 
 # *******   WARNING  *********
@@ -49,6 +49,6 @@ class ItemTest(TestCase):
         """test form creation"""
         url = 'http://test.example.com/10/'
         title = 'test title'
-        form = ItemForm({'url': url, 'title': title})
+        form = ShortItemForm({'url': url, 'title': title})
         self.assertTrue(form.is_valid())
 

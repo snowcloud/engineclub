@@ -63,9 +63,10 @@ class Item(Document):
     #     super(Item, self).__init__(*args, **kwargs)
     #     print 'item __init__'
         
-    def save(self, author, *args, **kwargs):
+    def save(self, author=None, *args, **kwargs):
         self.metadata.last_modified = datetime.now()
-        self.metadata.author = author
+        if author:
+            self.metadata.author = author
         created = (self.id is None) and not self.url.startswith('http://test.example.com')
         super(Item, self).save(*args, **kwargs)
         if created:
