@@ -2,7 +2,20 @@
 {% load markup utils %}
 
 {% block title %}{{ object.name }}{% endblock %}
+{% block head_extra %}
+<script type="text/javascript"  
+src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
+</script>  
+<style type="text/css">  
+map{  
+  height: 100%;  
+  width: 100%;  
+}  
+</style>   
 
+
+
+{% endblock %}
 {% block content %}
 
 <p><a href="{% url item-list %}">all items</a></p>
@@ -16,7 +29,7 @@
 
 <ul>
 {% for loc in object.locations %}
-	<li>{{ loc.name }}</li>
+	<li>{{ loc.name }} </li>
 {% empty %}
 	<li>no locations found</li>
 {% endfor %}	
@@ -26,5 +39,26 @@
 <p>&nbsp;</p>
 <hr>
 <p><a href="{% url item-remove object.id %}">delete item</a></p>
+
+<div id="map"></div>
+{% if object.locations|length %}
+<script type="text/javascript">  
+    // Create a Map that will be placed in the "map" div.  
+    var map = new YMap(document.getElementById('map'));   
+    function startMap(){  
+        // Add the ability to change between Sat, Hybrid, and Regular Maps  
+        map.addTypeControl();     
+        // Add the zoom control. Long specifies a Slider versus a "+" and "-" zoom control  
+        map.addZoomLong();            
+        // Add the Pan control to have North, South, East and West directional control  
+        map.addPanControl();    
+        // Specifying the Map starting location and zoom level  
+        map.drawZoomAndCenter("{{object.locations.0.name}}", 3);  
+            var currentGeoPoint = new YGeoPoint( "{{object.locations.0.latitude}}" , "{{object.locations.0.longitude}}"  );  
+            map.addMarker(currentGeoPoint);  
+    }  
+window.onload = startMap;     
+</script>  
+{% endif %}
 
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -32,7 +33,7 @@ def item_detail(request, object_id):
     object = get_one_or_404(id=object_id)
 
     return render_to_response('depot/item_detail.html',
-        RequestContext( request, { 'object': object }))
+        RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
         
 
 def _template_info(popup):
