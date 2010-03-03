@@ -113,6 +113,9 @@ def item_edit(request, object_id):
     """ edits an existing item. Uses a wizard-like approach, so checks item.collection_status
         and hands off to item_* function handler
     """
+    UPDATE_LOCS = 'Update locations'
+    UPDATE_TAGS = 'Update tags'
+    
     item = get_one_or_404(id=object_id)
     doc = ''
     places = None
@@ -128,10 +131,13 @@ def item_edit(request, object_id):
         shelflifeform = ShelflifeForm(request.POST, instance=item)
         
         if itemform.is_valid() and locationform.is_valid():
-            if result == 'Update locations':
+            if result == UPDATE_LOCS:
+                places = fix_places(item, locationform.content() or item.url)
+            elif result == UPDATE_TAGS:
                 places = fix_places(item, locationform.content() or item.url)
             else:
                 item = itemform.save()
+                
                 # read location checkboxes
                 cb_places = request.POST.getlist('cb_places')
                 locations = []
@@ -159,7 +165,8 @@ def item_edit(request, object_id):
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'object': item,
             'itemform': itemform, 'locationform': locationform, 'places': places,
-            'tagsform': tagsform, 'shelflifeform': shelflifeform,  }))
+            'tagsform': tagsform, 'shelflifeform': shelflifeform,
+            'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
 # @login_required
 # def item_location_confirm(request, item, template_info):
