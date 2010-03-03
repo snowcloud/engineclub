@@ -28,10 +28,11 @@
 			    <li>no locations found</li>
             {% endfor %}
         </ol>
-    </fieldset>
-
-    <fieldset>
-        <legend><span>Or enter location information below:</span></legend>
+    {# </fieldset> #}
+    {#  #}
+    {# <fieldset> #}
+		<input type="submit" name="result" value="Update locations">
+        <p>Enter location information below to use it for update:</p>
         <ol>
              {{ locationform.as_ul }}
         </ol>
@@ -39,7 +40,7 @@
 
      <fieldset class="submit">
 		<input type="hidden" name="popup" value="{{ template_info.popup }}">
-        <input type="submit" name="result" value="Continue">
+        <input type="submit" name="result" value="Save item">
         <input type="submit" name="result" value="Cancel">
     </fieldset>
 </form>

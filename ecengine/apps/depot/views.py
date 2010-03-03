@@ -98,16 +98,14 @@ def fix_places(item, doc=None):
     for loc in item.locations:
         itemlocs[loc.woeid] = loc
         result.append(PlaceProxy(loc, checked=True))
-    # result = [Place() for litemlocs.values()]
     if doc:
         try:
             p = geomaker(doc)
             places= p.places
         except:
             places = []
-    
-    result.extend(places)  
-    print result
+
+    result.extend([place for place in places if unicode(place.woeid) not in itemlocs.keys()])  
     return result
     
 @login_required
@@ -117,6 +115,7 @@ def item_edit(request, object_id):
     """
     item = get_one_or_404(id=object_id)
     doc = ''
+    places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
 
     if request.method == 'POST':
@@ -125,21 +124,27 @@ def item_edit(request, object_id):
             return item_edit_complete(request, item, template_info)
         itemform = ShortItemForm(request.POST, instance=item)
         locationform = LocationUpdateForm(request.POST, instance=item)
-        if result == 'Update locations':
-            fix_places(item)
-            # if
+        tagsform = TagsForm(request.POST, instance=item)
+        shelflifeform = ShelflifeForm(request.POST, instance=item)
         
         if itemform.is_valid() and locationform.is_valid():
+            if result == 'Update locations':
+                places = fix_places(item, locationform.content() or item.url)
+            else:
+                item = itemform.save()
+                # read location checkboxes
+                cb_places = request.POST.getlist('cb_places')
+                locations = []
+                for loc in cb_places:
+                    locations.append(location_from_cb_value(loc))
+                # if len(locations) > 0:
+                item.locations = locations
             
-            
-            item = itemform.save()
-            # item.author = str(request.user.id)
-            try:
-                # item.collection_status = COLL_STATUS_LOC_CONF
-                item.save(str(request.user.id))
-                return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
-            except OperationError:
-                pass
+                try:
+                    item.save(str(request.user.id))
+                    return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
+                except OperationError:
+                    pass
 
     else:
         itemform = ShortItemForm(instance=item)
@@ -147,10 +152,13 @@ def item_edit(request, object_id):
         if not item.locations:
             doc = item.url
         places = fix_places(item, doc)
+        tagsform = TagsForm(instance=item)
+        shelflifeform = ShelflifeForm(instance=item)
     
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'object': item,
-            'itemform': itemform, 'locationform': locationform, 'places': places,  }))
+            'itemform': itemform, 'locationform': locationform, 'places': places,
+            'tagsform': tagsform, 'shelflifeform': shelflifeform,  }))
 
 # @login_required
 # def item_location_confirm(request, item, template_info):

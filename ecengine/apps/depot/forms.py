@@ -70,4 +70,12 @@ class MetadataForm(DocumentForm):
     author = forms.CharField(required=False)
     status = forms.CharField(required=False)
     admin_note = forms.CharField(widget=forms.Textarea, required=False)
+
+class TagsForm(DocumentForm):
+    """docstring for TagsForm"""
+    pass
     
+class ShelflifeForm(DocumentForm):
+    """docstring for ShelflifeForm"""
+    pass
+           
