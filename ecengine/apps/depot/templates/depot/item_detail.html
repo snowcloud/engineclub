@@ -53,7 +53,7 @@ map{
         // Add the Pan control to have North, South, East and West directional control  
         map.addPanControl();    
         // Specifying the Map starting location and zoom level  
-        map.drawZoomAndCenter("{{object.locations.0.name}}", 4);
+        map.drawZoomAndCenter("{{object.locations.0.name}}", 7);
  		{% for loc in object.locations %}
             var currentGeoPoint = new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"  );  
             map.addMarker(currentGeoPoint);  

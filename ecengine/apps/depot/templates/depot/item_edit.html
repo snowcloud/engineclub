@@ -28,23 +28,33 @@
 				{% empty %}
 				    <li>no locations found</li>
 	            {% endfor %}
-	        </ol>
+	        {# </ol> #}
 	    {# </fieldset> #}
 	    {#  #}
 	    {# <fieldset> #}
+	        {# <ol> #}
 			<input type="submit" name="result" value="Update locations">
 	        <p>Enter location information in the box below to use it to update the list above.</p>
 			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, or select it if it's in the list above.</p>
-	        <ol>
 	             {{ locationform.as_ul }}
 	        </ol>
 	    </fieldset>
 	{% endif %}
 	{% if tagsform %}
-	
+	    <fieldset>
+	        <legend><span>Tags:</span></legend>
+			<ol>
+		         {{ tagsform.as_ul }}
+		    </ol>
+	    </fieldset>
 	{% endif %}
 	{% if shelflifeform %}
-	
+	    <fieldset>
+	        <legend><span>Shelf life:</span></legend>
+		    <ol>
+		         {{ shelflifeform.as_ul }}
+		    </ol>	
+	    </fieldset>
 	{% endif %}
      <fieldset class="submit">
 		<input type="hidden" name="popup" value="{{ template_info.popup }}">

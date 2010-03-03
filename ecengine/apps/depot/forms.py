@@ -73,9 +73,11 @@ class MetadataForm(DocumentForm):
 
 class TagsForm(DocumentForm):
     """docstring for TagsForm"""
+    dummy = forms.CharField(required=False)
     pass
     
 class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
+    dummy = forms.CharField(required=False)
     pass
            
