@@ -2,6 +2,8 @@
 from django import forms
 
 from depot.models import Item
+from ecutils.forms import CSVTextInput
+
 from mongoengine.queryset import DoesNotExist
 
 class FormHasNoInstanceException(Exception):
@@ -71,23 +73,9 @@ class MetadataForm(DocumentForm):
     status = forms.CharField(required=False)
     admin_note = forms.CharField(widget=forms.Textarea, required=False)
 
-
-# from django import forms
-# from django.utils.safestring import mark_safe
-# from django.db.models.loading import get_model
-
-class CSVTextInput(forms.TextInput):
-    input_type = 'text'
-
-    def render(self, name, value, attrs=None):
-        # if not self.render_value: value=None
-        value = ', '.join(value)
-        return super(CSVTextInput, self).render(name, value, attrs)
-
-
 class TagsForm(DocumentForm):
     """docstring for TagsForm"""
-    tags = forms.CharField(widget=CSVTextInput, required=False)
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
 
     def clean_tags(self):
         data = self.cleaned_data['tags']

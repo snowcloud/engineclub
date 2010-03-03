@@ -5,6 +5,13 @@ from contact_form.views import contact_form
 from contact_form.forms import ContactForm
 from django.conf import settings
 
+class CSVTextInput(forms.TextInput):
+    input_type = 'text'
+
+    def render(self, name, value, attrs=None):
+        value = ', '.join(value)
+        return super(CSVTextInput, self).render(name, value, attrs)
+
 
 class SCContactForm(ContactForm):
     """simple spam prevention for contact form- reject message body with 'http:'
