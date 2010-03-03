@@ -47,7 +47,7 @@ class ShortItemForm(DocumentForm):
 class LocationUpdateForm(DocumentForm):
     
     # postcode = forms.CharField(required=False)
-    address = forms.CharField(widget=forms.Textarea, required=False)
+    address = forms.CharField(label="Location information", widget=forms.Textarea, required=False)
     # tags = forms.CharField(required=False)
 
     # def __init__(self, *args, **kwargs):

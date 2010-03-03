@@ -15,29 +15,37 @@
         </ol>
     </fieldset>
 
-    <fieldset>
-        <legend><span>Location:</span></legend>
+	{% if locationform %}
+	    <fieldset>
+	        <legend><span>Location:</span></legend>
 
-        <ol>
-            {% for place in places %}
-            	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %}
-					value="{{ place|place_values }}">
-					({{ place.placetype|placetype }}) {{ place.name }}</li>
-				{# place.confidence #}
-			{% empty %}
-			    <li>no locations found</li>
-            {% endfor %}
-        </ol>
-    {# </fieldset> #}
-    {#  #}
-    {# <fieldset> #}
-		<input type="submit" name="result" value="Update locations">
-        <p>Enter location information below to use it for update:</p>
-        <ol>
-             {{ locationform.as_ul }}
-        </ol>
-    </fieldset>
-
+	        <ol>
+	            {% for place in places %}
+	            	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %}
+						value="{{ place|place_values }}">
+						({{ place.placetype|placetype }}) {{ place.name }}</li>
+					{# place.confidence #}
+				{% empty %}
+				    <li>no locations found</li>
+	            {% endfor %}
+	        </ol>
+	    {# </fieldset> #}
+	    {#  #}
+	    {# <fieldset> #}
+			<input type="submit" name="result" value="Update locations">
+	        <p>Enter location information in the box below to use it to update the list above.</p>
+			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, or select it if it's in the list above.</p>
+	        <ol>
+	             {{ locationform.as_ul }}
+	        </ol>
+	    </fieldset>
+	{% endif %}
+	{% if tagsform %}
+	
+	{% endif %}
+	{% if shelflifeform %}
+	
+	{% endif %}
      <fieldset class="submit">
 		<input type="hidden" name="popup" value="{{ template_info.popup }}">
         <input type="submit" name="result" value="Save item">

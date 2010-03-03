@@ -82,7 +82,7 @@ def item_add(request):
         form = ShortItemForm(initial=initial)
     
     return render_to_response(template,
-        RequestContext( request, {'form': form, 'template_info': template_info }))
+        RequestContext( request, {'itemform': form, 'template_info': template_info }))
 
 @login_required
 def item_remove(request, object_id):
@@ -142,7 +142,8 @@ def item_edit(request, object_id):
             
                 try:
                     item.save(str(request.user.id))
-                    return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
+                    return item_edit_complete(request, item, template_info)
+                    # return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
                 except OperationError:
                     pass
 
