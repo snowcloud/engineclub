@@ -27,3 +27,19 @@ def geomaker(content):
     p = placemaker(settings.YAHOO_KEY)
     p.find_places(data)
     return p
+
+class PointProxy(object):
+    """proxy object for a placemaker.Point"""
+    def __init__(self, lat, lon):
+        self.latitude = lat
+        self.longitude = lon
+    
+class PlaceProxy(object):
+    """proxy object for a placemaker.PlacemakerPoint"""
+    def __init__(self, loc, checked=False):
+        super(PlaceProxy, self).__init__()
+        self.woeid = loc.woeid
+        self.name = loc.name
+        self.placetype = loc.placetype
+        self.centroid = PointProxy(loc.latitude, loc.longitude) 
+        self.checked = checked

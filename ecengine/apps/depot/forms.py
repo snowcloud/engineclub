@@ -49,6 +49,14 @@ class LocationUpdateForm(DocumentForm):
     # postcode = forms.CharField(required=False)
     address = forms.CharField(widget=forms.Textarea, required=False)
     # tags = forms.CharField(required=False)
+
+    # def __init__(self, *args, **kwargs):
+    #     super(LocationUpdateForm, self).__init__(*args, **kwargs)
+    #     if self.instance:
+    #         for i, loc in enumerate(self.instance.locations):
+    #             self.fields['itemloc_%s' % 1] = forms.BooleanField(label=loc.name, required=False)
+    #     self.fields['address'] = forms.CharField(widget=forms.Textarea, required=False)
+        
     
     def content(self):
         # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])

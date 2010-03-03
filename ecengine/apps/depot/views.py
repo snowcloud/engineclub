@@ -12,6 +12,7 @@ from depot.models import Item, location_from_cb_value, \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE
 from depot.forms import *
 from firebox.views import *
+# from placemaker.placemaker import Place
 
 def get_one_or_404(**kwargs):
     try:
@@ -63,7 +64,7 @@ def item_add(request):
             item = Item(**form.cleaned_data)
             # item.metadata.author = str(request.user.id)
             try:
-                item.collection_status = COLL_STATUS_LOC_CONF
+                # item.collection_status = COLL_STATUS_LOC_CONF
                 item.save(str(request.user.id))
                 # if popup:
                 #     return HttpResponseRedirect(reverse('item-popup-close'))
@@ -88,6 +89,26 @@ def item_remove(request, object_id):
     object = get_one_or_404(id=object_id)
     object.delete()
     return HttpResponseRedirect(reverse('item-list'))
+
+def fix_places(item, doc=None):
+    """docstring for fix_places"""
+    result = []
+    places = []
+    itemlocs = {}
+    for loc in item.locations:
+        itemlocs[loc.woeid] = loc
+        result.append(PlaceProxy(loc, checked=True))
+    # result = [Place() for litemlocs.values()]
+    if doc:
+        try:
+            p = geomaker(doc)
+            places= p.places
+        except:
+            places = []
+    
+    result.extend(places)  
+    print result
+    return result
     
 @login_required
 def item_edit(request, object_id):
@@ -95,100 +116,105 @@ def item_edit(request, object_id):
         and hands off to item_* function handler
     """
     item = get_one_or_404(id=object_id)
-    
+    doc = ''
     template_info = _template_info(request.REQUEST.get('popup', ''))
 
-    # pass on to item_* handler if it exists, otherwise drop through to code that follows
-    fn = globals().get('item_%s' % item.collection_status, None)
-    if fn:
-        return fn(request, item, template_info)
-
-    # default handler for item_edit
     if request.method == 'POST':
-        if request.POST.get('result', '') == 'Cancel':
+        result = request.POST.get('result', '')
+        if result == 'Cancel':
             return item_edit_complete(request, item, template_info)
+        itemform = ShortItemForm(request.POST, instance=item)
+        locationform = LocationUpdateForm(request.POST, instance=item)
+        if result == 'Update locations':
+            fix_places(item)
+            # if
+        
+        if itemform.is_valid() and locationform.is_valid():
             
-        form = ShortItemForm(request.POST, instance=item)
-        form.instance = item
-        if form.is_valid():
-            item = form.save()
+            
+            item = itemform.save()
             # item.author = str(request.user.id)
             try:
-                item.collection_status = COLL_STATUS_LOC_CONF
+                # item.collection_status = COLL_STATUS_LOC_CONF
                 item.save(str(request.user.id))
-                return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
             except OperationError:
                 pass
 
     else:
-        form = ShortItemForm(instance=item)
+        itemform = ShortItemForm(instance=item)
+        locationform = LocationUpdateForm(instance=item)
+        if not item.locations:
+            doc = item.url
+        places = fix_places(item, doc)
     
     return render_to_response('depot/item_edit.html',
-        RequestContext( request, { 'template_info': template_info, 'form': form, 'object': item }))
-
-@login_required
-def item_location_confirm(request, item, template_info):
-
-    doc = ''
-    if request.method == 'POST':
-        form = LocationUpdateForm(request.POST)
-        result = request.POST.get('result', '')
-        if result == 'Cancel':
-            return item_edit_complete(request, item, template_info)
-        elif result.startswith('Update'):
-            if form.is_valid():
-                doc = (form.content() or item.url)
-        else:
-            cb_places = request.POST.getlist('cb_places')
-            locations = []
-            for loc in cb_places:
-                locations.append(location_from_cb_value(loc))
-            if len(locations) > 0:
-                item.locations = locations
-            item.collection_status = COLL_STATUS_TAGS_CONF
-            item.save(str(request.user.id))
-
-            return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
-    else:
-        form = LocationUpdateForm()
-        doc = item.url
-    try:
-        p = geomaker(doc)
-        places= p.places
-    except:
-        places = None
-        # TODO add user message
-        
-    return render_to_response('depot/item_edit_location.html',
         RequestContext( request, { 'template_info': template_info, 'object': item,
-            'places': places, 'form': form }))
+            'itemform': itemform, 'locationform': locationform, 'places': places,  }))
 
-@login_required
-def item_tags_confirm(request, item, template_info):
-
-    if request.method == 'POST':
-        if request.POST.get('result', '') == 'Cancel':
-            return item_edit_complete(request, item, template_info)
-
-        tags = request.POST.getlist('tags')
-
-        return item_edit_complete(request, item, template_info)
-        
-    else:
-        tags = []
-    # TODO get tags from Yahoo along with locations
-    
-    return render_to_response('depot/item_edit_tags.html',
-        RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
-
+# @login_required
+# def item_location_confirm(request, item, template_info):
+# 
+#     doc = ''
+#     if request.method == 'POST':
+#         form = LocationUpdateForm(request.POST)
+#         result = request.POST.get('result', '')
+#         if result == 'Cancel':
+#             return item_edit_complete(request, item, template_info)
+#         elif result.startswith('Update'):
+#             if form.is_valid():
+#                 doc = (form.content() or item.url)
+#         else:
+#             cb_places = request.POST.getlist('cb_places')
+#             locations = []
+#             for loc in cb_places:
+#                 locations.append(location_from_cb_value(loc))
+#             if len(locations) > 0:
+#                 item.locations = locations
+#             item.collection_status = COLL_STATUS_TAGS_CONF
+#             item.save(str(request.user.id))
+# 
+#             return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+#     else:
+#         form = LocationUpdateForm()
+#         doc = item.url
+#     try:
+#         p = geomaker(doc)
+#         places= p.places
+#     except:
+#         places = None
+#         # TODO add user message
+#         
+#     return render_to_response('depot/item_edit_location.html',
+#         RequestContext( request, { 'template_info': template_info, 'object': item,
+#             'places': places, 'form': form }))
+# 
+# @login_required
+# def item_tags_confirm(request, item, template_info):
+# 
+#     if request.method == 'POST':
+#         if request.POST.get('result', '') == 'Cancel':
+#             return item_edit_complete(request, item, template_info)
+# 
+#         tags = request.POST.getlist('tags')
+# 
+#         return item_edit_complete(request, item, template_info)
+#         
+#     else:
+#         tags = []
+#     # TODO get tags from Yahoo along with locations
+#     
+#     return render_to_response('depot/item_edit_tags.html',
+#         RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
+# 
 @login_required
 def item_edit_complete(request, item, template_info):
     if item:
-        item.collection_status = COLL_STATUS_COMPLETE
+        # item.collection_status = COLL_STATUS_COMPLETE
         item.save(str(request.user.id))
         popup_url = reverse('item-popup-close')
         url = reverse('item', args=[item.id])
-    else: # been cancelled
+    else: # item-add cancelled
         popup_url = reverse('item-popup-cancel')
         url = reverse('item-list')
     
