@@ -35,7 +35,7 @@
 	        {# <ol> #}
 			<input type="submit" name="result" value="{{ UPDATE_LOCS }}">
 	        <p>Enter location information in the box below to use it to update the list above.</p>
-			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, or select it if it's in the list above.</p>
+			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
 	             {{ locationform.as_ul }}
 	        </ol>
 	    </fieldset>
@@ -44,7 +44,7 @@
 	    <fieldset>
 	        <legend><span>Tags:</span></legend>
 			<ol>
-		         {{ tagsform.as_ul }}
+				{{ tagsform.as_ul }}
 		    </ol>
 	    </fieldset>
 	{% endif %}

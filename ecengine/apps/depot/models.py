@@ -54,7 +54,7 @@ class Item(Document):
     description = StringField()
     postcode = StringField()
     area = StringField()
-    tags = StringField()
+    tags = ListField(StringField(max_length=96))
     collection_status = StringField()
     locations = ListField(EmbeddedDocumentField(Location), default=[])
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)

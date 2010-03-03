@@ -130,7 +130,7 @@ def item_edit(request, object_id):
         tagsform = TagsForm(request.POST, instance=item)
         shelflifeform = ShelflifeForm(request.POST, instance=item)
         
-        if itemform.is_valid() and locationform.is_valid():
+        if itemform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
             if result == UPDATE_LOCS:
                 places = fix_places(item, locationform.content() or item.url)
             elif result == UPDATE_TAGS:
@@ -145,6 +145,9 @@ def item_edit(request, object_id):
                     locations.append(location_from_cb_value(loc))
                 # if len(locations) > 0:
                 item.locations = locations
+
+                item = tagsform.save()
+                item = shelflifeform.save()
             
                 try:
                     item.save(str(request.user.id))
@@ -165,7 +168,7 @@ def item_edit(request, object_id):
     return render_to_response('depot/item_edit.html',
         RequestContext( request, { 'template_info': template_info, 'object': item,
             'itemform': itemform, 'locationform': locationform, 'places': places,
-            'tagsform': tagsform, 'shelflifeform': shelflifeform,
+            'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
 # @login_required

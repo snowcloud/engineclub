@@ -25,6 +25,7 @@ map{
 {{ object.description|linebreaks }}
 
 <p>author: {{ object.metadata.author|user_name }}</p>
+<p>tags: {{ object.tags|join:", " }}</p>
 
 <ul>
 {% for loc in object.locations %}

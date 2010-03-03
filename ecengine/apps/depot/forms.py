@@ -71,13 +71,30 @@ class MetadataForm(DocumentForm):
     status = forms.CharField(required=False)
     admin_note = forms.CharField(widget=forms.Textarea, required=False)
 
+
+# from django import forms
+# from django.utils.safestring import mark_safe
+# from django.db.models.loading import get_model
+
+class CSVTextInput(forms.TextInput):
+    input_type = 'text'
+
+    def render(self, name, value, attrs=None):
+        # if not self.render_value: value=None
+        value = ', '.join(value)
+        return super(CSVTextInput, self).render(name, value, attrs)
+
+
 class TagsForm(DocumentForm):
     """docstring for TagsForm"""
-    dummy = forms.CharField(required=False)
-    pass
+    tags = forms.CharField(widget=CSVTextInput, required=False)
+
+    def clean_tags(self):
+        data = self.cleaned_data['tags']
+        return [t.strip() for t in data.split(',')]
     
 class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
-    dummy = forms.CharField(required=False)
+    # dummy = forms.CharField(required=False)
     pass
            
