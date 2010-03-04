@@ -21,7 +21,6 @@ class ItemMetadata(EmbeddedDocument):
 class Location(Document):
     """Location document, based on Yahoo Placemaker data"""
     
-    # NB: latitude / longitude must be first 2 fields for mongo 2d index to work
     lat_lon = ListField(FloatField(), default=[])
     latitude = FloatField()
     longitude = FloatField()
@@ -29,9 +28,7 @@ class Location(Document):
     woeid = StringField()
     name = StringField()
     placetype = StringField()
-        
-# from placemaker.placemaker import Place
-
+    
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
     if place:
@@ -43,14 +40,18 @@ def location_from_cb_value(cb_value):
     values = cb_value.split('|')
     if not len(values) == 5:
         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-    loc_values = { 
-        'woeid': values[0],
+    lat = float(values[3])
+    lon = float(values[4])
+    print lat, lon
+    loc_values = {
+        'lat_lon': [lat, lon],
+        # 'woeid': values[0],
         'name': values[1],
         'placetype': values[2],
-        'latitude': values[3],
-        'longitude': values[4]
+        'latitude': lat,
+        'longitude': lon
         }
-    return Location(**loc_values)
+    return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Item(Document):
     url = StringField(unique=True, required=True)
@@ -58,9 +59,9 @@ class Item(Document):
     description = StringField()
     postcode = StringField()
     area = StringField()
+    locations = ListField(StringField(), default=[])
     tags = ListField(StringField(max_length=96))
     collection_status = StringField()
-    locations = ListField(ReferenceField(Location), default=[])
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
@@ -77,6 +78,8 @@ class Item(Document):
             # TODO
             print 'i am new- email me'
 
+    def get_locations(self):
+        return [Location.objects.get(woeid=id) for id in self.locations]
 
 from mongoengine.connection import _get_db as get_db
 

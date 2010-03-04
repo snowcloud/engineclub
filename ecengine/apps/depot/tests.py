@@ -76,9 +76,11 @@ class ItemTest(TestCase):
         self.assertEqual(Location.objects.count(), 1)
         eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
         results = eval_result['results']
-        locs = [res['obj']['name'] for res in results]
+        locs = [res['obj'] for res in results]
         # print '\ndistance: ', res['dis'], res['obj']['name']
-        self.assertEqual(locs, [u'Gilmerton, Edinburgh, Scotland, GB'])
+        self.assertEqual(locs[0]['name'], u'Gilmerton, Edinburgh, Scotland, GB')
+        items = Item.objects(locations__in=[locs[0]['woeid']])
+        self.assertEqual(len(items), 2)
         
     def test_form(self):
         """test form creation"""

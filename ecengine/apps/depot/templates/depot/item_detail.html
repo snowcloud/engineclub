@@ -28,7 +28,7 @@ map{
 <p>tags: {{ object.tags|join:", " }}</p>
 
 <ul>
-{% for loc in object.locations %}
+{% for loc in object.get_locations %}
 	<li>{{ loc.name }} </li>
 {% empty %}
 	<li>no locations found</li>

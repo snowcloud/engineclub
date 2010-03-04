@@ -8,7 +8,7 @@ from django.template import RequestContext
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
-from depot.models import Item, location_from_cb_value, \
+from depot.models import Item, Location, location_from_cb_value, \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE
 from depot.forms import *
 from firebox.views import *
@@ -94,10 +94,10 @@ def fix_places(item, doc=None):
     """docstring for fix_places"""
     result = []
     places = []
-    itemlocs = {}
-    for loc in item.locations:
-        itemlocs[loc.woeid] = loc
-        result.append(PlaceProxy(loc, checked=True))
+    itemlocs = []
+    for loc in item.locations: #woeids
+        itemlocs.append(loc)
+        result.append(PlaceProxy(Location.objects.get(woeid=loc), checked=True))
     if doc:
         try:
             p = geomaker(doc)
@@ -105,7 +105,7 @@ def fix_places(item, doc=None):
         except:
             places = []
 
-    result.extend([place for place in places if unicode(place.woeid) not in itemlocs.keys()])  
+    result.extend([place for place in places if unicode(place.woeid) not in itemlocs])  
     return result
     
 @login_required
@@ -142,7 +142,7 @@ def item_edit(request, object_id):
                 cb_places = request.POST.getlist('cb_places')
                 locations = []
                 for loc in cb_places:
-                    locations.append(location_from_cb_value(loc))
+                    locations.append(location_from_cb_value(loc).woeid)
                 # if len(locations) > 0:
                 item.locations = locations
 
