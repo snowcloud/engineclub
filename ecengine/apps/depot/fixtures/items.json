@@ -1,33 +1,8 @@
 [
-    {
-        "url": "http://test.example.com/1/",
-        "title": "title 1",
-		"metadata": { "author": "1"}
-    },
-    {
-        "url": "http://test.example.com/2/",
-        "title": "title 2",
-		"metadata": { "author": "1"}
-    },
-    {
-        "url": "http://test.example.com/3/",
-        "title": "title 3",
-		"metadata": { "author": "1"}
-    },
-    {
-        "url": "http://test.example.com/4/",
-        "title": "title 4",
-		"metadata": { "author": "1"}
-    },
-    {
-        "url": "http://test.example.com/5/",
-        "title": "title 5",
-		"metadata": { "author": "1"}
-    },
-    {
-        "url": "http://test.example.com/6/",
-        "title": "title 6",
-		"metadata": { "author": "1"}
-    }
-  
+    {"_types": ["Item"], "title": u"title 1", "url": u"http://test.example.com/1/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 103000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 103000)}},
+    {"_types": ["Item"], "title": u"title 2", "url": u"http://test.example.com/2/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 105000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 105000)}},
+    {"_types": ["Item"], "title": u"title 3", "url": u"http://test.example.com/3/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 109000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 109000)}},
+    {"_types": ["Item"], "title": u"title 4", "url": u"http://test.example.com/4/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 110000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 110000)}},
+    {"_types": ["Item"], "title": u"title 5", "url": u"http://test.example.com/5/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 111000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 111000)}},
+    {"_types": ["Item"], "title": u"title 6", "url": u"http://test.example.com/6/", "locations": [], "tags": [], "_cls": "Item", "metadata": {"_types": ["ItemMetadata"], "last_modified": datetime(2010, 3, 4, 1, 0, 25, 112000), "author": u"1", "_cls": "ItemMetadata", "shelflife": datetime(2010, 3, 4, 1, 0, 25, 112000)}}
 ]

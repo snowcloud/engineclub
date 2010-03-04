@@ -74,21 +74,10 @@ class Item(Document):
             print 'i am new- email me'
 
 
-try:
-    import simplejson as json
-except:
-    from django.utils import simplejson as json
-
-from ecutils.utils import dict_to_string_keys
+from mongoengine.connection import _get_db as get_db
 
 def load_item_data(item_data):
-    items = json.load(item_data)
-    for item in items:
-        # can't pass in item dict as kwargs cos won't take unicode keys
-        item_fields = dict_to_string_keys(item)
-        metadata = item_fields.pop('metadata', {})
-        new_item = Item.objects.get_or_create(**item_fields)
-        new_item.metadata = ItemMetadata(**metadata)
-        new_item.save()
-        # print new_item.metadata.author
+    new_items = eval(item_data.read())
+    db = get_db()
+    db.item.insert(new_items)
         
