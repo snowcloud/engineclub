@@ -9,7 +9,8 @@ class CSVTextInput(forms.TextInput):
     input_type = 'text'
 
     def render(self, name, value, attrs=None):
-        value = ', '.join(value)
+        if value:
+            value = ', '.join(value)
         return super(CSVTextInput, self).render(name, value, attrs)
 
 
