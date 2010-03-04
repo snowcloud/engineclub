@@ -18,13 +18,13 @@ class ItemMetadata(EmbeddedDocument):
     status = StringField()
     admin_note = StringField()
     
-class Location(EmbeddedDocument):
-    """Location subdocument, based on Yahoo Placemaker data"""
+class Location(Document):
+    """Location document, based on Yahoo Placemaker data"""
     
     # NB: latitude / longitude must be first 2 fields for mongo 2d index to work
     lat_lon = ListField(FloatField(), default=[])
-    latitude = StringField()
-    longitude = StringField()
+    latitude = FloatField()
+    longitude = FloatField()
     
     woeid = StringField()
     name = StringField()
@@ -60,7 +60,7 @@ class Item(Document):
     area = StringField()
     tags = ListField(StringField(max_length=96))
     collection_status = StringField()
-    locations = ListField(EmbeddedDocumentField(Location), default=[])
+    locations = ListField(ReferenceField(Location), default=[])
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
@@ -80,8 +80,8 @@ class Item(Document):
 
 from mongoengine.connection import _get_db as get_db
 
-def load_item_data(item_data):
-    new_items = eval(item_data.read())
+def load_item_data(document, item_data):
+    new_data = eval(item_data.read())
     db = get_db()
-    db.item.insert(new_items)
+    db[document].insert(new_data)
     return db

@@ -22,16 +22,20 @@ class ItemTest(TestCase):
         
     def tearDown(self):
         Item.drop_collection()
+        Location.drop_collection()
 
-    def _load_item_data(self):
+    def _load_data(self):
         """loads fixture data for test Items"""
         item_data = open('%s/apps/depot/fixtures/items.json' % settings.PROJECT_PATH, 'rU')
-        db = load_item_data(item_data)
+        load_item_data('item', item_data)
+        item_data.close()
+        item_data = open('%s/apps/depot/fixtures/locations.json' % settings.PROJECT_PATH, 'rU')
+        db = load_item_data('location', item_data)
         item_data.close()
         return db
 
     def test_items(self):
-        self._load_item_data()
+        self._load_data()
         self.assertEqual(Item.objects.count(), 6)
         item = Item.objects.get(url='http://test.example.com/1/')
         self.assertEqual(item.url, 'http://test.example.com/1/')
@@ -52,7 +56,7 @@ class ItemTest(TestCase):
     
     def test_tags(self):
         """docstring for test_tags"""
-        self._load_item_data()
+        self._load_data()
         items = Item.objects(tags='red')
         # print [(i.title, i.tags) for i in Item.objects]
         # print 'red items: ', items
@@ -64,15 +68,17 @@ class ItemTest(TestCase):
         items = Item.objects(tags__all=['blue', 'red'])
         self.assertEqual(len(items), 2)
 
-    # def test_geo(self):
-    #     """docstring for test_geo"""
-    #     db = self._load_item_data()
-    #     # db.places.ensureIndex( { loc : "2d" } )
-    #     db.item.ensureIndex( { 'locations.lat_lon' : "2d" } )
-    #     
-    #     # locs = Item.objects(locations__lat_lon__in=['55.9065', '-3.13404']).ensure_index( { 'locations.lat_lon' : "2d" } )
-    #     # print '\nlocs: ', [l.title for l in locs]
+    def test_geo(self):
+        """docstring for test_geo"""
         
+        db = self._load_data()
+        db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
+        self.assertEqual(Location.objects.count(), 1)
+        eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
+        results = eval_result['results']
+        locs = [res['obj']['name'] for res in results]
+        # print '\ndistance: ', res['dis'], res['obj']['name']
+        self.assertEqual(locs, [u'Gilmerton, Edinburgh, Scotland, GB'])
         
     def test_form(self):
         """test form creation"""
