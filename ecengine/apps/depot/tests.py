@@ -5,13 +5,13 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Item, load_item_data
+from depot.models import Item, Location, load_item_data
 from depot.forms import ShortItemForm
-from mongoengine import connect, Q
+from mongoengine import connect
 
 # *******   WARNING  *********
-# mongoengine.connect not resetting the db, so tearDown is clearing main DB
-# unless settings_test used
+# mongoengine.connect not resetting the db, so tearDown would clear main DB
+# settings_test sets MONGO_TESTING & is used to check connection to main DB is not set
 
 class ItemTest(TestCase):
     
@@ -24,10 +24,11 @@ class ItemTest(TestCase):
         Item.drop_collection()
 
     def _load_item_data(self):
-        """docstring for _load_item_data"""
+        """loads fixture data for test Items"""
         item_data = open('%s/apps/depot/fixtures/items.json' % settings.PROJECT_PATH, 'rU')
-        load_item_data(item_data)
+        db = load_item_data(item_data)
         item_data.close()
+        return db
 
     def test_items(self):
         self._load_item_data()
@@ -63,6 +64,16 @@ class ItemTest(TestCase):
         items = Item.objects(tags__all=['blue', 'red'])
         self.assertEqual(len(items), 2)
 
+    # def test_geo(self):
+    #     """docstring for test_geo"""
+    #     db = self._load_item_data()
+    #     # db.places.ensureIndex( { loc : "2d" } )
+    #     db.item.ensureIndex( { 'locations.lat_lon' : "2d" } )
+    #     
+    #     # locs = Item.objects(locations__lat_lon__in=['55.9065', '-3.13404']).ensure_index( { 'locations.lat_lon' : "2d" } )
+    #     # print '\nlocs: ', [l.title for l in locs]
+        
+        
     def test_form(self):
         """test form creation"""
         url = 'http://test.example.com/10/'

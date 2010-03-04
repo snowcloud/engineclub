@@ -19,12 +19,16 @@ class ItemMetadata(EmbeddedDocument):
     admin_note = StringField()
     
 class Location(EmbeddedDocument):
-    """docstring for Place"""
+    """Location subdocument, based on Yahoo Placemaker data"""
+    
+    # NB: latitude / longitude must be first 2 fields for mongo 2d index to work
+    lat_lon = ListField(FloatField(), default=[])
+    latitude = StringField()
+    longitude = StringField()
+    
     woeid = StringField()
     name = StringField()
     placetype = StringField()
-    latitude = StringField()
-    longitude = StringField()
         
 # from placemaker.placemaker import Place
 
@@ -80,4 +84,4 @@ def load_item_data(item_data):
     new_items = eval(item_data.read())
     db = get_db()
     db.item.insert(new_items)
-        
+    return db
