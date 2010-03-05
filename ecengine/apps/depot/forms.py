@@ -1,10 +1,32 @@
 
 from django import forms
 
-from depot.models import Item
+from depot.models import Item, get_nearest
 from ecutils.forms import CSVTextInput
+from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
+
+
+def fix_places(locations, doc=None):
+    """docstring for fix_places"""
+    result = []
+    places = []
+    itemlocs = []
+    if locations:
+        for loc in locations: #woeids
+            itemlocs.append(loc)
+            result.append(PlaceProxy(Location.objects.get(woeid=loc), checked=True))
+    if doc:
+        try:
+            p = geomaker(doc)
+            places= p.places
+        except:
+            places = []
+
+    result.extend([place for place in places if unicode(place.woeid) not in itemlocs])  
+    return result
+    
 
 class FormHasNoInstanceException(Exception):
     pass
@@ -32,8 +54,22 @@ class DocumentForm(forms.Form):
 
 class FindItemForm(forms.Form):
     
-    post_code = forms.CharField()
+    post_code = forms.CharField(help_text='enter a post code or a place name')
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.locations = []
+        super(FindItemForm, self).__init__(*args, **kwargs)
+
+    def clean_post_code(self):
+        data = self.cleaned_data['post_code']
+        places = fix_places(None, doc=data)
+        if places:
+            place = places[0]
+            self.locations = get_nearest(150, -3)
+        else:
+            raise forms.ValidationError("Could not find a location from what you've typed- try again?")
+        return data
 
     def clean_tags(self):
         data = self.cleaned_data['tags']

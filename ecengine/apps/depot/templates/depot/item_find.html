@@ -27,18 +27,18 @@ map{
         <input type="submit" name="result" value="Find items">
         <input type="submit" name="result" value="Cancel">
     </fieldset>
-<ol>
-    {% for place in places %}
-    	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %}
-			value="{{ place|place_values }}">
-			({{ place.placetype|placetype }}) {{ place.name }}</li>
-    {% endfor %}
-</ol>
+{# <ol> #}
+{#     {% for place in places %} #}
+{#     	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %} #}
+{# 			value="{{ place|place_values }}"> #}
+{# 			({{ place.placetype|placetype }}) {{ place.name }}</li> #}
+{#     {% endfor %} #}
+{# </ol> #}
 </form>
 
 <div id="map"></div>
 
-{% if locations|length %}
+{% if pins %}
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   
@@ -50,8 +50,8 @@ map{
         // Add the Pan control to have North, South, East and West directional control  
         map.addPanControl();    
         // Specifying the Map starting location and zoom level  
-        map.drawZoomAndCenter("{{locations.0.name}}", 7);
- 		{% for loc in locations %}
+        map.drawZoomAndCenter("{{pins.0.name}}", 7);
+ 		{% for loc in pins %}
             var currentGeoPoint = new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"  );  
             map.addMarker(currentGeoPoint);  
  		{% endfor %}

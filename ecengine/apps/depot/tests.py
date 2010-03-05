@@ -71,7 +71,7 @@ class ItemTest(TestCase):
     def test_geo(self):
         """docstring for test_geo"""
         db = self._load_data()
-        results = get_nearest()
+        results = get_nearest('50', -3.00) # takes float or string for lat, lon
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]['items']), 2)
         

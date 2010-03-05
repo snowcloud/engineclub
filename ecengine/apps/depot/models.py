@@ -82,18 +82,14 @@ class Item(Document):
     def get_locations(self):
         return [Location.objects.get(woeid=id) for id in self.locations]
 
-def get_nearest():
+def get_nearest(lat, lon, all_locations=False):
     db = get_db()
     db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
-    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
+    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : 10 } );' % (lat, lon))
     results = eval_result['results']
-    # print results
-    # locs = [res['obj'] for res in results]
-    # print locs
     for res in results:
         res['items'] = Item.objects(locations__in=[res['obj']['woeid']])
-    print results
-    return results
+    return [res for res in results if res['items']]
 
 
 def load_item_data(document, item_data):
