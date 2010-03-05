@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Item, get_nearest
+from depot.models import Item, Location, get_nearest
 from ecutils.forms import CSVTextInput
 from firebox.views import *
 
