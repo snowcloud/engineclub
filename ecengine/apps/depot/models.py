@@ -94,6 +94,7 @@ def get_nearest(lat, lon, num=10, all_locations=False):
     eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : %s } );' % (lat, lon, num))
     results = eval_result['results']
     for res in results:
+        res['dis'] = res['dis'] * 111.12 # convert to Km
         res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']]))
     return [res for res in results if res['items']]
 

@@ -40,7 +40,7 @@
 
 <div id="locations">
 	{% for loc in locations %}
-		<h3>{{ loc.dis }}</h3>
+		<h3>{{ loc.dis|floatformat }}km</h3>
 		{# <p>{{ loc.items }}</p> #}
 		{% for item in loc.items %}
 			<p><a href="{% url item item.id %}">{{ item.title }}</a></p>
