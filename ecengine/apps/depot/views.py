@@ -180,16 +180,8 @@ def item_find(request):
         form = FindItemForm(request.POST)
     
         if form.is_valid():
-            # cb_places = request.POST.getlist('cb_places')
-            # for loc in cb_places:
-            #     locations.append(location_from_cb_value(loc))
-            # places = fix_places([loc.woeid for loc in locations], doc=form.cleaned_data['post_code'])
-            # 
-            # if places:
-            #     place = places[0]
             locations = form.locations
             pins = [loc['obj'] for loc in locations]
-            
             
     else:
         form = FindItemForm(initial={ 'post_code': 'Edinburgh, EH17'})

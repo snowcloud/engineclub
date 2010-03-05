@@ -4,10 +4,12 @@
 {% block head_extra %}
 <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
 </script>  
-<style type="text/css">  
-map{  
-  height: 100%;  
-  width: 100%;  
+<style type="text/css">
+#locations{ float: left }  
+#map{  
+  height: 100%;
+  width: 100%;
+  float: right;
 }  
 </style>   
 {% endblock %}
@@ -36,6 +38,15 @@ map{
 {# </ol> #}
 </form>
 
+<div id="locations">
+	{% for loc in locations %}
+		<h3>{{ loc.dis }}</h3>
+		{# <p>{{ loc.items }}</p> #}
+		{% for item in loc.items %}
+			<p><a href="{% url item item.id %}">{{ item.title }}</a></p>
+		{% endfor %}
+	{% endfor %}
+</div>
 <div id="map"></div>
 
 {% if pins %}

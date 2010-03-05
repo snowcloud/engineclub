@@ -82,13 +82,19 @@ class Item(Document):
     def get_locations(self):
         return [Location.objects.get(woeid=id) for id in self.locations]
 
-def get_nearest(lat, lon, all_locations=False):
+def get_nearest(lat, lon, num=10, all_locations=False):
+    """uses mongodb geo index to find num nearest locations to lat, lon parameters.
+        returns list of dicts, each dict has:
+        - dist (distance from lat,lon in degrees)
+        - obj (dict of place attrs)
+        - items (list of items in db at that location)"""
+        
     db = get_db()
     db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
-    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : 10 } );' % (lat, lon))
+    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : %s } );' % (lat, lon, num))
     results = eval_result['results']
     for res in results:
-        res['items'] = Item.objects(locations__in=[res['obj']['woeid']])
+        res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']]))
     return [res for res in results if res['items']]
 
 
