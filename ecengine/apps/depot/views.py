@@ -90,14 +90,15 @@ def item_remove(request, object_id):
     object.delete()
     return HttpResponseRedirect(reverse('item-list'))
 
-def fix_places(item, doc=None):
+def fix_places(locations, doc=None):
     """docstring for fix_places"""
     result = []
     places = []
     itemlocs = []
-    for loc in item.locations: #woeids
-        itemlocs.append(loc)
-        result.append(PlaceProxy(Location.objects.get(woeid=loc), checked=True))
+    if locations:
+        for loc in locations: #woeids
+            itemlocs.append(loc)
+            result.append(PlaceProxy(Location.objects.get(woeid=loc), checked=True))
     if doc:
         try:
             p = geomaker(doc)
@@ -132,9 +133,9 @@ def item_edit(request, object_id):
         
         if itemform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
             if result == UPDATE_LOCS:
-                places = fix_places(item, locationform.content() or item.url)
+                places = fix_places(item.locations, locationform.content() or item.url)
             elif result == UPDATE_TAGS:
-                places = fix_places(item, locationform.content() or item.url)
+                places = fix_places(item.locations, locationform.content() or item.url)
             else:
                 item = itemform.save()
                 
@@ -161,7 +162,7 @@ def item_edit(request, object_id):
         locationform = LocationUpdateForm(instance=item)
         if not item.locations:
             doc = item.url
-        places = fix_places(item, doc)
+        places = fix_places(item.locations, doc)
         tagsform = TagsForm(instance=item)
         shelflifeform = ShelflifeForm(instance=item)
     
@@ -171,61 +172,6 @@ def item_edit(request, object_id):
             'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
-# @login_required
-# def item_location_confirm(request, item, template_info):
-# 
-#     doc = ''
-#     if request.method == 'POST':
-#         form = LocationUpdateForm(request.POST)
-#         result = request.POST.get('result', '')
-#         if result == 'Cancel':
-#             return item_edit_complete(request, item, template_info)
-#         elif result.startswith('Update'):
-#             if form.is_valid():
-#                 doc = (form.content() or item.url)
-#         else:
-#             cb_places = request.POST.getlist('cb_places')
-#             locations = []
-#             for loc in cb_places:
-#                 locations.append(location_from_cb_value(loc))
-#             if len(locations) > 0:
-#                 item.locations = locations
-#             item.collection_status = COLL_STATUS_TAGS_CONF
-#             item.save(str(request.user.id))
-# 
-#             return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
-#     else:
-#         form = LocationUpdateForm()
-#         doc = item.url
-#     try:
-#         p = geomaker(doc)
-#         places= p.places
-#     except:
-#         places = None
-#         # TODO add user message
-#         
-#     return render_to_response('depot/item_edit_location.html',
-#         RequestContext( request, { 'template_info': template_info, 'object': item,
-#             'places': places, 'form': form }))
-# 
-# @login_required
-# def item_tags_confirm(request, item, template_info):
-# 
-#     if request.method == 'POST':
-#         if request.POST.get('result', '') == 'Cancel':
-#             return item_edit_complete(request, item, template_info)
-# 
-#         tags = request.POST.getlist('tags')
-# 
-#         return item_edit_complete(request, item, template_info)
-#         
-#     else:
-#         tags = []
-#     # TODO get tags from Yahoo along with locations
-#     
-#     return render_to_response('depot/item_edit_tags.html',
-#         RequestContext( request, { 'template_info': template_info, 'object': item, 'tags': tags }))
-# 
 @login_required
 def item_edit_complete(request, item, template_info):
     if item:
@@ -242,4 +188,40 @@ def item_edit_complete(request, item, template_info):
     else:
         return HttpResponseRedirect(url)
 
+@login_required
+def item_find(request):
+    """docstring for item_find"""
 
+    locations = []
+    places = []
+    if request.method == 'POST':
+        result = request.POST.get('result', '')
+        if result == 'Cancel':
+            return HttpResponseRedirect(reverse('item-list'))
+        form = FindItemForm(request.POST)
+    
+        if form.is_valid():
+            cb_places = request.POST.getlist('cb_places')
+            for loc in cb_places:
+                locations.append(location_from_cb_value(loc))
+            places = fix_places([loc.woeid for loc in locations], doc=form.cleaned_data['post_code'])
+            
+            # TODO put items + locations in page
+            # use this stuff from tests
+            
+            # from mongoengine.connection import _get_db as get_db
+            # db = get_db()
+            # eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
+            # results = eval_result['results']
+            # locs = [res['obj'] for res in results]
+            # # print '\ndistance: ', res['dis'], res['obj']['name']
+            # self.assertEqual(locs[0]['name'], u'Gilmerton, Edinburgh, Scotland, GB')
+            # items = Item.objects(locations__in=[locs[0]['woeid']])
+            
+            
+    else:
+        form = FindItemForm(initial={ 'post_code': 'Edinburgh, EH17'})
+
+    print places
+    return render_to_response('depot/item_find.html',
+        RequestContext( request, { 'form': form, 'places': places, 'locations': locations, 'yahoo_appid': settings.YAHOO_KEY }))

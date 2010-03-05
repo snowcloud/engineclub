@@ -27,8 +27,10 @@ map{
 <p>author: {{ object.metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
 
+{% with object.get_locations as locations %}
+
 <ul>
-{% for loc in object.get_locations %}
+{% for loc in locations %}
 	<li>{{ loc.name }} </li>
 {% empty %}
 	<li>no locations found</li>
@@ -41,7 +43,7 @@ map{
 <p><a href="{% url item-remove object.id %}">delete item</a></p>
 
 <div id="map"></div>
-{% if object.locations|length %}
+{% if locations|length %}
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   
@@ -53,8 +55,8 @@ map{
         // Add the Pan control to have North, South, East and West directional control  
         map.addPanControl();    
         // Specifying the Map starting location and zoom level  
-        map.drawZoomAndCenter("{{object.locations.0.name}}", 7);
- 		{% for loc in object.locations %}
+        map.drawZoomAndCenter("{{locations.0.name}}", 7);
+ 		{% for loc in locations %}
             var currentGeoPoint = new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"  );  
             map.addMarker(currentGeoPoint);  
  		{% endfor %}
@@ -62,5 +64,6 @@ map{
 window.onload = startMap;     
 </script>  
 {% endif %}
+{% endwith %}
 
 {% endblock %}

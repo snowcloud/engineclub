@@ -30,12 +30,21 @@ class DocumentForm(forms.Form):
             self.instance.save()
         return self.instance
 
-class ShortItemForm(DocumentForm):
+class FindItemForm(forms.Form):
     
+    post_code = forms.CharField()
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+
+    def clean_tags(self):
+        data = self.cleaned_data['tags']
+        return [t.strip() for t in data.split(',')]
+    
+class ShortItemForm(DocumentForm):
+
     url = forms.CharField()
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
-    
+
     def clean_url(self):
         data = self.cleaned_data['url']
         try:
