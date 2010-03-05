@@ -5,7 +5,7 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Item, Location, load_item_data
+from depot.models import Item, Location, get_nearest, load_item_data
 from depot.forms import ShortItemForm
 from mongoengine import connect
 
@@ -70,17 +70,10 @@ class ItemTest(TestCase):
 
     def test_geo(self):
         """docstring for test_geo"""
-        
         db = self._load_data()
-        db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
-        self.assertEqual(Location.objects.count(), 1)
-        eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
-        results = eval_result['results']
-        locs = [res['obj'] for res in results]
-        # print '\ndistance: ', res['dis'], res['obj']['name']
-        self.assertEqual(locs[0]['name'], u'Gilmerton, Edinburgh, Scotland, GB')
-        items = Item.objects(locations__in=[locs[0]['woeid']])
-        self.assertEqual(len(items), 2)
+        results = get_nearest()
+        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results[0]['items']), 2)
         
     def test_form(self):
         """test form creation"""

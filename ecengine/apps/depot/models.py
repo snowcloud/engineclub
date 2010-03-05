@@ -2,6 +2,7 @@
 
 
 from mongoengine import *
+from mongoengine.connection import _get_db as get_db
 from datetime import datetime
 
 COLL_STATUS_NEW = 'new'
@@ -81,7 +82,19 @@ class Item(Document):
     def get_locations(self):
         return [Location.objects.get(woeid=id) for id in self.locations]
 
-from mongoengine.connection import _get_db as get_db
+def get_nearest():
+    db = get_db()
+    db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
+    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [50,-3], num : 10 } );')
+    results = eval_result['results']
+    # print results
+    # locs = [res['obj'] for res in results]
+    # print locs
+    for res in results:
+        res['items'] = Item.objects(locations__in=[res['obj']['woeid']])
+    print results
+    return results
+
 
 def load_item_data(document, item_data):
     new_data = eval(item_data.read())
