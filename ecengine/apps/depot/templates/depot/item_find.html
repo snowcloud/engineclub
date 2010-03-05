@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load utils %}
+{% block title %}find items{% endblock %}
+{% block head_extra %}
+<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
+</script>  
+<style type="text/css">  
+map{  
+  height: 100%;  
+  width: 100%;  
+}  
+</style>   
+{% endblock %}
+{% block main-content-class %}onecol{% endblock %}
+{% block content %}
+<h1>Find Items</h1>
+
+<form class="form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Item details:</span></legend>
+        <ol>
+             {{ form.as_ul }}
+        </ol>
+    </fieldset>
+
+     <fieldset class="submit">
+        <input type="submit" name="result" value="Find items">
+        <input type="submit" name="result" value="Cancel">
+    </fieldset>
+<ol>
+    {% for place in places %}
+    	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %}
+			value="{{ place|place_values }}">
+			({{ place.placetype|placetype }}) {{ place.name }}</li>
+    {% endfor %}
+</ol>
+</form>
+
+<div id="map"></div>
+
+{% if locations|length %}
+<script type="text/javascript">  
+    // Create a Map that will be placed in the "map" div.  
+    var map = new YMap(document.getElementById('map'));   
+    function startMap(){  
+        // Add the ability to change between Sat, Hybrid, and Regular Maps  
+        map.addTypeControl();     
+        // Add the zoom control. Long specifies a Slider versus a "+" and "-" zoom control  
+        map.addZoomLong();            
+        // Add the Pan control to have North, South, East and West directional control  
+        map.addPanControl();    
+        // Specifying the Map starting location and zoom level  
+        map.drawZoomAndCenter("{{locations.0.name}}", 7);
+ 		{% for loc in locations %}
+            var currentGeoPoint = new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"  );  
+            map.addMarker(currentGeoPoint);  
+ 		{% endfor %}
+    }  
+window.onload = startMap;     
+</script>  
+{% endif %}
+
+
+
+{% endblock %}
+
