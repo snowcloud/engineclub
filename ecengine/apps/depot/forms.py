@@ -59,14 +59,15 @@ class FindItemForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.locations = []
+        self.centre = None
         super(FindItemForm, self).__init__(*args, **kwargs)
 
     def clean_post_code(self):
         data = self.cleaned_data['post_code']
         places = fix_places(None, doc=data)
         if places:
-            place = places[0]
-            self.locations = get_nearest(place.centroid.latitude,place.centroid.longitude)
+            self.centre = places[0]
+            self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude)
         else:
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
         return data

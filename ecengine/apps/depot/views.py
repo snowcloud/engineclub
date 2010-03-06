@@ -171,6 +171,7 @@ def item_find(request):
     """docstring for item_find"""
 
     locations = []
+    centre = None
     pins = []
     # places = []
     if request.method == 'POST':
@@ -181,6 +182,7 @@ def item_find(request):
     
         if form.is_valid():
             locations = form.locations
+            centre = form.centre
             pins = [loc['obj'] for loc in locations]
             
     else:
@@ -188,4 +190,4 @@ def item_find(request):
 
     # print places
     return render_to_response('depot/item_find.html',
-        RequestContext( request, { 'form': form, 'locations': locations, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'form': form, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
