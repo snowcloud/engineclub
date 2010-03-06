@@ -10,7 +10,13 @@
   height: 100%;
   width: 100%;
   float: right;
-}  
+}
+{# Yahoo map uses tables for popup info #}
+#map td {
+  background-color: #fff;
+  border: 0 none;
+  padding: 0;
+}
 </style>   
 {% endblock %}
 {% block main-content-class %}onecol{% endblock %}
@@ -58,8 +64,8 @@
     var map = new YMap(document.getElementById('map'));   
 	function createCustomMarkerImage(){  
 	    var myImage = new YImage();  
-	    myImage.src = '/static/media/img/blue_star.png';  
-	    myImage.size = new YSize(20,20);  
+	    myImage.src = '/static/media/img/ymarker_bl.png';  
+	    myImage.size = new YSize(30,33);  
 	    myImage.offsetSmartWindow = new YCoordPoint(0,0);  
 	    return myImage;   
 		}  
@@ -76,10 +82,10 @@
         {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
 
 		var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage());  
-		{# newMarker.addAutoExpand("your location");   #}
+		newMarker.addAutoExpand("your location");  
 		{# var markerMarkup = "<b>You can add markup this</b>";   #}
 		{#     markerMarkup += "<i> easy</i>";   #}
-		  
+		{#    #}
 		{# YEvent.Capture(newMarker, EventsList.MouseClick,    #}
 		{#     function(){   #}
 		{#         newMarker.openSmartWindow(markerMarkup);   #}
