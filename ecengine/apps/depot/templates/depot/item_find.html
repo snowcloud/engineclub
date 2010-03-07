@@ -55,6 +55,8 @@
 			{% for item in loc.items %}
 				<p><a href="{% url item item.id %}">{{ item.title }}</a></p>
 			{% endfor %}
+		{% empty %}
+			<p>no results found</p>
 		{% endfor %}
 	{% endif %}
 </div>
