@@ -7,7 +7,7 @@ from django.conf import settings
 
 def clean_csvtextinput(data):
     """docstring for _clean_tags"""
-    return = [t.strip() for t in data.split(',')]
+    return [t.strip() for t in data.split(',')]
 
 class CSVTextInput(forms.TextInput):
     input_type = 'text'
