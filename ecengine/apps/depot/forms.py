@@ -2,7 +2,7 @@
 from django import forms
 
 from depot.models import Item, Location, get_nearest
-from ecutils.forms import CSVTextInput
+from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
@@ -27,7 +27,6 @@ def fix_places(locations, doc=None):
     result.extend([place for place in places if unicode(place.woeid) not in itemlocs])  
     return result
     
-
 class FormHasNoInstanceException(Exception):
     pass
 
@@ -73,9 +72,8 @@ class FindItemForm(forms.Form):
         return data
 
     def clean_tags(self):
-        data = self.cleaned_data['tags']
-        return [t.strip() for t in data.split(',')]
-    
+        return clean_csvtextinput(self.cleaned_data['tags'])
+        
 class ShortItemForm(DocumentForm):
 
     url = forms.CharField()
@@ -124,8 +122,7 @@ class TagsForm(DocumentForm):
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
 
     def clean_tags(self):
-        data = self.cleaned_data['tags']
-        return [t.strip() for t in data.split(',')]
+        return clean_csvtextinput(self.cleaned_data['tags'])
     
 class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
