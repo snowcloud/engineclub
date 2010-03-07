@@ -53,7 +53,7 @@ class DocumentForm(forms.Form):
 
 class FindItemForm(forms.Form):
     
-    post_code = forms.CharField(help_text='enter a post code or a place name')
+    post_code = forms.CharField(help_text='enter a post code or a place name', required=True)
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
 
     def __init__(self, *args, **kwargs):
@@ -61,18 +61,46 @@ class FindItemForm(forms.Form):
         self.centre = None
         super(FindItemForm, self).__init__(*args, **kwargs)
 
-    def clean_post_code(self):
-        data = self.cleaned_data['post_code']
-        places = fix_places(None, doc=data)
-        if places:
-            self.centre = places[0]
-            self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude)
-        else:
-            raise forms.ValidationError("Could not find a location from what you've typed- try again?")
-        return data
+    # def clean_post_code(self):
+    #     data = self.cleaned_data['post_code']
+    #     places = fix_places(None, doc=data)
+    #     if places:
+    #         self.centre = places[0]
+    #         self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude)
+    #     else:
+    #         raise forms.ValidationError("Could not find a location from what you've typed- try again?")
+    #     return data
 
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
+
+    def clean(self):
+        # if errors in data, cleaned_data may be wiped, and/or fields not available
+        cleaned_data = self.cleaned_data
+        data = cleaned_data.get('post_code')
+        cats = cleaned_data.get('tags')
+        places = fix_places(None, doc=data)
+        if places:
+            self.centre = places[0]
+            self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude, categories=cats)
+            print 'locs: ', self.locations
+        else:
+            raise forms.ValidationError("Could not find a location from what you've typed- try again?")
+        
+        
+        # get_nearest(lat, lon, categories
+        # cc_myself = cleaned_data.get("cc_myself")
+        # subject = cleaned_data.get("subject")
+        # 
+        # if cc_myself and subject:
+        #     # Only do something if both fields are valid so far.
+        #     if "help" not in subject:
+        #         raise forms.ValidationError("Did not send for 'help' in "
+        #                 "the subject despite CC'ing yourself.")
+        # 
+        # Always return the full collection of cleaned data.
+        return cleaned_data
+
         
 class ShortItemForm(DocumentForm):
 

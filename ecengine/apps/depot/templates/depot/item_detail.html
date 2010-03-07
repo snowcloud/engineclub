@@ -17,7 +17,7 @@ map{
 {% endblock %}
 {% block content %}
 
-<p><a href="{% url item-list %}">all items</a></p>
+<p><a href="{% url item-list %}">all items</a> | <a href="{% url item-find %}">search items</a></p>
 
 <h1>{{ object.title }}</h1>
 

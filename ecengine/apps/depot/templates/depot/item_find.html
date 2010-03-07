@@ -21,6 +21,8 @@
 {% endblock %}
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
+<p><a href="{% url item-list %}">all items</a></p>
+
 <h1>Find Items</h1>
 
 <form class="form" action="." method="POST">{% csrf_token %}
