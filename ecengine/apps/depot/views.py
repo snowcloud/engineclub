@@ -166,7 +166,7 @@ def item_edit_complete(request, item, template_info):
     else:
         return HttpResponseRedirect(url)
 
-@login_required
+# @login_required
 def item_find(request):
     """docstring for item_find"""
 
