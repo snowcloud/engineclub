@@ -50,7 +50,7 @@
 	{% if centre %}
 		<h2>Closest results for {{ centre.name }}</h2>
 		{% for loc in locations %}
-			<h3>{{ loc.dis|floatformat }}km</h3>
+			<h3>{{ loc.obj.name }} - {{ loc.dis|floatformat }}km</h3>
 			{# <p>{{ loc.items }}</p> #}
 			{% for item in loc.items %}
 				<p><a href="{% url item item.id %}">{{ item.title }}</a></p>
