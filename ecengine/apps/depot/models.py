@@ -92,7 +92,8 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
     db = get_db()
     db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
     eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : %s } );' % (lat, lon, num))
-    results = eval_result['results']
+    results = eval_result.get('results', [])
+    
     for res in results:
         res['dis'] = res['dis'] * 111.12 # convert to Km
         if len(categories) > 0:
