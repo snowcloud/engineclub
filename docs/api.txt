@@ -1,0 +1,23 @@
+======================================
+Engineclub API
+======================================
+
+.. rubric:: Application Programming Interface- how other web-based systems can use the engine.
+
+A very draft set of notes on candidates for API.
+
+Retrieve an item by id
+
+Retrieve items by location and/or categories
+
+Submit an item
+
+Update an item
+
+Submit an alert for an item
+include alerts over errors, inappropriate content
+could be done as an update, with attributes indicating a problem, but
+more obvious if an alert, and signifies importance.
+could be done as an update, but also have as an alert as shortcut
+
+
