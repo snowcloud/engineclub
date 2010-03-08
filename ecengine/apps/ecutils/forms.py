@@ -10,6 +10,11 @@ def clean_csvtextinput(data):
     return [t.strip() for t in data.split(',') if t]
 
 class CSVTextInput(forms.TextInput):
+    """a widget that will display list of strings as CSV
+        Use with clean_csvtextinput on formfield validation to convert CSV input to list
+        NB: this would be better wrapped up in a custom FormField
+        TODO: ...
+    """
     input_type = 'text'
 
     def render(self, name, value, attrs=None):
