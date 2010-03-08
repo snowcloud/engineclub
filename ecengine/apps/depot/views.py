@@ -183,7 +183,7 @@ def item_find(request):
         if form.is_valid():
             locations = form.locations
             centre = form.centre
-            pins = [loc['obj'] for loc in locations]
+            # pins = [loc['obj'] for loc in locations]
             
     else:
         form = FindItemForm(initial={ 'post_code': 'Edinburgh, EH17'})
