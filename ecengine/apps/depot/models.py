@@ -97,12 +97,12 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
     for res in results:
         res['dis'] = res['dis'] * 111.12 # convert to Km
         if len(categories) > 0:
-            print 'using cats ', len(categories)
+            # print 'using cats ', len(categories)
             res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']],tags__in=categories))
         else:
             res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']]))
-        print 'cats: ', categories
-        print 'items: ', res['items'] 
+        # print 'cats: ', categories
+        # print 'items: ', res['items'] 
     return [res for res in results if res['items']]
 
 

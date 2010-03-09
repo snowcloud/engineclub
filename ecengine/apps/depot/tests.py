@@ -17,7 +17,7 @@ class ItemTest(TestCase):
     
     def setUp(self):
         if not settings.MONGO_TESTING:
-            raise Exception('must use ecengine.settings_test for these tests')
+            raise Exception('must use ecengine.settings_test for these tests (and *django_admin*)')
         connect('test_db', host='localhost', port=27017)
         
     def tearDown(self):

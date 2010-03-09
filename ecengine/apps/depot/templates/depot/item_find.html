@@ -66,10 +66,14 @@
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   
-	function createCustomMarkerImage(img){  
+	function createCustomMarkerImage(img, larger){  
 	    var myImage = new YImage();  
-	    myImage.src = '/static/media/img/'+img;  
-	    myImage.size = new YSize(30,33);  
+	    myImage.src = '/static/media/img/'+img;
+	 	if (larger) {
+			myImage.size = new YSize(34,36); 
+		} else {
+		    myImage.size = new YSize(30,32);  
+		}
 	    myImage.offsetSmartWindow = new YCoordPoint(0,0);  
 	    return myImage;   
 		}  
@@ -85,7 +89,7 @@
         var currentGeoPoint = new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"  );  
         {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
 
-		var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png'));  
+		var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', true));  
 		newMarker.addAutoExpand("your location");  
 		{# var markerMarkup = "<b>You can add markup this</b>";   #}
 		{#     markerMarkup += "<i> easy</i>";   #}
@@ -102,7 +106,7 @@
  		{% for loc in locations %}
             {# map.addMarker(new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"));   #}
             pinPoint = new YGeoPoint( "{{loc.obj.latitude}}" , "{{loc.obj.longitude}}");  
-			var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png'));  
+			var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
 			{# newMarker.addAutoExpand("{% for i in loc.items %}{{i.title}}<br>{% endfor %}"); #}
 			newMarker.addAutoExpand('{% for item in loc.items %}<p><a href="{% url item item.id %}">{{ item.title }}</a></p>{% endfor %}');
 			
