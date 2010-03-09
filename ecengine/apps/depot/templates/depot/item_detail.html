@@ -26,6 +26,7 @@ map{
 
 <p>author: {{ object.metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
+<p>_keywords: {{ object.keywords|join:", "}}</p>
 
 {% with object.get_locations as locations %}
 

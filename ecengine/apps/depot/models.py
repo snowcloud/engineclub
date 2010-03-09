@@ -62,7 +62,8 @@ class Item(Document):
     area = StringField()
     locations = ListField(StringField(), default=[])
     tags = ListField(StringField(max_length=96))
-    collection_status = StringField()
+    _keywords = ListField(StringField(max_length=96))
+    # collection_status = StringField()
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
@@ -81,6 +82,13 @@ class Item(Document):
 
     def get_locations(self):
         return [Location.objects.get(woeid=id) for id in self.locations]
+        
+    def set_keywords(self, keys):
+        self._keywords = keys
+        
+    def get_keywords(self):
+        return self._keywords or []
+    keywords = property(get_keywords)
 
 def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
     """uses mongodb geo index to find num nearest locations to lat, lon parameters.

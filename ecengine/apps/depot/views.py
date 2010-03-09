@@ -11,6 +11,7 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from depot.models import Item, Location, get_nearest, location_from_cb_value, \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE
 from depot.forms import *
+from firebox.views import get_terms
 
 def get_one_or_404(**kwargs):
     try:
@@ -128,6 +129,11 @@ def item_edit(request, object_id):
             
                 try:
                     item.save(str(request.user.id))
+                    if item._keywords is None:
+                        try:
+                            item.set_keywords(get_terms(item.url))
+                        except:
+                            pass # need to fail silently here
                     return item_edit_complete(request, item, template_info)
                     # return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
                 except OperationError:
