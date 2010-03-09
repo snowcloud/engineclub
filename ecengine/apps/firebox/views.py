@@ -4,9 +4,11 @@ import urllib
 import urllib2
 from BaseHTTPServer import BaseHTTPRequestHandler # import responses
 from BeautifulSoup import BeautifulSoup
+from firebox.yahoo_term_extractor import termextractor
 
 # probably move this code to utils.py if enough
 def get_url_content(url):
+    """takes a url and returns the text content of the page"""
     try:
         response = urllib2.urlopen(url)
         htmltext = response.read()
@@ -43,3 +45,14 @@ class PlaceProxy(object):
         self.placetype = loc.placetype
         self.centroid = PointProxy(loc.latitude, loc.longitude) 
         self.checked = checked
+
+def get_terms(content):
+    """docstring for termextractor"""
+    if content.startswith('http'):
+        data = get_url_content(content)
+    else:
+        data = content
+
+    t = termextractor(settings.YAHOO_KEY)
+    return t.extract_terms(data)
+
