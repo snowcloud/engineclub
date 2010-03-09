@@ -26,7 +26,6 @@ map{
 
 <p>author: {{ object.metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
-<p>_keywords: {{ object.keywords|join:", "}}</p>
 
 {% with object.get_locations as locations %}
 
@@ -66,5 +65,8 @@ window.onload = startMap;
 </script>  
 {% endif %}
 {% endwith %}
+
+<hr>
+<p class="small">keywords for indexing: <em>{{ object.keywords|join:", "}}</em></p>
 
 {% endblock %}

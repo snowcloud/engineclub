@@ -84,7 +84,10 @@ class Item(Document):
         return [Location.objects.get(woeid=id) for id in self.locations]
         
     def set_keywords(self, keys):
-        self._keywords = keys
+        """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
+           NB, item is not saved- calling code must do item.save()"""
+        # keys.extend(self.tags)
+        self._keywords = list(set(keys+self.tags))
         
     def get_keywords(self):
         return self._keywords or []
@@ -106,7 +109,8 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
         res['dis'] = res['dis'] * 111.12 # convert to Km
         if len(categories) > 0:
             # print 'using cats ', len(categories)
-            res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']],tags__in=categories))
+            # Item.objects.ensure_index('+_keywords')
+            res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']],_keywords__in=categories).ensure_index('+_keywords'))
         else:
             res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']]))
         # print 'cats: ', categories

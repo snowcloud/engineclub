@@ -83,7 +83,7 @@ class FindItemForm(forms.Form):
         if places:
             self.centre = places[0]
             self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude, categories=cats)
-            print 'locs: ', self.locations
+            # print 'locs: ', self.locations
         else:
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
         

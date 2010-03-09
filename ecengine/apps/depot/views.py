@@ -129,11 +129,10 @@ def item_edit(request, object_id):
             
                 try:
                     item.save(str(request.user.id))
-                    if item._keywords is None:
-                        try:
-                            item.set_keywords(get_terms(item.url))
-                        except:
-                            pass # need to fail silently here
+                    try:
+                        item.set_keywords(get_terms(item.url))
+                    except:
+                        pass # need to fail silently here
                     return item_edit_complete(request, item, template_info)
                     # return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
                 except OperationError:
