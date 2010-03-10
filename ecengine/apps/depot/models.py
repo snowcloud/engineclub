@@ -138,7 +138,6 @@ def update_keyword_index():
 				"  });"
 				"}")
 
-
 	reduce = Code("function (key, values) { return 1;}")
 	# reduce = Code("function (key, values) { "
 	#			   "  var total = 0;"
