@@ -8,7 +8,7 @@ from depot.models import Item, update_keyword_index
 from mongoengine.connection import _get_db as get_db
 
 import re
-import simplejson as json
+from django.utils import simplejson as json
 
 class JsonResponse(HttpResponse):
 	"""from http://www.djangosnippets.org/snippets/1639/"""
