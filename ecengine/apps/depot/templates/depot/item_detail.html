@@ -67,6 +67,6 @@ window.onload = startMap;
 {% endwith %}
 
 <hr>
-<p class="small">keywords for indexing: <em>{{ object.keywords|join:", "}}</em></p>
+<p class="small">keywords for indexing: <em>{{ object.get_keywords|join:", "}}</em></p>
 
 {% endblock %}

@@ -7,6 +7,10 @@ Engineclub API
 A very draft set of notes on candidates for API.
 
 Retrieve an item by id
+url: /api/item/[item id]/
+example: /api/item/4b91379689cb160dda000000/
+method: GET
+access: public
 
 Retrieve items by location and/or categories
 

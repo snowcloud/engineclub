@@ -17,20 +17,95 @@
   border: 0 none;
   padding: 0;
 }
-</style>   
+</style>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+    google.load("jquery", "1.4");
+    {# google.load("jqueryui", "1.7"); #}
+</script>
+<script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
+<link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
+<link type="text/css" href="/static/js/css/demos.css" rel="stylesheet" />
+<script type="text/javascript">
+$(function() {
+	{# function log(message) { #}
+	{# 	$("<div/>").text(message).prependTo("#log"); #}
+	{# 	$("#log").attr("scrollTop", 0); #}
+	{# } #}
+	
+	$("#id_tags").autocomplete({
+		source: function(request, response) {
+			$.ajax({
+				url: "/api/tags/",
+				dataType: "jsonp",
+				data: {
+					match: request.term
+				},
+				success: function(data) {
+					response($.map(data.data, function(item) {
+						return {
+							label: item,
+							value: item
+						}
+					}))
+				}
+			})
+		},
+		minLength: 2,
+		{# select: function(event, ui) { #}
+		{# 	log(ui.item ? ("Selected: " + ui.item.label) : "Nothing selected, input was " + this.value); #}
+		{# }, #}
+		open: function() {
+			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+		},
+		close: function() {
+			$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+		}
+	});
+});
+</script>
+<style>
+	.ui-autocomplete-loading { background: url(indicator.gif) no-repeat right; }
+	#city { width: 25em; }
+</style>
+
 {% endblock %}
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
 <p><a href="{% url item-list %}">all items</a></p>
+
+{# <script type="text/javascript"> #}
+{# 	$(function() { #}
+{# 		var availableTags = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby", "python", "c", "scala", "groovy", "haskell", "perl"]; #}
+{# 		$("#id_tags").autocomplete({ #}
+{# 			source: availableTags #}
+{# 		}); #}
+{# 	}); #}
+{# 	</script> #}
+
+
+	
+{# <div class="demo"> #}
+{#  #}
+{# <div class="ui-widget"> #}
+{# 	<label for="tags">Tags: </label> #}
+{# 	<input id="tags"> #}
+{# </div> #}
+{#  #}
+{#  #}
+{# </div><!-- End demo --> #}
 
 <h1>Find Items</h1>
 
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Item details:</span></legend>
+		{# <div class="ui-widget"> #}
+		
         <ol>
              {{ form.as_ul }}
         </ol>
+		{# </div> #}
     </fieldset>
 
      <fieldset class="submit">

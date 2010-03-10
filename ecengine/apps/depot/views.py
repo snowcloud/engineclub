@@ -13,6 +13,9 @@ from depot.models import Item, Location, get_nearest, location_from_cb_value, \
 from depot.forms import *
 from firebox.views import get_terms
 
+# def tags(request):
+#     
+
 def get_one_or_404(**kwargs):
     try:
        object = Item.objects.get(**kwargs)
@@ -130,7 +133,7 @@ def item_edit(request, object_id):
                 try:
                     item.save(str(request.user.id))
                     try:
-                        item.set_keywords(get_terms(item.url))
+                        item.make_keys(get_terms(item.url))
                     except:
                         pass # need to fail silently here
                     return item_edit_complete(request, item, template_info)
