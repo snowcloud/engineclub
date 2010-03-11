@@ -29,8 +29,12 @@ DATABASES = {
 # export DJANGO_SETTINGS_MODULE=ecengine.settings_test
 # django-admin.py test
 
-MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
-
+# need try...except to run scripts using settings to set environ
+try:
+	MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
+except KeyError:
+	MONGO_TESTING=False
+	
 if not MONGO_TESTING:
     # mongoDB settings
     from mongoengine import connect
