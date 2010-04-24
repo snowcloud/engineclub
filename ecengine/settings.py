@@ -3,6 +3,8 @@
 import os
 import sys
 
+_TESTING= 'test' in sys.argv
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -25,17 +27,8 @@ DATABASES = {
 
 # using this to get round a bug in mongoengine where setting connection doesn't change to test_db
 # so live DB was cleared in testing teardown
-# to use:
-# export DJANGO_SETTINGS_MODULE=ecengine.settings_test
-# django-admin.py test
 
-# need try...except to run scripts using settings to set environ
-try:
-	MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
-except KeyError:
-	MONGO_TESTING=False
-	
-if not MONGO_TESTING:
+if not _TESTING:
     # mongoDB settings
     from mongoengine import connect
     connect('aliss', host='localhost', port=27017)
