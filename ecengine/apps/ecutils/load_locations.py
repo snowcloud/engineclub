@@ -19,6 +19,13 @@ def _load_data(self):
 	item_data.close()
 	return db
 
+def load_item_data(document, item_data):
+	new_data = eval(item_data.read())
+	db = get_db()
+	db[document].insert(new_data)
+	return db
+
+
 
 existing_locs = [loc.woeid for loc in Location.objects]
 
