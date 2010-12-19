@@ -2,3 +2,7 @@
 settings_local.py
 compass/
 ecengine/engineclub
+/.Python
+/bin
+/include
+/lib
