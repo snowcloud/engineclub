@@ -16,7 +16,7 @@ ChangeLog
 ---------
 0.2.0
 ^^^^^
-* PLEASE NOTE: NEW WORK STARTING, PLEASE USE dev2 branch as there is some refactoring of the project in progress.
+* PLEASE NOTE: NEW WORK STARTING, PLEASE USE dev branch as there is some refactoring of the project in progress.
 
 0.1.0
 ^^^^^
