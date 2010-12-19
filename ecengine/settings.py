@@ -30,12 +30,16 @@ DATABASES = {
 # django-admin.py test
 
 # need try...except to run scripts using settings to set environ
-try:
-	MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
-except KeyError:
-	MONGO_TESTING=False
-	
-if not MONGO_TESTING:
+# try:
+#   MONGO_TESTING= os.environ['DJANGO_SETTINGS_MODULE'].endswith('_test')
+# except KeyError:
+#   MONGO_TESTING=False
+#   
+# if not MONGO_TESTING:
+
+if 'test' in sys.argv:
+    print "testing *********"
+else:
     # mongoDB settings
     from mongoengine import connect
     connect('aliss', host='localhost', port=27017)
