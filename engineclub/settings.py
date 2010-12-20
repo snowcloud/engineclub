@@ -28,12 +28,14 @@ DATABASES = {
 # using this to get round a bug in mongoengine where setting connection doesn't change to test_db
 # so live DB was cleared in testing teardown
 
-if 'test' in sys.argv:
-    print "testing *********"
-else:
-    # mongoDB settings
-    from mongoengine import connect
-    connect('aliss', host='localhost', port=27017)
+try:
+  MONGO_TESTING= 'test' in sys.argv
+except KeyError:
+  MONGO_TESTING=False
+
+# repeated connects now fixed in mongoengine
+from mongoengine import connect
+connect('aliss', host='localhost', port=27017)
 
 YAHOO_KEY = 'your_key_here...'
 
@@ -74,7 +76,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
-ROOT_URLCONF = 'ecengine.urls'
+ROOT_URLCONF = 'engineclub.urls'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
