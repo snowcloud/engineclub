@@ -20,7 +20,7 @@ def get_url_content(url):
 	result = ''.join([e for e in soup.recursiveChildGenerator() if isinstance(e,unicode)])
 	return result.encode('ascii', 'ignore')
 
-from placemaker.placemaker import placemaker
+from placemaker import placemaker
 
 class geomaker(object):
 	"""docstring for geomaker"""

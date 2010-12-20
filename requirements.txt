@@ -10,10 +10,8 @@ psycopg2
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 beautifulsoup
 
-# python-placemaker has no setup.py so can't be installed
-# -e git+git://github.com/bycoffe/python-placemaker.git#egg=placemaker
-# this is just a single py file, copied it manually into site-packages
-# could do in fabric?
+# python-placemaker forked to add setup.py
+-e git+git://github.com/snowcloud/python-placemaker.git#egg=placemaker
 
 
 # mongo stuff
