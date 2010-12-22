@@ -12,7 +12,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Example:
     
-    (r'^$', 'aliss.views.index'),
+    (r'^$', 'home.views.index'),
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),

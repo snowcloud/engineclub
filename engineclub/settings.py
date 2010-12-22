@@ -89,7 +89,7 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'aliss',
+    'home',
     'enginecab',
     'depot',
     'firebox',
