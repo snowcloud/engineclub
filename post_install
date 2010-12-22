@@ -1,0 +1,5 @@
+cd engineclub
+export DJANGO_SETTINGS_MODULE=engineclub.settings
+
+./manage.py loaddata apps/home/fixtures/users
+
