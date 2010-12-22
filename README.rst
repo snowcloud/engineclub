@@ -16,7 +16,8 @@ ChangeLog
 ---------
 0.2.0
 ^^^^^
-* PLEASE NOTE: NEW WORK STARTING, PLEASE USE dev branch as there is some refactoring of the project in progress.
+refactoring: changed project folder name to engineclub for consistency
+starting work on new data model for ALISS pilot partners
 
 0.1.0
 ^^^^^
