@@ -1,0 +1,59 @@
+======================================
+Data model
+======================================
+
+This data model is under rapid development at the moment, and is likely to change.
+
+.. Item
+
+Item
+=========================
+
+
+==================      ============
+field name              type
+==================      ============
+id:                     ObjectID *
+title:                  string
+resources:              array of Resource
+locations:              array of Location 
+tags:                   array of string
+index_keys:             array of string
+metadata:               ItemMetadata 
+==================      ============
+
+\* `BSON ObjectID Specification`_
+
+.. Resource
+
+Resource
+=========================
+
+==================      ============
+field name              type
+==================      ============
+type:                   string, eg "web"
+url:                    string, eg "http://test.example.com/1/"
+description:            string, eg "some stuff here"
+==================      ============
+
+
+.. ItemMetadata
+
+ItemMetadata 
+=========================
+
+*to be updated with Dublin core*
+
+==================      ============
+field name              type
+==================      ============
+last_modified:          datetime 
+author:                 ObjectID
+shelflife:              datetime
+==================      ============
+
+
+
+.. _BSON ObjectID Specification:  http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification
+

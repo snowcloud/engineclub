@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data model &mdash; Engineclub v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Engineclub v0.1 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">Engineclub v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="data-model">
+<h1>Data model<a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h1>
+<p>This data model is under rapid development at the moment, and is likely to change.</p>
+<div class="section" id="item">
+<h2>Item<a class="headerlink" href="#item" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>id:</td>
+<td>ObjectID *</td>
+</tr>
+<tr><td>title:</td>
+<td>string</td>
+</tr>
+<tr><td>resources:</td>
+<td>array of Resource</td>
+</tr>
+<tr><td>locations:</td>
+<td>array of Location</td>
+</tr>
+<tr><td>tags:</td>
+<td>array of string</td>
+</tr>
+<tr><td>index_keys:</td>
+<td>array of string</td>
+</tr>
+<tr><td>metadata:</td>
+<td>ItemMetadata</td>
+</tr>
+</tbody>
+</table>
+<p>* <a class="reference external" href="http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification">BSON ObjectID Specification</a></p>
+</div>
+<div class="section" id="resource">
+<h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>type:</td>
+<td>string, eg &#8220;web&#8221;</td>
+</tr>
+<tr><td>url:</td>
+<td>string, eg &#8220;<a class="reference external" href="http://test.example.com/1/">http://test.example.com/1/</a>&#8220;</td>
+</tr>
+<tr><td>description:</td>
+<td>string, eg &#8220;some stuff here&#8221;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="itemmetadata">
+<h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
+<p><em>to be updated with Dublin core</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="60%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>last_modified:</td>
+<td>datetime</td>
+</tr>
+<tr><td>author:</td>
+<td>ObjectID</td>
+</tr>
+<tr><td>shelflife:</td>
+<td>datetime</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Data model</a><ul>
+<li><a class="reference external" href="#item">Item</a></li>
+<li><a class="reference external" href="#resource">Resource</a></li>
+<li><a class="reference external" href="#itemmetadata">ItemMetadata</a></li>
+</ul>
+</li>
+</ul>
+
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/depot/data-model.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">Engineclub v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

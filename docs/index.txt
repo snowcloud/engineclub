@@ -16,27 +16,47 @@ See the:
 - Blog for `ALISS Project`_ 
 - Twitter `@ALISSproject`_
 - `Github`_
-- `Workshop, March 11/12, 2010, Glasgow`_
 
 .. _ALISS Project: http://www.aliss.scot.nhs.uk/
 .. _@ALISSproject: http://twitter.com/alissproject
 .. _Github: http://github.com/snowcloud/engineclub/
-.. _Workshop, March 11/12, 2010, Glasgow: http://alissinnovation.eventbrite.com/"
 
 .. Contents:
 
 There are five applications:
 
-* **aliss**
-    the home page for aliss.engineclub.org which will host information, demos etc
-* **depot**
-    storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff)
-* **enginecab**
-    admin app for the engineclub
-* **firebox**
-    for data collection code
-* **ecutils**
-    for utility code
+home
+=========================
+
+the home page for engineclub.org which will host information, demos etc
+    
+depot
+=========================
+
+storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).
+
+.. toctree::
+   :maxdepth: 2
+
+   depot/api
+   depot/data-model
+    
+enginecab
+=========================
+
+admin app for the engineclub
+
+
+firebox
+=========================
+
+for data collection code
+
+ecutils
+=========================
+
+for utility code
+
 
 Engineclub is a `Django`_ project, and uses `MongoDB`_ for the main resource data.
 
@@ -47,27 +67,20 @@ Engineclub is a `Django`_ project, and uses `MongoDB`_ for the main resource dat
 Installation instructions
 =========================
 
-There are two ways to install this application for use by your
-projects; the easiest in most cases is to do a Git checkout
-into a directory that's on your Python path::
+Currently, installation involves downloading the code from `Github`_, 
+or better is to use Git to create a local repository so you can keep up to date with development::
 
     git clone http://github.com/snowcloud/engineclub.git
 
-The other method is to download a packaged version and use Python's
-``distutils`` to install it onto your Python path::
+The requirements.txt file lists requirements for a working installation. You can use `Pip`_ to install these with::
 
-    wget http://github.com/snowcloud/engineclub/tarball/master
-    # get the name of the downloaded file to use in the following steps
-    ls snowcloud-engineclub*
-    tar zxvf snowcloud-engineclub...
-    cd snowcloud-engineclub...
-    python setup.py install
+    pip install -r requirements.txt
 
-Depending on your system configuration, you may need to prefix the
-last command with ``sudo`` and supply your password to perform a
-system-wide installation.
+You will need a `Mongodb`_ database server, installed and running. The Django admin uses a relational database, but you can use SQLite, which is part of Python from v2.5. The default settings.py file will default to SQLite.
 
-Following installation, you can do::
+To customise settings, add your own file called settings_local.py. It will be imported at the end of settings.py on system startup.
+
+Following installation, make sure you are in the installation directory, then you can do::
 
     cd ecengine
     ./manage.py syncdb --noinput
@@ -75,9 +88,8 @@ Following installation, you can do::
 This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
 You can then log in with username: admin and password: admin
 
+.. _Pip: http://pip.openplans.org/
 
-.. toctree::
-   :maxdepth: 2
 
 Indices and tables
 ==================

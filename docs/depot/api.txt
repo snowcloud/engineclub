@@ -1,0 +1,74 @@
+======================================
+Engineclub API
+======================================
+
+.. rubric:: This API is under rapid development at the moment, and is not stable.
+
+
+
+.. Retrieve an item by id
+
+Retrieve an item by id
+=========================
+
+==================      ============
+field name              type
+==================      ============
+==================      ============
+
+url: /api/item/[item id]/
+example: /api/item/4b91379689cb160dda000000/
+method: GET
+access: public
+
+
+.. Retrieve items by location and/or categories
+
+Retrieve items by location and/or categories
+============================================
+
+==================      ============
+field name              type
+==================      ============
+==================      ============
+
+
+.. Submit an item
+
+Submit an item
+=========================
+
+==================      ============
+field name              type
+==================      ============
+==================      ============
+
+
+.. Update an item
+
+Update an item
+=========================
+
+==================      ============
+field name              type
+==================      ============
+==================      ============
+
+
+.. Submit an alert for an item
+
+Submit an alert for an item
+===========================
+
+include alerts over errors, inappropriate content
+could be done as an update, with attributes indicating a problem, but
+more obvious if an alert, and signifies importance.
+could be done as an update, but also have as an alert as shortcut
+
+==================      ============
+field name              type
+==================      ============
+==================      ============
+
+
+
