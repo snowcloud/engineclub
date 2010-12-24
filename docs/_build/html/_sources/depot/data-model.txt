@@ -20,7 +20,8 @@ locations               list of Location
 moderations             list of Moderation 
 tags                    list of string
 index_keys              list of string
-metadata                ItemMetadata 
+related_metadata		list of RelatedMetadata
+metadata				ItemMetadata 
 ==================      =======================================================
 
 \* `BSON ObjectID Specification`_
