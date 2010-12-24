@@ -2,7 +2,7 @@
 Data model
 ======================================
 
-This data model is under rapid development at the moment, and is likely to change.
+This data model is under rapid development at the moment, and is not stable.
 
 .. Item
 
@@ -10,17 +10,18 @@ Item
 =========================
 
 
-==================      ============
+==================      =======================================================
 field name              type
-==================      ============
-id:                     ObjectID *
-title:                  string
-resources:              array of Resource
-locations:              array of Location 
-tags:                   array of string
-index_keys:             array of string
-metadata:               ItemMetadata 
-==================      ============
+==================      =======================================================
+id                      ObjectID *
+title                   string
+resources               list of Resource
+locations               list of Location 
+moderations             list of Moderation 
+tags                    list of string
+index_keys              list of string
+metadata                ItemMetadata 
+==================      =======================================================
 
 \* `BSON ObjectID Specification`_
 
@@ -29,13 +30,58 @@ metadata:               ItemMetadata
 Resource
 =========================
 
-==================      ============
+==================      =======================================================
 field name              type
-==================      ============
-type:                   string, eg "web"
-url:                    string, eg "http://test.example.com/1/"
-description:            string, eg "some stuff here"
-==================      ============
+==================      =======================================================
+type                    string (eg values: web, group, ...)
+url                     string (web URI format)
+description             string
+==================      =======================================================
+
+
+.. Location
+
+Location
+=========================
+
+==================      =======================================================
+field name              type
+==================      =======================================================
+lat_lon                 list of float
+latitude                float
+longitude               float
+woeid                   string
+name                    string
+placetype               string, (controlled list)
+postcode                string, (UK postcode format)
+==================      =======================================================
+
+
+.. Moderation
+
+Moderation
+=========================
+
+==================      =======================================================
+field name              type
+==================      =======================================================
+outcome                 string (eg values: OK, not for ALISS, not for my group, block)
+metadata                ItemMetadata
+==================      =======================================================
+
+
+.. RelatedMetadata
+
+RelatedMetadata
+=========================
+
+==================      ======================================================
+field name              type
+==================      ======================================================
+data                 	string (encoded using one of formats below)
+format					string (values: json, xml)
+metadata                ItemMetadata
+==================      ======================================================
 
 
 .. ItemMetadata
@@ -45,15 +91,16 @@ ItemMetadata
 
 *to be updated with Dublin core*
 
-==================      ============
+==================      =======================================================
 field name              type
-==================      ============
-last_modified:          datetime 
-author:                 ObjectID
-shelflife:              datetime
-==================      ============
+==================      =======================================================
+last_modified           datetime 
+author                  ObjectID
+shelflife               datetime
+note                    string
+==================      =======================================================
 
 
 
-.. _BSON ObjectID Specification:  http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification
+.. _BSON ObjectID Specification:   http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification
 

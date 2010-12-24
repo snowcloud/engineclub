@@ -43,13 +43,13 @@
             
   <div class="section" id="data-model">
 <h1>Data model<a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h1>
-<p>This data model is under rapid development at the moment, and is likely to change.</p>
+<p>This data model is under rapid development at the moment, and is not stable.</p>
 <div class="section" id="item">
 <h2>Item<a class="headerlink" href="#item" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="51%" />
-<col width="49%" />
+<col width="25%" />
+<col width="75%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -57,25 +57,28 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>id:</td>
+<tr><td>id</td>
 <td>ObjectID *</td>
 </tr>
-<tr><td>title:</td>
+<tr><td>title</td>
 <td>string</td>
 </tr>
-<tr><td>resources:</td>
-<td>array of Resource</td>
+<tr><td>resources</td>
+<td>list of Resource</td>
 </tr>
-<tr><td>locations:</td>
-<td>array of Location</td>
+<tr><td>locations</td>
+<td>list of Location</td>
 </tr>
-<tr><td>tags:</td>
-<td>array of string</td>
+<tr><td>moderations</td>
+<td>list of Moderation</td>
 </tr>
-<tr><td>index_keys:</td>
-<td>array of string</td>
+<tr><td>tags</td>
+<td>list of string</td>
 </tr>
-<tr><td>metadata:</td>
+<tr><td>index_keys</td>
+<td>list of string</td>
+</tr>
+<tr><td>metadata</td>
 <td>ItemMetadata</td>
 </tr>
 </tbody>
@@ -86,8 +89,8 @@
 <h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="32%" />
-<col width="68%" />
+<col width="25%" />
+<col width="75%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -95,14 +98,98 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>type:</td>
-<td>string, eg &#8220;web&#8221;</td>
+<tr><td>type</td>
+<td>string (eg values: web, group, ...)</td>
 </tr>
-<tr><td>url:</td>
-<td>string, eg &#8220;<a class="reference external" href="http://test.example.com/1/">http://test.example.com/1/</a>&#8220;</td>
+<tr><td>url</td>
+<td>string (web URI format)</td>
 </tr>
-<tr><td>description:</td>
-<td>string, eg &#8220;some stuff here&#8221;</td>
+<tr><td>description</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="location">
+<h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>lat_lon</td>
+<td>list of float</td>
+</tr>
+<tr><td>latitude</td>
+<td>float</td>
+</tr>
+<tr><td>longitude</td>
+<td>float</td>
+</tr>
+<tr><td>woeid</td>
+<td>string</td>
+</tr>
+<tr><td>name</td>
+<td>string</td>
+</tr>
+<tr><td>placetype</td>
+<td>string, (controlled list)</td>
+</tr>
+<tr><td>postcode</td>
+<td>string, (UK postcode format)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="moderation">
+<h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>outcome</td>
+<td>string (eg values: OK, not for ALISS, not for my group, block)</td>
+</tr>
+<tr><td>metadata</td>
+<td>ItemMetadata</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="relatedmetadata">
+<h2>RelatedMetadata<a class="headerlink" href="#relatedmetadata" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>data</td>
+<td>string (encoded using one of formats below)</td>
+</tr>
+<tr><td>format</td>
+<td>string (values: json, xml)</td>
+</tr>
+<tr><td>metadata</td>
+<td>ItemMetadata</td>
 </tr>
 </tbody>
 </table>
@@ -112,8 +199,8 @@
 <p><em>to be updated with Dublin core</em></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="60%" />
-<col width="40%" />
+<col width="25%" />
+<col width="75%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -121,14 +208,17 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>last_modified:</td>
+<tr><td>last_modified</td>
 <td>datetime</td>
 </tr>
-<tr><td>author:</td>
+<tr><td>author</td>
 <td>ObjectID</td>
 </tr>
-<tr><td>shelflife:</td>
+<tr><td>shelflife</td>
 <td>datetime</td>
+</tr>
+<tr><td>note</td>
+<td>string</td>
 </tr>
 </tbody>
 </table>
@@ -146,6 +236,9 @@
 <li><a class="reference external" href="#">Data model</a><ul>
 <li><a class="reference external" href="#item">Item</a></li>
 <li><a class="reference external" href="#resource">Resource</a></li>
+<li><a class="reference external" href="#location">Location</a></li>
+<li><a class="reference external" href="#moderation">Moderation</a></li>
+<li><a class="reference external" href="#relatedmetadata">RelatedMetadata</a></li>
 <li><a class="reference external" href="#itemmetadata">ItemMetadata</a></li>
 </ul>
 </li>

@@ -71,6 +71,9 @@
 <li class="toctree-l1"><a class="reference external" href="depot/data-model.html">Data model</a><ul>
 <li class="toctree-l2"><a class="reference external" href="depot/data-model.html#item">Item</a></li>
 <li class="toctree-l2"><a class="reference external" href="depot/data-model.html#resource">Resource</a></li>
+<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#location">Location</a></li>
+<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#moderation">Moderation</a></li>
+<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#relatedmetadata">RelatedMetadata</a></li>
 <li class="toctree-l2"><a class="reference external" href="depot/data-model.html#itemmetadata">ItemMetadata</a></li>
 </ul>
 </li>
@@ -87,11 +90,12 @@
 <div class="section" id="ecutils">
 <h2>ecutils<a class="headerlink" href="#ecutils" title="Permalink to this headline">¶</a></h2>
 <p>for utility code</p>
-<p>Engineclub is a <a class="reference external" href="http://djangoproject.com/">Django</a> project, and uses <a class="reference external" href="http://mongodb.org/">MongoDB</a> for the main resource data.</p>
 </div>
 </div>
 <div class="section" id="installation-instructions">
 <h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p>Engineclub is a <a class="reference external" href="http://djangoproject.com/">Django</a> project, and uses <a class="reference external" href="http://mongodb.org/">MongoDB</a> for the main resource data.</p>
+<p>You will need a <a class="reference external" href="http://mongodb.org/">Mongodb</a> database server, installed and running. The Django admin uses a relational database, such as PostgreSQL or MySQL, or you can just use SQLite, which is part of Python from v2.5 and needs no installation or setup. The default settings.py file will default to SQLite.</p>
 <p>Currently, installation involves downloading the code from <a class="reference external" href="http://github.com/snowcloud/engineclub/">Github</a>,
 or better is to use Git to create a local repository so you can keep up to date with development:</p>
 <div class="highlight-python"><pre>git clone http://github.com/snowcloud/engineclub.git</pre>
@@ -99,7 +103,6 @@ or better is to use Git to create a local repository so you can keep up to date 
 <p>The requirements.txt file lists requirements for a working installation. You can use <a class="reference external" href="http://pip.openplans.org/">Pip</a> to install these with:</p>
 <div class="highlight-python"><pre>pip install -r requirements.txt</pre>
 </div>
-<p>You will need a <a class="reference external" href="http://mongodb.org/">Mongodb</a> database server, installed and running. The Django admin uses a relational database, but you can use SQLite, which is part of Python from v2.5. The default settings.py file will default to SQLite.</p>
 <p>To customise settings, add your own file called settings_local.py. It will be imported at the end of settings.py on system startup.</p>
 <p>Following installation, make sure you are in the installation directory, then you can do:</p>
 <div class="highlight-python"><pre>cd ecengine

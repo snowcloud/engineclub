@@ -58,14 +58,14 @@ ecutils
 for utility code
 
 
-Engineclub is a `Django`_ project, and uses `MongoDB`_ for the main resource data.
-
-.. _Django: http://djangoproject.com/
-.. _MongoDB: http://mongodb.org/
 
 =========================
 Installation instructions
 =========================
+
+Engineclub is a `Django`_ project, and uses `MongoDB`_ for the main resource data.
+
+You will need a `Mongodb`_ database server, installed and running. The Django admin uses a relational database, such as PostgreSQL or MySQL, or you can just use SQLite, which is part of Python from v2.5 and needs no installation or setup. The default settings.py file will default to SQLite.
 
 Currently, installation involves downloading the code from `Github`_, 
 or better is to use Git to create a local repository so you can keep up to date with development::
@@ -75,8 +75,6 @@ or better is to use Git to create a local repository so you can keep up to date 
 The requirements.txt file lists requirements for a working installation. You can use `Pip`_ to install these with::
 
     pip install -r requirements.txt
-
-You will need a `Mongodb`_ database server, installed and running. The Django admin uses a relational database, but you can use SQLite, which is part of Python from v2.5. The default settings.py file will default to SQLite.
 
 To customise settings, add your own file called settings_local.py. It will be imported at the end of settings.py on system startup.
 
@@ -88,6 +86,8 @@ Following installation, make sure you are in the installation directory, then yo
 This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
 You can then log in with username: admin and password: admin
 
+.. _Django: http://djangoproject.com/
+.. _MongoDB: http://mongodb.org/
 .. _Pip: http://pip.openplans.org/
 
 
