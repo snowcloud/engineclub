@@ -29,7 +29,10 @@ home
 =========================
 
 the home page for engineclub.org which will host information, demos etc
-    
+
+`Code for home app`_
+
+
 depot
 =========================
 
@@ -40,11 +43,16 @@ storage of resource data, and services API, using a mix of mongodb and postgresq
 
    depot/api
    depot/data-model
-    
+
+`Code for depot app`_
+
+
 enginecab
 =========================
 
 admin app for the engineclub
+
+`Code for enginecab app`_
 
 
 firebox
@@ -52,12 +60,15 @@ firebox
 
 for data collection code
 
+`Code for firebox app`_
+
+
 ecutils
 =========================
 
 for utility code
 
-
+`Code for ecutils app`_
 
 =========================
 Installation instructions
@@ -85,6 +96,13 @@ Following installation, make sure you are in the installation directory, then yo
 
 This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
 You can then log in with username: admin and password: admin
+
+
+.. _Code for home app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home
+.. _Code for depot app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot
+.. _Code for enginecab app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab
+.. _Code for firebox app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox
+.. _Code for ecutils app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils
 
 .. _Django: http://djangoproject.com/
 .. _MongoDB: http://mongodb.org/
