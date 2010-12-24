@@ -98,11 +98,11 @@ This will create the initial database and load an admin user from apps/aliss/fix
 You can then log in with username: admin and password: admin
 
 
-.. _Code for home app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home
-.. _Code for depot app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot
-.. _Code for enginecab app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab
-.. _Code for firebox app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox
-.. _Code for ecutils app: http://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils
+.. _Code for home app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home
+.. _Code for depot app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot
+.. _Code for enginecab app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab
+.. _Code for firebox app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox
+.. _Code for ecutils app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils
 
 .. _Django: http://djangoproject.com/
 .. _MongoDB: http://mongodb.org/
