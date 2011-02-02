@@ -48,8 +48,8 @@
 <h2>Item<a class="headerlink" href="#item" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="25%" />
-<col width="75%" />
+<col width="20%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -61,6 +61,9 @@
 <td>ObjectID *</td>
 </tr>
 <tr><td>title</td>
+<td>string</td>
+</tr>
+<tr><td>description</td>
 <td>string</td>
 </tr>
 <tr><td>resources</td>
@@ -81,7 +84,7 @@
 <tr><td>related_metadata</td>
 <td>list of RelatedMetadata</td>
 </tr>
-<tr><td>metadata</td>
+<tr><td>item_metadata</td>
 <td>ItemMetadata</td>
 </tr>
 </tbody>
@@ -92,8 +95,8 @@
 <h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="25%" />
-<col width="75%" />
+<col width="20%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -101,11 +104,11 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>type</td>
-<td>string (eg values: web, group, ...)</td>
+<tr><td>resource_type</td>
+<td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
 </tr>
 <tr><td>url</td>
-<td>string (web URI format)</td>
+<td>string [web URI format]</td>
 </tr>
 <tr><td>description</td>
 <td>string</td>
@@ -117,8 +120,8 @@
 <h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="25%" />
-<col width="75%" />
+<col width="20%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -142,10 +145,10 @@
 <td>string</td>
 </tr>
 <tr><td>placetype</td>
-<td>string, (controlled list)</td>
+<td>string [controlled list]</td>
 </tr>
 <tr><td>postcode</td>
-<td>string, (UK postcode format)</td>
+<td>string [UK postcode format]</td>
 </tr>
 </tbody>
 </table>
@@ -154,8 +157,8 @@
 <h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="78%" />
+<col width="20%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -164,9 +167,43 @@
 </thead>
 <tbody valign="top">
 <tr><td>outcome</td>
-<td>string (eg values: OK, not for ALISS, not for my group, block)</td>
+<td>string [&#8216;OK&#8217;, &#8216;block&#8217;, &#8216;refer&#8217;]</td>
 </tr>
-<tr><td>metadata</td>
+<tr><td>note</td>
+<td>string</td>
+</tr>
+<tr><td>item_metadata</td>
+<td>ItemMetadata</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="curation">
+<h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>outcome</td>
+<td>string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]</td>
+</tr>
+<tr><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr><td>rating</td>
+<td>[not used]</td>
+</tr>
+<tr><td>note</td>
+<td>string</td>
+</tr>
+<tr><td>item_metadata</td>
 <td>ItemMetadata</td>
 </tr>
 </tbody>
@@ -174,6 +211,7 @@
 </div>
 <div class="section" id="relatedmetadata">
 <h2>RelatedMetadata<a class="headerlink" href="#relatedmetadata" title="Permalink to this headline">¶</a></h2>
+<p><em>This will be used to allow trusted accounts to add their own metadata using their own schema.</em></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -191,7 +229,7 @@
 <tr><td>format</td>
 <td>string (values: json, xml)</td>
 </tr>
-<tr><td>metadata</td>
+<tr><td>item_metadata</td>
 <td>ItemMetadata</td>
 </tr>
 </tbody>
@@ -202,8 +240,8 @@
 <p><em>to be updated with Dublin core</em></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="25%" />
-<col width="75%" />
+<col width="20%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">field name</th>
@@ -241,6 +279,7 @@
 <li><a class="reference external" href="#resource">Resource</a></li>
 <li><a class="reference external" href="#location">Location</a></li>
 <li><a class="reference external" href="#moderation">Moderation</a></li>
+<li><a class="reference external" href="#curation">Curation</a></li>
 <li><a class="reference external" href="#relatedmetadata">RelatedMetadata</a></li>
 <li><a class="reference external" href="#itemmetadata">ItemMetadata</a></li>
 </ul>

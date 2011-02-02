@@ -18,7 +18,21 @@
     {   "_types": ["Item"],
         "_id": u"4d135708e999fb30d8000002",
         "title": u"title 2", 
-        "resources": [{'type': u'web', 'url': u'http://test.example.com/2/', 'description': u'some stuff here...'}],
+        "resources": [{
+            "_types": ["Resource"], 
+            "_cls": "Resource", 
+            "resource_type": "web",
+            "url": u"http://test.example.com/2/",
+            "description": "description 2-1",
+            "metadata": {
+                "_types": ["ItemMetadata"], 
+                "last_modified": datetime(2010, 3, 4, 1, 0, 25, 101000), 
+                "author": u"1", 
+                "_cls": "ItemMetadata", 
+                "shelflife": datetime(2010, 3, 4, 1, 0, 25, 101000)
+            }
+        }],
+        
         "locations": [], 
         "tags": [u"green", u"blue", u"sturg", u"nonsense"],
         "index_keys": [u"green", u"blue"],

@@ -70,6 +70,8 @@ for utility code
 
 `Code for ecutils app`_
 
+.. index:: installation
+
 =========================
 Installation instructions
 =========================
