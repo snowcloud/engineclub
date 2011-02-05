@@ -22,7 +22,14 @@ class ItemMetadata(EmbeddedDocument):
     author = StringField()
     status = StringField()
     admin_note = StringField()
-    
+
+class Resource(EmbeddedDocument):
+    """docstring for Resource"""
+    resource_type = StringField()
+    url = StringField()
+    description = StringField()
+    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+            
 class Location(Document):
     """Location document, based on Yahoo Placemaker data"""
     
@@ -34,7 +41,19 @@ class Location(Document):
     name = StringField()
     placetype = StringField()
     postcode = StringField()
-    
+
+class Moderation(EmbeddedDocument):
+
+    outcome = StringField()
+    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+class RelatedMetadata(EmbeddedDocument):
+
+    data = StringField()
+    format = StringField()
+    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
     if place:
@@ -64,14 +83,13 @@ class Item(Document):
     # uri = StringField(unique=True, required=True)
     title = StringField(required=True)
     description = StringField()
-    # postcode = StringField()
-    # area = StringField()
-    resources = ListField(StringField(), default=[])
+    resources = ListField(EmbeddedDocumentField(Resource))
     locations = ListField(StringField(), default=[])
+    moderations = ListField(EmbeddedDocumentField(Moderation), default=[])
     tags = ListField(StringField(max_length=96), default=[])
     # _keywords = ListField(StringField(max_length=96), default=[])
     index_keys = ListField(StringField(max_length=96), default=[])
-    # collection_status = StringField()
+    related_metadata = ListField(EmbeddedDocumentField(RelatedMetadata))
     metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
