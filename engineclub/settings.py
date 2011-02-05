@@ -32,6 +32,7 @@ try:
   MONGO_TESTING= 'test' in sys.argv
 except KeyError:
   MONGO_TESTING=False
+TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
