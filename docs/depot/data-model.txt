@@ -20,9 +20,9 @@ resources               list of Resource
 locations               list of Location 
 moderations             list of Moderation 
 tags                    list of string
-indexkeys               list of string
-relatedmetadata         list of RelatedMetadata
-itemmetadata            ItemMetadata
+index_keys              list of string
+related_metadata        list of RelatedMetadata
+item_metadata           ItemMetadata
 ==================      =========================================================================
 
 \* `BSON ObjectID Specification`_
@@ -35,11 +35,11 @@ Resource
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-resourcetype            string ['web', 'group', ...]
+resource_type           string ['web', 'group', ...]
 url                     string [web URI format]
 title                   string
 description             string
-itemmetadata            ItemMetadata
+item_metadata           ItemMetadata
 ==================      =========================================================================
 
 .. Location
@@ -51,13 +51,12 @@ Location
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-locid                   URI
+loc_id                   URI
 label                   string
 latlon                  list of float [float, float]
 latitude                float
 longitude               float
-name                    string
-locationtype            string [controlled list]
+location_type           string [controlled list]
 postcode                string [UK postcode format]
 ward                    URI
 district                URI
@@ -75,7 +74,7 @@ field name              type
 ==================      =========================================================================
 outcome                 string ['OK', 'block', 'refer']
 note                    string
-itemmetadata            ItemMetadata
+item_metadata           ItemMetadata
 ==================      =========================================================================
 
 .. Curation
@@ -90,7 +89,7 @@ outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
 note                    string
-itemmetadata            ItemMetadata
+item_metadata           ItemMetadata
 ==================      =========================================================================
 
 
@@ -106,7 +105,7 @@ field name              type
 ==================      ======================================================
 data                    string (encoded using one of formats below)
 format                  string (values: json, xml)
-itemmetadata            ItemMetadata
+item_metadata           ItemMetadata
 ==================      ======================================================
 
 
@@ -120,7 +119,7 @@ ItemMetadata
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-lastmodified            datetime 
+last_modified           datetime 
 author                  ObjectID
 shelflife               datetime
 note                    string
