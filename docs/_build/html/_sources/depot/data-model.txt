@@ -47,6 +47,7 @@ item_metadata           ItemMetadata
 Location
 =========================
 *revised to use Ordnance Survey data*
+*current fields support post code- more fields to be added for higher level units*
 
 ==================      =========================================================================
 field name              type
@@ -58,9 +59,9 @@ latitude                float
 longitude               float
 location_type           string [controlled list]
 postcode                string [UK postcode format]
-ward                    URI
-district                URI
-country                 URI
+ward                    URI *may include label for presentation?*
+district                URI *may include label for presentation?*
+country                 URI *may include label for presentation?*
 note                    string
 ==================      =========================================================================
 
