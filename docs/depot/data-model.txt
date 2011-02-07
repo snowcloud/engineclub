@@ -99,12 +99,12 @@ RelatedMetadata
 =========================
 
 *This will be used to allow trusted accounts to add their own metadata using their own schema.*
+*Data will be converted to required formats on client access (may be cached for performance)*
 
 ==================      ======================================================
 field name              type
 ==================      ======================================================
-data                    string (encoded using one of formats below)
-format                  string (values: json, xml)
+data                    dict (dictionary with field names as keys)
 item_metadata           ItemMetadata
 ==================      ======================================================
 

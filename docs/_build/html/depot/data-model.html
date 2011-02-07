@@ -230,7 +230,8 @@
 </div>
 <div class="section" id="relatedmetadata">
 <h2>RelatedMetadata<a class="headerlink" href="#relatedmetadata" title="Permalink to this headline">¶</a></h2>
-<p><em>This will be used to allow trusted accounts to add their own metadata using their own schema.</em></p>
+<p><em>This will be used to allow trusted accounts to add their own metadata using their own schema.</em>
+<em>Data will be converted to required formats on client access (may be cached for performance)</em></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -243,10 +244,7 @@
 </thead>
 <tbody valign="top">
 <tr><td>data</td>
-<td>string (encoded using one of formats below)</td>
-</tr>
-<tr><td>format</td>
-<td>string (values: json, xml)</td>
+<td>dict (dictionary with field names as keys)</td>
 </tr>
 <tr><td>item_metadata</td>
 <td>ItemMetadata</td>
