@@ -64,7 +64,7 @@ ward                    string
 ward_ref                URI
 district                string
 district_ref            URI
-country                 URI
+country                 string
 country_ref             URI
 note                    string
 ==================      =========================================================================
