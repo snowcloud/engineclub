@@ -10,3 +10,5 @@ ecengine/engineclub
 /build
 /src
 /engineclub/apps/depot/fixtures/working.txt
+/engineclub/apps/ecutils/geonames
+/engineclub/apps/firebox/sources
