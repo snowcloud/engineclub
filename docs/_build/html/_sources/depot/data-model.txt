@@ -46,8 +46,9 @@ item_metadata           ItemMetadata
 
 Location
 =========================
-*revised to use Ordnance Survey data*
-*current fields support post code- more fields to be added for higher level units*
+*Revised to use Ordnance Survey data.*
+
+*Current fields support post code- more fields to be added for higher level units.*
 
 ==================      =========================================================================
 field name              type
@@ -100,6 +101,7 @@ RelatedMetadata
 =========================
 
 *This will be used to allow trusted accounts to add their own metadata using their own schema.*
+
 *Data will be converted to required formats on client access (may be cached for performance)*
 
 ==================      ======================================================
@@ -115,7 +117,7 @@ item_metadata           ItemMetadata
 ItemMetadata 
 =========================
 
-*to be updated with Dublin core*
+*To be updated with Dublin core.*
 
 ==================      =========================================================================
 field name              type
