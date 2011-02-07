@@ -60,9 +60,12 @@ latitude                float
 longitude               float
 location_type           string [controlled list]
 postcode                string [UK postcode format]
-ward                    URI *may include label for presentation?*
-district                URI *may include label for presentation?*
-country                 URI *may include label for presentation?*
+ward                    string
+ward_ref                URI
+district                string
+district_ref            URI
+country                 URI
+country_ref             URI
 note                    string
 ==================      =========================================================================
 
