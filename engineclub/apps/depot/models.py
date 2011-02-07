@@ -18,65 +18,74 @@ COLL_STATUS_COMPLETE = 'complete'
         
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
-    shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     author = StringField()
+    shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
-    admin_note = StringField()
+    note = StringField()
 
 class Resource(EmbeddedDocument):
     """docstring for Resource"""
     resource_type = StringField()
     url = StringField()
+    title = StringField()
     description = StringField()
-    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
             
 class Location(Document):
-    """Location document, based on Yahoo Placemaker data"""
-    
-    lat_lon = ListField(FloatField(), default=[])
+    """Location document, based on Ordnance Survey data"""
+    loc_id = StringField()
+    label = StringField()
+    latlon = ListField(FloatField(), default=list)
     latitude = FloatField()
     longitude = FloatField()
-    
-    woeid = StringField()
-    name = StringField()
-    placetype = StringField()
+    # woeid = StringField()
+    location_type = StringField()
     postcode = StringField()
+    ward = StringField()
+    district = StringField()
+    country = StringField()
+    note = StringField()
 
 class Moderation(EmbeddedDocument):
-
     outcome = StringField()
-    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+    note = StringField()
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+class Curation(EmbeddedDocument):
+    outcome = StringField()
+    tags = ListField(StringField(max_length=96), default=list)
+    # rating - not used
+    note = StringField()
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 class RelatedMetadata(EmbeddedDocument):
+    data = DictField()
+    # format = StringField() not needed- store in the dict and put out in formats for clients
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-    data = StringField()
-    format = StringField()
-    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
-
-
-def place_as_cb_value(place):
-    """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
-    if place:
-        return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
-    return ''
-
-def location_from_cb_value(cb_value):
-    """takes cb_string and returns Location"""
-    values = cb_value.split('|')
-    if not len(values) == 5:
-        raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-    lat = float(values[3])
-    lon = float(values[4])
-    print lat, lon
-    loc_values = {
-        'lat_lon': [lat, lon],
-        # 'woeid': values[0],
-        'name': values[1],
-        'placetype': values[2],
-        'latitude': lat,
-        'longitude': lon
-        }
-    return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
+# def place_as_cb_value(place):
+#     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
+#     if place:
+#         return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
+#     return ''
+# 
+# def location_from_cb_value(cb_value):
+#     """takes cb_string and returns Location"""
+#     values = cb_value.split('|')
+#     if not len(values) == 5:
+#         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
+#     lat = float(values[3])
+#     lon = float(values[4])
+#     print lat, lon
+#     loc_values = {
+#         'lat_lon': [lat, lon],
+#         # 'woeid': values[0],
+#         'name': values[1],
+#         'placetype': values[2],
+#         'latitude': lat,
+#         'longitude': lon
+#         }
+#     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Item(Document):
     """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
@@ -84,22 +93,23 @@ class Item(Document):
     title = StringField(required=True)
     description = StringField()
     resources = ListField(EmbeddedDocumentField(Resource))
-    locations = ListField(StringField(), default=[])
-    moderations = ListField(EmbeddedDocumentField(Moderation), default=[])
-    tags = ListField(StringField(max_length=96), default=[])
-    # _keywords = ListField(StringField(max_length=96), default=[])
-    index_keys = ListField(StringField(max_length=96), default=[])
+    locations = ListField(ReferenceField(Location), default=list)
+    moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
+    curations = ListField(EmbeddedDocumentField(Curation), default=list)
+    tags = ListField(StringField(max_length=96), default=list)
+    # _keywords = ListField(StringField(max_length=96), default=list)
+    index_keys = ListField(StringField(max_length=96), default=list)
     related_metadata = ListField(EmbeddedDocumentField(RelatedMetadata))
-    metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
     #     super(Item, self).__init__(*args, **kwargs)
     #     print 'item __init__'
         
     def save(self, author=None, *args, **kwargs):
-        self.metadata.last_modified = datetime.now()
+        self.item_metadata.last_modified = datetime.now()
         if author:
-            self.metadata.author = author
+            self.item_metadata.author = author
         created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         super(Item, self).save(*args, **kwargs)
         if created:
@@ -107,8 +117,14 @@ class Item(Document):
             # print 'i am new- email me'
             pass
 
-    def get_locations(self):
-        return [Location.objects.get(woeid=id) for id in self.locations]
+    def add_locations(self, new_locations):
+        """docstring for add_locations"""
+        for loc in new_locations:
+            if loc.loc_id not in [l.loc_id for l in self.locations]:
+                self.locations.append(loc)
+        
+    # def get_locations(self):
+    #     return [Location.objects.get(woeid=id) for id in self.locations]
         
     def make_keys(self, keys):
         """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
