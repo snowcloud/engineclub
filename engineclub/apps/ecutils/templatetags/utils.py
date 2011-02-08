@@ -171,7 +171,7 @@ def placetype(pt):
     else:
         return pt
 
-from depot.models import place_as_cb_value
+# from depot.models import place_as_cb_value
 
 @register.filter
 def place_values(place):

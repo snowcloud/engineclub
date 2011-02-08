@@ -42,8 +42,11 @@ class Location(Document):
     location_type = StringField()
     postcode = StringField()
     ward = StringField()
+    ward_ref = StringField()
     district = StringField()
+    district_ref = StringField()
     country = StringField()
+    country_ref = StringField()
     note = StringField()
 
 class Moderation(EmbeddedDocument):

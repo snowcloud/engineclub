@@ -36,7 +36,8 @@ TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
-connect('aliss', host='localhost', port=27017)
+connect('test_db', host='localhost', port=27017)
+# connect('aliss', host='localhost', port=27017)
 
 YAHOO_KEY = 'your_key_here...'
 

@@ -8,8 +8,8 @@ from django.template import RequestContext
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
-from depot.models import Item, Location, get_nearest, location_from_cb_value, \
-    COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE
+from depot.models import Item, Location, get_nearest,  \
+    COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import *
 from firebox.views import get_terms
 
