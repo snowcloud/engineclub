@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+/* Container */
+.verticalslider {border: 10px solid #454544; overflow: hidden; margin: 0 auto; margin-top: 25px; background-color: #fff; width: auto; }
+
+/* Tabs */
+.verticalslider_tabs {float: left; width: 30%;}
+
+/*.verticalslider_tabs, .verticalslider_tabs li {margin: 0px; padding: 0px;}*/
+.verticalslider_tabs li{list-style-type: none; }
+
+.verticalslider_tabs a:link, .verticalslider_tabs a:visited{display: block; padding: 14px 30px 14px 10px;   background-color: #f3ebde;color: #333333;  border-right: 1px solid #e0e2e2; border-bottom: 1px solid #d4d7d7; text-decoration: none; border-top: 1px solid #fff; }
+
+.verticalslider_tabs a:hover, .verticalslider_tabs a:active{ background: #eae1d2 url(../images/tabBG.jpg) repeat-x 0 bottom;}
+
+/*.verticalslider_tabs li:first-child a:link, .verticalslider_tabs li:first-child a:visited{border-top: none; heightx: 30px;}*/
+
+.verticalslider_tabs .activeTab { background: #eae1d2 url(../images/tabBG.jpg) repeat-x 0 bottom; }
+
+.verticalslider_tabs .activeTab a:link, .verticalslider_tabs .activeTab a:visited{background: url(../images/arrow2.png) no-repeat right center; }
+
+/*.verticalslider_tabs .activeTab a:hover, .verticalslider_tabs .activeTab a:active{background: url(../images/tabBG.jpg) bottom repeat-x;  background-color: #eeeeee; border-right: 1px solid #ffffff;}*/
+
+/*.verticalslider .arrow {background: url(../images/arrow.png); width: 27px; height: 60px; position: absolute; z-index: 1000; margin-left: 21%; margin-top: -4.1em; }*/
+
+.arrow { display: none; }
+/*li.activeTab { background-color: red; }*/
+
+/* Contents */
+.verticalslider_contents li{margin: 0px; padding: 0px;overflow: hidden; padding: 15px; }
+.verticalslider_contents li h2{font-size: 2.2em; color: #333333;margin: 5px 20px; padding: 0px;}
+.verticalslider_contents li p{ margin: 5px 20px; padding: 0px;color: #333333; }
+.verticalslider_contents{float: left;width: 70%;display: inline; margin: 0px; padding: 0px;}
+.verticalslider_contents li{display: none; list-style-type: none;}
