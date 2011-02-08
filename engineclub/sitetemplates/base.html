@@ -1,98 +1,56 @@
-{% load utils %}<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html class="no-js" lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="keywords" content="EngineClub, engine club, ALISS, NHS Scotland">
-	<meta name="description" content="Home of the EngineClub">
-
-	<title>engineclub- {% block title %}{% endblock %}</title>
-	<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="/static/css/screen.css" />
-	<!--[if IE 6]>
-	  <link href="/static/css/ie6.css" media="screen, projection" rel="stylesheet" type="text/css" />
-	<![endif]-->
-	{% block head_extra %}{% endblock %}
+    <meta charset="utf-8" />
+    <title>aliss.org</title>
+    <script type='text/javascript' src='static/js/modernizr-1.6.min.js'></script>
+    <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+    <script src="http://scripts.embed.ly/jquery.embedly.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" media="all" href="static/css/screen.css" />
+    <!--[if IE 6]> <link rel="stylesheet" href="static/css/ie6.css" media="screen, projection">
+    <![endif]-->
+    <script type="text/javascript" src="http://use.typekit.com/raw4saf.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    {% block head-extra %}{% endblock head-extra %}
+    <script type="text/javascript">
+      $('document').ready(function(){
+        $('.js .media').embedly({
+          maxWidth: 450,
+          wmode: 'transparent',
+          methodx: 'before'
+        });
+        {% block document-ready %}{% endblock %}
+      });
+    </script>   
 </head>
-<body>
-<div id="wrap">
-<div id="header" class="group">
-	<h1><a href="/">ALISS Engine</a></h1>
-	<div id="nav" class="group">
-		<ul class="group">
-			<li><a href="/"><strong>Home <em>info &amp; demos</em></strong></a></li>
-			{# <li><a href="/"><strong>Home <em>news &amp; events</em></strong></a></li> #}
-			<li class="last"><a href="/contact/"><strong>Contact <em>get in touch</em></strong></a></li>
-		</ul>
-	</div>
-</div>
-<div id="user-nav" class="group">
-	<div id="login-nav">
-	    {% if user.is_authenticated %}
-	        <p>Logged in:
-	          {{ user.username }} | <a href="/logout/">log out</a>
-	              | <a href="/accounts/password_change/">change password</a>
-				{% if user.is_staff %}| <a href="/admin/">admin</a>{% endif %}
-			</p>
-	    {% else %}
-	        <p>
-	          <a href="/accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a>
-	              | <a href="/password_reset/">forgotten user name or password?</a>
-	              {# | <a href="/accounts/register/">register</a></p> #}
-	    {% endif %}
-	</div>
-</div>
+<body class="{% block body_class %}single{% endblock %}">
 
-{% block hilites %}{% endblock %}
-
-<div id="main" class="group {% block main-content-class %}twocol{% endblock %}">
-	<div id="top" class="main-content">
-		<div id="breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
-		{% if messages %}
-		  <div class="message">
-		    <ul> 
-		        {% for message in messages %} 
-		            <li class="{{ message.tags }}">{{ message|safe }}</li>
-		        {% endfor %}
-		    </ul>
-		  </div>
-		{% endif %}
-		{% block content %}&nbsp;{% endblock %}
-	</div>
-	
-	<div class="secondary-content">
-		{% block secondary-content-default %}
-		<h2>Can't find something?</h2>
-		<p>Take a look at our <a href="/info/">information pages</a>.</p>
-		{% endblock %}
-		{% block secondary-content %}{% endblock %}
-	</div>
+    
+    <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
+    <div id="header">
+     
+    <h1><a href="index.html">aliss<span class="domain">.org</span></a></h1>
+    <div id="headercontents">
+    <ul id="sitenav">
+        <li><a href="index.html">home</a></li>
+        <li><a href="about.html">about</a></li>
+        {# <li><a href="project-info.html">info</a></li> #}
+        <li><a href="">contact</a></li>
+        <li><a href="">admin</a></li>
+    </ul>
+    </div>  
+    <!-- <ul id="usernav">
+        <li><a href="" id="login">log in</a></li>
+        <li><a href="">forgotten password</a></li>
+        <li><a href="">register</a></li>
+    </ul> -->
+    </div>
+<div id="main" class="group">
+{% block content_body %}{% endblock %}
 </div>
-<div id="footer" class="group">
-<div class="site-nav">
-	<p>
-		{# <a href="/">home</a> - #}
-		{# <a href="/classes/">classes</a> - #}
-		{# <a href="/events/">events &amp; workshops</a> - #}
-		{# <a href="/diary/">diary</a> - #}
-		{# <a href="/info/">info</a> - #}
-		{# <a href="/shop/">shop</a> - #}
-		{# <a href="/small-ads/">small ads</a> - #}
-		{# <a href="/contact/">contact</a> - #}
-		{# <a href="/links/">links</a> #}
-		{% if user.is_staff %}- <a href="/admin/">admin</a>{% endif %}
-	</p>
-</div>
-	<p><a href="http://engineclub.org">Engineclub</a></p>
-</div>
-</div>
-{% comment %}
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-_uacct = "UA-563964-2";
-urchinTracker();
-</script>
-
-{% endcomment %}
+<div id="footer">
+    {% block footer-extra %}{% endblock %}
+    <p>footer</p></div>
 </body>
 </html>
