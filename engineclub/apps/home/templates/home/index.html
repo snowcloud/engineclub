@@ -1,22 +1,126 @@
 {% extends "base.html" %}
-
-{% block title %}home{% endblock %}
+{% load rss_tags %}
+{% block head-extra %}
+    <script type="text/javascript" src="/static/verticaltabs/js/verticaltabs.pack.js"></script>
+    <link rel="stylesheet" href="/static/css/verticaltabs.css" />
+{% endblock head-extra %}
+{% block document-ready %}
+    $("#textExample").verticaltabs({slideShow: false, speed: 10, activeIndex: 0});
+{% endblock %}
 
 {% block content %}
-<h1>ALISS@EngineClub</h1>
-<p><strong>This is a demonstration site to test and show off the ALISS engine.</strong></p>
 
-<p>For more information on ALISS and her engine, look here:</p>
+<div id="pageintro">
+<h1>Better information for self management</h1>
+
+<p>About 40% of the Scottish population live with a long term health condition, such as heart disease, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="">Learn&nbsp;more&nbsp;»</a></p>
+
+</div>
+
+<div id="maincontent">
+
+    <!-- Text Example -->
+	<div class="verticalslider group" id="textExample">
+        <ul class="verticalslider_tabs">
+            <li><a href="#">What kind of content does ALISS include?</a></li>
+            <li><a href="#">Is ALISS yet another big database?</a></li>
+            <li><a href="#">Who controls the ALISS content?</a></li>
+            <li><a href="#">Is the content safe?</a></li>                        
+            <li><a href="#">Do we really need another web site to find information?</a></li>                        
+            <li><a href="#">Why don't we just use Google?</a></li>                        
+            <li><a href="#">Is the content safe?</a></li>                        
+        </ul>
+        <ul class="verticalslider_contents">
+            <li style="display: list-item;">
+            <h2 class="tk-katarine-web">What kind of content does ALISS include?</h2>
+            <div class="media"><a href="http://vimeo.com/11986849">Watch the ALISS Engine screencast.</a></div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut accumsan placerat bibendum. Etiam ut nunc sed purus tempus varius. Donec id magna massa, posuere consectetur neque. Mauris tortor lacus, iaculis a pulvinar luctus, lobortis vel velit. In elementum lorem eu felis fermentum placerat et sit amet ligula. Integer euismod augue eu massa tincidunt consectetur. Suspendisse potenti. Donec in enim sollicitudin enim dignissim imperdiet ut et dolor. Phasellus nec risus vel nunc hendrerit auctor. Sed rhoncus sapien at nisl aliquam luctus. </p>
+            </li>
+            <li>
+            <h2>Is ALISS yet another big database?</h2>
+            <p>Praesent pulvinar, lorem nec ullamcorper semper, ipsum erat vestibulum lacus, in sodales lorem mi in leo. Vestibulum et rhoncus tellus. Curabitur mauris enim, vehicula sit amet euismod a, eleifend at dui. Vivamus sollicitudin, nunc pharetra porttitor lobortis, felis odio hendrerit mi, id ultricies urna enim quis lectus. Suspendisse convallis ipsum egestas velit fermentum ac volutpat dui dictum. Pellentesque sed ultrices justo. Ut lacus odio, porttitor quis tincidunt at, imperdiet vel eros. Duis ac velit neque. Integer semper egestas odio id suscipit. Maecenas eu diam in urna fringilla viverra eget sit amet ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p>Praesent pulvinar, lorem nec ullamcorper semper, ipsum erat vestibulum lacus, in sodales lorem mi in leo. Vestibulum et rhoncus tellus. Curabitur mauris enim, vehicula sit amet euismod a, eleifend at dui. Vivamus sollicitudin, nunc pharetra porttitor lobortis, felis odio hendrerit mi, id ultricies urna enim quis lectus. Suspendisse convallis ipsum egestas velit fermentum ac volutpat dui dictum. Pellentesque sed ultrices justo. Ut lacus odio, porttitor quis tincidunt at, imperdiet vel eros. Duis ac velit neque. Integer semper egestas odio id suscipit. Maecenas eu diam in urna fringilla viverra eget sit amet ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li>
+            <h2>Who controls the ALISS content?</h2>
+            <p>Nunc adipiscing purus id orci rutrum placerat. Nam posuere elementum ipsum quis faucibus. Fusce fermentum turpis ac erat mollis sit amet varius mi placerat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut ante justo, varius quis dignissim nec, condimentum in dui. Nulla sed lectus eu nunc vehicula vulputate vel nec velit. Integer eu purus nunc. Donec odio augue, sagittis pellentesque adipiscing id, dignissim vel enim. Maecenas a risus est.</p></li>
+            <li>
+            <h2>Is the content safe?</h2>
+            <p>Praesent dapibus metus vitae velit blandit tempor. Donec dignissim tempus neque, a vestibulum massa aliquam sed. Vestibulum velit quam, facilisis vel pharetra nec, bibendum eget mauris. In vitae ligula ac justo varius ullamcorper. Nullam vitae urna eu metus pellentesque vehicula vel sit amet nibh. Cras nec velit dictum neque imperdiet congue in nec eros. Suspendisse ante felis, eleifend sed pellentesque id, sagittis ut magna. .</p></li>                        
+            <li>
+            <h2>Do we really need another web site to find information?</h2>
+            <p>Praesent dapibus metus vitae velit blandit tempor. Donec dignissim tempus neque, a vestibulum massa aliquam sed. Vestibulum velit quam, facilisis vel pharetra nec, bibendum eget mauris. In vitae ligula ac justo varius ullamcorper. Nullam vitae urna eu metus pellentesque vehicula vel sit amet nibh. Cras nec velit dictum neque imperdiet congue in nec eros. Suspendisse ante felis, eleifend sed pellentesque id, sagittis ut magna. .</p></li>                        
+            <li>
+            <h2>Why don't we just use Google?</h2>
+            <p>Praesent dapibus metus vitae velit blandit tempor. Donec dignissim tempus neque, a vestibulum massa aliquam sed. Vestibulum velit quam, facilisis vel pharetra nec, bibendum eget mauris. In vitae ligula ac justo varius ullamcorper. Nullam vitae urna eu metus pellentesque vehicula vel sit amet nibh. Cras nec velit dictum neque imperdiet congue in nec eros. Suspendisse ante felis, eleifend sed pellentesque id, sagittis ut magna. .</p></li>                        
+            <li>
+            <h2>Is the content safe?</h2>
+            <p>Praesent dapibus metus vitae velit blandit tempor. Donec dignissim tempus neque, a vestibulum massa aliquam sed. Vestibulum velit quam, facilisis vel pharetra nec, bibendum eget mauris. In vitae ligula ac justo varius ullamcorper. Nullam vitae urna eu metus pellentesque vehicula vel sit amet nibh. Cras nec velit dictum neque imperdiet congue in nec eros. Suspendisse ante felis, eleifend sed pellentesque id, sagittis ut magna. .</p></li>                        
+        </ul>
+    </div> 
+
+<div class="article-holder group">
+<div class="article grid_4 alpha">
+<h3>Blog</h3>
+<p>The <a href="http://www.aliss.scot.nhs.uk/">ALISS project blog</a> is your first stop to get background on the project, news of current work, and find out about upcoming events.</p>
+{% get_feed_items as items %}
 
 <ul>
-    <li><a href="http://www.aliss.scot.nhs.uk/">ALISS project blog</a></li>
-    <li><a href="http://twitter.com/alissproject">@ALISSproject on Twitter</a></li>
-    <li><a href="http://github.com/snowcloud/engineclub/">EngineClub code on Github</a></li>
-    <li><a href="http://alissproject.ning.com/">Ning community site for ALISS innovation workshop</a></li>
-        
+{% for item in items  %}
+    <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+{% endfor %}
 </ul>
 
-<hr>
-<p><a href="/depot/item/">view example data</a></p>
+<p><a href="http://www.aliss.scot.nhs.uk/">more...</a></p>
 
-{% endblock %}
+</div>
+
+<div class="article grid_4">
+    <h3 class="twitterlinks">Twitter</h3>
+    
+    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+    <script>
+    new TWTR.Widget({
+      version: 2,
+      type: 'profile',
+      rpp: 4,
+      interval: 6000,
+      width: 'auto',
+      height: 300,
+      theme: {
+        shell: {
+          background: '#ebeaed',
+          color: '#eb410e'
+        },
+        tweets: {
+          background: '#fcfcfc',
+          color: '#030303',
+          links: '#5f89bf'
+        }
+      },
+      features: {
+        scrollbar: false,
+        loop: false,
+        live: false,
+        hashtags: false,
+        timestamp: false,
+        avatars: false,
+        behavior: 'all'
+      }
+    }).render().setUser('alissproject').start();
+    </script>
+    
+</div>
+
+<div class="article grid_4 omega">
+<h3>Engine</h3>
+
+<p>The <a href="http://www.aliss.scot.nhs.uk/?page_id=805">ALISS Engine demonstration</a> shows how the ALISS engine can be used by other systems all over Scotland.</p>
+
+<p>If you want to find more technical details visit the <a href="">ALISS Engine Club</a>, where you can read documentation, specifications, and the code. It's all open source.</p>
+</div>
+
+</div>
+</div>
+
+{%endblock%}

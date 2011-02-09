@@ -9,6 +9,7 @@ psycopg2
 -e hg+http://bitbucket.org/ubernostrum/django-contact-form/#egg=django-contact-form
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 beautifulsoup
+feedparser
 
 # python-placemaker forked to add setup.py
 -e git+git://github.com/snowcloud/python-placemaker.git#egg=placemaker
