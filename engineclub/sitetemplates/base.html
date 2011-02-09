@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <title>aliss.org</title>
-    <script type='text/javascript' src='static/js/modernizr-1.6.min.js'></script>
+    <script type='text/javascript' src='/static/js/modernizr-1.6.min.js'></script>
     <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
     <script src="http://scripts.embed.ly/jquery.embedly.min.js"></script>
     
-    <link rel="stylesheet" type="text/css" media="all" href="static/css/screen.css" />
-    <!--[if IE 6]> <link rel="stylesheet" href="static/css/ie6.css" media="screen, projection">
+    <link rel="stylesheet" type="text/css" media="all" href="/static/css/screen.css" />
+    <!--[if IE 6]> <link rel="stylesheet" href="/static/css/ie6.css" media="screen, projection">
     <![endif]-->
     <script type="text/javascript" src="http://use.typekit.com/raw4saf.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -30,14 +30,14 @@
     <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
     <div id="header">
      
-    <h1><a href="index.html">aliss<span class="domain">.org</span></a></h1>
+    <h1><a href="/">aliss<span class="domain">.org</span></a></h1>
     <div id="headercontents">
     <ul id="sitenav">
-        <li><a href="index.html">home</a></li>
-        <li><a href="about.html">about</a></li>
+        <li><a href="/">home</a></li>
+        <li><a href="/about/">about</a></li>
         {# <li><a href="project-info.html">info</a></li> #}
-        <li><a href="">contact</a></li>
-        <li><a href="">admin</a></li>
+        <li><a href="/contact/">contact</a></li>
+        <li><a href="/admin/">admin</a></li>
     </ul>
     </div>  
     <!-- <ul id="usernav">
@@ -47,7 +47,16 @@
     </ul> -->
     </div>
 <div id="main" class="group">
-{% block content_body %}{% endblock %}
+    {% if messages %}
+	  <div class="message">
+	    <ul> 
+	        {% for message in messages %} 
+	            <li class="{{ message.tags }}">{{ message|safe }}</li>
+	        {% endfor %}
+	    </ul>
+	  </div>
+	{% endif %}
+	{% block content %}&nbsp;{% endblock %}
 </div>
 <div id="footer">
     {% block footer-extra %}{% endblock %}
