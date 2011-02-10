@@ -37,7 +37,9 @@
         <li><a href="/about/">about</a></li>
         {# <li><a href="project-info.html">info</a></li> #}
         <li><a href="/contact/">contact</a></li>
-        <li><a href="/admin/">admin</a></li>
+        {% if user.is_staff %}
+            <li><a href="/admin/">admin</a></li>
+        {% endif %}
     </ul>
     </div>  
     <!-- <ul id="usernav">
