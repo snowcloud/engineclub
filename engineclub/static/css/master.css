@@ -142,6 +142,9 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     font-size: 22px;
     xcolor: #5e5e5e;
 }
+.twitterlinks a, .twitterlinks a:hover, .twitterlinks a:visited { border-bottom-style: none; border-bottom-width: 0; }
+a.twtr-hyperlink,  a.twtr-hyperlink:hover, a.twtr-hyperlink:visited { border-bottom: 1px dotted #919191;}
+
 #footer {
     background: #000 none repeat scroll 0 0;
     border-top: 13px solid #c74a14;
