@@ -9,8 +9,8 @@ CSS3 + vendor-specific styles
 --------------------------------------------- */
 
 a:link, a:visited {
-	-webkit-transition: color .2s linear;
+	-webkit-transition: color .4s linear;
 	}
 a:hover {
-	color: rgba(21,58,10,.8);
+	color: rgba(12,37,37,0.6);
 	}

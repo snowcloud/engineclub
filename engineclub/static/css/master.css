@@ -27,6 +27,7 @@ a, a:visited  { color: #325e90; text-decoration: none; }
 a:hover { color: #244a77; background-color: #c6dded; }
 a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 
+.article li { padding-bottom: 0.5em;  }
 /* positions skip nav off screen until tabbed into 
     
 */
