@@ -24,7 +24,7 @@ h1, h2, h3, h4 {
 .media a, .media a:hover, .media a:visited { color: #fffeff; }
 
 a, a:visited  { color: #325e90; text-decoration: none; }
-a:hover { color: #2f5c8f; background-color: #c6dded; }
+a:hover { color: #244a77; background-color: #c6dded; }
 a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 
 /* positions skip nav off screen until tabbed into 
