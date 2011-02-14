@@ -22,8 +22,8 @@
     "model": "flatpages.flatpage", 
     "fields": {
       "registration_required": false, 
-      "title": "Information", 
-      "url": "/info/", 
+      "title": "About", 
+      "url": "/about/", 
       "template_name": "", 
       "sites": [
         1
