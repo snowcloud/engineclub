@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +13,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Engineclub v0.2 documentation" href="../index.html" />
     <link rel="prev" title="Engineclub API" href="api.html" /> 
@@ -70,6 +72,9 @@
 <td>list of Resource</td>
 </tr>
 <tr><td>locations</td>
+<td>list of Location</td>
+</tr>
+<tr><td>service_area</td>
 <td>list of Location</td>
 </tr>
 <tr><td>moderations</td>
@@ -299,41 +304,41 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Data model</a><ul>
-<li><a class="reference external" href="#item">Item</a></li>
-<li><a class="reference external" href="#resource">Resource</a></li>
-<li><a class="reference external" href="#location">Location</a></li>
-<li><a class="reference external" href="#moderation">Moderation</a></li>
-<li><a class="reference external" href="#curation">Curation</a></li>
-<li><a class="reference external" href="#relatedmetadata">RelatedMetadata</a></li>
-<li><a class="reference external" href="#itemmetadata">ItemMetadata</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data model</a><ul>
+<li><a class="reference internal" href="#item">Item</a></li>
+<li><a class="reference internal" href="#resource">Resource</a></li>
+<li><a class="reference internal" href="#location">Location</a></li>
+<li><a class="reference internal" href="#moderation">Moderation</a></li>
+<li><a class="reference internal" href="#curation">Curation</a></li>
+<li><a class="reference internal" href="#relatedmetadata">RelatedMetadata</a></li>
+<li><a class="reference internal" href="#itemmetadata">ItemMetadata</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="api.html"
-                                  title="previous chapter">Engineclub API</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/depot/data-model.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Engineclub API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/depot/data-model.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -351,8 +356,8 @@
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+        &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

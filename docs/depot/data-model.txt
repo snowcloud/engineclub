@@ -17,7 +17,8 @@ id                      ObjectID *
 title                   string
 description             string
 resources               list of Resource
-locations               list of Location 
+locations               list of Location
+service_area            list of Location 
 moderations             list of Moderation 
 tags                    list of string
 index_keys              list of string

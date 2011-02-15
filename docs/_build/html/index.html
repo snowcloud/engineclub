@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +11,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.2',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Engineclub v0.2 documentation" href="#" />
     <link rel="next" title="Engineclub API" href="depot/api.html" /> 
@@ -60,27 +62,29 @@
 <div class="section" id="depot">
 <h2>depot<a class="headerlink" href="#depot" title="Permalink to this headline">¶</a></h2>
 <p>storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="depot/api.html">Engineclub API</a><ul>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#retrieve-an-item-by-id">Retrieve an item by id</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#retrieve-items-by-location-and-or-categories">Retrieve items by location and/or categories</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#submit-an-item">Submit an item</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#update-an-item">Update an item</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#submit-a-moderation">Submit a moderation</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/api.html#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li class="toctree-l1"><a class="reference internal" href="depot/api.html">Engineclub API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-an-item-by-id">Retrieve an item by id</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-items-by-location-and-or-categories">Retrieve items by location and/or categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-item">Submit an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#update-an-item">Update an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-a-moderation">Submit a moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="depot/data-model.html">Data model</a><ul>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#item">Item</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#resource">Resource</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#location">Location</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#moderation">Moderation</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#curation">Curation</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#relatedmetadata">RelatedMetadata</a></li>
-<li class="toctree-l2"><a class="reference external" href="depot/data-model.html#itemmetadata">ItemMetadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="depot/data-model.html">Data model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#item">Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#resource">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#location">Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#moderation">Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#curation">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#relatedmetadata">RelatedMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#itemmetadata">ItemMetadata</a></li>
 </ul>
 </li>
 </ul>
+</div>
 <p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot">Code for depot app</a></p>
 </div>
 <div class="section" id="enginecab">
@@ -120,9 +124,9 @@ You can then log in with username: admin and password: admin</p>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
 </ul>
 <p>Theme: <a class="reference external" href="http://github.com/bartTC/sphinx-schemes">Nature</a></p>
 </div>
@@ -134,45 +138,45 @@ You can then log in with username: admin and password: admin</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="#">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Engineclub</a><ul>
-<li><a class="reference external" href="#home">home</a></li>
-<li><a class="reference external" href="#depot">depot</a><ul>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Engineclub</a><ul>
+<li><a class="reference internal" href="#home">home</a></li>
+<li><a class="reference internal" href="#depot">depot</a><ul>
 </ul>
 </li>
-<li><a class="reference external" href="#enginecab">enginecab</a></li>
-<li><a class="reference external" href="#firebox">firebox</a></li>
-<li><a class="reference external" href="#ecutils">ecutils</a></li>
+<li><a class="reference internal" href="#enginecab">enginecab</a></li>
+<li><a class="reference internal" href="#firebox">firebox</a></li>
+<li><a class="reference internal" href="#ecutils">ecutils</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#installation-instructions">Installation instructions</a><ul>
-<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#installation-instructions">Installation instructions</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Next topic</h4>
-            <p class="topless"><a href="depot/api.html"
-                                  title="next chapter">Engineclub API</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/index.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="depot/api.html"
+                        title="next chapter">Engineclub API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -190,8 +194,8 @@ You can then log in with username: admin and password: admin</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+        &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
