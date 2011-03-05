@@ -26,6 +26,10 @@ related_metadata        list of RelatedMetadata
 item_metadata           ItemMetadata
 ==================      =========================================================================
 
+item_type organisation, class, one-off event,  
+event scheduling
+
+
 \* `BSON ObjectID Specification`_
 
 .. Resource
@@ -69,6 +73,7 @@ country                 string
 country_ref             URI
 note                    string
 ==================      =========================================================================
+ref source + URI
 
 .. Moderation
 
