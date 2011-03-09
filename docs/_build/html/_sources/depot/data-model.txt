@@ -24,7 +24,7 @@ curations               list of :ref:`curation`
 tags                    list of string
 index_keys              list of string
 related                 list of :ref:`related`
-related_metadata        list of :ref:`relatedMetadata`
+added_metadata          list of :ref:`relatedMetadata`
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
