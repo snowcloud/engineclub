@@ -23,7 +23,7 @@ moderations             list of :ref:`moderation`
 curations               list of :ref:`curation` 
 tags                    list of string
 index_keys              list of string
-related                 list of :ref:`related`
+related                 list of :ref:`relatedResource`
 added_metadata          list of :ref:`addedMetadata`
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
@@ -33,9 +33,9 @@ item_metadata           :ref:`itemMetadata`
 ? item_type organisation, class, one-off event,  
 event scheduling
 
-.. _related:
+.. _relatedResource:
 
-Related
+RelatedResource
 =========================
 
 ==================      =========================================================================
