@@ -4,35 +4,7 @@ Data model
 
 This data model is under rapid development at the moment, and is not stable.
 
-.. Item
-
-Item
-=========================
-
-
-==================      =========================================================================
-field name              type
-==================      =========================================================================
-id                      ObjectID *
-title                   string
-description             string
-resources               list of Resource
-locations               list of Location
-service_area            list of Location 
-moderations             list of Moderation 
-tags                    list of string
-index_keys              list of string
-related_metadata        list of RelatedMetadata
-item_metadata           ItemMetadata
-==================      =========================================================================
-
-item_type organisation, class, one-off event,  
-event scheduling
-
-
-\* `BSON ObjectID Specification`_
-
-.. Resource
+.. _resource:
 
 Resource
 =========================
@@ -40,14 +12,42 @@ Resource
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-resource_type           string ['web', 'group', ...]
-url                     string [web URI format]
+id                      ObjectID *
 title                   string
 description             string
-item_metadata           ItemMetadata
+resource_type           string ['web', 'group', ...]
+url                     string [web URI format]
+locations               list of :ref:`location`
+service_area            list of :ref:`location` 
+moderations             list of :ref:`moderation` 
+curations               list of :ref:`curation` 
+tags                    list of string
+index_keys              list of string
+related                 list of :ref:`related`
+related_metadata        list of :ref:`relatedMetadata`
+item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
-.. Location
+\* `BSON ObjectID Specification`_
+
+? item_type organisation, class, one-off event,  
+event scheduling
+
+.. _related:
+
+Related
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+source                  :ref:`resource`
+target                  :ref:`resource`
+rel_type                string ['provider', 'about']
+item_metadata           :ref:`itemMetadata`
+==================      =========================================================================
+
+.. _location:
 
 Location
 =========================
@@ -73,9 +73,10 @@ country                 string
 country_ref             URI
 note                    string
 ==================      =========================================================================
+
 ref source + URI
 
-.. Moderation
+.. _moderation:
 
 Moderation
 =========================
@@ -85,10 +86,10 @@ field name              type
 ==================      =========================================================================
 outcome                 string ['OK', 'block', 'refer']
 note                    string
-item_metadata           ItemMetadata
+item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
-.. Curation
+.. _curation:
 
 Curation
 =========================
@@ -100,11 +101,11 @@ outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
 note                    string
-item_metadata           ItemMetadata
+item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
 
-.. RelatedMetadata
+.. _relatedMetadata:
 
 RelatedMetadata
 =========================
@@ -117,11 +118,11 @@ RelatedMetadata
 field name              type
 ==================      ======================================================
 data                    dict (dictionary with field names as keys)
-item_metadata           ItemMetadata
+item_metadata           :ref:`itemMetadata`
 ==================      ======================================================
 
 
-.. ItemMetadata
+.. _itemMetadata:
 
 ItemMetadata 
 =========================

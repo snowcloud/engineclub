@@ -46,8 +46,8 @@
   <div class="section" id="data-model">
 <h1>Data model<a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h1>
 <p>This data model is under rapid development at the moment, and is not stable.</p>
-<div class="section" id="item">
-<h2>Item<a class="headerlink" href="#item" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="resource">
+<span id="id1"></span><h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -68,17 +68,23 @@
 <tr><td>description</td>
 <td>string</td>
 </tr>
-<tr><td>resources</td>
-<td>list of Resource</td>
+<tr><td>resource_type</td>
+<td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
+</tr>
+<tr><td>url</td>
+<td>string [web URI format]</td>
 </tr>
 <tr><td>locations</td>
-<td>list of Location</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
 </tr>
 <tr><td>service_area</td>
-<td>list of Location</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
 </tr>
 <tr><td>moderations</td>
-<td>list of Moderation</td>
+<td>list of <a class="reference internal" href="#moderation"><em>Moderation</em></a></td>
+</tr>
+<tr><td>curations</td>
+<td>list of <a class="reference internal" href="#curation"><em>Curation</em></a></td>
 </tr>
 <tr><td>tags</td>
 <td>list of string</td>
@@ -86,18 +92,23 @@
 <tr><td>index_keys</td>
 <td>list of string</td>
 </tr>
+<tr><td>related</td>
+<td>list of <a class="reference internal" href="#related"><em>Related</em></a></td>
+</tr>
 <tr><td>related_metadata</td>
-<td>list of RelatedMetadata</td>
+<td>list of <a class="reference internal" href="#relatedmetadata"><em>RelatedMetadata</em></a></td>
 </tr>
 <tr><td>item_metadata</td>
-<td>ItemMetadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
 <p>* <a class="reference external" href="http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification">BSON ObjectID Specification</a></p>
+<p>? item_type organisation, class, one-off event,
+event scheduling</p>
 </div>
-<div class="section" id="resource">
-<h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="related">
+<span id="id2"></span><h2>Related<a class="headerlink" href="#related" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -109,26 +120,23 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>resource_type</td>
-<td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
+<tr><td>source</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
 </tr>
-<tr><td>url</td>
-<td>string [web URI format]</td>
+<tr><td>target</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
 </tr>
-<tr><td>title</td>
-<td>string</td>
-</tr>
-<tr><td>description</td>
-<td>string</td>
+<tr><td>rel_type</td>
+<td>string [&#8216;provider&#8217;, &#8216;about&#8217;]</td>
 </tr>
 <tr><td>item_metadata</td>
-<td>ItemMetadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="location">
-<h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
 <p><em>Revised to use Ordnance Survey data.</em></p>
 <p><em>Current fields support post code- more fields to be added for higher level units.</em></p>
 <table border="1" class="docutils">
@@ -186,9 +194,10 @@
 </tr>
 </tbody>
 </table>
+<p>ref source + URI</p>
 </div>
 <div class="section" id="moderation">
-<h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
+<span id="id4"></span><h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -207,13 +216,13 @@
 <td>string</td>
 </tr>
 <tr><td>item_metadata</td>
-<td>ItemMetadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="curation">
-<h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
+<span id="id5"></span><h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -238,13 +247,13 @@
 <td>string</td>
 </tr>
 <tr><td>item_metadata</td>
-<td>ItemMetadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="relatedmetadata">
-<h2>RelatedMetadata<a class="headerlink" href="#relatedmetadata" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>RelatedMetadata<a class="headerlink" href="#relatedmetadata" title="Permalink to this headline">¶</a></h2>
 <p><em>This will be used to allow trusted accounts to add their own metadata using their own schema.</em></p>
 <p><em>Data will be converted to required formats on client access (may be cached for performance)</em></p>
 <table border="1" class="docutils">
@@ -262,13 +271,13 @@
 <td>dict (dictionary with field names as keys)</td>
 </tr>
 <tr><td>item_metadata</td>
-<td>ItemMetadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="itemmetadata">
-<h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
+<span id="id7"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
 <p><em>To be updated with Dublin core.</em></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -307,8 +316,8 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Data model</a><ul>
-<li><a class="reference internal" href="#item">Item</a></li>
 <li><a class="reference internal" href="#resource">Resource</a></li>
+<li><a class="reference internal" href="#related">Related</a></li>
 <li><a class="reference internal" href="#location">Location</a></li>
 <li><a class="reference internal" href="#moderation">Moderation</a></li>
 <li><a class="reference internal" href="#curation">Curation</a></li>
