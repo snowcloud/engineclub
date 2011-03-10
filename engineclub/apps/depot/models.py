@@ -22,14 +22,6 @@ class ItemMetadata(EmbeddedDocument):
     shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
     note = StringField()
-
-class Resource(EmbeddedDocument):
-    """docstring for Resource"""
-    resource_type = StringField()
-    url = StringField()
-    title = StringField()
-    description = StringField()
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
             
 class Location(Document):
     """Location document, based on Ordnance Survey data"""
@@ -61,7 +53,7 @@ class Curation(EmbeddedDocument):
     note = StringField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-class RelatedMetadata(EmbeddedDocument):
+class AddedMetadata(EmbeddedDocument):
     data = DictField()
     # format = StringField() not needed- store in the dict and put out in formats for clients
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
@@ -90,19 +82,29 @@ class RelatedMetadata(EmbeddedDocument):
 #         }
 #     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
+class RelatedResource(Document):
+    """docstring for Resource"""
+    # source    ReferenceField(Resource)
+    # target    ReferenceField(Resource)
+    # rel_type  string 
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
+
 class Item(Document):
     """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
     # uri = StringField(unique=True, required=True)
     title = StringField(required=True)
     description = StringField()
-    resources = ListField(EmbeddedDocumentField(Resource))
+    resource_type = StringField()
+    url = StringField()
     locations = ListField(ReferenceField(Location), default=list)
+    service_area = ListField(ReferenceField(Location), default=list)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     # _keywords = ListField(StringField(max_length=96), default=list)
     index_keys = ListField(StringField(max_length=96), default=list)
-    related_metadata = ListField(EmbeddedDocumentField(RelatedMetadata))
+    related_resources = ListField(ReferenceField(RelatedResource))
+    added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
@@ -115,10 +117,10 @@ class Item(Document):
             self.item_metadata.author = author
         created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         super(Item, self).save(*args, **kwargs)
-        if created:
-            # TODO
-            # print 'i am new- email me'
-            pass
+        # if created:
+        #     # TODO
+        #     # print 'i am new- email me'
+        #     pass
 
     def add_locations(self, new_locations):
         """docstring for add_locations"""

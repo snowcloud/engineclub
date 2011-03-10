@@ -19,3 +19,5 @@ pymongo>=1.9
 mongoengine
 # reqd by mongoengine and not in python 2.5
 multiprocessing
+
+# git://github.com/toastdriven/django-tastypie.git
