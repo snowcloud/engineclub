@@ -82,14 +82,7 @@ class AddedMetadata(EmbeddedDocument):
 #         }
 #     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
-class RelatedResource(Document):
-    """docstring for Resource"""
-    # source    ReferenceField(Resource)
-    # target    ReferenceField(Resource)
-    # rel_type  string 
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
-
-class Item(Document):
+class Resource(Document):
     """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
     # uri = StringField(unique=True, required=True)
     title = StringField(required=True)
@@ -103,12 +96,12 @@ class Item(Document):
     tags = ListField(StringField(max_length=96), default=list)
     # _keywords = ListField(StringField(max_length=96), default=list)
     index_keys = ListField(StringField(max_length=96), default=list)
-    related_resources = ListField(ReferenceField(RelatedResource))
+    related_resources = ListField(ReferenceField('RelatedResource'))
     added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     # def __init__(self, *args, **kwargs):
-    #     super(Item, self).__init__(*args, **kwargs)
+    #     super(Resource, self).__init__(*args, **kwargs)
     #     print 'item __init__'
         
     def save(self, author=None, *args, **kwargs):
@@ -116,7 +109,7 @@ class Item(Document):
         if author:
             self.item_metadata.author = author
         created = (self.id is None) # and not self.url.startswith('http://test.example.com')
-        super(Item, self).save(*args, **kwargs)
+        super(Resource, self).save(*args, **kwargs)
         # if created:
         #     # TODO
         #     # print 'i am new- email me'
@@ -143,6 +136,13 @@ class Item(Document):
         return self.index_keys or []
     # keywords = property(get_keywords)
 
+class RelatedResource(Document):
+    """docstring for RelatedResource"""
+    source = ReferenceField(Resource)
+    target = ReferenceField(Resource)
+    rel_type = StringField()
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
+
 def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
     """uses mongodb geo index to find num nearest locations to lat, lon parameters.
         returns list of dicts, each dict has:
@@ -159,9 +159,9 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
         res['dis'] = res['dis'] * 111.12 # convert to Km
         if len(categories) > 0:
             # print 'using cats ', len(categories)
-            res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
+            res['items'] = list(Resource.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
         else:
-            res['items'] = list(Item.objects(locations__in=[res['obj']['woeid']]))
+            res['items'] = list(Resource.objects(locations__in=[res['obj']['woeid']]))
     return [res for res in results if res['items']]
 
 

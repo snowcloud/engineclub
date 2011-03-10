@@ -8,7 +8,7 @@ from django.template import RequestContext
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 
-from depot.models import Item, Location, get_nearest,  \
+from depot.models import Resource, Location, get_nearest,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import *
 from firebox.views import get_terms
@@ -18,14 +18,14 @@ from firebox.views import get_terms
 
 def get_one_or_404(**kwargs):
     try:
-       object = Item.objects.get(**kwargs)
+       object = Resource.objects.get(**kwargs)
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
     
 def item_index(request):
 
-    objects = Item.objects
+    objects = Resource.objects
     return render_to_response('depot/item_list.html',
         RequestContext( request, { 'objects': objects }))
 
@@ -52,15 +52,15 @@ def item_add(request):
     """adds a new item"""
     
     template_info = _template_info(request.REQUEST.get('popup', ''))
-    # formclass = ShortItemForm
+    # formclass = ShortResourceForm
     template = 'depot/item_edit.html'
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
             return item_edit_complete(request, None, template_info)
-        form = ShortItemForm(request.POST)
+        form = ShortResourceForm(request.POST)
         if form.is_valid():
-            item = Item(**form.cleaned_data)
+            item = Resource(**form.cleaned_data)
             # item.metadata.author = str(request.user.id)
             try:
                 # item.collection_status = COLL_STATUS_LOC_CONF
@@ -78,7 +78,7 @@ def item_add(request):
             'title': request.GET.get('title', ''),
             'description': description[:1250]
             }
-        form = ShortItemForm(initial=initial)
+        form = ShortResourceForm(initial=initial)
     
     return render_to_response(template,
         RequestContext( request, {'itemform': form, 'template_info': template_info }))
@@ -106,7 +106,7 @@ def item_edit(request, object_id):
         result = request.POST.get('result', '')
         if result == 'Cancel':
             return item_edit_complete(request, item, template_info)
-        itemform = ShortItemForm(request.POST, instance=item)
+        itemform = ShortResourceForm(request.POST, instance=item)
         locationform = LocationUpdateForm(request.POST, instance=item)
         tagsform = TagsForm(request.POST, instance=item)
         shelflifeform = ShelflifeForm(request.POST, instance=item)
@@ -143,7 +143,7 @@ def item_edit(request, object_id):
                     pass
 
     else:
-        itemform = ShortItemForm(instance=item)
+        itemform = ShortResourceForm(instance=item)
         locationform = LocationUpdateForm(instance=item)
         if not item.locations:
             doc = item.url
@@ -187,7 +187,7 @@ def item_find(request):
         result = request.POST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('item-list'))
-        form = FindItemForm(request.POST)
+        form = FindResourceForm(request.POST)
     
         if form.is_valid():
             locations = form.locations
@@ -195,7 +195,7 @@ def item_find(request):
             # pins = [loc['obj'] for loc in locations]
             
     else:
-        form = FindItemForm(initial={ 'post_code': 'Edinburgh, EH17'})
+        form = FindResourceForm(initial={ 'post_code': 'Edinburgh, EH17'})
 
     # print places
     return render_to_response('depot/item_find.html',

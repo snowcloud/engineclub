@@ -10,7 +10,7 @@ setup_environ(settings_test)
 from depot.models import Location, load_item_data
 
 def _load_data(self):
-	"""loads fixture data for test Items"""
+	"""loads fixture data for test Resources"""
 	item_data = open('%s/apps/depot/fixtures/items.json' % settings.PROJECT_PATH, 'rU')
 	load_item_data('item', item_data)
 	item_data.close()

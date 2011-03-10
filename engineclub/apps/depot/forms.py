@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Item, Location, get_nearest
+from depot.models import Resource, Location, get_nearest
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
@@ -52,7 +52,7 @@ class DocumentForm(forms.Form):
             self.instance.save()
         return self.instance
 
-class FindItemForm(forms.Form):
+class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(help_text='enter a post code or a place name', required=True)
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
@@ -60,7 +60,7 @@ class FindItemForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.locations = []
         self.centre = None
-        super(FindItemForm, self).__init__(*args, **kwargs)
+        super(FindResourceForm, self).__init__(*args, **kwargs)
 
     # def clean_post_code(self):
     #     data = self.cleaned_data['post_code']
@@ -103,7 +103,7 @@ class FindItemForm(forms.Form):
         return cleaned_data
 
         
-class ShortItemForm(DocumentForm):
+class ShortResourceForm(DocumentForm):
 
     uri = forms.CharField()
     title = forms.CharField()
@@ -112,7 +112,7 @@ class ShortItemForm(DocumentForm):
     def clean_uri(self):
         data = self.cleaned_data['uri']
         try:
-            item =Item.objects.get(uri=data)
+            item =Resource.objects.get(uri=data)
             if not (self.instance and (self.instance.uri == data)):
                 raise forms.ValidationError("There is already an item with this uri")
         except DoesNotExist:

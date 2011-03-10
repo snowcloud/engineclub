@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from django.core import serializers 
 
-from depot.models import Item, update_keyword_index
+from depot.models import Resource, update_keyword_index
 
 from mongoengine.connection import _get_db as get_db
 
@@ -59,7 +59,7 @@ class JsonResponse(HttpResponse):
 def item_resource(request, id):
     """docstring for item_resource"""
     error = ''
-    item = Item.objects.get(id=id)
+    item = Resource.objects.get(id=id)
     # print item.title
     return JsonResponse(data=[item.title, unicode(item.id), item.description])
     
