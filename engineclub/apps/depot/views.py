@@ -23,17 +23,17 @@ def get_one_or_404(**kwargs):
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
     
-def item_index(request):
+def resource_index(request):
 
     objects = Resource.objects
-    return render_to_response('depot/item_list.html',
+    return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
 
-def item_detail(request, object_id):
+def resource_detail(request, object_id):
 
     object = get_one_or_404(id=object_id)
 
-    return render_to_response('depot/item_detail.html',
+    return render_to_response('depot/resource_detail.html',
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
 
 def _template_info(popup):
@@ -43,31 +43,31 @@ def _template_info(popup):
     else:
         return {'popup': popup, 'base': 'base.html'}
 
-def update_item_metadata(self, item, request):
-    """docstring for update_item_metadata"""
-    item.metadata.author = str(request.user.id)
+def update_resource_metadata(self, resource, request):
+    """docstring for update_resource_metadata"""
+    resource.metadata.author = str(request.user.id)
      
 @login_required
-def item_add(request):
-    """adds a new item"""
+def resource_add(request):
+    """adds a new resource"""
     
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
-    template = 'depot/item_edit.html'
+    template = 'depot/resource_edit.html'
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
-            return item_edit_complete(request, None, template_info)
+            return resource_edit_complete(request, None, template_info)
         form = ShortResourceForm(request.POST)
         if form.is_valid():
-            item = Resource(**form.cleaned_data)
-            # item.metadata.author = str(request.user.id)
+            resource = Resource(**form.cleaned_data)
+            # resource.metadata.author = str(request.user.id)
             try:
-                # item.collection_status = COLL_STATUS_LOC_CONF
-                item.save(str(request.user.id))
+                # resource.collection_status = COLL_STATUS_LOC_CONF
+                resource.save(str(request.user.id))
                 # if popup:
-                #     return HttpResponseRedirect(reverse('item-popup-close'))
-                return HttpResponseRedirect('%s?popup=%s' % (reverse('item-edit', args=[item.id]), template_info['popup']))
+                #     return HttpResponseRedirect(reverse('resource-popup-close'))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('resource-edit', args=[resource.id]), template_info['popup']))
             except OperationError:
                 pass
             
@@ -81,23 +81,23 @@ def item_add(request):
         form = ShortResourceForm(initial=initial)
     
     return render_to_response(template,
-        RequestContext( request, {'itemform': form, 'template_info': template_info }))
+        RequestContext( request, {'resourceform': form, 'template_info': template_info }))
 
 @login_required
-def item_remove(request, object_id):
+def resource_remove(request, object_id):
     object = get_one_or_404(id=object_id)
     object.delete()
-    return HttpResponseRedirect(reverse('item-list'))
+    return HttpResponseRedirect(reverse('resource-list'))
 
 @login_required
-def item_edit(request, object_id):
-    """ edits an existing item. Uses a wizard-like approach, so checks item.collection_status
-        and hands off to item_* function handler
+def resource_edit(request, object_id):
+    """ edits an existing resource. Uses a wizard-like approach, so checks resource.collection_status
+        and hands off to resource_* function handler
     """
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
     
-    item = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=object_id)
     doc = ''
     places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
@@ -105,19 +105,19 @@ def item_edit(request, object_id):
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
-            return item_edit_complete(request, item, template_info)
-        itemform = ShortResourceForm(request.POST, instance=item)
-        locationform = LocationUpdateForm(request.POST, instance=item)
-        tagsform = TagsForm(request.POST, instance=item)
-        shelflifeform = ShelflifeForm(request.POST, instance=item)
+            return resource_edit_complete(request, resource, template_info)
+        resourceform = ShortResourceForm(request.POST, instance=resource)
+        locationform = LocationUpdateForm(request.POST, instance=resource)
+        tagsform = TagsForm(request.POST, instance=resource)
+        shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
-        if itemform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
+        if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
             if result == UPDATE_LOCS:
-                places = fix_places(item.locations, locationform.content() or item.url)
+                places = fix_places(resource.locations, locationform.content() or resource.url)
             elif result == UPDATE_TAGS:
-                places = fix_places(item.locations, locationform.content() or item.url)
+                places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
-                item = itemform.save()
+                resource = resourceform.save()
                 
                 # read location checkboxes
                 cb_places = request.POST.getlist('cb_places')
@@ -125,50 +125,50 @@ def item_edit(request, object_id):
                 for loc in cb_places:
                     locations.append(location_from_cb_value(loc).woeid)
                 # if len(locations) > 0:
-                item.locations = locations
+                resource.locations = locations
 
-                item = tagsform.save()
-                item = shelflifeform.save()
+                resource = tagsform.save()
+                resource = shelflifeform.save()
             
                 try:
-                    item.save(str(request.user.id))
+                    resource.save(str(request.user.id))
                     try:
-                        keys = get_terms(item.url)
+                        keys = get_terms(resource.url)
                     except:
                         keys = [] # need to fail silently here
-                    item.make_keys(keys)
-                    return item_edit_complete(request, item, template_info)
-                    # return HttpResponseRedirect('%s?popup=%s' % (reverse('item', args=[item.id]), template_info['popup']))
+                    resource.make_keys(keys)
+                    return resource_edit_complete(request, resource, template_info)
+                    # return HttpResponseRedirect('%s?popup=%s' % (reverse('resource', args=[resource.id]), template_info['popup']))
                 except OperationError:
                     pass
 
     else:
-        itemform = ShortResourceForm(instance=item)
-        locationform = LocationUpdateForm(instance=item)
-        if not item.locations:
-            doc = item.url
-        places = fix_places(item.locations, doc)
-        tagsform = TagsForm(instance=item)
-        shelflifeform = ShelflifeForm(instance=item)
+        resourceform = ShortResourceForm(instance=resource)
+        locationform = LocationUpdateForm(instance=resource)
+        if not resource.locations:
+            doc = resource.url
+        places = fix_places(resource.locations, doc)
+        tagsform = TagsForm(instance=resource)
+        shelflifeform = ShelflifeForm(instance=resource)
     
-    return render_to_response('depot/item_edit.html',
-        RequestContext( request, { 'template_info': template_info, 'object': item,
-            'itemform': itemform, 'locationform': locationform, 'places': places,
+    return render_to_response('depot/resource_edit.html',
+        RequestContext( request, { 'template_info': template_info, 'object': resource,
+            'resourceform': resourceform, 'locationform': locationform, 'places': places,
             'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
 @login_required
-def item_edit_complete(request, item, template_info):
-    """docstring for item_edit_complete"""
+def resource_edit_complete(request, resource, template_info):
+    """docstring for resource_edit_complete"""
     
-    if item:
-        # item.collection_status = COLL_STATUS_COMPLETE
-        item.save(str(request.user.id))
-        popup_url = reverse('item-popup-close')
-        url = reverse('item', args=[item.id])
-    else: # item-add cancelled
-        popup_url = reverse('item-popup-cancel')
-        url = reverse('item-list')
+    if resource:
+        # resource.collection_status = COLL_STATUS_COMPLETE
+        resource.save(str(request.user.id))
+        popup_url = reverse('resource-popup-close')
+        url = reverse('resource', args=[resource.id])
+    else: # resource-add cancelled
+        popup_url = reverse('resource-popup-cancel')
+        url = reverse('resource-list')
     
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)
@@ -176,8 +176,8 @@ def item_edit_complete(request, item, template_info):
         return HttpResponseRedirect(url)
 
 # @login_required
-def item_find(request):
-    """docstring for item_find"""
+def resource_find(request):
+    """docstring for resource_find"""
 
     locations = []
     centre = None
@@ -186,7 +186,7 @@ def item_find(request):
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
-            return HttpResponseRedirect(reverse('item-list'))
+            return HttpResponseRedirect(reverse('resource-list'))
         form = FindResourceForm(request.POST)
     
         if form.is_valid():
@@ -198,5 +198,5 @@ def item_find(request):
         form = FindResourceForm(initial={ 'post_code': 'Edinburgh, EH17'})
 
     # print places
-    return render_to_response('depot/item_find.html',
+    return render_to_response('depot/resource_find.html',
         RequestContext( request, { 'form': form, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))

@@ -17,7 +17,7 @@ map{
 {% endblock %}
 {% block content %}
 
-<p><a href="{% url item-list %}">all items</a> | <a href="{% url item-find %}">search items</a></p>
+<p><a href="{% url resource-list %}">all items</a> | <a href="{% url resource-find %}">search items</a></p>
 
 <h1>{{ object.title }}</h1>
 
@@ -37,10 +37,10 @@ map{
 {% endfor %}	
 </ul>
 
-<p><a href="{% url item-edit object.id %}">edit item</a></p>
+<p><a href="{% url resource-edit object.id %}">edit item</a></p>
 <p>&nbsp;</p>
 <hr>
-<p><a href="{% url item-remove object.id %}">delete item</a></p>
+<p><a href="{% url resource-remove object.id %}">delete item</a></p>
 
 <div id="map"></div>
 {% if locations|length %}
