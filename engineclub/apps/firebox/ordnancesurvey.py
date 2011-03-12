@@ -3,13 +3,18 @@
 # author Derek Hoy
 
 
-import simplejson, urllib
-POSTCODE_BASE = 'http://data.ordnancesurvey.co.uk/doc/postcodeunit/%s.json'
+import urllib
+try: import simplejson as json
+except ImportError: import json
 
-# this for eg EH15, could try next if postcode fails
-POSTCODEDISTRICT_BASE = 'http://data.ordnancesurvey.co.uk/doc/postcodedistrict/%s.json'
-#  eg, EH
-POSTCODEAREA_BASE = 'http://data.ordnancesurvey.co.uk/doc/postcodearea/%s.json'
+POSTCODE_BASE = 'http://data.ordnancesurvey.co.uk/doc/%s/%s.json'
+POSTCODE_UNIT = 'postcodeunit'
+# postcodeunit, postcodedistrict, postcodearea
+
+# # this for eg EH15, could try next if postcode fails
+# POSTCODEDISTRICT_BASE = 'http://data.ordnancesurvey.co.uk/doc/postcodedistrict/%s.json'
+# #  eg, EH
+# POSTCODEAREA_BASE = 'http://data.ordnancesurvey.co.uk/doc/postcodearea/%s.json'
 
 
 OS_LABEL = 'http://www.w3.org/2000/01/rdf-schema#label'
@@ -39,7 +44,7 @@ OS_COUNTRY = 'http://data.ordnancesurvey.co.uk/ontology/postcode/country'
 def get_postcode(postcode, testing=False):
     """docstring for get_postcode"""
     postcode = postcode.upper().replace(' ', '')
-    url = POSTCODE_BASE % postcode
+    url = POSTCODE_BASE % (POSTCODE_UNIT, postcode)
     loc_id = result = None
     # print 'searching...\n'
     if postcode:
@@ -49,7 +54,7 @@ def get_postcode(postcode, testing=False):
             except IOError:
                 return None, 'could not open service URL'
             try:
-                json_result = simplejson.load(page)
+                json_result = json.load(page)
             except ValueError:
                 return None, 'no result from Ord Survey, probably did not find postcode [%s]' % (postcode or '-')
             loc_id = 'http://data.ordnancesurvey.co.uk/id/postcodeunit/%s' % postcode

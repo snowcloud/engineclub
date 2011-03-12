@@ -2,7 +2,8 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>aliss.org</title>
+    <title>aliss.org: {% block title %}{% endblock %}
+    </title>
     <script type='text/javascript' src='/static/js/modernizr-1.6.min.js'></script>
     <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
     <script src="http://scripts.embed.ly/jquery.embedly.min.js"></script>
@@ -59,7 +60,12 @@
 	    </ul>
 	  </div>
 	{% endif %}
+    {% block pageintro %}{%endblock%}
+    
+	<div id="maincontent">
 	{% block content %}&nbsp;{% endblock %}
+	</div>
+    
 </div>
 <div id="footer">
     {% block footer-extra %}{% endblock %}

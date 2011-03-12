@@ -5,7 +5,7 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Resource, Location, get_nearest, load_item_data, update_keyword_index
+from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -17,19 +17,27 @@ from django.test.simple import *
 from django.test import TransactionTestCase
 
 from mongoengine import connect
+TEST_DB_NAME = 'test_db2'
 
-def _load_data(items='items', locations='locations'):
+def _load_data(resources='resources', locations='locations'):
     """loads fixture data for test Resources"""
-    item_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, items), 'rU')
-    load_item_data('item', item_data)
-    item_data.close()
-    item_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, locations), 'rU')
-    load_item_data('location', item_data)
-    item_data.close()
+    resource_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, resources), 'rU')
+    load_resource_data('resource', resource_data)
+    resource_data.close()
+    # for resource in Resource.objects:
+    #     locs = []
+    #     for loc in resource.locations:
+    #         print 'r'
+    #     resource.locations = locs
+    #     resource.save()
+    # 
+    resource_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, locations), 'rU')
+    load_resource_data('location', resource_data)
+    resource_data.close()
     
 class MongoDBTestRunner(DjangoTestSuiteRunner):
     def setup_databases(self, **kwargs):
-        db_name = 'test_db'
+        db_name = TEST_DB_NAME
         connect(db_name)
         print 'Creating test-databasey: ' + db_name
         _load_data()
@@ -53,52 +61,52 @@ class ResourceTest(TransactionTestCase):
         Resource.drop_collection()
         Location.drop_collection()
     
-    def test_items(self):
+    def test_resources(self):
         title = u'title 2'
         url = u'http://test.example.com/2/'
         self.assertEqual(Resource.objects.count(), 6)
-        item = Resource.objects.get(__raw__={'_id': u'4d135708e999fb30d8000001'})
-        self.assertEqual(item.id, u'4d135708e999fb30d8000001')
-        self.assertEqual(item.metadata.author, u'1')
-        # get an item with a resource with this url
-        # items could share a url ?
-        item = Resource.objects.get(resources__url=url)
-        self.assertEqual(item.title, title)
+        resource = Resource.objects.get(__raw__={'_id': u'4d135708e999fb30d8000001'})
+        self.assertEqual(resource.id, u'4d135708e999fb30d8000001')
+        self.assertEqual(resource.item_metadata.author, u'1')
+        # get an resource with a resource with this url
+        # resources could share a url ?
+        resource = Resource.objects.get(url=url)
+        self.assertEqual(resource.title, title)
         
-    def test_newitem(self):
+    def test_newresource(self):
         """
-        Tests create a new item.
+        Tests create a new resource.
         """
         # uri = u'http://test.example.com/1/'
         title = u'test title 7'
         author = u"1"
-        item, created = Resource.objects.get_or_create(__raw__={'_id': u'4d135708e999fb30d8000007'}, defaults={'title': title})
-        item.metadata.author = author
+        resource, created = Resource.objects.get_or_create(__raw__={'_id': u'4d135708e999fb30d8000007'}, defaults={'title': title})
+        resource.item_metadata.author = author
         self.assertTrue(created)
-        # self.assertEqual(unicode(item.id), u'4d135708e999fb30d8000001')
-        self.assertEqual(item.title, title)
-        self.assertEqual(item.metadata.author, author)
+        # self.assertEqual(unicode(resource.id), u'4d135708e999fb30d8000001')
+        self.assertEqual(resource.title, title)
+        self.assertEqual(resource.item_metadata.author, author)
     
     def test_tags(self):
         """docstring for test_tags"""
         # self._load_data()
-        items = Resource.objects(tags='red')
+        resources = Resource.objects(tags='red')
         # print [(i.title, i.tags) for i in Resource.objects]
-        # print 'red items: ', items
-        self.assertEqual(len(items), 3)
+        # print 'red resources: ', resources
+        self.assertEqual(len(resources), 3)
         # 6 tags contain blue OR red
-        items = Resource.objects(tags__in=['blue', 'red'])
-        self.assertEqual(len(items), 6)
+        resources = Resource.objects(tags__in=['blue', 'red'])
+        self.assertEqual(len(resources), 6)
         # 2 tags contain blue AND red
-        items = Resource.objects(tags__all=['blue', 'red'])
-        self.assertEqual(len(items), 2)
+        resources = Resource.objects(tags__all=['blue', 'red'])
+        self.assertEqual(len(resources), 2)
     
     def test_tagslist(self):
         """docstring for test_tagslist"""
         # self.db = self._load_data()
-        for item in Resource.objects:
-            item.make_keys([])
-            item.save()
+        for resource in Resource.objects:
+            resource.make_keys([])
+            resource.save()
         update_keyword_index()
         results = get_db().keyword.find( { "_id" : re.compile('^Bl*', re.IGNORECASE)} ) #.count()
         self.assertEqual([i['_id'] for i in results], [u'blue'])
@@ -106,44 +114,44 @@ class ResourceTest(TransactionTestCase):
     def test_geo(self):
         """docstring for test_geo"""
         # db = self._load_data()
-        for item in Resource.objects:
-            item.make_keys([])
-            item.save()
+        for resource in Resource.objects:
+            resource.make_keys([])
+            resource.save()
         update_keyword_index()
         results = get_nearest('50', -3.00, categories=['blue']) # takes float or string for lat, lon
         #       print results
         self.assertEqual(len(results), 1)
-        self.assertEqual(len(results[0]['items']), 2)
+        self.assertEqual(len(results[0]['resources']), 2)
       
-    # def test_form(self):
-    #   """test form creation"""
-    #   uri = 'http://test.example.com/10/'
-    #   title = 'test title'
-    #   form = ShortResourceForm({'uri': uri, 'title': title})
-    #   self.assertTrue(form.is_valid())
+#     # def test_form(self):
+#     #   """test form creation"""
+#     #   uri = 'http://test.example.com/10/'
+#     #   title = 'test title'
+#     #   form = ShortResourceForm({'uri': uri, 'title': title})
+#     #   self.assertTrue(form.is_valid())
     
-class BigResourceTest(TransactionTestCase):
-    
-
-    def setUp(self):
-        # test for and load big db
-        if Resource.objects.count() == 0:
-            self.db = _load_data('items')
-
-    def test_test(self):
-        print 'hello'
-
-    def test_items(self):
-        title = u'title 2'
-        url = u'http://test.example.com/2/'
-        self.assertEqual(Resource.objects.count(), 6)
-        item = Resource.objects.get(__raw__={'_id': u'4d135708e999fb30d8000001'})
-        self.assertEqual(item.id, u'4d135708e999fb30d8000001')
-        self.assertEqual(item.metadata.author, u'1')
-        # get an item with a resource with this url
-        # items could share a url ?
-        item = Resource.objects.get(resources__url=url)
-        self.assertEqual(item.title, title)
+# class BigResourceTest(TransactionTestCase):
+#     
+# 
+#     def setUp(self):
+#         # test for and load big db
+#         if Resource.objects.count() == 0:
+#             self.db = _load_data('resources')
+# 
+#     # def test_test(self):
+#     #     print 'hello'
+# 
+#     def test_resources(self):
+#         title = u'title 2'
+#         url = u'http://test.example.com/2/'
+#         self.assertEqual(Resource.objects.count(), 6)
+#         resource = Resource.objects.get(__raw__={'_id': u'4d135708e999fb30d8000001'})
+#         self.assertEqual(resource.id, u'4d135708e999fb30d8000001')
+#         self.assertEqual(resource.item_metadata.author, u'1')
+#         # get an resource with a resource with this url
+#         # resources could share a url ?
+#         # resource = Resource.objects.get(resources__url=url)
+#         # self.assertEqual(resource.title, title)
 
     
     

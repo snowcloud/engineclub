@@ -25,12 +25,20 @@ class ItemMetadata(EmbeddedDocument):
             
 class Location(Document):
     """Location document, based on Ordnance Survey data"""
+    
+    # version 0.1
+    # woeid = StringField()
+    # name = StringField()
+    # placetype = StringField()
+    # postcode = StringField()
+    
+    
     loc_id = StringField()
     label = StringField()
     latlon = ListField(FloatField(), default=list)
     latitude = FloatField()
     longitude = FloatField()
-    # woeid = StringField()
+    woeid = StringField()
     location_type = StringField()
     postcode = StringField()
     ward = StringField()
@@ -89,12 +97,13 @@ class Resource(Document):
     description = StringField()
     resource_type = StringField()
     url = StringField()
-    locations = ListField(ReferenceField(Location), default=list)
+    # locations = ListField(ReferenceField(Location), default=list)
+    locations = ListField(StringField(max_length=96), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
-    # _keywords = ListField(StringField(max_length=96), default=list)
+    _keywords = ListField(StringField(max_length=96), default=list)
     index_keys = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
@@ -129,11 +138,11 @@ class Resource(Document):
            NB, item is not saved- calling code must do item.save()"""
         # keys.extend(self.tags)
         # print 'in set_keys'
-        self.index_keys = list(set(keys+self.tags))
+        self._keywords = list(set(keys+self.tags))
         # print 'set_keys:', self.index_keys
         
     def get_keywords(self):
-        return self.index_keys or []
+        return self._keywords or []
     # keywords = property(get_keywords)
 
 class RelatedResource(Document):
@@ -148,7 +157,7 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
         returns list of dicts, each dict has:
         - dist (distance from lat,lon in degrees)
         - obj (dict of place attrs)
-        - items (list of items in db at that location)"""
+        - resources (list of resources in db at that location)"""
        
     db = get_db()
     db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
@@ -159,14 +168,14 @@ def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
         res['dis'] = res['dis'] * 111.12 # convert to Km
         if len(categories) > 0:
             # print 'using cats ', len(categories)
-            res['items'] = list(Resource.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
+            res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
         else:
-            res['items'] = list(Resource.objects(locations__in=[res['obj']['woeid']]))
-    return [res for res in results if res['items']]
+            res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']]))
+    return [res for res in results if res['resources']]
 
 
-def load_item_data(document, item_data):
-    new_data = eval(item_data.read())
+def load_resource_data(document, resource_data):
+    new_data = eval(resource_data.read())
     db = get_db()
     db[document].insert(new_data)
     return db
@@ -189,7 +198,7 @@ def update_keyword_index():
     #              "  return total;"
     #              "}")
     db = get_db()
-    result = db.item.map_reduce(map, reduce, out='keyword')
+    result = db.resource.map_reduce(map, reduce, out='keyword')
     # print result
     # for res in result.find():
     #   print res

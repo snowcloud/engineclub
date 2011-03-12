@@ -40,7 +40,7 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     color: white;
     height: 3.4em;
     padding-top: 70px;  
-    position: relative; margin: 0 0 45px 6%; }
+    position: relative; margin: 0 0 25px 6%; }
 .rgba #header { 
     background: none repeat scroll 0 0 rgba(38, 38, 38, 0.85);
 }
@@ -87,7 +87,7 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 #usernav a, #usernav a:hover, #usernav a:visited  { color: #5e5e5e}
 
 #main { 
-    padding: 20px 20px 0 6%;
+    padding: 1% 20px 0 6%;
     max-width: 1035px;
  }
 /*.single #main {
@@ -96,7 +96,7 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
  }*/
 
 #pageintro {
-    background-color: #fcfeff; margin: 0 10px 30px 40px; padding: 8px; }
+    background-color: #fcfeff; margin: 1% 10px 1% 40px; padding: 8px; }
 #pageintro h1 {
     font-size: 3em;
     margin: 0;
@@ -110,7 +110,9 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 #maincontent {
     float: left;
     width: 95%; 
-    padding: 0 2.5% 40px 40px; }
+    padding: 2% 2% 40px 40px;
+	background-color: rgba(255,255,255,0.6);
+}
     
 
 #sidebar { 

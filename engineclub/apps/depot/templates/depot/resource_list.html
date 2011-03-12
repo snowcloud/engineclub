@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% load utils %}
-{% block title %}items{% endblock %}
+{% block title %}resources{% endblock %}
 
 {% block content %}
 <h1>Resources</h1>
 
 <ul>
 	{% for object in objects %}
-		<li><a href="{% url item object.id %}">{{ object.title }}</a> </li>
+		<li><a href="{% url resource object.id %}">{{ object.title }}</a> </li>
 	{% empty %}
-		<li>no items found</li>
+		<li>no resources found</li>
 	{% endfor %}
 </ul>
 
 
-<p><a href="{% url resource-add %}">add new item</a></p>
+<p><a href="{% url resource-add %}">add new resource</a></p>
 <p><a href="{% url resource-find %}">search</a></p>
 
 {% endblock %}

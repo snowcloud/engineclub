@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load rss_tags %}
+{% block title %}Home{% endblock %}
 {% block head-extra %}
     <script type="text/javascript" src="/static/verticaltabs/js/verticaltabs.js"></script>
     <link rel="stylesheet" href="/static/css/verticaltabs.css" />
@@ -8,16 +9,15 @@
     $("#textExample").verticaltabs({slideShow: false, speed: 500, activeIndex: 0});
 {% endblock %}
 
-{% block content %}
-
+{% block pageintro %}
 <div id="pageintro">
 <h1>Better information for self&nbsp;management</h1>
 
 <p>About 40% of the Scottish population live with a long term health condition, such as heart disease, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="/about/">Learn&nbsp;more&nbsp;»</a></p>
-
 </div>
+{%endblock%}
 
-<div id="maincontent">
+{% block content %}
 
     <!-- Text Example -->
 	<div class="verticalslider group" id="textExample">
@@ -120,7 +120,6 @@
 <p>If you want to find more technical details visit the <a href="">ALISS Engine Club</a>, where you can read documentation, specifications, and the code. It's all open source.</p>
 </div>
 
-</div>
 </div>
 
 {%endblock%}
