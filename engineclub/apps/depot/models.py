@@ -24,30 +24,17 @@ class ItemMetadata(EmbeddedDocument):
     note = StringField()
             
 class Location(Document):
-    """Location document, based on Ordnance Survey data"""
+    """Location document, based on Yahoo Placemaker woeid, + placeholders for move to Ordnance Survey data"""
     
-    # version 0.1
-    # woeid = StringField()
-    # name = StringField()
-    # placetype = StringField()
-    # postcode = StringField()
-    
-    
-    loc_id = StringField()
-    label = StringField()
-    latlon = ListField(FloatField(), default=list)
+    woeid = StringField()
+    name = StringField()
+    placetype = StringField()
+    postcode = StringField()
+    lat_lon = ListField(FloatField())
     latitude = FloatField()
     longitude = FloatField()
-    woeid = StringField()
-    location_type = StringField()
-    postcode = StringField()
-    ward = StringField()
-    ward_ref = StringField()
-    district = StringField()
-    district_ref = StringField()
-    country = StringField()
-    country_ref = StringField()
-    note = StringField()
+    os_id = StringField()
+    os_placetype = StringField()
 
 class Moderation(EmbeddedDocument):
     outcome = StringField()
