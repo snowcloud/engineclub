@@ -78,7 +78,7 @@ class FindResourceForm(forms.Form):
     def clean(self):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
-        data = cleaned_data.get('post_code')
+        data = '%s, uk' %  cleaned_data.get('post_code')
         cats = cleaned_data.get('tags')
         places = fix_places(None, doc=data)
         if places:
