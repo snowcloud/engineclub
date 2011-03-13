@@ -90,7 +90,7 @@ class Resource(Document):
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
-    _keywords = ListField(StringField(max_length=96), default=list)
+    # _keywords = ListField(StringField(max_length=96), default=list)
     index_keys = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
@@ -117,19 +117,19 @@ class Resource(Document):
             if loc.loc_id not in [l.loc_id for l in self.locations]:
                 self.locations.append(loc)
         
-    # def get_locations(self):
-    #     return [Location.objects.get(woeid=id) for id in self.locations]
+    def get_locations(self):
+        return [Location.objects.get(woeid=id) for id in self.locations]
         
     def make_keys(self, keys):
         """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
            NB, item is not saved- calling code must do item.save()"""
         # keys.extend(self.tags)
         # print 'in set_keys'
-        self._keywords = list(set(keys+self.tags))
+        self.index_keys = list(set(keys+self.tags+self.title.split()))
         # print 'set_keys:', self.index_keys
         
     def get_keywords(self):
-        return self._keywords or []
+        return self.index_keys or []
     # keywords = property(get_keywords)
 
 class RelatedResource(Document):
@@ -139,7 +139,7 @@ class RelatedResource(Document):
     rel_type = StringField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
 
-def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
+def get_nearest(lat, lon, categories=[], num=200, all_locations=False):
     """uses mongodb geo index to find num nearest locations to lat, lon parameters.
         returns list of dicts, each dict has:
         - dist (distance from lat,lon in degrees)
