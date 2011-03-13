@@ -24,8 +24,8 @@ map{
 <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
 {{ object.description|linebreaks }}
 
-{# <p>author: {{ object.metadata.author|user_name }}</p> #}
-{# <p>tags: {{ object.tags|join:", " }}</p> #}
+<p>author: {{ object.item_metadata.author|user_name }}</p>
+<p>tags: {{ object.tags|join:", " }}</p>
 
 {% with object.get_locations as locations %}
 

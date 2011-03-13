@@ -58,7 +58,7 @@ def get_terms(content):
     if content.startswith('http'):
         data = get_url_content(content)
     else:
-        data = content
+        data = content.encode('UTF8')
 
     t = termextractor(settings.YAHOO_KEY)
     return t.extract_terms(data)

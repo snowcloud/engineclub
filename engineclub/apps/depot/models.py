@@ -24,30 +24,17 @@ class ItemMetadata(EmbeddedDocument):
     note = StringField()
             
 class Location(Document):
-    """Location document, based on Ordnance Survey data"""
+    """Location document, based on Yahoo Placemaker woeid, + placeholders for move to Ordnance Survey data"""
     
-    # version 0.1
-    # woeid = StringField()
-    # name = StringField()
-    # placetype = StringField()
-    # postcode = StringField()
-    
-    
-    loc_id = StringField()
-    label = StringField()
-    latlon = ListField(FloatField(), default=list)
+    woeid = StringField()
+    name = StringField()
+    placetype = StringField()
+    postcode = StringField()
+    lat_lon = ListField(FloatField())
     latitude = FloatField()
     longitude = FloatField()
-    woeid = StringField()
-    location_type = StringField()
-    postcode = StringField()
-    ward = StringField()
-    ward_ref = StringField()
-    district = StringField()
-    district_ref = StringField()
-    country = StringField()
-    country_ref = StringField()
-    note = StringField()
+    os_id = StringField()
+    os_placetype = StringField()
 
 class Moderation(EmbeddedDocument):
     outcome = StringField()
@@ -66,29 +53,29 @@ class AddedMetadata(EmbeddedDocument):
     # format = StringField() not needed- store in the dict and put out in formats for clients
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-# def place_as_cb_value(place):
-#     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
-#     if place:
-#         return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
-#     return ''
-# 
-# def location_from_cb_value(cb_value):
-#     """takes cb_string and returns Location"""
-#     values = cb_value.split('|')
-#     if not len(values) == 5:
-#         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-#     lat = float(values[3])
-#     lon = float(values[4])
-#     print lat, lon
-#     loc_values = {
-#         'lat_lon': [lat, lon],
-#         # 'woeid': values[0],
-#         'name': values[1],
-#         'placetype': values[2],
-#         'latitude': lat,
-#         'longitude': lon
-#         }
-#     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
+def place_as_cb_value(place):
+    """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
+    if place:
+        return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
+    return ''
+
+def location_from_cb_value(cb_value):
+    """takes cb_string and returns Location"""
+    values = cb_value.split('|')
+    if not len(values) == 5:
+        raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
+    lat = float(values[3])
+    lon = float(values[4])
+    print lat, lon
+    loc_values = {
+        'lat_lon': [lat, lon],
+        # 'woeid': values[0],
+        'name': values[1],
+        'placetype': values[2],
+        'latitude': lat,
+        'longitude': lon
+        }
+    return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Resource(Document):
     """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
@@ -103,7 +90,7 @@ class Resource(Document):
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
-    _keywords = ListField(StringField(max_length=96), default=list)
+    # _keywords = ListField(StringField(max_length=96), default=list)
     index_keys = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
@@ -130,19 +117,19 @@ class Resource(Document):
             if loc.loc_id not in [l.loc_id for l in self.locations]:
                 self.locations.append(loc)
         
-    # def get_locations(self):
-    #     return [Location.objects.get(woeid=id) for id in self.locations]
+    def get_locations(self):
+        return [Location.objects.get(woeid=id) for id in self.locations]
         
     def make_keys(self, keys):
         """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
            NB, item is not saved- calling code must do item.save()"""
         # keys.extend(self.tags)
         # print 'in set_keys'
-        self._keywords = list(set(keys+self.tags))
+        self.index_keys = list(set(keys+self.tags+self.title.split()))
         # print 'set_keys:', self.index_keys
         
     def get_keywords(self):
-        return self._keywords or []
+        return self.index_keys or []
     # keywords = property(get_keywords)
 
 class RelatedResource(Document):
@@ -152,7 +139,7 @@ class RelatedResource(Document):
     rel_type = StringField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
 
-def get_nearest(lat, lon, categories=[], num=10, all_locations=False):
+def get_nearest(lat, lon, categories=[], num=200, all_locations=False):
     """uses mongodb geo index to find num nearest locations to lat, lon parameters.
         returns list of dicts, each dict has:
         - dist (distance from lat,lon in degrees)
