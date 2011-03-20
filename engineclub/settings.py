@@ -39,6 +39,10 @@ from mongoengine import connect
 connect('test_db', host='localhost', port=27017)
 # connect('aliss', host='localhost', port=27017)
 
+HAYSTACK_SITECONF = 'depot.search_sites'
+# set search engine backend in settings_local
+HAYSTACK_SEARCH_ENGINE='dummy'
+
 YAHOO_KEY = 'your_key_here...'
 
 
@@ -91,6 +95,7 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'haystack',
     'home',
     'enginecab',
     'depot',

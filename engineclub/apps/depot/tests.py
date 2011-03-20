@@ -135,7 +135,13 @@ class ResourceTest(TransactionTestCase):
         self.assertEqual(Resource.objects.count(), 6)
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]['resources']), 1)
+
+class SolrTest(TransactionTestCase):
       
+      def test_test(self):
+          print 'doodah'
+          
+          
 #     # def test_form(self):
 #     #   """test form creation"""
 #     #   uri = 'http://test.example.com/10/'
