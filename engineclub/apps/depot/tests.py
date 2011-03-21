@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 apps/depot/tests.py
 """
@@ -136,10 +137,28 @@ class ResourceTest(TransactionTestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]['resources']), 1)
 
+from pysolr import Solr
+
 class SolrTest(TransactionTestCase):
       
-      def test_test(self):
-          print 'doodah'
+    def test_test(self):
+        print 'starting solr test'
+        conn = Solr(settings.SOLR_URL)
+        conn.delete(q='*:*')
+
+        # docs = [
+        #     {'id': 'testdoc.1', 'title': 'document 1', 'text': u'Paul Verlaine'},
+        #     {'id': 'testdoc.2', 'title': 'document 2', 'text': u'Giffer Владимир'},
+        #     ]
+        
+        conn.add([{'id': r.id, 'title': r.title, 'text': r.description, 'keywords': r.index_keys} for r in Resource.objects])
+        srch = 'yellow'
+        results = conn.search(srch)
+        print 'search on \'%s\'' % srch
+        for result in results:
+            print result
+        
+        print
           
           
 #     # def test_form(self):
