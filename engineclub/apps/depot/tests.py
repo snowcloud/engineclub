@@ -13,12 +13,11 @@ from mongoengine.connection import _get_db as get_db
 
 import re
 
-
 from django.test.simple import *
 from django.test import TransactionTestCase
 
-from mongoengine import connect
 TEST_DB_NAME = 'test_db2'
+DB_NAME = 'test_db'
 
 def _load_data(resources='resources', locations='locations'):
     """loads fixture data for test Resources"""
@@ -55,6 +54,20 @@ class MongoDBTestRunner(DjangoTestSuiteRunner):
         conn = Connection()
         conn.drop_database(db_name)
         print 'Dropping test-databasey: ' + db_name
+
+class MongoDBRunner(DjangoTestSuiteRunner):
+    def setup_databases(self, **kwargs):
+        db_name = DB_NAME
+        connect(db_name)
+        print 'Using test_db: ' + db_name
+        # _load_data()
+        return db_name
+
+    def teardown_databases(self, db_name, **kwargs):
+        # from pymongo import Connection
+        # conn = Connection()
+        # conn.drop_database(db_name)
+        print 'Closing test-db: ' + db_name
 
 
 class ResourceTest(TransactionTestCase):
@@ -139,27 +152,80 @@ class ResourceTest(TransactionTestCase):
 
 from pysolr import Solr
 
-class SolrTest(TransactionTestCase):
-      
-    def test_test(self):
-        print 'starting solr test'
-        conn = Solr(settings.SOLR_URL)
-        conn.delete(q='*:*')
+def _get_latlon_for_postcode(pc):
+    
+    
+    from pymongo import Connection
+    import codecs
+    import csv
+    
+    connection = Connection()
+    db = connection[settings.MONGO_DB]
+    postcode_coll = db.postcode_locations
+    # print 'postcode collection (end):', postcode_coll.count()
+    result = postcode_coll.find_one({'postcode': pc.upper().replace(' ', '')})
+    if result:
+        return ', '.join([unicode(result['latlon'][0]), unicode(result['latlon'][1])])
+    # print postcode_coll.find_one({'postcode': 'AB101AX'})
+    
+    return ''
 
-        # docs = [
-        #     {'id': 'testdoc.1', 'title': 'document 1', 'text': u'Paul Verlaine'},
-        #     {'id': 'testdoc.2', 'title': 'document 2', 'text': u'Giffer Владимир'},
-        #     ]
+
+
+class SolrTest(TransactionTestCase):
+    
+    def _load_resources(self):
+        print 'SHOULDN\'T BE IN HERE'
+        # conn.delete(q='*:*')
+        # 
+        # for r in Resource.objects:
+        #     doc = {'id': r.id, 'res_id': r.id, 'title': r.title, 'description': r.description, 'keywords': r.index_keys}
+        #     locs = r.get_locations()
+        #     if locs:
+        #         # print '%s, %s' % (locs[0].latitude, locs[0].longitude)
+        #         doc['pt_location'] = '%s, %s' % (locs[0].latitude, locs[0].longitude)
+        #     conn.add([doc])
+    
+    def test_test(self):
+        # print 'starting solr test'
+        conn = Solr(settings.SOLR_URL)
         
-        conn.add([{'id': r.id, 'title': r.title, 'text': r.description, 'keywords': r.index_keys} for r in Resource.objects])
-        srch = 'yellow'
-        results = conn.search(srch)
-        print 'search on \'%s\'' % srch
+        
+        ellon = '57.365287, -2.070642'
+        peterheid = '57.584806, -1.875630'
+        keith = '57.7036280142534, -2.85720247750133'
+        loc = keith
+        print '\n\n*** keith ', loc
+        srch = '"mental health"'
+        # search(self, q, **kwargs)
+        
+        kw = { 'sfield': 'pt_location', 'pt': loc, 'sort': 'geodist() asc' }
+        # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
+
+        results = conn.search(srch, **kw)
+        print '\n--\nsearch on [%s] : %s' % (srch, loc)
         for result in results:
-            print result
+            print '-', result['title'], result['pt_location']
         
-        print
-          
+    def test_postcode(self):
+        conn = Solr(settings.SOLR_URL)
+        
+        aberdeen = 'Ab10 1AX'
+        # peterheid = '57.584806, -1.875630'
+        # keith = '57.7036280142534, -2.85720247750133'
+        print '\n\n*** aberdeen', aberdeen
+        loc = _get_latlon_for_postcode(aberdeen)
+        srch = '"mental health"'
+        # search(self, q, **kwargs)
+        
+        kw = { 'sfield': 'pt_location', 'pt': loc, 'sort': 'geodist() asc' }
+        # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
+
+        results = conn.search(srch, **kw)
+        print '\n--\nsearch on [%s] : %s' % (srch, loc)
+        for result in results:
+            print '-', result['title'], result['pt_location']
+         
           
 #     # def test_form(self):
 #     #   """test form creation"""
