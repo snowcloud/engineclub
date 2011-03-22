@@ -179,7 +179,7 @@ def resource_edit_complete(request, resource, template_info):
 def resource_find(request):
     """docstring for resource_find"""
 
-    locations = []
+    results = locations = []
     centre = None
     pins = []
     # places = []
@@ -190,13 +190,14 @@ def resource_find(request):
         form = FindResourceForm(request.POST)
     
         if form.is_valid():
+            results = form.results
             locations = form.locations
             centre = form.centre
             # pins = [loc['obj'] for loc in locations]
             
     else:
-        form = FindResourceForm(initial={ 'post_code': 'Edinburgh, EH17'})
+        form = FindResourceForm(initial={ 'post_code': 'Ab10 1AX'})
 
     # print places
     return render_to_response('depot/resource_find.html',
-        RequestContext( request, { 'form': form, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))

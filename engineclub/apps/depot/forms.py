@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Resource, Location, get_nearest
+from depot.models import Resource, Location, get_nearest, find_by_postcode
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
@@ -59,6 +59,7 @@ class FindResourceForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.locations = []
+        self.results = []
         self.centre = None
         super(FindResourceForm, self).__init__(*args, **kwargs)
 
@@ -72,21 +73,30 @@ class FindResourceForm(forms.Form):
     #         raise forms.ValidationError("Could not find a location from what you've typed- try again?")
     #     return data
 
-    def clean_tags(self):
-        return clean_csvtextinput(self.cleaned_data['tags'])
+    # def clean_tags(self):
+    #     return clean_csvtextinput(self.cleaned_data['tags'])
 
     def clean(self):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
-        data = '%s, uk' %  cleaned_data.get('post_code')
-        cats = cleaned_data.get('tags')
-        places = fix_places(None, doc=data)
-        if places:
-            self.centre = places[0]
-            self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude, categories=cats)
-            # print 'locs: ', self.locations
-        else:
-            raise forms.ValidationError("Could not find a location from what you've typed- try again?")
+        data = cleaned_data.get('post_code')
+        kwords = cleaned_data.get('tags')
+        
+        self.results = find_by_postcode(data, kwords)
+        print '\n--\nsearch on [%s] : %s' % (kwords, data)
+        for result in self.results:
+            print '-', result['title'], result['pt_location']
+        
+        
+        # data = '%s, uk' %  cleaned_data.get('post_code')
+        # cats = cleaned_data.get('tags')
+        # places = fix_places(None, doc=data)
+        # if places:
+        #     self.centre = places[0]
+        #     self.locations = get_nearest(self.centre.centroid.latitude, self.centre.centroid.longitude, categories=cats)
+        #     # print 'locs: ', self.locations
+        # else:
+        #     raise forms.ValidationError("Could not find a location from what you've typed- try again?")
         
         
         # get_nearest(lat, lon, categories

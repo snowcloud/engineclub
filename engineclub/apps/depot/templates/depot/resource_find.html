@@ -117,6 +117,15 @@ $(function() {
 </form>
 
 <div id="locations">
+	{% for resource in results %}
+		<h3><a href="{% url resource resource.id.0 %}">{{ resource.title }}</h3>
+		<!--p>{{ resource.description }}</p -->
+	{% empty %}
+		<p>no results found</p>
+	{% endfor %}
+
+
+    
 	{% if centre %}
 		<h2>Closest results for {{ centre.name }}</h2>
 		{% for loc in locations %}

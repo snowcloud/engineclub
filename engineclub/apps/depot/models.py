@@ -1,9 +1,13 @@
 # from django.db import models
 
+from django.conf import settings
 
 from mongoengine import *
 from mongoengine.connection import _get_db as get_db
 from datetime import datetime
+    
+from pymongo import Connection
+from pysolr import Solr
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
@@ -189,4 +193,30 @@ def update_keyword_index():
     # print result
     # for res in result.find():
     #   print res
+
+def get_latlon_for_postcode(pc):
+    pcode = pc.upper().replace(' ', '')
+    connection = Connection()
+    db = connection[settings.MONGO_DB]
+    postcode_coll = db.postcode_locations
+    result = postcode_coll.find_one({'postcode': pcode})
+    if result:
+        return ', '.join([unicode(result['latlon'][0]), unicode(result['latlon'][1])])    
+    return ''
+
+def find_by_postcode(pc, kwords):
+    conn = Solr(settings.SOLR_URL)
+    loc = get_latlon_for_postcode(pc)
+    # srch = '"mental health"'
+    # search(self, q, **kwargs)
+    
+    kw = { 'sfield': 'pt_location', 'pt': loc, 'sort': 'geodist() asc' }
+    # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
+
+    return conn.search(kwords, **kw)
+    # print '\n--\nsearch on [%s] : %s' % (kwords, loc)
+    # for result in results:
+    #     print '-', result['title'], result['pt_location']
+    
+
 

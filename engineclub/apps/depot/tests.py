@@ -6,7 +6,7 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index
+from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index, get_latlon_for_postcode
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -152,26 +152,6 @@ class ResourceTest(TransactionTestCase):
 
 from pysolr import Solr
 
-def _get_latlon_for_postcode(pc):
-    
-    
-    from pymongo import Connection
-    import codecs
-    import csv
-    
-    connection = Connection()
-    db = connection[settings.MONGO_DB]
-    postcode_coll = db.postcode_locations
-    # print 'postcode collection (end):', postcode_coll.count()
-    result = postcode_coll.find_one({'postcode': pc.upper().replace(' ', '')})
-    if result:
-        return ', '.join([unicode(result['latlon'][0]), unicode(result['latlon'][1])])
-    # print postcode_coll.find_one({'postcode': 'AB101AX'})
-    
-    return ''
-
-
-
 class SolrTest(TransactionTestCase):
     
     def _load_resources(self):
@@ -179,6 +159,7 @@ class SolrTest(TransactionTestCase):
         # conn.delete(q='*:*')
         # 
         # for r in Resource.objects:
+        # #     TODO: SEEMS TO PUT A LIST IN id ???  [u'234lj342lj23l12j3414']
         #     doc = {'id': r.id, 'res_id': r.id, 'title': r.title, 'description': r.description, 'keywords': r.index_keys}
         #     locs = r.get_locations()
         #     if locs:
@@ -214,7 +195,7 @@ class SolrTest(TransactionTestCase):
         # peterheid = '57.584806, -1.875630'
         # keith = '57.7036280142534, -2.85720247750133'
         print '\n\n*** aberdeen', aberdeen
-        loc = _get_latlon_for_postcode(aberdeen)
+        loc = get_latlon_for_postcode(aberdeen)
         srch = '"mental health"'
         # search(self, q, **kwargs)
         
