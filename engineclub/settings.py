@@ -39,6 +39,7 @@ TEST_RUNNER = 'depot.tests.MongoDBRunner'
 from mongoengine import connect
 MONGO_DB= 'test_db'
 connect(MONGO_DB, host='localhost', port=27017)
+LATLON_SEP= ', '
 
 YAHOO_KEY = 'your_key_here...'
 

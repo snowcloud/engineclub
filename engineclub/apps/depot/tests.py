@@ -6,7 +6,8 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index, get_latlon_for_postcode
+from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index, \
+    get_latlon_for_postcode, latlon_to_str
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -154,18 +155,21 @@ from pysolr import Solr
 
 class SolrTest(TransactionTestCase):
     
-    def _load_resources(self):
-        print 'SHOULDN\'T BE IN HERE'
-        # conn.delete(q='*:*')
-        # 
-        # for r in Resource.objects:
-        # #     TODO: SEEMS TO PUT A LIST IN id ???  [u'234lj342lj23l12j3414']
-        #     doc = {'id': r.id, 'res_id': r.id, 'title': r.title, 'description': r.description, 'keywords': r.index_keys}
-        #     locs = r.get_locations()
-        #     if locs:
-        #         # print '%s, %s' % (locs[0].latitude, locs[0].longitude)
-        #         doc['pt_location'] = '%s, %s' % (locs[0].latitude, locs[0].longitude)
-        #     conn.add([doc])
+    # def test_load_resources(self):
+    #     print 'SHOULDN\'T BE IN HERE'
+    #     conn = Solr(settings.SOLR_URL)
+    #     conn.delete(q='*:*')
+    #     
+    #     for r in Resource.objects:
+    #     #     TODO: SEEMS TO PUT A LIST IN id ???  [u'234lj342lj23l12j3414']
+    #         doc = {'id': unicode(r.id), 'res_id': unicode(r.id), 'title': r.title, 'description': r.description, 'keywords': r.index_keys}
+    #         # print '%s %s' % (doc['res_id'], unicode(r.id)), r.id
+    #         locs = r.get_locations()
+    #         if locs:
+    #             # print '%s, %s' % (locs[0].latitude, locs[0].longitude)
+    #             doc['pt_location'] = '%s, %s' % (locs[0].latitude, locs[0].longitude)
+    #         conn.add([doc])
+    #         # print doc
     
     def test_test(self):
         # print 'starting solr test'
@@ -186,7 +190,7 @@ class SolrTest(TransactionTestCase):
         results = conn.search(srch, **kw)
         print '\n--\nsearch on [%s] : %s' % (srch, loc)
         for result in results:
-            print '-', result['title'], result['pt_location']
+            print '-', result['res_id'], result['title'], result['pt_location']
         
     def test_postcode(self):
         conn = Solr(settings.SOLR_URL)
@@ -199,7 +203,7 @@ class SolrTest(TransactionTestCase):
         srch = '"mental health"'
         # search(self, q, **kwargs)
         
-        kw = { 'sfield': 'pt_location', 'pt': loc, 'sort': 'geodist() asc' }
+        kw = { 'sfield': 'pt_location', 'pt': latlon_to_str(loc), 'sort': 'geodist() asc' }
         # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
 
         results = conn.search(srch, **kw)

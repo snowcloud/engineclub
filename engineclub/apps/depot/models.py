@@ -194,29 +194,39 @@ def update_keyword_index():
     # for res in result.find():
     #   print res
 
-def get_latlon_for_postcode(pc):
-    pcode = pc.upper().replace(' ', '')
+def get_latlon_for_postcode(name):
+    pcode = name.upper().replace(' ', '').strip()
     connection = Connection()
     db = connection[settings.MONGO_DB]
-    postcode_coll = db.postcode_locations
-    result = postcode_coll.find_one({'postcode': pcode})
+    coll = db.postcode_locations
+    result = coll.find_one({'postcode': pcode})
     if result:
-        return ', '.join([unicode(result['latlon'][0]), unicode(result['latlon'][1])])    
+        return result['latlon']
     return ''
 
-def find_by_postcode(pc, kwords):
+def get_latlon_for_placename(name):
+    place = name.upper().strip()
+    connection = Connection()
+    db = connection[settings.MONGO_DB]
+    coll = db.placename_locations
+    result = coll.find_one({'name_upper': place})
+    if result:
+        return result['latlon']
+    return ''
+
+def latlon_to_str(loc):
+    """docstring for latlon_to_str"""
+    if loc:
+        return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
+    else:
+        return ''
+
+def find_by_place(name, kwords):
     conn = Solr(settings.SOLR_URL)
-    loc = get_latlon_for_postcode(pc)
-    # srch = '"mental health"'
-    # search(self, q, **kwargs)
-    
-    kw = { 'sfield': 'pt_location', 'pt': loc, 'sort': 'geodist() asc' }
-    # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
-
-    return conn.search(kwords, **kw)
-    # print '\n--\nsearch on [%s] : %s' % (kwords, loc)
-    # for result in results:
-    #     print '-', result['title'], result['pt_location']
-    
-
+    loc = get_latlon_for_postcode(name) or get_latlon_for_placename(name)
+    if loc:
+        kw = { 'sfield': 'pt_location', 'pt': latlon_to_str(loc), 'sort': 'geodist() asc' }
+        return loc, conn.search(kwords.strip() or '*:*', **kw)
+    else:
+        return None, None
 

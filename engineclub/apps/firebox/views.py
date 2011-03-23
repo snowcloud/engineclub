@@ -66,12 +66,12 @@ def get_terms(content):
     t = termextractor(settings.YAHOO_KEY)
     return t.extract_terms(data)
 
+from pymongo import Connection
+import codecs
+import csv
+
 def load_postcodes(fname):
     """docstring for load_postcodes"""
-    
-    from pymongo import Connection
-    import codecs
-    import csv
     
     connection = Connection()
     db = connection[settings.MONGO_DB]
@@ -94,5 +94,39 @@ def load_postcodes(fname):
     print 'postcode collection (end):', postcode_coll.count()
     print postcode_coll.find_one({'postcode': 'AB565UB'})
     print postcode_coll.find_one({'postcode': 'AB101AX'})
+
+def load_placenames(fname):
+    """docstring for load_postcodes
+    geonameid	name	asciiname	alternatenames	latitude	longitude	feature class	feature code	country code	cc2	admin1 code	admin2 code	admin3 code	admin4 code	population	elevation	gtopo30	timezone	modification date
+    2633415	Yarm	Yarm	Yarm,Yarm on Tees	54.50364	-1.35793	P	PPL	GB		ENG	J7			0		31	Europe/London	9 Dec 2010
+    
+    """
+    
+    connection = Connection()
+    db = connection[settings.MONGO_DB]
+    placename_coll = db.placename_locations
+    placename_coll.drop()
+    
+    print 'placename collection (start): ', placename_coll.count()
+    
+    f = codecs.open(fname, 'rt')
+    try:
+        reader = csv.reader(f, delimiter='\t',)
+        for r in reader:
+            # ONLY LOADING SCOTLAND
+            if r[10] == 'SCT':
+                # print r[1], r[4], r[5]
+                try:
+                    placename_coll.insert({
+                        'name': r[1],
+                        'name_upper': r[1].upper(),
+                        'latlon': [float(r[4]), float(r[5])]})
+                except ValueError:
+                    print r
+    finally:
+        f.close()
+    print 'placename collection (end):', placename_coll.count()
+    print placename_coll.find_one({'name_upper': 'KEITH'})
+    print placename_coll.find_one({'name_upper': 'PORTOBELLO'})
 
 
