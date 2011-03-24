@@ -20,48 +20,40 @@
 </style>
 <script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
 <link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
-<link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" />
+<!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
 <script type="text/javascript">
 $(function() {
-	{# function log(message) { #}
-	{# 	$("<div/>").text(message).prependTo("#log"); #}
-	{# 	$("#log").attr("scrollTop", 0); #}
-	{# } #}
-	
-	$("#id_tags").autocomplete({
-		source: function(request, response) {
-			$.ajax({
-				url: "/api/tags/",
-				dataType: "jsonp",
-				data: {
-					match: request.term
-				},
-				success: function(data) {
-					response($.map(data.data, function(item) {
-						return {
-							label: item,
-							value: item
-						}
-					}))
-				}
-			})
-		},
-		minLength: 2,
-		{# select: function(event, ui) { #}
-		{# 	log(ui.item ? ("Selected: " + ui.item.label) : "Nothing selected, input was " + this.value); #}
-		{# }, #}
-		open: function() {
-			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-		},
-		close: function() {
-			$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-		}
-	});
+    $("#id_tags").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "/api/tags/",
+                dataType: "jsonp",
+                data: {
+                    match: request.term
+                },
+                success: function(data) {
+                    response($.map(data.data, function(item) {
+                        return {
+                            label: item,
+                            value: item
+                        }
+                    }))
+                }
+            })
+        },
+        minLength: 2,
+        open: function() {
+            $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+        },
+        close: function() {
+            $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+        }
+    });
 });
 </script>
 <style>
-	.ui-autocomplete-loading { background: url(indicator.gif) no-repeat right; }
-	#city { width: 25em; }
+    .ui-autocomplete-loading { background: url(indicator.gif) no-repeat right; }
+    #city { width: 25em; }
 </style>
 
 {% endblock %}
@@ -69,84 +61,59 @@ $(function() {
 {% block content %}
 <p><a href="{% url resource-list %}">all items</a></p>
 
-{# <script type="text/javascript"> #}
-{# 	$(function() { #}
-{# 		var availableTags = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby", "python", "c", "scala", "groovy", "haskell", "perl"]; #}
-{# 		$("#id_tags").autocomplete({ #}
-{# 			source: availableTags #}
-{# 		}); #}
-{# 	}); #}
-{# 	</script> #}
-
-
-	
-{# <div class="demo"> #}
-{#  #}
-{# <div class="ui-widget"> #}
-{# 	<label for="tags">Tags: </label> #}
-{# 	<input id="tags"> #}
-{# </div> #}
-{#  #}
-{#  #}
-{# </div><!-- End demo --> #}
-
 <h1>Find Resources</h1>
 
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
-		{# <div class="ui-widget"> #}
-		
+        {# <div class="ui-widget"> #}
+        
         <ol>
              {{ form.as_ul }}
         </ol>
-		{# </div> #}
+        {# </div> #}
     </fieldset>
 
      <fieldset class="submit">
         <input type="submit" name="result" value="Find items">
         <input type="submit" name="result" value="Cancel">
     </fieldset>
-{# <ol> #}
-{#     {% for place in places %} #}
-{#     	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %} #}
-{# 			value="{{ place|place_values }}"> #}
-{# 			({{ place.placetype|placetype }}) {{ place.name }}</li> #}
-{#     {% endfor %} #}
-{# </ol> #}
 </form>
 
 <div id="locations">
-	{% if centre %}
-		<h2>Closest results for {{ centre.name }}</h2>
-		{% for loc in locations %}
-			<h3>{{ loc.obj.name }} - {{ loc.dis|floatformat }}km</h3>
-			{# <p>{{ loc.items }}</p> #}
-			{% for resource in loc.resources %}
-				<p><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
-			{% endfor %}
-		{% empty %}
-			<p>no results found</p>
-		{% endfor %}
-	{% endif %}
+    
+  {% if centre %}
+    <h1>Closest results for {{ centre.name }}:</h1>
+    
+    <ol>
+    {% for resource in results %}
+        <li><a href="{% url resource resource.id.0 %}">{{ resource.title }}</li>
+            <!-- 
+            <p>{{ resource.pt_location }}</p> -->
+    {% empty %}
+        <li>no results found</li>
+    {% endfor %}
+    </ol>
+  {% endif %}
+
 </div>
 <div id="map"></div>
 
-{% if locations %}
+{% if results %}
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   
-	function createCustomMarkerImage(img, larger){  
-	    var myImage = new YImage();  
-	    myImage.src = '/static/media/img/'+img;
-	 	if (larger) {
-			myImage.size = new YSize(34,36); 
-		} else {
-		    myImage.size = new YSize(30,32);  
-		}
-	    myImage.offsetSmartWindow = new YCoordPoint(0,0);  
-	    return myImage;   
-		}  
+    function createCustomMarkerImage(img, larger){  
+        var myImage = new YImage();  
+        myImage.src = '/static/media/img/'+img;
+        if (larger) {
+            myImage.size = new YSize(34,36); 
+        } else {
+            myImage.size = new YSize(30,32);  
+        }
+        myImage.offsetSmartWindow = new YCoordPoint(0,0);  
+        return myImage;   
+        }  
     function startMap(){  
         // Add the ability to change between Sat, Hybrid, and Regular Maps  
         map.addTypeControl();     
@@ -155,39 +122,25 @@ $(function() {
         // Add the Pan control to have North, South, East and West directional control  
         map.addPanControl();    
         // Specifying the Map starting location and zoom level  
-        map.drawZoomAndCenter("{{centre.name}}", 8);
-        var currentGeoPoint = new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"  );  
+        var currentGeoPoint = new YGeoPoint( "{{centre.location.0}}" , "{{centre.location.1}}"  );  
         {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
+        map.drawZoomAndCenter(currentGeoPoint, 8);
 
-		var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', true));  
-		newMarker.addAutoExpand("your location");  
-		{# var markerMarkup = "<b>You can add markup this</b>";   #}
-		{#     markerMarkup += "<i> easy</i>";   #}
-		{#    #}
-		{# YEvent.Capture(newMarker, EventsList.MouseClick,    #}
-		{#     function(){   #}
-		{#         newMarker.openSmartWindow(markerMarkup);   #}
-		{#     });   #}
-		map.addOverlay(newMarker);
+        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', true));  
+        newMarker.addAutoExpand("your location");  
+        map.addOverlay(newMarker);
 
-
-
-
- 		{% for loc in locations %}
-            {# map.addMarker(new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"));   #}
-            pinPoint = new YGeoPoint( "{{loc.obj.latitude}}" , "{{loc.obj.longitude}}");  
-			var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-			{# newMarker.addAutoExpand("{% for i in loc.resources %}{{i.title}}<br>{% endfor %}"); #}
-			newMarker.addAutoExpand('{% for resource in loc.resources %}<p><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>{% endfor %}');
-			
-			map.addOverlay(newMarker);
- 		{% endfor %}
+        {% for loc in results %}
+            pinPoint = new YGeoPoint( "{{loc.pt_location|get_lat}}" , "{{loc.pt_location|get_lon}}");  
+            var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
+            newMarker.addAutoExpand('<p><a href="{% url resource loc.id.0 %}">{{ loc.title }}</a></p>');
+            
+            map.addOverlay(newMarker);
+        {% endfor %}
     }  
 window.onload = startMap;     
 </script>  
 {% endif %}
-
-
 
 {% endblock %}
 

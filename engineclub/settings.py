@@ -32,15 +32,16 @@ try:
   MONGO_TESTING= 'test' in sys.argv
 except KeyError:
   MONGO_TESTING=False
-TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
+# TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
+TEST_RUNNER = 'depot.tests.MongoDBRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
-connect('test_db', host='localhost', port=27017)
-# connect('aliss', host='localhost', port=27017)
+MONGO_DB= 'test_db'
+connect(MONGO_DB, host='localhost', port=27017)
+LATLON_SEP= ', '
 
 YAHOO_KEY = 'your_key_here...'
-
 
 TIME_ZONE = 'Europe/London'
 DATE_FORMAT='%d %B %Y, %H:%M'
@@ -91,6 +92,7 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
+    # 'haystack',
     'home',
     'enginecab',
     'depot',

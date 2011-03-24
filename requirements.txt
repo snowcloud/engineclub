@@ -2,7 +2,7 @@ Django>=1.2
 textile
 Markdown
 docutils
-PIL==1.1.7
+PIL
 psycopg2
 
 
@@ -21,3 +21,7 @@ mongoengine
 multiprocessing
 
 # git://github.com/toastdriven/django-tastypie.git
+
+pysolr
+-e git+git://github.com/toastdriven/django-haystack.git#egg=haystack
+lxml

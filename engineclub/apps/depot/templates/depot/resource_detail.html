@@ -21,7 +21,9 @@ map{
 
 <h1>{{ object.title }}</h1>
 
+{% if object.url %}
 <p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
+{% endif %}
 {{ object.description|linebreaks }}
 
 <p>author: {{ object.item_metadata.author|user_name }}</p>
