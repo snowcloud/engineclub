@@ -70,11 +70,11 @@ from pymongo import Connection
 import codecs
 import csv
 
-def load_postcodes(fname):
+def load_postcodes(fname, dbname):
     """docstring for load_postcodes"""
     
     connection = Connection()
-    db = connection[settings.MONGO_DB]
+    db = connection[dbname]
     postcode_coll = db.postcode_locations
     postcode_coll.drop()
     
@@ -95,15 +95,14 @@ def load_postcodes(fname):
     print postcode_coll.find_one({'postcode': 'AB565UB'})
     print postcode_coll.find_one({'postcode': 'AB101AX'})
 
-def load_placenames(fname):
+def load_placenames(fname, dbname):
     """docstring for load_postcodes
     geonameid	name	asciiname	alternatenames	latitude	longitude	feature class	feature code	country code	cc2	admin1 code	admin2 code	admin3 code	admin4 code	population	elevation	gtopo30	timezone	modification date
     2633415	Yarm	Yarm	Yarm,Yarm on Tees	54.50364	-1.35793	P	PPL	GB		ENG	J7			0		31	Europe/London	9 Dec 2010
     
     """
-    
     connection = Connection()
-    db = connection[settings.MONGO_DB]
+    db = connection[dbname]
     placename_coll = db.placename_locations
     placename_coll.drop()
     
