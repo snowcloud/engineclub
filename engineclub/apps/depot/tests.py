@@ -6,7 +6,7 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Resource, Location, get_nearest, load_resource_data, update_keyword_index, \
+from depot.models import Resource, Location, load_resource_data, \
     get_latlon_for_postcode, latlon_to_str
 from depot.forms import ShortResourceForm
 from mongoengine import connect
@@ -37,10 +37,13 @@ def _load_data(resources='resources', locations='locations'):
     #         print 'r'
     #     resource.locations = locs
     #     resource.save()
-    # 
-    resource_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, locations), 'rU')
-    load_resource_data('location', resource_data)
-    resource_data.close()
+    #
+    
+    # no Locations while we refactor them
+    
+    # resource_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, locations), 'rU')
+    # load_resource_data('location', resource_data)
+    # resource_data.close()
     
 class MongoDBTestRunner(DjangoTestSuiteRunner):
     def setup_databases(self, **kwargs):

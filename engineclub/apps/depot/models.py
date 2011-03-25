@@ -28,17 +28,25 @@ class ItemMetadata(EmbeddedDocument):
     note = StringField()
             
 class Location(Document):
-    """Location document, based on Yahoo Placemaker woeid, + placeholders for move to Ordnance Survey data"""
+    """Location document, based on Ordnance Survey data
+    ALISS only uses 4 types: postcode, ward, district, country
+    """
     
-    woeid = StringField()
-    name = StringField()
-    placetype = StringField()
-    postcode = StringField()
+    os_id = StringField(unique=True, required=True)
+    label = StringField(required=True)
+    os_type = StringField(required=True)
+    parents = ListField(ReferenceField("Location"), default=list)
     lat_lon = ListField(FloatField())
-    latitude = FloatField()
-    longitude = FloatField()
-    os_id = StringField()
-    os_placetype = StringField()
+    
+    # woeid = StringField()
+    # name = StringField()
+    # placetype = StringField()
+    # postcode = StringField()
+    # lat_lon = ListField(FloatField())
+    # latitude = FloatField()
+    # longitude = FloatField()
+    # os_id = StringField()
+    # os_placetype = StringField()
 
 class Moderation(EmbeddedDocument):
     outcome = StringField()
@@ -95,7 +103,7 @@ class Resource(Document):
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     # _keywords = ListField(StringField(max_length=96), default=list)
-    index_keys = ListField(StringField(max_length=96), default=list)
+    # index_keys = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
@@ -124,13 +132,13 @@ class Resource(Document):
     def get_locations(self):
         return [Location.objects.get(woeid=id) for id in self.locations]
         
-    def make_keys(self, keys):
-        """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
-           NB, item is not saved- calling code must do item.save()"""
-        # keys.extend(self.tags)
-        # print 'in set_keys'
-        self.index_keys = list(set(keys+self.tags+self.title.split()))
-        # print 'set_keys:', self.index_keys
+    # def make_keys(self, keys):
+    #     """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
+    #        NB, item is not saved- calling code must do item.save()"""
+    #     # keys.extend(self.tags)
+    #     # print 'in set_keys'
+    #     self.index_keys = list(set(keys+self.tags+self.title.split()))
+    #     # print 'set_keys:', self.index_keys
         
     def get_keywords(self):
         return self.index_keys or []
@@ -143,26 +151,26 @@ class RelatedResource(Document):
     rel_type = StringField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
 
-def get_nearest(lat, lon, categories=[], num=200, all_locations=False):
-    """uses mongodb geo index to find num nearest locations to lat, lon parameters.
-        returns list of dicts, each dict has:
-        - dist (distance from lat,lon in degrees)
-        - obj (dict of place attrs)
-        - resources (list of resources in db at that location)"""
-       
-    db = get_db()
-    db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
-    eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : %s } );' % (lat, lon, num))
-    results = eval_result.get('results', [])
-    
-    for res in results:
-        res['dis'] = res['dis'] * 111.12 # convert to Km
-        if len(categories) > 0:
-            # print 'using cats ', len(categories)
-            res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
-        else:
-            res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']]))
-    return [res for res in results if res['resources']]
+# def get_nearest(lat, lon, categories=[], num=200, all_locations=False):
+#     """uses mongodb geo index to find num nearest locations to lat, lon parameters.
+#         returns list of dicts, each dict has:
+#         - dist (distance from lat,lon in degrees)
+#         - obj (dict of place attrs)
+#         - resources (list of resources in db at that location)"""
+#        
+#     db = get_db()
+#     db.eval('db.location.ensureIndex( { lat_lon : "2d" } )')
+#     eval_result = db.eval('db.runCommand( { geoNear : "location" , near : [%s,%s], num : %s } );' % (lat, lon, num))
+#     results = eval_result.get('results', [])
+#     
+#     for res in results:
+#         res['dis'] = res['dis'] * 111.12 # convert to Km
+#         if len(categories) > 0:
+#             # print 'using cats ', len(categories)
+#             res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']],index_keys__in=categories).ensure_index('+index_keys'))
+#         else:
+#             res['resources'] = list(Resource.objects(locations__in=[res['obj']['woeid']]))
+#     return [res for res in results if res['resources']]
 
 
 def load_resource_data(document, resource_data):
@@ -171,28 +179,28 @@ def load_resource_data(document, resource_data):
     db[document].insert(new_data)
     return db
 
-def update_keyword_index():
-    """docstring for update_keyword_index"""
-    from pymongo.code import Code
-    map = Code( "function () {"
-                "  this.index_keys.forEach(function(z) {"
-                "    emit(z, 1);"
-                "  });"
-                "}")
-
-    reduce = Code("function (key, values) { return 1;}")
-    # reduce = Code("function (key, values) { "
-    #              "  var total = 0;"
-    #              "  for (var i = 0; i < values.length; i++) {"
-    #              "    total += values[i];"
-    #              "  }"
-    #              "  return total;"
-    #              "}")
-    db = get_db()
-    result = db.resource.map_reduce(map, reduce, out='keyword')
-    # print result
-    # for res in result.find():
-    #   print res
+# def update_keyword_index():
+#     """docstring for update_keyword_index"""
+#     from pymongo.code import Code
+#     map = Code( "function () {"
+#                 "  this.index_keys.forEach(function(z) {"
+#                 "    emit(z, 1);"
+#                 "  });"
+#                 "}")
+# 
+#     reduce = Code("function (key, values) { return 1;}")
+#     # reduce = Code("function (key, values) { "
+#     #              "  var total = 0;"
+#     #              "  for (var i = 0; i < values.length; i++) {"
+#     #              "    total += values[i];"
+#     #              "  }"
+#     #              "  return total;"
+#     #              "}")
+#     db = get_db()
+#     result = db.resource.map_reduce(map, reduce, out='keyword')
+#     # print result
+#     # for res in result.find():
+#     #   print res
 
 def get_latlon_for_postcode(name):
     pcode = name.upper().replace(' ', '').strip()

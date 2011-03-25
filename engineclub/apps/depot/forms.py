@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Resource, Location, get_nearest, find_by_place
+from depot.models import Resource, Location, find_by_place
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
