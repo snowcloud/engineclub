@@ -123,14 +123,14 @@ class Resource(Document):
         #     # print 'i am new- email me'
         #     pass
 
-    def add_locations(self, new_locations):
-        """docstring for add_locations"""
-        for loc in new_locations:
-            if loc.loc_id not in [l.loc_id for l in self.locations]:
-                self.locations.append(loc)
-        
-    def get_locations(self):
-        return [Location.objects.get(woeid=id) for id in self.locations]
+    # def add_locations(self, new_locations):
+    #     """docstring for add_locations"""
+    #     for loc in new_locations:
+    #         if loc.loc_id not in [l.loc_id for l in self.locations]:
+    #             self.locations.append(loc)
+    #     
+    # def get_locations(self):
+    #     return [Location.objects.get(woeid=id) for id in self.locations]
         
     # def make_keys(self, keys):
     #     """adds self.tags to keys, uses set to make unique, then assigns to self._keywords.
@@ -140,8 +140,8 @@ class Resource(Document):
     #     self.index_keys = list(set(keys+self.tags+self.title.split()))
     #     # print 'set_keys:', self.index_keys
         
-    def get_keywords(self):
-        return self.index_keys or []
+    # def get_keywords(self):
+    #     return self.index_keys or []
     # keywords = property(get_keywords)
 
 class RelatedResource(Document):
@@ -202,25 +202,38 @@ def load_resource_data(document, resource_data):
 #     # for res in result.find():
 #     #   print res
 
-def get_latlon_for_postcode(name):
+
+def get_or_create_location(postcode):
+    result = get_latlon_for_name(postcode, 'postcode_locations', settings.MONGO_DB)
+    if not result and len(postcode.split()) > 1:
+        print 'trying ', postcode.split()[0]
+        result = get_latlon_for_name(postcode.split()[0], 'postcode_locations', settings.MONGO_DB)
+    if result:
+        loc_values = {
+            'label': result['label'],
+            'os_type': 'POSTCODE',
+            'lat_lon': result['latlon'],
+            }
+        return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
+    raise Location.DoesNotExist
+
+def get_latlon_for_name(name, collname, dbname):
     pcode = name.upper().replace(' ', '').strip()
     connection = Connection()
-    db = connection[settings.MONGO_DB]
-    coll = db.postcode_locations
+    db = connection[dbname]
+    coll = db[collname]
     result = coll.find_one({'postcode': pcode})
     if result:
-        return result['latlon']
-    return ''
+        return result
+    return None
 
-def get_latlon_for_placename(name):
-    place = name.upper().strip()
-    connection = Connection()
-    db = connection[settings.MONGO_DB]
-    coll = db.placename_locations
-    result = coll.find_one({'name_upper': place})
-    if result:
-        return result['latlon']
-    return ''
+def get_latlon_for_postcode(name, dbname=settings.MONGO_DB):
+    result = get_latlon_for_name(name, 'postcode_locations', dbname)
+    return result['latlon']
+
+def get_latlon_for_placename(name, dbname=settings.MONGO_DB):
+    result = get_latlon_for_name(name, 'placename_locations', dbname)
+    return result['latlon']
 
 def latlon_to_str(loc):
     """docstring for latlon_to_str"""
