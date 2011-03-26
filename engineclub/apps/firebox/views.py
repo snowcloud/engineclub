@@ -86,7 +86,7 @@ def load_postcodes(fname, dbname):
         for r in reader:
             # print r[1].replace(' ', ''), r[9], r[10]
             try:
-                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'latlon': [float(r[9]), float(r[10])]})
+                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'latlon': [float(r[9]), float(r[10])]})
             except ValueError:
                 print r
     finally:
