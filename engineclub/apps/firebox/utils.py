@@ -8,7 +8,7 @@ from django.core.management import setup_environ
 
 setup_environ(settings)
 
-from firebox.views import load_postcodes, load_placenames
+from firebox.views import load_postcodes, load_placenames, reindex_resources
 
 
 
@@ -36,6 +36,10 @@ if __name__ == "__main__":
     elif options.command == 'loadplacenames' and options.filename:
         print("\nreloading placenames...")
         load_placenames(options.filename, options.dbname or settings.MONGO_DB)
+    elif options.command == 'reindex':
+        print("\nreindexing resources...")
+        reindex_resources(options.dbname or settings.MONGO_DB)
+
     else:
         print 'no command recognised'
     

@@ -7,14 +7,12 @@ from django.template import RequestContext
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
+from pymongo.objectid import ObjectId
 
-from depot.models import Resource, Location, get_nearest,  \
+from depot.models import Resource, Location,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import *
 from firebox.views import get_terms
-
-# def tags(request):
-#     
 
 def get_one_or_404(**kwargs):
     try:
@@ -31,7 +29,7 @@ def resource_index(request):
 
 def resource_detail(request, object_id):
 
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(id=ObjectId(object_id))
 
     return render_to_response('depot/resource_detail.html',
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
@@ -85,7 +83,7 @@ def resource_add(request):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(id=ObjectId(object_id))
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
@@ -97,7 +95,7 @@ def resource_edit(request, object_id):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
     
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     doc = ''
     places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
@@ -113,9 +111,11 @@ def resource_edit(request, object_id):
         
         if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
             if result == UPDATE_LOCS:
-                places = fix_places(resource.locations, locationform.content() or resource.url)
+                pass
+                # places = fix_places(resource.locations, locationform.content() or resource.url)
             elif result == UPDATE_TAGS:
-                places = fix_places(resource.locations, locationform.content() or resource.url)
+                pass
+                # places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
                 resource = resourceform.save()
                 
@@ -132,11 +132,12 @@ def resource_edit(request, object_id):
             
                 try:
                     resource.save(str(request.user.id))
-                    try:
-                        keys = get_terms(resource.url)
-                    except:
-                        keys = [] # need to fail silently here
-                    resource.make_keys(keys)
+                    resource.reindex()
+                    # try:
+                    #     keys = get_terms(resource.url)
+                    # except:
+                    #     keys = [] # need to fail silently here
+                    # resource.make_keys(keys)
                     return resource_edit_complete(request, resource, template_info)
                     # return HttpResponseRedirect('%s?popup=%s' % (reverse('resource', args=[resource.id]), template_info['popup']))
                 except OperationError:
@@ -146,8 +147,8 @@ def resource_edit(request, object_id):
         resourceform = ShortResourceForm(instance=resource)
         locationform = LocationUpdateForm(instance=resource)
         if not resource.locations:
-            doc = resource.url
-        places = fix_places(resource.locations, doc)
+            doc = resource.uri
+        # places = fix_places(resource.locations, doc)
         tagsform = TagsForm(instance=resource)
         shelflifeform = ShelflifeForm(instance=resource)
     

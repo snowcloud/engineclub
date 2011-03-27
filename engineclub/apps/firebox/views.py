@@ -9,6 +9,9 @@ from firebox.yahoo_place_types import PLACE_TYPES
 
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
+from pysolr import Solr
+
+from depot.models import Resource
 
 # probably move this code to utils.py if enough
 def get_url_content(url):
@@ -86,7 +89,7 @@ def load_postcodes(fname, dbname):
         for r in reader:
             # print r[1].replace(' ', ''), r[9], r[10]
             try:
-                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'latlon': [float(r[9]), float(r[10])]})
+                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'lat_lon': [float(r[9]), float(r[10])]})
             except ValueError:
                 print r
     finally:
@@ -119,7 +122,7 @@ def load_placenames(fname, dbname):
                     placename_coll.insert({
                         'name': r[1],
                         'name_upper': r[1].upper(),
-                        'latlon': [float(r[4]), float(r[5])]})
+                        'lat_lon': [float(r[4]), float(r[5])]})
                 except ValueError:
                     print r
     finally:
@@ -128,4 +131,13 @@ def load_placenames(fname, dbname):
     print placename_coll.find_one({'name_upper': 'KEITH'})
     print placename_coll.find_one({'name_upper': 'PORTOBELLO'})
 
-
+def reindex_resources(dbname):
+    """docstring for reindex_resources"""
+    print 'CLEARING SOLR INDEX'
+    conn = Solr(settings.SOLR_URL)
+    conn.delete(q='*:*')
+    
+    print 'Indexing %s Resources...' % Resource.objects.count()
+    for res in Resource.objects:
+        res.index(conn)
+    

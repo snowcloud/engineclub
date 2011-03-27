@@ -7,7 +7,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from depot.models import Resource, Location, load_resource_data, \
-    get_latlon_for_postcode, latlon_to_str
+    get_lat_lon_for_postcode, lat_lon_to_str
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -145,6 +145,7 @@ class ResourceTest(TransactionTestCase):
             resource.make_keys([])
             resource.save()
             # this is making a second object
+            # SEE EVERNOTE- PROB IF USING STRING AS ID- USE OBJECTID
         update_keyword_index()
         results = get_nearest('50', -3.00, categories=['blue']) # takes float or string for lat, lon
         print results
@@ -202,11 +203,11 @@ class SolrTest(TransactionTestCase):
         # peterheid = '57.584806, -1.875630'
         # keith = '57.7036280142534, -2.85720247750133'
         print '\n\n*** aberdeen', aberdeen
-        loc = get_latlon_for_postcode(aberdeen)
+        loc = get_lat_lon_for_postcode(aberdeen, 'TEST_DB_NAME')
         srch = '"mental health"'
         # search(self, q, **kwargs)
         
-        kw = { 'sfield': 'pt_location', 'pt': latlon_to_str(loc), 'sort': 'geodist() asc' }
+        kw = { 'sfield': 'pt_location', 'pt': lat_lon_to_str(loc), 'sort': 'geodist() asc' }
         # kw = { 'fq':'{!geofilt pt=55.8,-3.10 sfield=store d=50}' }
 
         results = conn.search(srch, **kw)

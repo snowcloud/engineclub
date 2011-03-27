@@ -36,7 +36,7 @@ class Location(Document):
     label = StringField(required=True)
     os_type = StringField(required=True)
     parents = ListField(ReferenceField("Location"), default=list)
-    lat_lon = ListField(FloatField())
+    lat_lon = ListField(GeoPointField())
     
     # woeid = StringField()
     # name = StringField()
@@ -58,12 +58,12 @@ class Curation(EmbeddedDocument):
     tags = ListField(StringField(max_length=96), default=list)
     # rating - not used
     note = StringField()
+    data = DictField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-class AddedMetadata(EmbeddedDocument):
-    data = DictField()
-    # format = StringField() not needed- store in the dict and put out in formats for clients
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+# class AddedMetadata(EmbeddedDocument):
+#     # format = StringField() not needed- store in the dict and put out in formats for clients
+#     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
@@ -95,9 +95,9 @@ class Resource(Document):
     title = StringField(required=True)
     description = StringField()
     resource_type = StringField()
-    url = StringField()
-    # locations = ListField(ReferenceField(Location), default=list)
-    locations = ListField(StringField(max_length=96), default=list)
+    uri = StringField()
+    locations = ListField(ReferenceField(Location), default=list)
+    # locations = ListField(StringField(max_length=96), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
@@ -105,23 +105,37 @@ class Resource(Document):
     # _keywords = ListField(StringField(max_length=96), default=list)
     # index_keys = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
-    added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
+    # added_metadata = ListField(EmbeddedDocumentField(AddedMetadata))
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-    # def __init__(self, *args, **kwargs):
-    #     super(Resource, self).__init__(*args, **kwargs)
-    #     print 'item __init__'
-        
     def save(self, author=None, *args, **kwargs):
         self.item_metadata.last_modified = datetime.now()
         if author:
             self.item_metadata.author = author
         created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         super(Resource, self).save(*args, **kwargs)
-        # if created:
-        #     # TODO
-        #     # print 'i am new- email me'
-        #     pass
+
+    def reindex(self):
+        """docstring for reindex"""
+        conn = Solr(settings.SOLR_URL)
+        conn.delete(q='id:%s' % self.id)
+        self.index(conn)
+        
+    def index(self, conn):
+        """conn is Solr connection"""
+        doc = {
+            'id': unicode(self.id),
+            'res_id': unicode(self.id),
+            'title': self.title,
+            'description': self.description,
+            'keywords': ', '.join(self.tags)
+        }
+        # print '%s %s' % (doc['res_id'], unicode(r.id)), r.id
+        # locs = r.get_locations()
+        if self.locations:
+            doc['pt_location'] = lat_lon_to_str(self.locations[0])
+            # print doc['pt_location']
+        conn.add([doc])
 
     # def add_locations(self, new_locations):
     #     """docstring for add_locations"""
@@ -204,49 +218,55 @@ def load_resource_data(document, resource_data):
 
 
 def get_or_create_location(postcode):
-    result = get_latlon_for_name(postcode, 'postcode_locations', settings.MONGO_DB)
+    result = get_lat_lon_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
     if not result and len(postcode.split()) > 1:
         print 'trying ', postcode.split()[0]
-        result = get_latlon_for_name(postcode.split()[0], 'postcode_locations', settings.MONGO_DB)
+        result = get_lat_lon_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
     if result:
         loc_values = {
             'label': result['label'],
             'os_type': 'POSTCODE',
-            'lat_lon': result['latlon'],
+            'lat_lon': result['lat_lon'],
             }
         return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
     raise Location.DoesNotExist
 
-def get_latlon_for_name(name, collname, dbname):
-    pcode = name.upper().replace(' ', '').strip()
+def get_lat_lon_for_name(namestr, collname, field, dbname):
+    name = namestr.upper().replace(' ', '').strip()
     connection = Connection()
     db = connection[dbname]
     coll = db[collname]
-    result = coll.find_one({'postcode': pcode})
+    result = coll.find_one({field: name})
     if result:
         return result
     return None
 
-def get_latlon_for_postcode(name, dbname=settings.MONGO_DB):
-    result = get_latlon_for_name(name, 'postcode_locations', dbname)
-    return result['latlon']
+def get_lat_lon_for_postcode(name, dbname=settings.MONGO_DB):
+    result = get_lat_lon_for_name(name, 'postcode_locations', 'postcode', dbname)
+    if result:
+        return result['lat_lon']
+    return None
+    
+def get_lat_lon_for_placename(name, dbname=settings.MONGO_DB):
+    result = get_lat_lon_for_name(name, 'placename_locations','name_upper',  dbname)
+    if result:
+        return result['lat_lon']
+    return None
 
-def get_latlon_for_placename(name, dbname=settings.MONGO_DB):
-    result = get_latlon_for_name(name, 'placename_locations', dbname)
-    return result['latlon']
-
-def latlon_to_str(loc):
-    """docstring for latlon_to_str"""
+def lat_lon_to_str(loc):
+    """docstring for lat_lon_to_str"""
     if loc:
+        if type(loc) == Location:
+            return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
         return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
     else:
         return ''
 
 def find_by_place(name, kwords):
     conn = Solr(settings.SOLR_URL)
-    loc = get_latlon_for_postcode(name) or get_latlon_for_placename(name)
+    loc = get_lat_lon_for_postcode(name) or get_lat_lon_for_placename(name)
     if loc:
-        kw = { 'sfield': 'pt_location', 'pt': latlon_to_str(loc), 'sort': 'geodist() asc' }
+        kw = { 'sfield': 'pt_location', 'pt': lat_lon_to_str(loc), 'sort': 'geodist() asc', 'rows': settings.SOLR_ROWS }
         return loc, conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None

@@ -60,7 +60,7 @@ field name              type
 ==================      =========================================================================
 loc_id                   URI
 label                   string
-latlon                  list of float [float, float]
+lat_lon                 list of float [float, float]
 latitude                float
 longitude               float
 location_type           string [controlled list]
@@ -101,26 +101,12 @@ outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
 note                    string
+data                    dict (dictionary with field names as keys) *
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
-
-.. _addedMetadata:
-
-AddedMetadata
-=========================
-
-*This will be used to allow trusted accounts to add their own metadata using their own schema.*
-
-*Data will be converted to required formats on client access (may be cached for performance)*
-
-==================      ======================================================
-field name              type
-==================      ======================================================
-data                    dict (dictionary with field names as keys)
-item_metadata           :ref:`itemMetadata`
-==================      ======================================================
-
+* This will be used to allow trusted accounts to add their own metadata using their own schema.
+Data will be converted to required formats on client access (may be cached for performance)
 
 .. _itemMetadata:
 

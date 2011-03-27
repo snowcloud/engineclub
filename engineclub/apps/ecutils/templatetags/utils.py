@@ -165,16 +165,20 @@ def first_name(user):
     return user.first_name or user.username
 
 @register.filter
-def split_latlon(value):
+def split_lat_lon(value):
     return value.split(settings.LATLON_SEP)
 
 @register.filter
 def get_lat(value):
-    return value.split(settings.LATLON_SEP)[0]
-
+    if value:
+        return value.split(settings.LATLON_SEP)[0]
+    return ''
+    
 @register.filter
 def get_lon(value):
-    return value.split(settings.LATLON_SEP)[1]
+    if value:
+        return value.split(settings.LATLON_SEP)[1]
+    return ''
 
 @register.filter
 def placetype(pt):

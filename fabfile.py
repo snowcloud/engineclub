@@ -10,3 +10,6 @@ def test_reload_postcodes():
 def reload_placenames():
     local('python engineclub/apps/firebox/utils.py -c loadplacenames -f engineclub/apps/firebox/sources/geonames/GB-places/GB.txt', capture=False)
 
+def reindex():
+    local('python engineclub/apps/firebox/utils.py -c reindex', capture=False)
+    

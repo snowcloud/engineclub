@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from django.core import serializers 
 
-from depot.models import Resource, update_keyword_index
+from depot.models import Resource
 
 from mongoengine.connection import _get_db as get_db
 

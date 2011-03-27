@@ -4,12 +4,12 @@ apps/firebox/tests.py
 """
 
 from django.test import TestCase, TransactionTestCase
-from firebox.ordnancesurvey import get_os_postcode, \
-    OS_LABEL, OS_TYPE, OS_LAT, OS_LON, OS_WARD, OS_DISTRICT, OS_COUNTRY
+# from firebox.ordnancesurvey import get_os_postcode, \
+#     OS_LABEL, OS_TYPE, OS_LAT, OS_LON, OS_WARD, OS_DISTRICT, OS_COUNTRY
 from firebox.views import *
 
 from depot.models import Resource, Location, load_resource_data, \
-    get_latlon_for_postcode, latlon_to_str
+    get_lat_lon_for_postcode, lat_lon_to_str, get_or_create_location
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -66,7 +66,7 @@ class OSLocationTest(TransactionTestCase):
         _print_db_info()
         print 'dropping Resource and Location'
         Resource.drop_collection()
-        Location.drop_collection()
+        # Location.drop_collection()
     
     def test_new_location(self):
         """
@@ -88,12 +88,14 @@ class OSLocationTest(TransactionTestCase):
         
         """
         pc = 'AB35 5RB'
-        loc_id, result = get_os_postcode(pc, True)
-        print loc_id, result
-        loc = Location(
-            label= result[OS_LABEL],
-            os_type = result[OS_TYPE],
-            os_id = loc_id,
-            )
-        loc.save()
-                
+        # loc_id, result = get_os_postcode(pc, True)
+        loc, created = get_or_create_location(postcode=pc)
+        print created, loc.label, loc.lat_lon
+        
+        pc = 'AB35 xxx'
+        # loc_id, result = get_os_postcode(pc, True)
+        loc, created = get_or_create_location(postcode=pc)
+        print created, loc.label, loc.lat_lon
+        
+        
+        
