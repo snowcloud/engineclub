@@ -19,21 +19,21 @@ map{
 
 <p><a href="{% url resource-list %}">all items</a> | <a href="{% url resource-find %}">search items</a></p>
 
+{% if object.uri %}
+<h1><a href="{{ object.uri }}">{{ object.title }}</a></h1>
+{% else %}
 <h1>{{ object.title }}</h1>
-
-{% if object.url %}
-<p>url: <a href="{{ object.url }}">{{ object.url }}</a></p>
 {% endif %}
+
 {{ object.description|linebreaks }}
 
 <p>author: {{ object.item_metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
 
-{% with object.get_locations as locations %}
 
 <ul>
-{% for loc in locations %}
-	<li>{{ loc.name }} </li>
+{% for loc in object.locations %}
+	<li>{{ loc.label }}, {{ loc.place_name }}</li>
 {% empty %}
 	<li>no locations found</li>
 {% endfor %}	
@@ -45,7 +45,7 @@ map{
 <p><a href="{% url resource-remove object.id %}">delete item</a></p>
 
 <div id="map"></div>
-{% if locations|length %}
+{% if object.locations %}
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   
@@ -57,18 +57,20 @@ map{
         // Add the Pan control to have North, South, East and West directional control  
         map.addPanControl();    
         // Specifying the Map starting location and zoom level  
-        map.drawZoomAndCenter("{{locations.0.name}}", 7);
- 		{% for loc in locations %}
-            var currentGeoPoint = new YGeoPoint( "{{loc.latitude}}" , "{{loc.longitude}}"  );  
+        var currentGeoPoint = new YGeoPoint( "{{object.locations.0.lat_lon.0}}" , "{{object.locations.0.lat_lon.1}}"  );  
+        map.drawZoomAndCenter(currentGeoPoint, 7);
+        // map.drawZoomAndCenter("{{locations.0.label}}", 7);
+ 		{% for loc in object.locations %}
+            currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
             map.addMarker(currentGeoPoint);  
  		{% endfor %}
     }  
 window.onload = startMap;     
 </script>  
 {% endif %}
-{% endwith %}
 
 <hr>
+<!-- 
 <p class="small">keywords for indexing: <em>{{ object.get_keywords|join:", "}}</em></p>
-
+ -->
 {% endblock %}

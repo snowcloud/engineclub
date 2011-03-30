@@ -9,6 +9,9 @@ from firebox.yahoo_place_types import PLACE_TYPES
 
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
+from pysolr import Solr
+
+from depot.models import Resource, Location
 
 # probably move this code to utils.py if enough
 def get_url_content(url):
@@ -70,11 +73,29 @@ from pymongo import Connection
 import codecs
 import csv
 
-def load_postcodes(fname):
-    """docstring for load_postcodes"""
+def load_postcodes(fname, dbname):
+    """docstring for load_postcodes
+    
+    from readme.txt
+    ===============
+    country code      : iso country code, 2 characters
+    postal code       : varchar(10)
+    place name        : varchar(180)
+    admin name1       : 1. order subdivision (state) varchar(100)
+    admin code1       : 1. order subdivision (state) varchar(20)
+    admin name2       : 2. order subdivision (county/province) varchar(100)
+    admin code2       : 2. order subdivision (county/province) varchar(20)
+    admin name3       : 3. order subdivision (community) varchar(100)
+    admin code3       : 3. order subdivision (community) varchar(20)
+    latitude          : estimated latitude (wgs84)
+    longitude         : estimated longitude (wgs84)
+    accuracy          : accuracy of lat/lng from 1=estimated to 6=centroid
+    
+    GB	AB10	Midstocket/Rosemount Ward	Scotland	SCT		00	Aberdeen City	QA	57.1454241278722	-2.10952454025988	6
+    """
     
     connection = Connection()
-    db = connection[settings.MONGO_DB]
+    db = connection[dbname]
     postcode_coll = db.postcode_locations
     postcode_coll.drop()
     
@@ -86,24 +107,29 @@ def load_postcodes(fname):
         for r in reader:
             # print r[1].replace(' ', ''), r[9], r[10]
             try:
-                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'latlon': [float(r[9]), float(r[10])]})
+                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'place_name': r[2], 'lat_lon': [float(r[9]), float(r[10])]})
             except ValueError:
                 print r
     finally:
         f.close()
+        
+    for loc in Location.objects[:10]:
+        # loc.place_name = postcode_coll.find_one({'postcode': loc.os_id})['place_name']
+        loc.save()
+        
     print 'postcode collection (end):', postcode_coll.count()
     print postcode_coll.find_one({'postcode': 'AB565UB'})
     print postcode_coll.find_one({'postcode': 'AB101AX'})
+    
 
-def load_placenames(fname):
+def load_placenames(fname, dbname):
     """docstring for load_postcodes
     geonameid	name	asciiname	alternatenames	latitude	longitude	feature class	feature code	country code	cc2	admin1 code	admin2 code	admin3 code	admin4 code	population	elevation	gtopo30	timezone	modification date
     2633415	Yarm	Yarm	Yarm,Yarm on Tees	54.50364	-1.35793	P	PPL	GB		ENG	J7			0		31	Europe/London	9 Dec 2010
     
     """
-    
     connection = Connection()
-    db = connection[settings.MONGO_DB]
+    db = connection[dbname]
     placename_coll = db.placename_locations
     placename_coll.drop()
     
@@ -120,7 +146,7 @@ def load_placenames(fname):
                     placename_coll.insert({
                         'name': r[1],
                         'name_upper': r[1].upper(),
-                        'latlon': [float(r[4]), float(r[5])]})
+                        'lat_lon': [float(r[4]), float(r[5])]})
                 except ValueError:
                     print r
     finally:
@@ -129,4 +155,13 @@ def load_placenames(fname):
     print placename_coll.find_one({'name_upper': 'KEITH'})
     print placename_coll.find_one({'name_upper': 'PORTOBELLO'})
 
-
+def reindex_resources(dbname, url=settings.SOLR_URL):
+    """docstring for reindex_resources"""
+    print 'CLEARING SOLR INDEX: ', url
+    conn = Solr(url)
+    conn.delete(q='*:*')
+    
+    print 'Indexing %s Resources...' % Resource.objects.count()
+    for res in Resource.objects:
+        res.index(conn)
+    

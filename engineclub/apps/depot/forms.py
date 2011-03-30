@@ -1,33 +1,13 @@
 
 from django import forms
 
-from depot.models import Resource, Location, get_nearest, find_by_place
+from depot.models import Resource, Location, find_by_place
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
 
 
-def fix_places(locations, doc=None):
-    """docstring for fix_places"""
-    result = []
-    places = []
-    itemlocs = []
-    if locations:
-        for loc in locations: #woeids
-            itemlocs.append(loc)
-            result.append(PlaceProxy(Location.objects.get(woeid=loc), checked=True))
-    if doc:
-        try:
-            g = geomaker(doc)
-            p = g.find_places()
-            places= p.places
-        except:
-            places = []
-
-    result.extend([place for place in places if unicode(place.woeid) not in itemlocs])  
-    return result
-    
 class FormHasNoInstanceException(Exception):
     pass
 
@@ -96,8 +76,8 @@ class ShortResourceForm(DocumentForm):
     
 class LocationUpdateForm(DocumentForm):
     
-    # postcode = forms.CharField(required=False)
-    address = forms.CharField(label="Location information", widget=forms.Textarea, required=False)
+    new_location = forms.CharField(required=False)
+    # address = forms.CharField(label="Location information", widget=forms.Textarea, required=False)
     # tags = forms.CharField(required=False)
 
     # def __init__(self, *args, **kwargs):
@@ -108,9 +88,9 @@ class LocationUpdateForm(DocumentForm):
     #     self.fields['address'] = forms.CharField(widget=forms.Textarea, required=False)
         
     
-    def content(self):
-        # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
-        return self.cleaned_data['address']
+    # def content(self):
+    #     # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
+    #     return self.cleaned_data['address']
     
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
