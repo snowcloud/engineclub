@@ -206,3 +206,15 @@ def find_by_place(name, kwords):
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
+
+def find_by_place_or_kwords(name, kwords):
+    """docstring for find_by_place_or_kwords"""
+    conn = Solr(settings.SOLR_URL)
+    if name:
+        return find_by_place(name, kwords)
+    kw = { 'rows': settings.SOLR_ROWS }
+    return None, conn.search(kwords.strip() or '*:*', **kw)
+
+        
+        
+        

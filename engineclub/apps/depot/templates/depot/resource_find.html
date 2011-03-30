@@ -84,6 +84,7 @@ $(function() {
     
   {% if centre %}
     <h1>Closest results for {{ centre.name }}:</h1>
+  {% endif %}
     
     <ol>
     {% for resource in results %}
@@ -94,12 +95,11 @@ $(function() {
         <li>no results found</li>
     {% endfor %}
     </ol>
-  {% endif %}
 
 </div>
 <div id="map"></div>
 
-{% if results %}
+{% if results and centre %}
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
     var map = new YMap(document.getElementById('map'));   

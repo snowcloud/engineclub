@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Resource, Location, find_by_place
+from depot.models import Resource, Location, find_by_place_or_kwords, get_place_for_placename
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
@@ -34,7 +34,7 @@ class DocumentForm(forms.Form):
 
 class FindResourceForm(forms.Form):
     
-    post_code = forms.CharField(help_text='enter a post code or a place name', required=True)
+    post_code = forms.CharField(help_text='enter a post code or a place name', required=False)
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
 
     def __init__(self, *args, **kwargs):
@@ -48,14 +48,17 @@ class FindResourceForm(forms.Form):
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('post_code').strip()
         kwords = cleaned_data.get('tags').strip()
-        
-        self.centre = {'name': data}
-        loc, self.results = find_by_place(data, kwords)
+        if not(data or kwords):
+            raise forms.ValidationError("Please enter a location and/or some text and try again.")
+
+        loc, self.results = find_by_place_or_kwords(data, kwords)
         if loc:
-            self.centre['location'] = loc #.split(settings.LATLON_SEP)
-        else:
+            self.centre = {'name': data, 'location': loc }
+        elif data:
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
-        
+        # else:
+        #     self.centre['location'] = get_place_for_placename('perth')['lat_lon'] #.split(settings.LATLON_SEP)
+            
         return cleaned_data
 
 class ShortResourceForm(DocumentForm):
