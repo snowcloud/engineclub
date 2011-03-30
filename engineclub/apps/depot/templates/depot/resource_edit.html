@@ -17,14 +17,11 @@
 
 	{% if locationform %}
 	    <fieldset>
-	        <legend><span>Location:</span></legend>
+	        <legend><span>Location{{ object.locations|pluralize }}:</span></legend>
 
 	        <ol>
-	            {% for place in places %}
-	            	<li><input type="checkbox" name="cb_places" {% if place.checked %}checked="1"{% endif %}
-						value="{{ place|place_values }}">
-						({{ place.placetype|placetype }}) {{ place.name }}</li>
-					{# place.confidence #}
+	            {% for loc in object.locations %}
+	            	<li>{{ loc.label }}, {{ loc.place_name }} <input type="submit" name="del_loc:{{loc.id}}" value="remove location"></li>
 				{% empty %}
 				    <li>no locations found</li>
 	            {% endfor %}
@@ -33,10 +30,15 @@
 	    {#  #}
 	    {# <fieldset> #}
 	        {# <ol> #}
-			<input type="submit" name="result" value="{{ UPDATE_LOCS }}">
-	        <p>Enter location information in the box below to use it to update the list above.</p>
+	        
+        <p>Enter location information in the box below to add it to the list above.</p>
+        <!-- 
 			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
-	             {{ locationform.as_ul }}
+	     -->
+	             <li><label for="id_new_location">New location:</label>
+	                 <input type="text" name="new_location" id="id_new_location">
+	                 <input type="submit" name="result" value="{{ UPDATE_LOCS }}">
+	            </li>
 	        </ol>
 	    </fieldset>
 	{% endif %}

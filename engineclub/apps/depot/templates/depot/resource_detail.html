@@ -33,7 +33,7 @@ map{
 
 <ul>
 {% for loc in object.locations %}
-	<li>{{ loc.label }} </li>
+	<li>{{ loc.label }}, {{ loc.place_name }}</li>
 {% empty %}
 	<li>no locations found</li>
 {% endfor %}	

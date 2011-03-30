@@ -9,7 +9,7 @@ from django.test import TestCase, TransactionTestCase
 from firebox.views import *
 
 from depot.models import Resource, Location, load_resource_data, \
-    get_lat_lon_for_postcode, lat_lon_to_str, get_or_create_location
+    get_place_for_postcode, lat_lon_to_str, get_location_for_postcode
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -89,12 +89,12 @@ class OSLocationTest(TransactionTestCase):
         """
         pc = 'AB35 5RB'
         # loc_id, result = get_os_postcode(pc, True)
-        loc, created = get_or_create_location(postcode=pc)
+        loc, created = get_location_for_postcode(postcode=pc)
         print created, loc.label, loc.lat_lon
         
         pc = 'AB35 xxx'
         # loc_id, result = get_os_postcode(pc, True)
-        loc, created = get_or_create_location(postcode=pc)
+        loc, created = get_location_for_postcode(postcode=pc)
         print created, loc.label, loc.lat_lon
         
         

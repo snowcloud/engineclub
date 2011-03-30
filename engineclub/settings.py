@@ -32,7 +32,11 @@ try:
   MONGO_TESTING= 'test' in sys.argv
 except KeyError:
   MONGO_TESTING=False
+
+# MongoDBTestRunner creates/drops test db
 # TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
+
+# MongoDBRunner uses current db
 TEST_RUNNER = 'depot.tests.MongoDBRunner'
 
 # repeated connects now fixed in mongoengine

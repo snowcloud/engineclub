@@ -11,7 +11,7 @@ from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
 from pysolr import Solr
 
-from depot.models import Resource
+from depot.models import Resource, Location
 
 # probably move this code to utils.py if enough
 def get_url_content(url):
@@ -74,7 +74,25 @@ import codecs
 import csv
 
 def load_postcodes(fname, dbname):
-    """docstring for load_postcodes"""
+    """docstring for load_postcodes
+    
+    from readme.txt
+    ===============
+    country code      : iso country code, 2 characters
+    postal code       : varchar(10)
+    place name        : varchar(180)
+    admin name1       : 1. order subdivision (state) varchar(100)
+    admin code1       : 1. order subdivision (state) varchar(20)
+    admin name2       : 2. order subdivision (county/province) varchar(100)
+    admin code2       : 2. order subdivision (county/province) varchar(20)
+    admin name3       : 3. order subdivision (community) varchar(100)
+    admin code3       : 3. order subdivision (community) varchar(20)
+    latitude          : estimated latitude (wgs84)
+    longitude         : estimated longitude (wgs84)
+    accuracy          : accuracy of lat/lng from 1=estimated to 6=centroid
+    
+    GB	AB10	Midstocket/Rosemount Ward	Scotland	SCT		00	Aberdeen City	QA	57.1454241278722	-2.10952454025988	6
+    """
     
     connection = Connection()
     db = connection[dbname]
@@ -89,14 +107,20 @@ def load_postcodes(fname, dbname):
         for r in reader:
             # print r[1].replace(' ', ''), r[9], r[10]
             try:
-                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'lat_lon': [float(r[9]), float(r[10])]})
+                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'place_name': r[2], 'lat_lon': [float(r[9]), float(r[10])]})
             except ValueError:
                 print r
     finally:
         f.close()
+        
+    for loc in Location.objects[:10]:
+        # loc.place_name = postcode_coll.find_one({'postcode': loc.os_id})['place_name']
+        loc.save()
+        
     print 'postcode collection (end):', postcode_coll.count()
     print postcode_coll.find_one({'postcode': 'AB565UB'})
     print postcode_coll.find_one({'postcode': 'AB101AX'})
+    
 
 def load_placenames(fname, dbname):
     """docstring for load_postcodes
@@ -131,10 +155,10 @@ def load_placenames(fname, dbname):
     print placename_coll.find_one({'name_upper': 'KEITH'})
     print placename_coll.find_one({'name_upper': 'PORTOBELLO'})
 
-def reindex_resources(dbname):
+def reindex_resources(dbname, url=settings.SOLR_URL):
     """docstring for reindex_resources"""
-    print 'CLEARING SOLR INDEX'
-    conn = Solr(settings.SOLR_URL)
+    print 'CLEARING SOLR INDEX: ', url
+    conn = Solr(url)
     conn.delete(q='*:*')
     
     print 'Indexing %s Resources...' % Resource.objects.count()
