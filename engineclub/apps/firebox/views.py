@@ -107,15 +107,19 @@ def load_postcodes(fname, dbname):
         for r in reader:
             # print r[1].replace(' ', ''), r[9], r[10]
             try:
-                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'place_name': r[2], 'lat_lon': [float(r[9]), float(r[10])]})
+                # remove 'Ward' from place_name and add r[7] with City removed if nec
+                place_name = '%s, %s' % (r[2], r[7])
+                place_name = place_name.replace(' Ward', '').replace(' City', '')
+                # print place_name
+                postcode_coll.insert({'postcode': r[1].replace(' ', ''), 'label': r[1], 'place_name': place_name, 'lat_lon': [float(r[9]), float(r[10])]})
             except ValueError:
                 print r
     finally:
         f.close()
         
-    for loc in Location.objects[:10]:
-        # loc.place_name = postcode_coll.find_one({'postcode': loc.os_id})['place_name']
-        loc.save()
+    # for loc in Location.objects[:10]:
+    #     # loc.place_name = postcode_coll.find_one({'postcode': loc.os_id})['place_name']
+    #     loc.save()
         
     print 'postcode collection (end):', postcode_coll.count()
     print postcode_coll.find_one({'postcode': 'AB565UB'})
