@@ -88,7 +88,7 @@ $(function() {
     
     <ol>
     {% for resource in results %}
-        <li><a href="{% url resource resource.id.0 %}">{{ resource.title }}</li>
+        <li><a href="{% url resource resource.id %}">{{ resource.title }}</li>
             <!-- 
             <p>{{ resource.pt_location }}</p> -->
     {% empty %}
