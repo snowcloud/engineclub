@@ -25,7 +25,7 @@ map{
 <h1>{{ object.title }}</h1>
 {% endif %}
 
-{{ object.description|linebreaks }}
+{{ object.description|textile }}
 
 <p>author: {{ object.item_metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
