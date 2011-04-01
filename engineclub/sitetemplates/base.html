@@ -41,16 +41,24 @@
         <li><a href="/about/">about</a></li>
         {# <li><a href="project-info.html">info</a></li> #}
         <li><a href="/contact/">contact</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="/depot/resource/find/">search</a></li>
+        {% endif %}
         {% if user.is_staff %}
             <li><a href="/admin/">admin</a></li>
         {% endif %}
     </ul>
     </div>  
-    <!-- <ul id="usernav">
-        <li><a href="" id="login">log in</a></li>
-        <li><a href="">forgotten password</a></li>
-        <li><a href="">register</a></li>
-    </ul> -->
+    <ul id="usernav">
+      {% if user.is_authenticated %}
+        <li>logged in as {{ user.username }}</li>
+        <li><a href="/logout/">log out</a></li>
+      {% else%}
+        <li><a href="/accounts/login/" id="login">log in</a></li>
+        <li><a href="/password_reset/">forgotten password</a></li>
+        <!-- <li><a href="">register</a></li> -->
+      {% endif %}
+    </ul>
     </div>
 <div id="main" class="group">
     {% if messages %}
