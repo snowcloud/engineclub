@@ -13,7 +13,7 @@ beautifulsoup
 feedparser
 
 # python-placemaker forked to add setup.py
--e git+git://github.com/snowcloud/python-placemaker.git#egg=placemaker
+# -e git+git://github.com/snowcloud/python-placemaker.git#egg=placemaker
 
 # mongo stuff
 pymongo>=1.9
