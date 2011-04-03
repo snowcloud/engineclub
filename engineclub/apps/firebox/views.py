@@ -165,7 +165,14 @@ def reindex_resources(dbname, url=settings.SOLR_URL):
     conn = Solr(url)
     conn.delete(q='*:*')
     
-    print 'Indexing %s Resources...' % Resource.objects.count()
-    for res in Resource.objects:
-        res.index(conn)
+    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
     
+    print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)
+    
+    docs = []
+    for i, res in enumerate(Resource.objects):
+        docs.append(res.index())
+        if i % batch_size == 0:
+            conn.add(docs)
+            docs = []
+    conn.add(docs)

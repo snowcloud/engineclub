@@ -98,7 +98,7 @@ class Resource(Document):
         conn.delete(q='id:%s' % self.id)
         self.index(conn)
         
-    def index(self, conn):
+    def index(self, conn=None):
         """conn is Solr connection"""
         doc = {
             'id': unicode(self.id),
@@ -109,7 +109,9 @@ class Resource(Document):
         }
         if self.locations:
             doc['pt_location'] = lat_lon_to_str(self.locations[0])
-        conn.add([doc])
+        if conn:
+            conn.add([doc])
+        return doc
 
     def add_location_from_name(self, placestr):
         """place_str can be anything"""
