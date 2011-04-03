@@ -44,7 +44,12 @@ from mongoengine import connect
 MONGO_DB= 'test_db'
 connect(MONGO_DB, host='localhost', port=27017)
 LATLON_SEP= ', '
+
+# set/override these in settings_local
+# SOLR_URL = 'http://127.0.0.1:8983/solr'
+SOLR_BATCH_SIZE = 100
 SOLR_ROWS = 20
+
 YAHOO_KEY = 'your_key_here...'
 
 TIME_ZONE = 'Europe/London'
