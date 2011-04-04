@@ -63,6 +63,7 @@ def resource_add(request):
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
                 resource.save(str(request.user.id))
+                resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
                 return HttpResponseRedirect('%s?popup=%s' % (reverse('resource-edit', args=[resource.id]), template_info['popup']))
