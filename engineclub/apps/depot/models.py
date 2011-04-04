@@ -92,6 +92,12 @@ class Resource(Document):
         created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         super(Resource, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        """docstring for delete"""
+        conn = Solr(settings.SOLR_URL)
+        conn.delete(q='id:%s' % self.id)        
+        super(Resource, self).delete(*args, **kwargs)
+        
     def reindex(self):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
