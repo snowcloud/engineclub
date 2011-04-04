@@ -204,7 +204,15 @@ def find_by_place(name, kwords):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
     if loc:
-        kw = { 'sfield': 'pt_location', 'pt': lat_lon_to_str(loc['lat_lon']), 'sort': 'geodist() asc', 'rows': settings.SOLR_ROWS }
+        kw = {
+            'rows': settings.SOLR_ROWS,
+            'fl': '*,score',
+            'qt': 'resources',
+            'sfield': 'pt_location',
+            'pt': lat_lon_to_str(loc['lat_lon']),
+            'bf': 'recip(geodist(),2,200,20)^2',
+            'sort': 'score desc',
+        }
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
@@ -214,9 +222,11 @@ def find_by_place_or_kwords(name, kwords):
     conn = Solr(settings.SOLR_URL)
     if name:
         return find_by_place(name, kwords)
-    kw = { 'rows': settings.SOLR_ROWS }
+    # keywords only
+    kw = {
+        'rows': settings.SOLR_ROWS,
+        'fl': '*,score',
+        'qt': 'resources',
+    }
     return None, conn.search(kwords.strip() or '*:*', **kw)
 
-        
-        
-        
