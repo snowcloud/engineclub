@@ -230,7 +230,52 @@ class SolrTest(TransactionTestCase):
         print '\n--\nsearch on [%s] : %s' % (srch, loc['lat_lon'])
         for result in results:
             print '-', result['score'], result['title'], result['pt_location']
-         
+    
+    def test_dismax(self):
+        """docstring for test_dismax"""
+
+        conn = Solr(SOLR_URL)
+        
+        kwords = 'citizens advice'
+        kw = {
+            'rows': settings.SOLR_ROWS,
+            'fl': '*,score',
+            'qt': 'resources',
+        }
+        
+        results = conn.search(kwords, **kw)
+
+        print '\n--\nsearch on [%s] : ' % (kwords)
+        for result in results:
+            print '-', result['score'], result['title'] #, result['pt_location']
+        
+    def test_dismax_loc(self):
+        """docstring for test_dismax"""
+
+        conn = Solr(SOLR_URL)
+
+        ellon = '57.365287, -2.070642'
+        peterheid = '57.584806, -1.875630'
+        keith = '57.7036280142534, -2.85720247750133'
+        loc = ellon
+        print '\n\n*** ellon ', loc
+    
+        kwords = 'citizens advice'
+        kw = {
+            'rows': settings.SOLR_ROWS,
+            'fl': '*,score',
+            'qt': 'resources',
+            'sfield': 'pt_location',
+            'pt': loc,
+            'bf': 'recip(geodist(),2,200,20)^2',
+            'sort': 'score desc',
+        }
+    
+        results = conn.search(kwords, **kw)
+
+        print '\n--\nsearch on [%s] : ' % (kwords)
+        for result in results:
+            print '-', result['score'], result['title'] #, result['pt_location']
           
 #     # def test_form(self):
 #     #   """test form creation"""
