@@ -32,15 +32,25 @@ try:
   MONGO_TESTING= 'test' in sys.argv
 except KeyError:
   MONGO_TESTING=False
-TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
+
+# MongoDBTestRunner creates/drops test db
+# TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
+
+# MongoDBRunner uses current db
+TEST_RUNNER = 'depot.tests.MongoDBRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
-connect('test_db', host='localhost', port=27017)
-# connect('aliss', host='localhost', port=27017)
+MONGO_DB= 'test_db'
+connect(MONGO_DB, host='localhost', port=27017)
+LATLON_SEP= ', '
+
+# set/override these in settings_local
+# SOLR_URL = 'http://127.0.0.1:8983/solr'
+SOLR_BATCH_SIZE = 100
+SOLR_ROWS = 20
 
 YAHOO_KEY = 'your_key_here...'
-
 
 TIME_ZONE = 'Europe/London'
 DATE_FORMAT='%d %B %Y, %H:%M'
@@ -51,7 +61,7 @@ SITE_ID = 1
 PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
-sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
+# sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
 TEMPLATE_DIRS = (

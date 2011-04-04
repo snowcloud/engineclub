@@ -41,7 +41,7 @@ OS_COUNTRY = 'http://data.ordnancesurvey.co.uk/ontology/postcode/country'
 #         raise YahooSearchError, result['Error']
 #     return result['ResultSet']
 
-def get_postcode(postcode, testing=False):
+def get_os_postcode(postcode, testing=False):
     """docstring for get_postcode"""
     postcode = postcode.upper().replace(' ', '')
     url = POSTCODE_BASE % (POSTCODE_UNIT, postcode)

@@ -60,7 +60,7 @@ field name              type
 ==================      =========================================================================
 loc_id                   URI
 label                   string
-latlon                  list of float [float, float]
+lat_lon                  list of float [float, float]
 latitude                float
 longitude               float
 location_type           string [controlled list]

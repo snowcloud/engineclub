@@ -165,13 +165,29 @@ def first_name(user):
     return user.first_name or user.username
 
 @register.filter
+def split_lat_lon(value):
+    return value.split(settings.LATLON_SEP)
+
+@register.filter
+def get_lat(value):
+    if value:
+        return value.split(settings.LATLON_SEP)[0]
+    return ''
+    
+@register.filter
+def get_lon(value):
+    if value:
+        return value.split(settings.LATLON_SEP)[1]
+    return ''
+
+@register.filter
 def placetype(pt):
     if pt == 'Zip':
         return "Post code"
     else:
         return pt
 
-# from depot.models import place_as_cb_value
+from depot.models import place_as_cb_value
 
 @register.filter
 def place_values(place):

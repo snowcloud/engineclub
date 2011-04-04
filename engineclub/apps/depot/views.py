@@ -7,14 +7,12 @@ from django.template import RequestContext
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
+from pymongo.objectid import ObjectId
 
-from depot.models import Resource, Location, get_nearest,  \
+from depot.models import Resource, Location,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
-from depot.forms import *
+from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm
 from firebox.views import get_terms
-
-# def tags(request):
-#     
 
 def get_one_or_404(**kwargs):
     try:
@@ -31,7 +29,7 @@ def resource_index(request):
 
 def resource_detail(request, object_id):
 
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(id=ObjectId(object_id))
 
     return render_to_response('depot/resource_detail.html',
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
@@ -74,7 +72,7 @@ def resource_add(request):
     else:
         description= request.GET.get('t', '').replace('||', '\n')
         initial = {
-            'url': request.GET.get('page', ''),
+            'uri': request.GET.get('page', ''),
             'title': request.GET.get('title', ''),
             'description': description[:1250]
             }
@@ -85,7 +83,7 @@ def resource_add(request):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(id=ObjectId(object_id))
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
@@ -97,13 +95,13 @@ def resource_edit(request, object_id):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
     
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     doc = ''
     places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
 
     if request.method == 'POST':
-        result = request.POST.get('result', '')
+        result = request.POST.get('result', '') or request.POST.get('result', '')
         if result == 'Cancel':
             return resource_edit_complete(request, resource, template_info)
         resourceform = ShortResourceForm(request.POST, instance=resource)
@@ -112,31 +110,44 @@ def resource_edit(request, object_id):
         shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
         if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
-            if result == UPDATE_LOCS:
-                places = fix_places(resource.locations, locationform.content() or resource.url)
-            elif result == UPDATE_TAGS:
-                places = fix_places(resource.locations, locationform.content() or resource.url)
+            del_loc = ''
+            for k in request.POST.keys():
+                if k.startswith('del_loc:'):
+                    del_loc = k.split(':')[1]
+                    break
+            if result == UPDATE_LOCS: 
+                resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            elif del_loc:
+                # print [l.id for l in resource.locations]
+                # print Location.objects.get(id=ObjectId(del_loc)).id
+                
+                # list.remove doesn't seem to work
+                resource.locations = [loc for loc in resource.locations if str(loc.id) != del_loc]
+                resource.save()
+                # print resource.locations
+                # places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
                 resource = resourceform.save()
                 
                 # read location checkboxes
-                cb_places = request.POST.getlist('cb_places')
-                locations = []
-                for loc in cb_places:
-                    locations.append(location_from_cb_value(loc).woeid)
+                # cb_places = request.POST.getlist('cb_places')
+                # locations = []
+                # for loc in cb_places:
+                #     locations.append(location_from_cb_value(loc).woeid)
                 # if len(locations) > 0:
-                resource.locations = locations
+                # resource.locations = locations
 
                 resource = tagsform.save()
-                resource = shelflifeform.save()
+                # resource = shelflifeform.save()
             
                 try:
                     resource.save(str(request.user.id))
-                    try:
-                        keys = get_terms(resource.url)
-                    except:
-                        keys = [] # need to fail silently here
-                    resource.make_keys(keys)
+                    resource.reindex()
+                    # try:
+                    #     keys = get_terms(resource.url)
+                    # except:
+                    #     keys = [] # need to fail silently here
+                    # resource.make_keys(keys)
                     return resource_edit_complete(request, resource, template_info)
                     # return HttpResponseRedirect('%s?popup=%s' % (reverse('resource', args=[resource.id]), template_info['popup']))
                 except OperationError:
@@ -146,14 +157,14 @@ def resource_edit(request, object_id):
         resourceform = ShortResourceForm(instance=resource)
         locationform = LocationUpdateForm(instance=resource)
         if not resource.locations:
-            doc = resource.url
-        places = fix_places(resource.locations, doc)
+            doc = resource.uri
+        # places = fix_places(resource.locations, doc)
         tagsform = TagsForm(instance=resource)
         shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response('depot/resource_edit.html',
         RequestContext( request, { 'template_info': template_info, 'object': resource,
-            'resourceform': resourceform, 'locationform': locationform, 'places': places,
+            'resourceform': resourceform, 'locationform': locationform, #'places': places,
             'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
@@ -179,7 +190,7 @@ def resource_edit_complete(request, resource, template_info):
 def resource_find(request):
     """docstring for resource_find"""
 
-    locations = []
+    results = locations = []
     centre = None
     pins = []
     # places = []
@@ -190,13 +201,14 @@ def resource_find(request):
         form = FindResourceForm(request.POST)
     
         if form.is_valid():
+            results = form.results
             locations = form.locations
             centre = form.centre
             # pins = [loc['obj'] for loc in locations]
             
     else:
-        form = FindResourceForm(initial={ 'post_code': 'Edinburgh, EH17'})
+        form = FindResourceForm(initial={ 'post_code': 'aberdeen'})
 
     # print places
     return render_to_response('depot/resource_find.html',
-        RequestContext( request, { 'form': form, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
