@@ -61,7 +61,7 @@ SITE_ID = 1
 PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
-sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
+# sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
 TEMPLATE_DIRS = (
@@ -101,7 +101,6 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
-    # 'haystack',
     'home',
     'enginecab',
     'depot',
