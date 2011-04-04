@@ -89,7 +89,7 @@ $(function() {
     
     <ol>
     {% for resource in results %}
-        <li><a href="{% url resource resource.id %}">{{ resource.title }}</li>
+        <li><a href="{% url resource resource.id %}">{{ resource.title }}</a></li>
             <!-- 
             <p>{{ resource.pt_location }}</p> -->
     {% empty %}
@@ -127,16 +127,18 @@ $(function() {
         {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
         map.drawZoomAndCenter(currentGeoPoint, 8);
 
-        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', true));  
+        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', false));  
         newMarker.addAutoExpand("your location");  
         map.addOverlay(newMarker);
 
         {% for loc in results %}
-            pinPoint = new YGeoPoint( "{{loc.pt_location|get_lat}}" , "{{loc.pt_location|get_lon}}");  
-            var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-            newMarker.addAutoExpand('<p><a href="{% url resource loc.id.0 %}">{{ loc.title }}</a></p>');
+            {% if loc.pt_location %}
+                pinPoint = new YGeoPoint( "{{loc.pt_location|get_lat}}" , "{{loc.pt_location|get_lon}}");  
+                var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
+                newMarker.addAutoExpand('<p><a href="{% url resource loc.id %}">{{ loc.title }}</a></p>');
             
-            map.addOverlay(newMarker);
+                map.addOverlay(newMarker);
+            {% endif %}
         {% endfor %}
     }  
 window.onload = startMap;     
