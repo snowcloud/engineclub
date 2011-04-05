@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
+    (r'^groups/', include('engine_groups.urls')),
+
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact_form'),
     url(r'^contact/sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' },
