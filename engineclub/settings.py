@@ -25,13 +25,6 @@ DATABASES = {
     }
 }
 
-# using this to get round a bug in mongoengine where setting connection doesn't change to test_db
-# so live DB was cleared in testing teardown
-
-try:
-  MONGO_TESTING= 'test' in sys.argv
-except KeyError:
-  MONGO_TESTING=False
 
 # MongoDBTestRunner creates/drops test db
 # TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
@@ -105,6 +98,7 @@ INSTALLED_APPS = (
     'enginecab',
     'depot',
     'firebox',
+    'engine_groups',
     'ecutils',
     'contact_form',
     
