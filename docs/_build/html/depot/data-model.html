@@ -71,7 +71,7 @@
 <tr><td>resource_type</td>
 <td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
 </tr>
-<tr><td>url</td>
+<tr><td>uri</td>
 <td>string [web URI format]</td>
 </tr>
 <tr><td>locations</td>
@@ -89,14 +89,8 @@
 <tr><td>tags</td>
 <td>list of string</td>
 </tr>
-<tr><td>index_keys</td>
-<td>list of string</td>
-</tr>
 <tr><td>related_resources</td>
 <td>list of <a class="reference internal" href="#relatedresource"><em>RelatedResource</em></a></td>
-</tr>
-<tr><td>added_metadata</td>
-<td>list of <a class="reference internal" href="#addedmetadata"><em>AddedMetadata</em></a></td>
 </tr>
 <tr><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
@@ -150,47 +144,23 @@ event scheduling</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>loc_id</td>
-<td>URI</td>
+<tr><td>os_id</td>
+<td>string</td>
 </tr>
 <tr><td>label</td>
+<td>string</td>
+</tr>
+<tr><td>place_name</td>
 <td>string</td>
 </tr>
 <tr><td>lat_lon</td>
 <td>list of float [float, float]</td>
 </tr>
-<tr><td>latitude</td>
-<td>float</td>
+<tr><td>os_type</td>
+<td>string [postcode, ward, district, country]</td>
 </tr>
-<tr><td>longitude</td>
-<td>float</td>
-</tr>
-<tr><td>location_type</td>
-<td>string [controlled list]</td>
-</tr>
-<tr><td>postcode</td>
-<td>string [UK postcode format]</td>
-</tr>
-<tr><td>ward</td>
-<td>string</td>
-</tr>
-<tr><td>ward_ref</td>
-<td>URI</td>
-</tr>
-<tr><td>district</td>
-<td>string</td>
-</tr>
-<tr><td>district_ref</td>
-<td>URI</td>
-</tr>
-<tr><td>country</td>
-<td>string</td>
-</tr>
-<tr><td>country_ref</td>
-<td>URI</td>
-</tr>
-<tr><td>note</td>
-<td>string</td>
+<tr><td>parents</td>
+<td>list of Location</td>
 </tr>
 </tbody>
 </table>
@@ -246,38 +216,21 @@ event scheduling</p>
 <tr><td>note</td>
 <td>string</td>
 </tr>
-<tr><td>item_metadata</td>
-<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="addedmetadata">
-<span id="id6"></span><h2>AddedMetadata<a class="headerlink" href="#addedmetadata" title="Permalink to this headline">¶</a></h2>
-<p><em>This will be used to allow trusted accounts to add their own metadata using their own schema.</em></p>
-<p><em>Data will be converted to required formats on client access (may be cached for performance)</em></p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="25%" />
-<col width="75%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">field name</th>
-<th class="head">type</th>
-</tr>
-</thead>
-<tbody valign="top">
 <tr><td>data</td>
-<td>dict (dictionary with field names as keys)</td>
+<td>dict (dictionary with field names as keys) *</td>
 </tr>
 <tr><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
+<ul class="simple">
+<li>This will be used to allow trusted accounts to add their own metadata using their own schema.</li>
+</ul>
+<p>Data will be converted to required formats on client access (may be cached for performance)</p>
 </div>
 <div class="section" id="itemmetadata">
-<span id="id7"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
 <p><em>To be updated with Dublin core.</em></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -299,7 +252,58 @@ event scheduling</p>
 <tr><td>shelflife</td>
 <td>datetime</td>
 </tr>
+<tr><td>status</td>
+<td>string</td>
+</tr>
 <tr><td>note</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="account">
+<span id="id7"></span><h2>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h2>
+<p>See code in <a class="reference external" href="http://github.com/snowcloud/engine-groups">engine-groups app</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>title</td>
+<td>string</td>
+</tr>
+<tr><td>slug</td>
+<td>string</td>
+</tr>
+<tr><td>members</td>
+<td>list of <a class="reference internal" href="#membership"><em>Membership</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="membership">
+<span id="id8"></span><h2>Membership<a class="headerlink" href="#membership" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>account</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr><td>role</td>
 <td>string</td>
 </tr>
 </tbody>
@@ -321,8 +325,9 @@ event scheduling</p>
 <li><a class="reference internal" href="#location">Location</a></li>
 <li><a class="reference internal" href="#moderation">Moderation</a></li>
 <li><a class="reference internal" href="#curation">Curation</a></li>
-<li><a class="reference internal" href="#addedmetadata">AddedMetadata</a></li>
 <li><a class="reference internal" href="#itemmetadata">ItemMetadata</a></li>
+<li><a class="reference internal" href="#account">Account</a></li>
+<li><a class="reference internal" href="#membership">Membership</a></li>
 </ul>
 </li>
 </ul>
