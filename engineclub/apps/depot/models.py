@@ -9,6 +9,8 @@ from datetime import datetime
 from pymongo import Connection, GEO2D
 from pysolr import Solr
 
+from engine_groups.models import Account
+
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
 COLL_STATUS_TAGS_CONF = 'tags_confirm'
@@ -83,6 +85,7 @@ class Resource(Document):
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     def save(self, author=None, *args, **kwargs):

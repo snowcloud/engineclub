@@ -27,7 +27,8 @@ map{
 
 {{ object.description|textile }}
 
-<p>author: {{ object.item_metadata.author|user_name }}</p>
+<p>owner: <a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></p>
+<p>last changes: {{ object.item_metadata.author|user_name }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
 
 
