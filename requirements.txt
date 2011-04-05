@@ -6,6 +6,7 @@ PIL
 psycopg2
 
 -e git+git://github.com/snowcloud/engine-groups.git#egg=engine-groups
+-e git://github.com/stephrdev/django-mongoforms.git#egg=django_mongoforms
 -e hg+http://bitbucket.org/ubernostrum/django-contact-form/#egg=django-contact-form
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
 -e git+git://github.com/jsocol/bleach.git#egg=bleach
