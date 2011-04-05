@@ -30,7 +30,7 @@ def reindex(request):
 def fix_resource_accounts(request):
     
     fixes = {
-        '1': Account.objects.get(id=ObjectId(u'4d9b945f3de074084f000000')),
+        '1': Account.objects.get(id=ObjectId(u'4d9b9a4489cb16665c000002')),
         # '2': u'4d9b945f3de074084f000000'
     }
     
