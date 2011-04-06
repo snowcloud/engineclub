@@ -242,10 +242,8 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation.item_metadata.update(author=user)
             resource.curations.append(curation)
             resource.save(reindex=True)
-            # index = len(resource.curations) - 1
-            # new curation added alphabetically?
-            # not appended so can't use index
-            return HttpResponseRedirect(reverse('resource', args=[resource.id]))
+            index = len(resource.curations) - 1
+            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
         initial = { 'outcome': STATUS_OK}
         form = CurationForm(initial=initial)
