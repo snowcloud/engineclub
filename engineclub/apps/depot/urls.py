@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^resource/popup-cancel/$', direct_to_template, {'template': 'depot/resource_popup_cancel.html'}, name='resource-popup-cancel' ),
     url(r'^resource/popup-close/$', direct_to_template, {'template': 'depot/resource_popup_done.html'}, name='resource-popup-close' ),
     url(r'^resource/(?P<object_id>\w+)/$', 'depot.views.resource_detail', name='resource'),
+    # url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/$', 'depot.views.curation_detail', name='curation'),
 
 )

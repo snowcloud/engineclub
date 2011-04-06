@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load markup utils %}
+
+{% block title %}Curation{% endblock %}
+
+{% block content %}
+
+<p><a href="{% url resource resource.id %}">back to resource</a></p>
+
+<h1>Curation for {{ resource.title }}</h1>
+{% endif %}
+
+{{ object.data|textile }}
+
+<p>owner: <a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></p>
+<p>last changes: {{ object.item_metadata.author|user_name }}</p>
+<p>tags: {{ object.tags|join:", " }}</p>
+
+
+{% endblock %}
