@@ -28,7 +28,7 @@ map{
 {{ object.description|textile }}
 
 <p>owner: <a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></p>
-<p>last changes: {{ object.item_metadata.author|user_name }}</p>
+<p>last changes: {{ object.item_metadata.author }}</p>
 <p>tags: {{ object.tags|join:", " }}</p>
 
 
@@ -39,6 +39,16 @@ map{
 	<li>no locations found</li>
 {% endfor %}	
 </ul>
+
+<hr>
+<ul>
+{% for curation in object.curations %}
+	<li>{{ curation.id }} {{ curation.outcome }}, {{ curation.tags }}</li>
+{% empty %}
+	<li>no curations found</li>
+{% endfor %}	
+</ul>
+
 
 <hr>
 <p><a href="{% url resource-edit object.id %}">edit item</a>

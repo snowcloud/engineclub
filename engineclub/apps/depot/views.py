@@ -64,7 +64,8 @@ def resource_add(request):
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
                 resource.owner = Account.objects.get(local_id=str(request.user.id))
-                resource.save(str(request.user.id))
+                # save will create default moderation and curation using owner acct
+                resource.save()
                 resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -144,7 +145,7 @@ def resource_edit(request, object_id):
                 # resource = shelflifeform.save()
             
                 try:
-                    resource.save(str(request.user.id))
+                    resource.save()
                     resource.reindex()
                     # try:
                     #     keys = get_terms(resource.url)

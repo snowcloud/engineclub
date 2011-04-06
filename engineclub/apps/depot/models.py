@@ -19,7 +19,7 @@ COLL_STATUS_COMPLETE = 'complete'
         
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
-    author = StringField()
+    author = ReferenceField(Account)
     shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
     note = StringField()
@@ -38,6 +38,7 @@ class Location(Document):
 class Moderation(EmbeddedDocument):
     outcome = StringField()
     note = StringField()
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 class Curation(EmbeddedDocument):
@@ -46,6 +47,7 @@ class Curation(EmbeddedDocument):
     # rating - not used
     note = StringField()
     data = DictField()
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 def place_as_cb_value(place):
@@ -88,11 +90,21 @@ class Resource(Document):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-    def save(self, author=None, *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.item_metadata.last_modified = datetime.now()
-        if author:
-            self.item_metadata.author = author
-        created = (self.id is None) # and not self.url.startswith('http://test.example.com')
+        # print local_id
+        # if self.owner:
+        # self.item_metadata.author = Account.objects.get(local_id=local_id)
+        # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
+        if self.id is None:
+            if not self.moderations:
+                obj = Moderation(outcome='OK', owner=self.owner)
+                obj.item_metadata.author = self.owner
+                self.moderations.append(obj)
+            if not self.curations:
+                obj = Curation(outcome='OK', tags=self.tags, owner=self.owner)
+                obj.item_metadata.author = self.owner
+                self.curations.append(obj)
         super(Resource, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -219,7 +231,7 @@ def find_by_place(name, kwords):
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': lat_lon_to_str(loc['lat_lon']),
-            'bf': 'recip(geodist(),2,200,20)^2',
+            'bf': 'recip(geodist(),2,200,20)^3',
             'sort': 'score desc',
         }
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
