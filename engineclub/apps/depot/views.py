@@ -13,6 +13,7 @@ from depot.models import Resource, Location,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm
 from firebox.views import get_terms
+from engine_groups.models import Account
 
 def get_one_or_404(**kwargs):
     try:
@@ -62,6 +63,7 @@ def resource_add(request):
             # resource.metadata.author = str(request.user.id)
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
+                resource.owner = Account.objects.get(local_id=request.user.id)
                 resource.save(str(request.user.id))
                 resource.index()
                 # if popup:
