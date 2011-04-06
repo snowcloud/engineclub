@@ -49,11 +49,11 @@ map{
 	<li>no curations found</li>
 {% endfor %}	
 </ul>
-
+<p><a href="{% url curation-add object.id %}">new curation</a>
 
 <hr>
-<p><a href="{% url resource-edit object.id %}">edit item</a>
-{% if user.is_staff %} | <a href="{% url resource-remove object.id %}">delete item</a>{% endif %}</p>
+<p><a href="{% url resource-edit object.id %}">edit resource</a>
+{% if user.is_staff %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}</p>
 
 <div id="map"></div>
 {% if object.locations %}
