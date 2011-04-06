@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load utils %}
+
+{% block title %}edit curation{% endblock %}
+
+{% block content %}
+
+
+<form class="form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Curation details:</span></legend>
+        <ol>
+             {{ form.as_ul }}
+        </ol>
+    </fieldset>
+     <fieldset class="submit">
+        <input type="submit" name="result" value="Save item">
+        <input type="submit" name="result" value="Cancel">
+    </fieldset>
+</form>
+
+{% endblock %}

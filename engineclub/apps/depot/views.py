@@ -11,7 +11,8 @@ from pymongo.objectid import ObjectId
 
 from depot.models import Resource, Location,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
-from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm
+from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm, \
+    CurationForm
 from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
@@ -225,9 +226,31 @@ def curation_detail(request, object_id, index):
     return render_to_response('depot/curation_detail.html',
         RequestContext( request, { 'resource': object, 'object': object.curations[int(index)], 'index': index }))
     
-def curation_edit(request):
-    """docstring for curation_edit"""
-    pass
+# @user_passes_test(lambda u: u.is_staff)
+@login_required
+def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
+    """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
+
+    resource = get_one_or_404(id=object_id)
+    object = resource.curations[int(index)]
+    
+    if request.method == 'POST':
+        form = CurationForm(request.POST, instance=object)
+        if form.is_valid():
+            g = form.save(do_save=False)
+            resource.save()
+            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+    else:
+        form = CurationForm(instance=object)
+
+    template_context = {'form': form}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+
     
 def curation_remove(request):
     """docstring for curation_remove"""

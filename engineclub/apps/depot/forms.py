@@ -1,11 +1,12 @@
 
 from django import forms
 
-from depot.models import Resource, Location, find_by_place_or_kwords, get_place_for_placename
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_place_for_placename
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
+from mongoforms import MongoForm
 
 
 class FormHasNoInstanceException(Exception):
@@ -115,4 +116,14 @@ class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
     # dummy = forms.CharField(required=False)
     pass
-           
+    
+class CurationForm(DocumentForm):
+    
+    outcome = forms.CharField()
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+    note = forms.CharField(widget=forms.Textarea, required=False)
+    # data = forms.CharField(widget=forms.Textarea, required=False)
+    
+    def clean_tags(self):
+        return clean_csvtextinput(self.cleaned_data['tags'])
+
