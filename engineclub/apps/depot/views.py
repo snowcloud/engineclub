@@ -216,3 +216,21 @@ def resource_find(request):
     # print places
     return render_to_response('depot/resource_find.html',
         RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+
+def curation_detail(request, object_id, index):
+    """docstring for curation_detail"""
+    
+    object = get_one_or_404(id=ObjectId(object_id))
+
+    return render_to_response('depot/curation_detail.html',
+        RequestContext( request, { 'resource': object, 'object': object.curations[int(index)], 'index': index }))
+    
+def curation_edit(request):
+    """docstring for curation_edit"""
+    pass
+    
+def curation_remove(request):
+    """docstring for curation_remove"""
+    pass
+    
+    

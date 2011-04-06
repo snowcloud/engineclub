@@ -41,9 +41,10 @@ map{
 </ul>
 
 <hr>
+<h2>Curations</h2>
 <ul>
 {% for curation in object.curations %}
-	<li>{{ curation.id }} {{ curation.outcome }}, {{ curation.tags }}</li>
+	<li><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} {{ curation.outcome }}, {{ curation.tags }}</a></li>
 {% empty %}
 	<li>no curations found</li>
 {% endfor %}	
