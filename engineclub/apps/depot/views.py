@@ -13,7 +13,7 @@ from depot.models import Resource, Location,  \
     COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm
 from firebox.views import get_terms
-from engine_groups.models import Account
+from engine_groups.models import Account, get_account
 
 def get_one_or_404(**kwargs):
     try:
@@ -63,9 +63,9 @@ def resource_add(request):
             # resource.metadata.author = str(request.user.id)
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
-                resource.owner = Account.objects.get(local_id=str(request.user.id))
+                resource.owner = get_account(request.user.id)
                 # save will create default moderation and curation using owner acct
-                resource.save()
+                resource.save(author=resource.owner)
                 resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -127,7 +127,7 @@ def resource_edit(request, object_id):
                 
                 # list.remove doesn't seem to work
                 resource.locations = [loc for loc in resource.locations if str(loc.id) != del_loc]
-                resource.save()
+                resource.save(author=get_account(request.user.id))
                 # print resource.locations
                 # places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
@@ -145,7 +145,7 @@ def resource_edit(request, object_id):
                 # resource = shelflifeform.save()
             
                 try:
-                    resource.save()
+                    resource.save(author=get_account(request.user.id))
                     resource.reindex()
                     # try:
                     #     keys = get_terms(resource.url)
