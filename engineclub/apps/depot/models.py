@@ -16,13 +16,21 @@ COLL_STATUS_LOC_CONF = 'location_confirm'
 COLL_STATUS_TAGS_CONF = 'tags_confirm'
 COLL_STATUS_ = ''
 COLL_STATUS_COMPLETE = 'complete'
-        
+
+STATUS_OK = 'OK'
+STATUS_BAD = 'BAD'
+
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
     author = ReferenceField(Account)
     shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
     note = StringField()
+    
+    def update(self, author, last_modified=datetime.now()):
+        """docstring for update"""
+        self.author = author
+        self.last_modified = last_modified
             
 class Location(Document):
     """Location document, based on Ordnance Survey data
@@ -91,24 +99,26 @@ class Resource(Document):
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
     def save(self, *args, **kwargs):
-        self.item_metadata.last_modified = datetime.now()
+        reindex = kwargs.pop('reindex', False)
         author = kwargs.pop('author', None)
         if author:
-            self.item_metadata.author = author
+            self.item_metadata.update(author)
         # print local_id
         # if self.owner:
         # self.item_metadata.author = Account.objects.get(local_id=local_id)
         # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         if self.id is None:
             if not self.moderations:
-                obj = Moderation(outcome='OK', owner=self.owner)
+                obj = Moderation(outcome=STATUS_OK, owner=self.owner)
                 obj.item_metadata.author = self.owner
                 self.moderations.append(obj)
             if not self.curations:
-                obj = Curation(outcome='OK', tags=self.tags, owner=self.owner)
+                obj = Curation(outcome=STATUS_OK, tags=self.tags, owner=self.owner)
                 obj.item_metadata.author = self.owner
                 self.curations.append(obj)
         super(Resource, self).save(*args, **kwargs)
+        if reindex:
+            self.reindex()
 
     def delete(self, *args, **kwargs):
         """docstring for delete"""
