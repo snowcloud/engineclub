@@ -131,14 +131,15 @@ $(function() {
         newMarker.addAutoExpand("your location");  
         map.addOverlay(newMarker);
 
-        {% for loc in results %}
-            {% if loc.pt_location %}
-                pinPoint = new YGeoPoint( "{{loc.pt_location|get_lat}}" , "{{loc.pt_location|get_lon}}");  
+        {% for res in results %}
+            {% for loc in res.pt_location %}
+            
+                pinPoint = new YGeoPoint( "{{loc|get_lat}}" , "{{loc|get_lon}}");  
                 var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-                newMarker.addAutoExpand('<p><a href="{% url resource loc.id %}">{{ loc.title }}</a></p>');
+                newMarker.addAutoExpand('<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>');
             
                 map.addOverlay(newMarker);
-            {% endif %}
+            {% endfor %}
         {% endfor %}
     }  
 window.onload = startMap;     

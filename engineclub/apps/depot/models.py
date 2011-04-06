@@ -148,7 +148,7 @@ class Resource(Document):
             'keywords': ', '.join(tags)
         }
         if self.locations:
-            doc['pt_location'] = lat_lon_to_str(self.locations[0])
+            doc['pt_location'] = [lat_lon_to_str(loc) for loc in self.locations]
         if conn:
             conn.add([doc])
         return doc

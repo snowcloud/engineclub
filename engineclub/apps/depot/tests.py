@@ -22,6 +22,13 @@ DB_NAME = 'test_db'
 SOLR_URL = 'http://127.0.0.1:8983/solr'
 # SOLR_URL = settings.SOLR_URL
 
+TEST_LOCS = {
+    'ellon': '57.365287, -2.070642',
+    'peterheid': '57.584806, -1.875630',
+    'keith': '57.7036280142534, -2.85720247750133',
+    'carnoustie': '56.503836, -2.699406',
+    'downing st': '51.503541, -0.127670' # SW1A 2AA
+}
 
 def _load_data(resources='resources', locations='locations'):
     """loads fixture data for test Resources"""
@@ -254,13 +261,11 @@ class SolrTest(TransactionTestCase):
 
         conn = Solr(SOLR_URL)
 
-        ellon = '57.365287, -2.070642'
-        peterheid = '57.584806, -1.875630'
-        keith = '57.7036280142534, -2.85720247750133'
-        loc = ellon
-        print '\n\n*** ellon ', loc
+        loc_name = 'downing st'
+        loc = TEST_LOCS[loc_name]
+        print '\n\n*** %s ' % loc_name, loc
     
-        kwords = 'citizens advice'
+        kwords = 'health'
         kw = {
             'rows': settings.SOLR_ROWS,
             'fl': '*,score',
@@ -275,7 +280,7 @@ class SolrTest(TransactionTestCase):
 
         print '\n--\nsearch on [%s] : ' % (kwords)
         for result in results:
-            print '-', result['score'], result['title'] #, result['pt_location']
+            print '-', result['score'], result['title'], result.get('pt_location', '')
           
 #     # def test_form(self):
 #     #   """test form creation"""
