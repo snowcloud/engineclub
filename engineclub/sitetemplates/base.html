@@ -5,14 +5,13 @@
     <title>aliss.org: {% block title %}{% endblock %}
     </title>
     <script type='text/javascript' src='/static/js/modernizr-1.6.min.js'></script>
-    <!-- script src="http://code.jquery.com/jquery-1.4.4.min.js"></script -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
     <script src="http://scripts.embed.ly/jquery.embedly.min.js"></script>
     
     <link rel="stylesheet" type="text/css" media="all" href="/static/css/screen.css" />
     <!--[if IE 6]> <link rel="stylesheet" href="/static/css/ie6.css" media="screen, projection">
     <![endif]-->
-    <link rel="shortcut icon" type="/image/ico" href="/static/favicon.ico">
+    <link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
     <script type="text/javascript" src="http://use.typekit.com/raw4saf.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     {% block head-extra %}{% endblock head-extra %}
@@ -55,10 +54,9 @@
         <li>logged in as {{ user.username }}</li>
         <li><a href="/accounts/password_change/">change password</a></li>
         <li><a href="/logout/">log out</a></li>
-      {% else%}
+      {% else %}
         <li><a href="/accounts/login/" id="login">log in</a></li>
         <li><a href="/password_reset/">forgotten password</a></li>
-        <!-- <li><a href="">register</a></li> -->
       {% endif %}
     </ul>
     </div>
