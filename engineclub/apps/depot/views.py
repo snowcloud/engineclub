@@ -63,7 +63,7 @@ def resource_add(request):
             # resource.metadata.author = str(request.user.id)
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
-                resource.owner = Account.objects.get(local_id=request.user.id)
+                resource.owner = Account.objects.get(local_id=str(request.user.id))
                 resource.save(str(request.user.id))
                 resource.index()
                 # if popup:
