@@ -92,6 +92,9 @@ class Resource(Document):
 
     def save(self, *args, **kwargs):
         self.item_metadata.last_modified = datetime.now()
+        author = kwargs.pop('author', None)
+        if author:
+            self.item_metadata.author = author
         # print local_id
         # if self.owner:
         # self.item_metadata.author = Account.objects.get(local_id=local_id)
@@ -121,12 +124,18 @@ class Resource(Document):
         
     def index(self, conn=None):
         """conn is Solr connection"""
+        tags = self.tags
+        description = [self.description]
+        for obj in self.curations:
+            tags.extend(obj.tags)
+            description.extend([obj.note or u'', unicode(obj.data) or u''])
+        
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
             'title': self.title,
-            'description': self.description,
-            'keywords': ', '.join(self.tags)
+            'description': '\n'.join(description),
+            'keywords': ', '.join(tags)
         }
         if self.locations:
             doc['pt_location'] = lat_lon_to_str(self.locations[0])
