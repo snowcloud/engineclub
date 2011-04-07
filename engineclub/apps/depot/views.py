@@ -298,13 +298,9 @@ def curation_remove(request, object_id, index):
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
     
 def location_remove(request, object_id, index):
+    """docstring for location_remove"""
     resource = get_one_or_404(id=object_id)
-    # del resource.locations[int(index)]
-    # resource.save(reindex=True)
-    print resource.locations[int(index)].label
+    del resource.locations[int(index)]
+    resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
     
-    
-    
-    """docstring for location_remove"""
-    pass
