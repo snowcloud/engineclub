@@ -110,22 +110,25 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
         if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
-            del_loc = ''
-            for k in request.POST.keys():
-                if k.startswith('del_loc:'):
-                    del_loc = k.split(':')[1]
-                    break
-            if result == UPDATE_LOCS: 
+            # del_loc = ''
+            # for k in request.POST.keys():
+            #     if k.startswith('del_loc:'):
+            #         del_loc = k.split(':')[1]
+            #         break
+            acct = get_account(request.user.id)
+            new_loc = locationform.cleaned_data['new_location']
+            if new_loc: 
                 resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            elif del_loc:
-                # print [l.id for l in resource.locations]
-                # print Location.objects.get(id=ObjectId(del_loc)).id
-                
-                # list.remove doesn't seem to work
-                resource.locations = [loc for loc in resource.locations if str(loc.id) != del_loc]
-                resource.save(author=get_account(request.user.id))
-                # print resource.locations
-                # places = fix_places(resource.locations, locationform.content() or resource.url)
+                resource.save(author=acct, reindex=True)
+            # elif del_loc:
+            #     # print [l.id for l in resource.locations]
+            #     # print Location.objects.get(id=ObjectId(del_loc)).id
+            #     
+            #     # list.remove doesn't seem to work
+            #     resource.locations = [loc for loc in resource.locations if str(loc.id) != del_loc]
+            #     resource.save(author=get_account(request.user.id))
+            #     # print resource.locations
+            #     # places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
                 resource = resourceform.save()
                 
@@ -141,7 +144,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 # resource = shelflifeform.save()
             
                 try:
-                    resource.save(author=get_account(request.user.id), reindex=True)
+                    resource.save(author=acct, reindex=True)
                     # resource.reindex()
                     # try:
                     #     keys = get_terms(resource.url)
@@ -294,4 +297,14 @@ def curation_remove(request, object_id, index):
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
     
+def location_remove(request, object_id, index):
+    resource = get_one_or_404(id=object_id)
+    # del resource.locations[int(index)]
+    # resource.save(reindex=True)
+    print resource.locations[int(index)].label
+    return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
     
+    
+    
+    """docstring for location_remove"""
+    pass

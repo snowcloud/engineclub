@@ -18,4 +18,6 @@ urlpatterns = patterns('',
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/edit/$', 'depot.views.curation_edit', name='curation-edit'),
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/remove/$', 'depot.views.curation_remove', name='curation-remove'),
 
+    url(r'^location/(?P<object_id>\w+)/(?P<index>\w+)/remove/$', 'depot.views.location_remove', name='location-remove'),
+
 )
