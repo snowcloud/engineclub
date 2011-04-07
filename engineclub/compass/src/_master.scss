@@ -122,11 +122,17 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     padding: 2% 2% 40px 20px;
 	background-color: rgba(255,255,255,0.6);
 }
-#maincontent h1, #maincontent h2 {
+#maincontent h1 {
 	font-size: 3em;
+}
+#maincontent h2 {
+	font-size: 2.2em;
 }
 #maincontent p {
 	padding-bottom: 0.5em;
+}
+.single #maincontent {
+	width: 100%;
 }
 #sidebar { 
     display: inline;
@@ -199,7 +205,21 @@ div.more-btn a:hover {
 	background: #797979 url(../img/bg_more_btn.png) repeat-x 0 center;
 	}
 
-
+#locations{ float: left; width: 45% }  
+#map{  
+  height: 100%;
+  width: 50%;
+  float: right;
+  margin-right: 10%;
+}
+.resource-detail #map {
+	float: none;
+}
+#map td {
+  background-color: #fff;
+  border: 0 none;
+  padding: 0;
+}
 /* self-clear floats */
 
 .group:after {

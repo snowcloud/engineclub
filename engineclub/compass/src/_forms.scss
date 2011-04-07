@@ -1,62 +1,88 @@
-/* @group forms */
-/* line 4, ../../compass/src/ct_forms.sass */
-.inline { display: inline; }
+.inline {
+	display: inline;
+}
+form {
+	background-color: #fcefdc;
+	padding: 1em;
+	width:  88%;
+	margin-bottom: 1em;
+}
+/* @group fieldset */
+fieldset {
+	xposition: relative;
+	clear: both;
+	xfloat: left;
+	margin: 0;
+	margin-bottom: 1em;
+	border-style: none;
+	border-bottom: 1px solid #c1d5c2;
+	xbackground-color: #ebf7fc;
+}
+fieldset ol {
+	clear: left;
+	float: left;
+	xpadding: 3.5em 1em 0 1em;
+	list-style: none;
+	width: 90%;
+}
+fieldset li {
+	clear: left;
+	float: left;
+	width: 100%;
+	padding-bottom: 1em;
+	list-style: none;
+}
+fieldset .url {
+	display: none;
+}
+fieldset .hidden {
+	display: none;
+}
+fieldset input[type="text"], fieldset textarea {
+	background-color: #f0dbc4;
+	padding: 0.5em;
+	width: 90%;
+}
+fieldset .helptext {
+	display: block;
+	font-size: 0.8em;
+	padding-left: 0.8em;
+	color: #797979;
+}
+fieldset.submit {
+	background-color: #db965a;
+	xfloat: none;
+	xwidth: auto;
+	xpadding-left: 0;
+	xpadding-bottom: 20px;
+	margin: 0;
+	padding: 1em;
+	border-style: none;
+}
+fieldset.submit input {
+	xbackground-color: silver;
+	
+}
+legend {
+	color: #1e4d5f;
+	font-size: 120%;
+	padding: 0.5em 0;
+	left: 0.74em;
+}
+legend span {
+	xposition: absolute;
+	left: 0.74em;
+	top: 0;
+	margin-top: 0em;
+}
 
-/* line 7, ../../compass/src/ct_forms.sass */
-fieldset { position: relative; clear: both; float: left; width: 100%; padding: 0; border-style: none; xborder-top: 1px solid #c1d5c2; background-color: #ebf7fc; margin: 0; }
-/* line 17, ../../compass/src/ct_forms.sass */
-fieldset ol { clear: left; float: left; padding: 3.5em 1em 0 1em; list-style: none; }
-/* line 22, ../../compass/src/ct_forms.sass */
-fieldset li { clear: left; float: left; width: 100%; padding-bottom: 1em; list-style: none; }
-/* line 28, ../../compass/src/ct_forms.sass */
-fieldset .url { display: none; }
-/* line 30, ../../compass/src/ct_forms.sass */
-fieldset .hidden { display: none; }
-
-/* line 32, ../../compass/src/ct_forms.sass */
-fieldset.submit { background-color: white; float: none; width: auto; padding-left: 0; padding-bottom: 20px; }
-
-/* line 38, ../../compass/src/ct_forms.sass */
-legend { color: #1e4d5f; padding: 0; font-size: 120%; }
-/* line 42, ../../compass/src/ct_forms.sass */
-legend span { position: absolute; left: 0.74em; top: 0; margin-top: 0.5em; }
-
-/* line 47, ../../compass/src/ct_forms.sass */
-label { float: left; width: 8em; margin-right: 1em; }
-
-/* line 53, ../../compass/src/ct_forms.sass */
-.wider label { width: 16em; }
-/* line 55, ../../compass/src/ct_forms.sass */
-.wider .submit { padding-left: 19.5em; }
-
-/* line 57, ../../compass/src/ct_forms.sass */
-textarea { width: 40em; }
-
-/* line 60, ../../compass/src/ct_forms.sass */
-.aside ol { padding-top: 1em; }
-/* line 62, ../../compass/src/ct_forms.sass */
-.aside fieldset { background-color: transparent; width: 95%; }
-/* line 65, ../../compass/src/ct_forms.sass */
-.aside fieldset li { margin-left: 0; }
-/* line 67, ../../compass/src/ct_forms.sass */
-.aside fieldset.submit { padding-left: 18px; }
-/* line 69, ../../compass/src/ct_forms.sass */
-.aside label { width: 6em; }
-/* line 71, ../../compass/src/ct_forms.sass */
-.inasideset p { margin-left: 0; }
-
-/* line 73, ../../compass/src/ct_forms.sass */
-.help { color: #797d81; font-size: 0.9em; }
-
-/* line 77, ../../compass/src/ct_forms.sass */
-.errors, .errorlist { color: red; }
-/* line 79, ../../compass/src/ct_forms.sass */
-.errors li, .errorlist li { margin-left: 0; margin-bottom: 0.5em; padding: 0.5em; list-style-type: none; font-weight: bold; background-color: #dbcbda; }
-
-/* line 87, ../../compass/src/ct_forms.sass */
-.required label { padding-left: 1.2em; width: 6.8em; background: transparent url(../bg/star.png) no-repeat scroll left top; }
-
-/* line 91, ../../compass/src/ct_forms.sass */
-.honeypot { display: none; }
-
-/* @end */
+/*
+@end */
+label {
+	xfloat: left;
+	xwidth: 8em;
+	xmargin-right: 1em;
+	display: block;
+	font-weight: bold;
+	padding-bottom: 0.5em;
+}
