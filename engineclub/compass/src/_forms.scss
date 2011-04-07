@@ -1,0 +1,88 @@
+.inline {
+	display: inline;
+}
+form {
+	background-color: #fcefdc;
+	padding: 1em;
+	width:  88%;
+	margin-bottom: 1em;
+}
+/* @group fieldset */
+fieldset {
+	xposition: relative;
+	clear: both;
+	xfloat: left;
+	margin: 0;
+	margin-bottom: 1em;
+	border-style: none;
+	border-bottom: 1px solid #c1d5c2;
+	xbackground-color: #ebf7fc;
+}
+fieldset ol {
+	clear: left;
+	float: left;
+	xpadding: 3.5em 1em 0 1em;
+	list-style: none;
+	width: 90%;
+}
+fieldset li {
+	clear: left;
+	float: left;
+	width: 100%;
+	padding-bottom: 1em;
+	list-style: none;
+}
+fieldset .url {
+	display: none;
+}
+fieldset .hidden {
+	display: none;
+}
+fieldset input[type="text"], fieldset textarea {
+	background-color: #f0dbc4;
+	padding: 0.5em;
+	width: 90%;
+}
+fieldset .helptext {
+	display: block;
+	font-size: 0.8em;
+	padding-left: 0.8em;
+	color: #797979;
+}
+fieldset.submit {
+	background-color: #db965a;
+	xfloat: none;
+	xwidth: auto;
+	xpadding-left: 0;
+	xpadding-bottom: 20px;
+	margin: 0;
+	padding: 1em;
+	border-style: none;
+}
+fieldset.submit input {
+	xbackground-color: silver;
+	
+}
+legend {
+	color: #1e4d5f;
+	font-size: 120%;
+	padding: 0.5em 0;
+	left: 0.74em;
+}
+legend span {
+	xposition: absolute;
+	left: 0.74em;
+	top: 0;
+	margin-top: 0em;
+}
+
+/*
+@end */
+label {
+	xfloat: left;
+	xwidth: 8em;
+	xmargin-right: 1em;
+	display: block;
+	font-weight: bold;
+	padding-bottom: 0.5em;
+}

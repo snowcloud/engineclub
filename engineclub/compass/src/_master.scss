@@ -38,9 +38,10 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     background: #000 none repeat scroll 0 0;
     border-bottom: 10px solid #c74a14;
     color: white;
-    height: 3.4em;
+    heightx: 3.4em;
     padding-top: 70px;  
-    position: relative; margin: 0 0 25px 6%; }
+    padding-bottom: 20px;  
+    position: relative; margin: 0 0 0 6%; }
 .rgba #header { 
     background: none repeat scroll 0 0 rgba(38, 38, 38, 0.85);
 }
@@ -73,12 +74,13 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 }
 #sitenav a {
     font-size: 1.4em;
-    padding: 0em 16px;
+    padding: 0.5em 16px;
     font-weight: bold;
 }
+#sitenav a:hover { color: #feede0; background-color: #797979; }
 
 #usernav { background: #fffeff;
-    margin-top: 2.6em; margin-left: 40px; padding: 10px; }
+    margin-top: 0; margin-left: 6%; padding: 10px; }
 .rgba #usernav { background: rgba(255,254,255,0.4);}
 #usernav li { 
     display: inline;
@@ -94,9 +96,17 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     padding: 20px -40px 0 6%;
     max-width: 935px;
  }*/
-
+.usermessage {
+	padding: 20px;
+	font-size: 120%;
+	background-color: #fefa7f;
+	margin-bottom: 10px;
+}
 #pageintro {
-    background-color: #fcfeff; margin: 1% 10px 1% 40px; padding: 8px; }
+    background-color: #fcfeff;
+    margin: 1% 10px 0 0;
+    padding: 0 20px;
+}
 #pageintro h1 {
     font-size: 3em;
     margin: 0;
@@ -105,16 +115,25 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
     font-familyx: georgia;
     font-size: 1.6em;
     font-stylex: italic;
-    margin: 0; padding-top: 0.6em; }
-
+    margin: 0; padding-top: 0.6em;
+}
 #maincontent {
     float: left;
-    width: 95%; 
-    padding: 2% 2% 40px 40px;
+    padding: 2% 2% 40px 20px;
 	background-color: rgba(255,255,255,0.6);
 }
-    
-
+#maincontent h1 {
+	font-size: 3em;
+}
+#maincontent h2 {
+	font-size: 2.2em;
+}
+#maincontent p {
+	padding-bottom: 0.5em;
+}
+.single #maincontent {
+	width: 100%;
+}
 #sidebar { 
     display: inline;
     float: right;
@@ -136,6 +155,11 @@ a, a:hover, a:visited { border-bottom: 1px dotted #919191;}
 
 .article h3 { font-size: 2.5em; padding-bottom: 0.5em; }
 .article p { line-height: 160%; padding-bottom: 1em; }
+.article li {
+	list-style-type: square;
+	list-style-position: outside;
+	margin-left: 5%;
+}
 .article img { float: left; padding: 6px; }
 .aside {
     padding-bottom: 36px; 
@@ -159,9 +183,43 @@ a.twtr-hyperlink,  a.twtr-hyperlink:hover, a.twtr-hyperlink:visited { border-bot
 .rgba #footer { 
     background: none repeat scroll 0 0 rgba(38, 38, 38, 0.85);
 }
+#footer a { color: #feede0; }
 
+div.more-btn {
+	font-size: 0.82em;
+	margin: 1.5em 0.5em 0;
+}
+div.more-btn a {
+	border-top: 1px solid #eaeaea;
+	border-left: 1px solid #eaeaea;
+	border-right: 1px solid #74728c;
+	border-bottom: 1px solid #74728c;
+	background: #464646 url(../img/bg_more_btn.png) repeat-x 0 center;
+	color: white;
+	padding: 0.5em 1em;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-mox-border-radius: 6px;
+	}
+div.more-btn a:hover {
+	background: #797979 url(../img/bg_more_btn.png) repeat-x 0 center;
+	}
 
-
+#locations{ float: left; width: 45% }  
+#map{  
+  height: 100%;
+  width: 50%;
+  float: right;
+  margin-right: 10%;
+}
+.resource-detail #map {
+	float: none;
+}
+#map td {
+  background-color: #fff;
+  border: 0 none;
+  padding: 0;
+}
 /* self-clear floats */
 
 .group:after {

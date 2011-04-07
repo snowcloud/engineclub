@@ -48,7 +48,9 @@
         {% endif %}
     </ul>
     </div>  
-    <ul id="usernav">
+    </div>  
+    <div id="usernav">  
+    <ul>
       {% if user.is_authenticated %}
         <li>logged in as {{ user.username }}</li>
         <li><a href="/accounts/password_change/">change password</a></li>
@@ -61,7 +63,7 @@
     </div>
 <div id="main" class="group">
     {% if messages %}
-	  <div class="message">
+	  <div class="usermessage">
 	    <ul> 
 	        {% for message in messages %} 
 	            <li class="{{ message.tags }}">{{ message|safe }}</li>
