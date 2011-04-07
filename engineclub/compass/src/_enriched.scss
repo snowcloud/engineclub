@@ -1,0 +1,16 @@
+/* 
+CSS3 + vendor-specific styles
+
+-webkit	 	Safari
+-moz 	 	Firefox
+*/
+
+/* fadetastic links
+--------------------------------------------- */
+
+a:link, a:visited {
+	-webkit-transition: color .4s linear;
+	}
+a:hover {
+	color: rgba(12,37,37,0.6);
+	}
