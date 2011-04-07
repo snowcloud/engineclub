@@ -61,13 +61,14 @@ class MongoDBTestRunner(DjangoTestSuiteRunner):
         connect(db_name)
         print 'Creating test-databasey: ' + db_name
         _load_data()
-        return db_name
+        return super(MongoDBTestRunner, self).setup_databases(**kwargs)
 
     def teardown_databases(self, db_name, **kwargs):
         from pymongo import Connection
         conn = Connection()
         conn.drop_database(db_name)
         print 'Dropping test-databasey: ' + db_name
+        super(teardown_databases, self).setup_databases(db_name, **kwargs)
 
 class MongoDBRunner(DjangoTestSuiteRunner):
     def setup_databases(self, **kwargs):
@@ -75,13 +76,14 @@ class MongoDBRunner(DjangoTestSuiteRunner):
         connect(db_name)
         print 'Using test_db: ' + db_name
         # _load_data()
-        return db_name
+        return super(MongoDBRunner, self).setup_databases(**kwargs)
 
     def teardown_databases(self, db_name, **kwargs):
         # from pymongo import Connection
         # conn = Connection()
         # conn.drop_database(db_name)
         print 'Closing test-db: ', db_name, ' (data intact)'
+        super(MongoDBRunner, self).teardown_databases(db_name, **kwargs)
 
 
 class ResourceTest(TransactionTestCase):
@@ -265,14 +267,14 @@ class SolrTest(TransactionTestCase):
         loc = TEST_LOCS[loc_name]
         print '\n\n*** %s ' % loc_name, loc
     
-        kwords = 'health'
+        kwords = 'heart'
         kw = {
             'rows': settings.SOLR_ROWS,
             'fl': '*,score',
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': loc,
-            'bf': 'recip(geodist(),2,200,20)^2',
+            'bf': 'recip(geodist(),2,200,20)^20',
             'sort': 'score desc',
         }
     
