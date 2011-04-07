@@ -302,7 +302,7 @@ fieldset .url { display: none; }
 fieldset .hidden { display: none; }
 
 /* line 41, ../../compass/src/_forms.scss */
-fieldset input[type="text"], fieldset textarea { background-color: #f0dbc4; padding: 0.5em; width: 90%; }
+fieldset input[type="text"], fieldset input[type="password"], fieldset textarea { background-color: #f0dbc4; padding: 0.5em; width: 90%; }
 
 /* line 46, ../../compass/src/_forms.scss */
 fieldset .helptext { display: block; font-size: 0.8em; padding-left: 0.8em; color: #797979; }
@@ -311,17 +311,14 @@ fieldset .helptext { display: block; font-size: 0.8em; padding-left: 0.8em; colo
 fieldset.submit { background-color: #db965a; xfloat: none; xwidth: auto; xpadding-left: 0; xpadding-bottom: 20px; margin: 0; padding: 1em; border-style: none; }
 
 /* line 62, ../../compass/src/_forms.scss */
-fieldset.submit input { xbackground-color: silver; }
-
-/* line 66, ../../compass/src/_forms.scss */
 legend { color: #1e4d5f; font-size: 120%; padding: 0.5em 0; left: 0.74em; }
 
-/* line 72, ../../compass/src/_forms.scss */
+/* line 68, ../../compass/src/_forms.scss */
 legend span { xposition: absolute; left: 0.74em; top: 0; margin-top: 0em; }
 
 /*
 @end */
-/* line 81, ../../compass/src/_forms.scss */
+/* line 77, ../../compass/src/_forms.scss */
 label { xfloat: left; xwidth: 8em; xmargin-right: 1em; display: block; font-weight: bold; padding-bottom: 0.5em; }
 
 /* 

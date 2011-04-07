@@ -38,7 +38,7 @@ fieldset .url {
 fieldset .hidden {
 	display: none;
 }
-fieldset input[type="text"], fieldset textarea {
+fieldset input[type="text"], fieldset input[type="password"], fieldset textarea {
 	background-color: #f0dbc4;
 	padding: 0.5em;
 	width: 90%;
@@ -58,10 +58,6 @@ fieldset.submit {
 	margin: 0;
 	padding: 1em;
 	border-style: none;
-}
-fieldset.submit input {
-	xbackground-color: silver;
-	
 }
 legend {
 	color: #1e4d5f;
