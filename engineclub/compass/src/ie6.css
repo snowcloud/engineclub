@@ -6,3 +6,4 @@ Author: 	derek@snowcloud.co.uk
 body { background: none;}
 #header { border-bottom-width: 1px; }
 #usernav { margin-left: 0px; }
+#flash-tab { position: unchanged; visibility: hidden; }
