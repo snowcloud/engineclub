@@ -85,7 +85,7 @@ $(function() {
                 </ol>
             {% endif %}
 
-            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p>{{ resource.short_description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">
                 <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
                 {% if resource.uri %} |

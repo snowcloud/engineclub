@@ -147,6 +147,7 @@ class Resource(Document):
             'id': unicode(self.id),
             'res_id': unicode(self.id),
             'title': self.title,
+            'short_description': self.description,
             'description': '\n'.join(description),
             'keywords': ', '.join(tags),
             'uri': self.uri,
