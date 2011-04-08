@@ -13,14 +13,19 @@
 
 <h1>Curation for {{ resource.title }}</h1>
 
-<table class="metadata owned-data group">
-<tr><th>note</th><td>{{ object.note|textile }}</td></tr>
+<div class="group">
+{% if object.note or object.data %}
+    <table class="metadata owned-data">
+    <tr><th>note</th><td>{{ object.note|textile|default:' ' }}</td></tr>
 
-{% for key, value in object.data.items %}
-<tr><th>{{ key }}</th><td>{{ value|textile }}</td></tr>
-{% endfor %}
-</table>
-
+    {% for key, value in object.data.items %}
+    <tr><th>{{ key }}</th><td>{{ value|textile }}</td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p class="resource-description">No additional content in this curation.</p>
+{% endif %}
+</div>
 
 <table class="metadata group">
 <tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
