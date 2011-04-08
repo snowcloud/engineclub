@@ -17,9 +17,10 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
 from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
-def get_one_or_404(**kwargs):
+def get_one_or_404(obj_class=Resource, **kwargs):
+    """helper function for Mongoengine documents"""
     try:
-       object = Resource.objects.get(**kwargs)
+       object = obj_class.objects.get(**kwargs)
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
@@ -290,6 +291,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
     )
 
     
+@login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
     resource = get_one_or_404(id=object_id)
@@ -297,10 +299,26 @@ def curation_remove(request, object_id, index):
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
     
+@login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
     resource = get_one_or_404(id=object_id)
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
+    
+def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
+    """docstring for curations_for_group"""
+    object = get_one_or_404(obj_class=Account, id=object_id)
+    print object
+
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    template_context = {'object': object, 'curations': curations}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+    
     
