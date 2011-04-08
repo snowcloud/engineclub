@@ -19,7 +19,15 @@ map{
 {% block body_class %}{{ block.super}} resource-detail{% endblock %}
 {% block content %}
 
-<p><a href="{% url resource-list %}">all items</a> | <a href="{% url resource-find %}">search items</a></p>
+<p class="content-menu">
+    <a href="{% url resource-find %}">search items</a> |
+    <a href="{% url curation-add object.id %}">new curation</a> | 
+    <a href="{% url resource-edit object.id %}">edit resource</a>
+    {% if user.is_staff %} | 
+        <a href="{% url resource-remove object.id %}">delete resource</a> | 
+        <a href="{% url resource-list %}">all items</a>
+    {% endif %}
+</p>
 
 {% if object.uri %}
 <h1><a href="{{ object.uri }}">{{ object.title }}</a></h1>
@@ -27,35 +35,33 @@ map{
 <h1>{{ object.title }}</h1>
 {% endif %}
 
+<div class="resource-description">
 {{ object.description|textile }}
+</div>
 
-<p>owner: <a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></p>
-<p>last changes: {{ object.item_metadata.author }}</p>
-<p>tags: {{ object.tags|join:", " }}</p>
+<div id="results">
 
-
-<ul>
+<table class="metadata">
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
 {% for loc in object.locations %}
-	<li>{{ loc.label }}, {{ loc.place_name }}</li>
+    <tr><th>location</th><td>{{ loc.label }}, {{ loc.place_name }}</td></tr>
 {% empty %}
-	<li>no locations found</li>
-{% endfor %}	
-</ul>
-
-<hr>
-<h2>Curations</h2>
-<ul>
+    <tr><th>location</th><td>-</td></tr>
+{% endfor %}
 {% for curation in object.curations %}
-	<li><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} {{ curation.outcome }}, {{ curation.tags }}</a></li>
+    <tr>
+        <th>curation</th>
+        <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
+    </tr>
 {% empty %}
-	<li>no curations found</li>
-{% endfor %}	
-</ul>
-<p><a href="{% url curation-add object.id %}">new curation</a>
+    <tr><th>curation</th><td>-</td></tr>
+{% endfor %}
 
-<hr>
-<p><a href="{% url resource-edit object.id %}">edit resource</a>
-{% if user.is_staff %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}</p>
+</table>
+
+</div>
 
 <div id="map"></div>
 {% if object.locations %}
@@ -82,8 +88,5 @@ window.onload = startMap;
 </script>  
 {% endif %}
 
-<hr>
-<!-- 
-<p class="small">keywords for indexing: <em>{{ object.get_keywords|join:", "}}</em></p>
- -->
+
 {% endblock %}

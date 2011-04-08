@@ -5,26 +5,28 @@
 
 {% block content %}
 
-<p><a href="{% url resource resource.id %}">back to resource</a></p>
+<p>
+    <a href="{% url resource resource.id %}">back to resource</a> | 
+    <a href="{% url curation-edit resource.id index %}">edit curation</a>
+    {% if user.is_staff %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
+</p>
 
 <h1>Curation for {{ resource.title }}</h1>
 
-<table class="curation-data">
-<tr><td>note:</td><td>{{ object.note|textile }}</td></tr>
+<table class="metadata owned-data">
+<tr><th>note</th><td>{{ object.note|textile }}</td></tr>
 
 {% for key, value in object.data.items %}
-<tr><td>{{ key }}</td><td>{{ value|textile }}</td></tr>
+<tr><th>{{ key }}</th><td>{{ value|textile }}</td></tr>
 {% endfor %}
 </table>
 
+<p></p>
+<table class="metadata">
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+</table>
 
-<p>owner: <a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></p>
-<p>last changes: {{ object.item_metadata.author }}</p>
-<p>tags: {{ object.tags|join:", " }}</p>
-
-<hr>
-
-<p><a href="{% url curation-edit resource.id index %}">edit curation</a>
-{% if user.is_staff %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}</p>
 
 {% endblock %}

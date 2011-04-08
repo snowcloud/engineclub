@@ -74,6 +74,20 @@ legend span {
 
 /*
 @end */
+.errorlist:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.errorlist li {
+	background-color: #fec9c8;
+	margin-top: 1em;
+	padding: 0.5em;
+	width: 90%;
+	border: 1px solid #fd1d13;
+}
 label {
 	xfloat: left;
 	xwidth: 8em;
