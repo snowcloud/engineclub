@@ -1,0 +1,48 @@
+<html>
+<head>
+<style>
+body  {
+    font-size: 0.8em;
+    color: #404040;
+    font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Helvetica, sans-serif;
+    background-color: #eae5dd;
+    margin: 0;
+    padding:6px;
+}
+
+.gig-title  {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #d00;
+}
+.gig-info  {
+    font-size: 0.9em;
+    color: #33d;
+    margin-left: 16px;
+    
+}
+</style>
+
+</head>
+<body>
+{% load markup %}
+    {% if band.public_gigs %}
+
+        {% for gig in band.public_gigs %}
+
+            <p class="gig-title">{{ gig.start_date|date:"d/m/Y" }} - {{ gig.venue }}</p>
+            <div class="gig-info">{{ gig.public_info|textile }}</div>
+
+        {% endfor %}
+    {% else %}
+        <p class="line1">no public gigs</p>
+
+    {% endif %}
+        
+        
+        
+    
+
+
+</body>
+</html>

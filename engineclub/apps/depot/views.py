@@ -310,7 +310,18 @@ def location_remove(request, object_id, index):
 def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
-    print object
+
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    template_context = {'object': object, 'curations': curations}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+
+def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
+    object = get_one_or_404(obj_class=Account, id=object_id)
 
     curations = list(Resource.objects(curations__owner=object)[:10])
     template_context = {'object': object, 'curations': curations}
