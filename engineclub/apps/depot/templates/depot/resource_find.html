@@ -1,23 +1,9 @@
 {% extends "base.html" %}
 {% load utils %}
 {% block title %}find resources{% endblock %}
-{% block head_extra %}
+{% block head-extra %}
 <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
 </script>  
-<style type="text/css">
-#locations{ float: left; width: 45% }  
-#map{  
-  height: 100%;
-  width: 50%;
-  float: right;
-}
-{# Yahoo map uses tables for popup info #}
-#map td {
-  background-color: #fff;
-  border: 0 none;
-  padding: 0;
-}
-</style>
 <script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
 <link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
 <!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
@@ -77,21 +63,35 @@ $(function() {
 
      <fieldset class="submit">
         <input type="submit" name="result" value="Find items">
-        <input type="submit" name="result" value="Cancel">
+        <!-- input type="submit" name="result" value="Cancel" -->
     </fieldset>
 </form>
 
-<div id="locations">
+<div id="results">
     
   {% if centre %}
-    <h1>Closest results for {{ centre.name }}:</h1>
+    <h2>Closest results for {{ centre.name }}:</h2>
   {% endif %}
     
-    <ol>
+    <ol class="resource-listing">
     {% for resource in results %}
-        <li><a href="{% url resource resource.id %}">{{ resource.title }}</li>
-            <!-- 
-            <p>{{ resource.pt_location }}</p> -->
+        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+            {% if resource.loc_labels %}
+                <ol>
+                    {% for loc_label in resource.loc_labels %}
+                        <li class="resource-listing-locs">{{ loc_label }}</li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+
+            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p class="resource-listing-meta">
+                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+                {% if resource.uri %} |
+                    <a href="{{ resource.uri }}">external site...</a>
+                {% endif %}
+            </p>
+        </li>
     {% empty %}
         <li>no results found</li>
     {% endfor %}
@@ -127,16 +127,19 @@ $(function() {
         {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
         map.drawZoomAndCenter(currentGeoPoint, 8);
 
-        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', true));  
+        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', false));  
         newMarker.addAutoExpand("your location");  
         map.addOverlay(newMarker);
 
-        {% for loc in results %}
-            pinPoint = new YGeoPoint( "{{loc.pt_location|get_lat}}" , "{{loc.pt_location|get_lon}}");  
-            var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-            newMarker.addAutoExpand('<p><a href="{% url resource loc.id.0 %}">{{ loc.title }}</a></p>');
+        {% for res in results %}
+            {% for loc in res.pt_location %}
             
-            map.addOverlay(newMarker);
+                pinPoint = new YGeoPoint( "{{loc|get_lat}}" , "{{loc|get_lon}}");  
+                var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
+                newMarker.addAutoExpand('<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>');
+            
+                map.addOverlay(newMarker);
+            {% endfor %}
         {% endfor %}
     }  
 window.onload = startMap;     

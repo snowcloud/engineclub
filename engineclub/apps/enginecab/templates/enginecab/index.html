@@ -3,6 +3,13 @@
 {% block title %}engine admin{% endblock %}
 
 {% block content %}
+
 <h1>The Cab</h1>
-<p>admin for the engine...</p>
+
+<p><a href="{% url groups %}">Groups</a></p>
+
+<hr>
+<p><a href="{% url cab-fix-resource-accounts %}">fix resource accounts</a></p>
+<p><a href="{% url cab-reindex %}">reindex resources</a></p>
+
 {% endblock %}

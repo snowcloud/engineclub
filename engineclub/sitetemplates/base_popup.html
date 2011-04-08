@@ -6,12 +6,18 @@
 	<meta name="description" content="Home of the EngineClub">
 
 	<title>engineclub- {% block title %}{% endblock %}</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 	<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="/static/css/screen.css" />
 	<!--[if IE 6]>
 	  <link href="/static/css/ie6.css" media="screen, projection" rel="stylesheet" type="text/css" />
 	<![endif]-->
-	{% block head_extra %}{% endblock %}
+	{% block head-extra %}{% endblock %}
+	<script type="text/javascript">
+      $('document').ready(function(){
+        {% block document-ready %}{% endblock %}
+      });
+    </script>
 </head>
 <body {% block body_extra %}{% endblock %}>
 <div id="wrap">

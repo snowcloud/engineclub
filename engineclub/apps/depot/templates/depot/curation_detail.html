@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load markup utils %}
+
+{% block title %}Curation{% endblock %}
+
+{% block content %}
+
+<p>
+    <a href="{% url resource resource.id %}">back to resource</a> | 
+    <a href="{% url curation-edit resource.id index %}">edit curation</a>
+    {% if user.is_staff %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
+</p>
+
+<h1>Curation for {{ resource.title }}</h1>
+
+<div class="group">
+{% if object.note or object.data %}
+    <table class="metadata owned-data">
+    <tr><th>note</th><td>{{ object.note|textile|default:' ' }}</td></tr>
+
+    {% for key, value in object.data.items %}
+    <tr><th>{{ key }}</th><td>{{ value|textile }}</td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p class="resource-description">No additional content in this curation.</p>
+{% endif %}
+</div>
+
+<div class="group">
+<table class="metadata">
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+</table>
+</div>
+
+
+{% endblock %}

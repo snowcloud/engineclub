@@ -3,43 +3,57 @@
 
 {% block title %}edit resource{% endblock %}
 
+{% block document-ready %}
+$('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_location_link">add location</a>');
+//$('#new_location_link').click(function() {alert('blah');});
+$('#new_location_link').click(function() {$('#main-form').submit();});
+{% endblock %}
+
 {% block content %}
 
 {% if not template_info.popup %}<h1>{% if object %}Edit{% else %}Add new{% endif %} item</h1>{% endif %}
 
-<form class="form" action="." method="POST">{% csrf_token %}
+<form class="form" id="main-form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
         <ol>
              {{ resourceform.as_ul }}
         </ol>
     </fieldset>
-
+<!-- 
+</form>
+<form class="form" action="." method="POST">{% csrf_token %}
+ -->
 	{% if locationform %}
 	    <fieldset>
-	        <legend><span>Location{{ object.locations|pluralize }}:</span></legend>
+	        <legend><span>Locations:</span></legend>
 
 	        <ol>
+        <!-- 
+			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
+	     -->
 	            {% for loc in object.locations %}
-	            	<li>{{ loc.label }}, {{ loc.place_name }} <input type="submit" name="del_loc:{{loc.id}}" value="remove location"></li>
+	            	<li class="location-listing-item"><span class="location-label">{{ loc.label }}, {{ loc.place_name }}</span>
+	            	    <a class="del-link" href="{% url location-remove object.id forloop.counter0 %}">remove location</a>
+	            	
+	            	<!-- input type="submit" name="del_loc:{{loc.id}}" value="remove location" --></li>
 				{% empty %}
 				    <li>no locations found</li>
 	            {% endfor %}
+	            
+        <p>Enter post code or place name in the box below to add it to the location list above.</p>
+	             <li><label for="id_new_location">New location:</label>
+	                 <input type="text" name="new_location" id="id_new_location">&nbsp;&nbsp;
+	                 <input type="submit" id="new_location_submit" name="result" value="{{ UPDATE_LOCS }}">
+	            </li>
+	        
 	        {# </ol> #}
 	    {# </fieldset> #}
 	    {#  #}
 	    {# <fieldset> #}
 	        {# <ol> #}
-	        
-        <p>Enter location information in the box below to add it to the list above.</p>
-        <!-- 
-			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
-	     -->
-	             <li><label for="id_new_location">New location:</label>
-	                 <input type="text" name="new_location" id="id_new_location">
-	                 <input type="submit" name="result" value="{{ UPDATE_LOCS }}">
-	            </li>
 	        </ol>
+	        
 	    </fieldset>
 	{% endif %}
 	{% if tagsform %}

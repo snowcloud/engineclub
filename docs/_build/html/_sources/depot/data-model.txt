@@ -16,15 +16,13 @@ id                      ObjectID *
 title                   string
 description             string
 resource_type           string ['web', 'group', ...]
-url                     string [web URI format]
+uri                     string [web URI format]
 locations               list of :ref:`location`
 service_area            list of :ref:`location` 
 moderations             list of :ref:`moderation` 
 curations               list of :ref:`curation` 
 tags                    list of string
-index_keys              list of string
 related_resources       list of :ref:`relatedResource`
-added_metadata          list of :ref:`addedMetadata`
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
@@ -58,20 +56,12 @@ Location
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-loc_id                   URI
+os_id                   string
 label                   string
-lat_lon                  list of float [float, float]
-latitude                float
-longitude               float
-location_type           string [controlled list]
-postcode                string [UK postcode format]
-ward                    string
-ward_ref                URI
-district                string
-district_ref            URI
-country                 string
-country_ref             URI
-note                    string
+place_name              string
+lat_lon                 list of float [float, float]
+os_type                 string [postcode, ward, district, country]
+parents                 list of Location
 ==================      =========================================================================
 
 ref source + URI
@@ -101,26 +91,12 @@ outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
 note                    string
+data                    dict (dictionary with field names as keys) *
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
-
-.. _addedMetadata:
-
-AddedMetadata
-=========================
-
-*This will be used to allow trusted accounts to add their own metadata using their own schema.*
-
-*Data will be converted to required formats on client access (may be cached for performance)*
-
-==================      ======================================================
-field name              type
-==================      ======================================================
-data                    dict (dictionary with field names as keys)
-item_metadata           :ref:`itemMetadata`
-==================      ======================================================
-
+* This will be used to allow trusted accounts to add their own metadata using their own schema.
+Data will be converted to required formats on client access (may be cached for performance)
 
 .. _itemMetadata:
 
@@ -135,10 +111,38 @@ field name              type
 last_modified           datetime 
 author                  ObjectID
 shelflife               datetime
+status                  string
 note                    string
 ==================      =========================================================================
 
+.. _Account:
+
+
+Account 
+=========================
+See code in `engine-groups app`_
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+title                   string 
+slug                    string
+members                 list of :ref:`Membership`
+==================      =========================================================================
+
+.. _Membership:
+
+Membership
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+account                 :ref:`Account` 
+role                    string
+==================      =========================================================================
 
 
 .. _BSON ObjectID Specification:   http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification
+.. _engine-groups app: http://github.com/snowcloud/engine-groups
 

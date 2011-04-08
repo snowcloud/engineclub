@@ -38,7 +38,7 @@ if __name__ == "__main__":
         load_placenames(options.filename, options.dbname or settings.MONGO_DB)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
-        reindex_resources(options.dbname or settings.MONGO_DB)
+        reindex_resources(options.dbname or settings.MONGO_DB, printit=True)
 
     else:
         print 'no command recognised'

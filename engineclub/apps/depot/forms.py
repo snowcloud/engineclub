@@ -1,11 +1,12 @@
 
 from django import forms
 
-from depot.models import Resource, Location, find_by_place_or_kwords, get_place_for_placename
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_place_for_placename
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
+from mongoforms import MongoForm
 
 
 class FormHasNoInstanceException(Exception):
@@ -35,7 +36,7 @@ class DocumentForm(forms.Form):
 class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(help_text='enter a post code or a place name', required=False)
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated text (spaces OK)', required=True)
 
     def __init__(self, *args, **kwargs):
         self.locations = []
@@ -46,8 +47,8 @@ class FindResourceForm(forms.Form):
     def clean(self):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
-        data = cleaned_data.get('post_code').strip()
-        kwords = cleaned_data.get('tags').strip()
+        data = cleaned_data.get('post_code', '').strip()
+        kwords = cleaned_data.get('tags', '').strip()
         if not(data or kwords):
             raise forms.ValidationError("Please enter a location and/or some text and try again.")
 
@@ -115,4 +116,14 @@ class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
     # dummy = forms.CharField(required=False)
     pass
-           
+    
+class CurationForm(DocumentForm):
+    
+    outcome = forms.CharField()
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+    note = forms.CharField(widget=forms.Textarea, required=False)
+    # data = forms.CharField(widget=forms.Textarea, required=False)
+    
+    def clean_tags(self):
+        return clean_csvtextinput(self.cleaned_data['tags'])
+

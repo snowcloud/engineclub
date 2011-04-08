@@ -22,6 +22,13 @@ DB_NAME = 'test_db'
 SOLR_URL = 'http://127.0.0.1:8983/solr'
 # SOLR_URL = settings.SOLR_URL
 
+TEST_LOCS = {
+    'ellon': '57.365287, -2.070642',
+    'peterheid': '57.584806, -1.875630',
+    'keith': '57.7036280142534, -2.85720247750133',
+    'carnoustie': '56.503836, -2.699406',
+    'downing st': '51.503541, -0.127670' # SW1A 2AA
+}
 
 def _load_data(resources='resources', locations='locations'):
     """loads fixture data for test Resources"""
@@ -54,13 +61,14 @@ class MongoDBTestRunner(DjangoTestSuiteRunner):
         connect(db_name)
         print 'Creating test-databasey: ' + db_name
         _load_data()
-        return db_name
+        return super(MongoDBTestRunner, self).setup_databases(**kwargs)
 
     def teardown_databases(self, db_name, **kwargs):
         from pymongo import Connection
         conn = Connection()
         conn.drop_database(db_name)
         print 'Dropping test-databasey: ' + db_name
+        super(teardown_databases, self).setup_databases(db_name, **kwargs)
 
 class MongoDBRunner(DjangoTestSuiteRunner):
     def setup_databases(self, **kwargs):
@@ -68,13 +76,14 @@ class MongoDBRunner(DjangoTestSuiteRunner):
         connect(db_name)
         print 'Using test_db: ' + db_name
         # _load_data()
-        return db_name
+        return super(MongoDBRunner, self).setup_databases(**kwargs)
 
     def teardown_databases(self, db_name, **kwargs):
         # from pymongo import Connection
         # conn = Connection()
         # conn.drop_database(db_name)
         print 'Closing test-db: ', db_name, ' (data intact)'
+        super(MongoDBRunner, self).teardown_databases(db_name, **kwargs)
 
 
 class ResourceTest(TransactionTestCase):
@@ -254,20 +263,18 @@ class SolrTest(TransactionTestCase):
 
         conn = Solr(SOLR_URL)
 
-        ellon = '57.365287, -2.070642'
-        peterheid = '57.584806, -1.875630'
-        keith = '57.7036280142534, -2.85720247750133'
-        loc = ellon
-        print '\n\n*** ellon ', loc
+        loc_name = 'downing st'
+        loc = TEST_LOCS[loc_name]
+        print '\n\n*** %s ' % loc_name, loc
     
-        kwords = 'citizens advice'
+        kwords = 'heart'
         kw = {
             'rows': settings.SOLR_ROWS,
             'fl': '*,score',
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': loc,
-            'bf': 'recip(geodist(),2,200,20)^2',
+            'bf': 'recip(geodist(),2,200,20)^20',
             'sort': 'score desc',
         }
     
@@ -275,7 +282,7 @@ class SolrTest(TransactionTestCase):
 
         print '\n--\nsearch on [%s] : ' % (kwords)
         for result in results:
-            print '-', result['score'], result['title'] #, result['pt_location']
+            print '-', result['score'], result['title'], result.get('pt_location', '')
           
 #     # def test_form(self):
 #     #   """test form creation"""

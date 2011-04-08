@@ -9,18 +9,28 @@ from datetime import datetime
 from pymongo import Connection, GEO2D
 from pysolr import Solr
 
+from engine_groups.models import Account
+
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
 COLL_STATUS_TAGS_CONF = 'tags_confirm'
 COLL_STATUS_ = ''
 COLL_STATUS_COMPLETE = 'complete'
-        
+
+STATUS_OK = 'OK'
+STATUS_BAD = 'BAD'
+
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
-    author = StringField()
+    author = ReferenceField(Account)
     shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
     note = StringField()
+    
+    def update(self, author, last_modified=datetime.now()):
+        """docstring for update"""
+        self.author = author
+        self.last_modified = last_modified
             
 class Location(Document):
     """Location document, based on Ordnance Survey data
@@ -36,6 +46,7 @@ class Location(Document):
 class Moderation(EmbeddedDocument):
     outcome = StringField()
     note = StringField()
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 class Curation(EmbeddedDocument):
@@ -44,6 +55,7 @@ class Curation(EmbeddedDocument):
     # rating - not used
     note = StringField()
     data = DictField()
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 def place_as_cb_value(place):
@@ -83,15 +95,37 @@ class Resource(Document):
     curations = ListField(EmbeddedDocumentField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
+    owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-    def save(self, author=None, *args, **kwargs):
-        self.item_metadata.last_modified = datetime.now()
+    def save(self, *args, **kwargs):
+        reindex = kwargs.pop('reindex', False)
+        author = kwargs.pop('author', None)
         if author:
-            self.item_metadata.author = author
-        created = (self.id is None) # and not self.url.startswith('http://test.example.com')
+            self.item_metadata.update(author)
+        # print local_id
+        # if self.owner:
+        # self.item_metadata.author = Account.objects.get(local_id=local_id)
+        # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
+        if self.id is None:
+            if not self.moderations:
+                obj = Moderation(outcome=STATUS_OK, owner=self.owner)
+                obj.item_metadata.author = self.owner
+                self.moderations.append(obj)
+            if not self.curations:
+                obj = Curation(outcome=STATUS_OK, tags=self.tags, owner=self.owner)
+                obj.item_metadata.author = self.owner
+                self.curations.append(obj)
         super(Resource, self).save(*args, **kwargs)
+        if reindex:
+            self.reindex()
 
+    def delete(self, *args, **kwargs):
+        """docstring for delete"""
+        conn = Solr(settings.SOLR_URL)
+        conn.delete(q='id:%s' % self.id)        
+        super(Resource, self).delete(*args, **kwargs)
+        
     def reindex(self):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
@@ -100,15 +134,23 @@ class Resource(Document):
         
     def index(self, conn=None):
         """conn is Solr connection"""
+        tags = self.tags
+        description = [self.description]
+        for obj in self.curations:
+            tags.extend(obj.tags)
+            description.extend([obj.note or u'', unicode(obj.data) or u''])
+        
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
             'title': self.title,
-            'description': self.description,
-            'keywords': ', '.join(self.tags)
+            'description': '\n'.join(description),
+            'keywords': ', '.join(tags),
+            'uri': self.uri,
+            'loc_labels': [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
         if self.locations:
-            doc['pt_location'] = lat_lon_to_str(self.locations[0])
+            doc['pt_location'] = [lat_lon_to_str(loc) for loc in self.locations]
         if conn:
             conn.add([doc])
         return doc
@@ -210,7 +252,7 @@ def find_by_place(name, kwords):
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': lat_lon_to_str(loc['lat_lon']),
-            'bf': 'recip(geodist(),2,200,20)^2',
+            'bf': 'recip(geodist(),2,200,20)^3',
             'sort': 'score desc',
         }
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)

@@ -2,7 +2,7 @@
 {% load markup utils %}
 
 {% block title %}{{ object.title }}{% endblock %}
-{% block head_extra %}
+{% block head-extra %}
 <script type="text/javascript"  
 src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
 </script>  
@@ -15,9 +15,19 @@ map{
 
 
 {% endblock %}
+
+{% block body_class %}{{ block.super}} resource-detail{% endblock %}
 {% block content %}
 
-<p><a href="{% url resource-list %}">all items</a> | <a href="{% url resource-find %}">search items</a></p>
+<p class="content-menu">
+    <a href="{% url resource-find %}">search items</a> |
+    <a href="{% url curation-add object.id %}">new curation</a> | 
+    <a href="{% url resource-edit object.id %}">edit resource</a>
+    {% if user.is_staff %} | 
+        <a href="{% url resource-remove object.id %}">delete resource</a> | 
+        <a href="{% url resource-list %}">all items</a>
+    {% endif %}
+</p>
 
 {% if object.uri %}
 <h1><a href="{{ object.uri }}">{{ object.title }}</a></h1>
@@ -25,24 +35,33 @@ map{
 <h1>{{ object.title }}</h1>
 {% endif %}
 
+<div class="resource-description">
 {{ object.description|textile }}
+</div>
 
-<p>author: {{ object.item_metadata.author|user_name }}</p>
-<p>tags: {{ object.tags|join:", " }}</p>
+<div id="results">
 
-
-<ul>
+<table class="metadata">
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
 {% for loc in object.locations %}
-	<li>{{ loc.label }}, {{ loc.place_name }}</li>
+    <tr><th>location</th><td>{{ loc.label }}, {{ loc.place_name }}</td></tr>
 {% empty %}
-	<li>no locations found</li>
-{% endfor %}	
-</ul>
+    <tr><th>location</th><td>-</td></tr>
+{% endfor %}
+{% for curation in object.curations %}
+    <tr>
+        <th>curation</th>
+        <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
+    </tr>
+{% empty %}
+    <tr><th>curation</th><td>-</td></tr>
+{% endfor %}
 
-<p><a href="{% url resource-edit object.id %}">edit item</a></p>
-<p>&nbsp;</p>
-<hr>
-<p><a href="{% url resource-remove object.id %}">delete item</a></p>
+</table>
+
+</div>
 
 <div id="map"></div>
 {% if object.locations %}
@@ -64,13 +83,10 @@ map{
             currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
             map.addMarker(currentGeoPoint);  
  		{% endfor %}
-    }  
-window.onload = startMap;     
+    }
+window.onload = startMap;
 </script>  
 {% endif %}
 
-<hr>
-<!-- 
-<p class="small">keywords for indexing: <em>{{ object.get_keywords|join:", "}}</em></p>
- -->
+
 {% endblock %}

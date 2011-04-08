@@ -159,13 +159,15 @@ def load_placenames(fname, dbname):
     print placename_coll.find_one({'name_upper': 'KEITH'})
     print placename_coll.find_one({'name_upper': 'PORTOBELLO'})
 
-def reindex_resources(dbname, url=settings.SOLR_URL):
+def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
     """docstring for reindex_resources"""
-    print 'CLEARING SOLR INDEX: ', url
+    if printit:
+        print 'CLEARING SOLR INDEX: ', url
     conn = Solr(url)
     conn.delete(q='*:*')
-    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)    
-    print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)
+    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
+    if printit:
+        print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)
     
     docs = []
     for i, res in enumerate(Resource.objects):
