@@ -107,9 +107,9 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         resourceform = ShortResourceForm(request.POST, instance=resource)
         locationform = LocationUpdateForm(request.POST, instance=resource)
         # tagsform = TagsForm(request.POST, instance=resource)
-        shelflifeform = ShelflifeForm(request.POST, instance=resource)
+        # shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
-        if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
+        if resourceform.is_valid() and locationform.is_valid(): # and tagsform.is_valid() and shelflifeform.is_valid():
             # del_loc = ''
             # for k in request.POST.keys():
             #     if k.startswith('del_loc:'):
@@ -140,7 +140,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 # if len(locations) > 0:
                 # resource.locations = locations
 
-                resource = tagsform.save()
+                # resource = tagsform.save()
                 # resource = shelflifeform.save()
             
                 try:
@@ -162,7 +162,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if not resource.locations:
             doc = resource.uri
         # places = fix_places(resource.locations, doc)
-        tagsform = TagsForm(instance=resource)
+        # tagsform = TagsForm(instance=resource)
         shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response(template,
