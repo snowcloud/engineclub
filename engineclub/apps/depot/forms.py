@@ -36,7 +36,7 @@ class DocumentForm(forms.Form):
 class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(help_text='enter a post code or a place name', required=False)
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated text (spaces OK)', required=True)
 
     def __init__(self, *args, **kwargs):
         self.locations = []
@@ -47,8 +47,8 @@ class FindResourceForm(forms.Form):
     def clean(self):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
-        data = cleaned_data.get('post_code').strip()
-        kwords = cleaned_data.get('tags').strip()
+        data = cleaned_data.get('post_code', '').strip()
+        kwords = cleaned_data.get('tags', '').strip()
         if not(data or kwords):
             raise forms.ValidationError("Please enter a location and/or some text and try again.")
 
