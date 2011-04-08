@@ -19,7 +19,7 @@ document.write('<p>{{ resource.description|truncatewords:30 }}</p>');
 document.write('<p class="resource-listing-meta">');
 document.write('<a class="resource-url" href="{{base_url}}{% url resource resource.id %}">more details...</a>');
     {% if resource.uri %}
-document.write(' | <a href="{{ resource.uri }}">external site...</a>');
+document.write(' | <a href="{{ resource.uri }}">web site...</a>');
     {% endif %}
 document.write('</p>');
 
