@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import RequestContext, Context, loader
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
@@ -321,8 +322,8 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
     )
 
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
-    object = get_one_or_404(obj_class=Account, id=object_id)
 
+    object = get_one_or_404(obj_class=Account, id=object_id)
     curations = list(Resource.objects(curations__owner=object)[:10])
     template_context = {'object': object, 'curations': curations}
 
@@ -331,5 +332,19 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
         template_context,
         RequestContext(request)
     )
+    
+def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
+    
+    object = get_one_or_404(obj_class=Account, id=object_id)
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    base_url = Site.objects.get_current().domain
+    print base_url
+    template_context = Context(
+        {'object': object, 'curations': curations, 'base_url': 'http://%s' % base_url})
+
+    response = HttpResponse(mimetype='text/javascript')
+    t = loader.get_template(template_name)
+    response.write(t.render(template_context))
+    return response
     
     

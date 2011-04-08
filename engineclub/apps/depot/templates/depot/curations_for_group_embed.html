@@ -44,7 +44,7 @@ body  {
 
             <p>{{ resource.description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">
-                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+                <a class="resource-url" href="{% url resource resource.id %} target="_top"">more details...</a>
                 {% if resource.uri %} |
                     <a href="{{ resource.uri }}">external site...</a>
                 {% endif %}
