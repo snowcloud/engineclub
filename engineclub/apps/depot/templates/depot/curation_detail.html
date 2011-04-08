@@ -13,7 +13,7 @@
 
 <h1>Curation for {{ resource.title }}</h1>
 
-<table class="metadata owned-data">
+<table class="metadata owned-data group">
 <tr><th>note</th><td>{{ object.note|textile }}</td></tr>
 
 {% for key, value in object.data.items %}
@@ -21,8 +21,8 @@
 {% endfor %}
 </table>
 
-<p></p>
-<table class="metadata">
+
+<table class="metadata group">
 <tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
 <tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
 <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
