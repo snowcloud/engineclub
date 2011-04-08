@@ -106,7 +106,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             return resource_edit_complete(request, resource, template_info)
         resourceform = ShortResourceForm(request.POST, instance=resource)
         locationform = LocationUpdateForm(request.POST, instance=resource)
-        tagsform = TagsForm(request.POST, instance=resource)
+        # tagsform = TagsForm(request.POST, instance=resource)
         shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
         if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
@@ -168,7 +168,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     return render_to_response(template,
         RequestContext( request, { 'template_info': template_info, 'object': resource,
             'resourceform': resourceform, 'locationform': locationform, #'places': places,
-            'tagsform': tagsform, #'shelflifeform': shelflifeform,
+            # 'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
 @login_required
