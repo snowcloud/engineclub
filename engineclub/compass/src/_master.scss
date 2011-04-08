@@ -59,6 +59,15 @@ a, a:hover, a:visited {
 	width: auto;
 	height: auto;
 }
+#flash-tab {
+	font-size: 1.2em;
+	position: fixed;
+	top: 0;
+	right: 0;
+	padding: 10px 20px;
+	background-color: rgba(253,29,19,0.8);
+	z-index: 1;
+}
 #header {
 	background: #000 none repeat scroll 0 0;
 	border-bottom: 10px solid #c74a14;
