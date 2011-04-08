@@ -234,7 +234,7 @@ def curation_detail(request, object_id, index, template='depot/curation_detail.h
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=object_id)    
+    resource = get_one_or_404(id=ObjectId(object_id))    
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -266,7 +266,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     object = resource.curations[int(index)]
     
     if request.method == 'POST':
@@ -295,7 +295,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
@@ -323,7 +323,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
 
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
 
-    object = get_one_or_404(obj_class=Account, id=object_id)
+    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
     curations = list(Resource.objects(curations__owner=object)[:10])
     template_context = {'object': object, 'curations': curations}
 
@@ -335,7 +335,7 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
     
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
     
-    object = get_one_or_404(obj_class=Account, id=object_id)
+    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
     curations = list(Resource.objects(curations__owner=object)[:10])
     base_url = Site.objects.get_current().domain
     print base_url
