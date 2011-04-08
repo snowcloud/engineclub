@@ -26,22 +26,38 @@ body  {
 </head>
 <body>
 {% load markup %}
-    {% if band.public_gigs %}
+<h1>Resources collected by {{ object.name }}</h1>
 
-        {% for gig in band.public_gigs %}
-
-            <p class="gig-title">{{ gig.start_date|date:"d/m/Y" }} - {{ gig.venue }}</p>
-            <div class="gig-info">{{ gig.public_info|textile }}</div>
-
-        {% endfor %}
-    {% else %}
-        <p class="line1">no public gigs</p>
-
-    {% endif %}
+<div id="results">
         
-        
-        
-    
+    <ol class="resource-listing">
+    {% for resource in curations %}
+        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+
+            {% if resource.locations %}
+                <ol>
+                    {% for loc in resource.locations %}
+                        <li class="resource-listing-locs">{{ loc }}</li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+
+            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p class="resource-listing-meta">
+                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+                {% if resource.uri %} |
+                    <a href="{{ resource.uri }}">external site...</a>
+                {% endif %}
+            </p>
+<!-- 
+-->
+        </li>
+    {% empty %}
+        <li>no results found</li>
+    {% endfor %}
+    </ol>
+
+</div>
 
 
 </body>
