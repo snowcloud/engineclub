@@ -264,19 +264,49 @@ div.more-btn a { border-top: 1px solid #eaeaea; border-left: 1px solid #eaeaea; 
 div.more-btn a:hover { background: #797979 url(../img/bg_more_btn.png) repeat-x 0 center; }
 
 /* line 208, ../../compass/src/_master.scss */
+.resource-listing { font-size: 0.9em; color: #5e5e5e; }
+
+/* line 212, ../../compass/src/_master.scss */
+.resource-listing li { border-bottom: 1px solid #e1dbca; padding-bottom: 0.3em; }
+
+/* line 217, ../../compass/src/_master.scss */
+.resource-listing-title { font-size: 1.2em; }
+
+/* line 220, ../../compass/src/_master.scss */
+.resource-listing-meta { font-size: 0.8em; color: #085591; }
+
+/* line 224, ../../compass/src/_master.scss */
+li.location-listing-item { xlist-style-type: square; xmargin-left: 1.5em; }
+
+/* line 228, ../../compass/src/_master.scss */
+.location-label { background-color: #f0dbc4; padding: 0.4em; }
+
+/* line 232, ../../compass/src/_master.scss */
+#id_new_location { width: 50%; }
+
+/* line 235, ../../compass/src/_master.scss */
+.del-link, .add-link { margin-left: 2em; font-size: 0.9em; padding: 4px 25px 4px 0; }
+
+/* line 240, ../../compass/src/_master.scss */
+.add-link { background: url(../media/img/add.png) no-repeat right center; }
+
+/* line 243, ../../compass/src/_master.scss */
+.del-link { background: url(../media/img/delete.png) no-repeat right center; }
+
+/* line 246, ../../compass/src/_master.scss */
 #locations { float: left; width: 45%; }
 
-/* line 209, ../../compass/src/_master.scss */
+/* line 247, ../../compass/src/_master.scss */
 #map { height: 100%; width: 50%; float: right; margin-right: 10%; }
 
-/* line 215, ../../compass/src/_master.scss */
+/* line 253, ../../compass/src/_master.scss */
 .resource-detail #map { float: none; }
 
-/* line 218, ../../compass/src/_master.scss */
+/* line 256, ../../compass/src/_master.scss */
 #map td { background-color: #fff; border: 0 none; padding: 0; }
 
 /* self-clear floats */
-/* line 225, ../../compass/src/_master.scss */
+/* line 263, ../../compass/src/_master.scss */
 .group:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 
 /* line 1, ../../compass/src/_forms.scss */

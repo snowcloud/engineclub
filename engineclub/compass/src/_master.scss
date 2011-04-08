@@ -205,6 +205,44 @@ div.more-btn a:hover {
 	background: #797979 url(../img/bg_more_btn.png) repeat-x 0 center;
 	}
 
+.resource-listing {
+	font-size: 0.9em;
+	color: #5e5e5e;
+}
+.resource-listing li {
+	border-bottom: 1px solid #e1dbca;
+	padding-bottom: 0.3em;
+	
+}
+.resource-listing-title {
+	font-size: 1.2em;
+}
+.resource-listing-meta {
+	font-size: 0.8em;
+	color: #085591;
+}
+li.location-listing-item {
+	xlist-style-type: square;
+	xmargin-left: 1.5em;
+}
+.location-label {
+	background-color: #f0dbc4;
+	padding: 0.4em;
+}
+#id_new_location {
+	width: 50%
+}
+.del-link, .add-link {
+	margin-left: 2em;
+	font-size: 0.9em;
+	padding: 4px 25px 4px 0;
+}
+.add-link {
+	background: url(../media/img/add.png) no-repeat right center;
+}
+.del-link {
+	background: url(../media/img/delete.png) no-repeat right center;
+}
 #locations{ float: left; width: 45% }  
 #map{  
   height: 100%;

@@ -4,7 +4,7 @@
 {% block title %}edit resource{% endblock %}
 
 {% block document-ready %}
-$('#new_location_submit').replaceWith('<a href="#" id="new_location_link">add location</a>');
+$('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_location_link">add location</a>');
 //$('#new_location_link').click(function() {alert('blah');});
 $('#new_location_link').click(function() {$('#main-form').submit();});
 {% endblock %}
@@ -33,8 +33,8 @@ $('#new_location_link').click(function() {$('#main-form').submit();});
 			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
 	     -->
 	            {% for loc in object.locations %}
-	            	<li>{{ loc.label }}, {{ loc.place_name }}
-	            	    | <a href="{% url location-remove object.id forloop.counter0 %}">remove location</a>
+	            	<li class="location-listing-item"><span class="location-label">{{ loc.label }}, {{ loc.place_name }}</span>
+	            	    <a class="del-link" href="{% url location-remove object.id forloop.counter0 %}">remove location</a>
 	            	
 	            	<!-- input type="submit" name="del_loc:{{loc.id}}" value="remove location" --></li>
 				{% empty %}

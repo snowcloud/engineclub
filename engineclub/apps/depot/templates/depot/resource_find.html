@@ -73,11 +73,15 @@ $(function() {
     <h2>Closest results for {{ centre.name }}:</h2>
   {% endif %}
     
-    <ol>
+    <ol class="resource-listing">
     {% for resource in results %}
-        <li><a href="{% url resource resource.id %}">{{ resource.title }}</a></li>
-            <!-- 
-            <p>{{ resource.pt_location }}</p> -->
+        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p class="resource-listing-meta"><a class="resource-url" href="{% url resource resource.id %}">more details...</a></p>
+            
+            
+            <!-- div class="more-btn"><a  href="">more details...</a></div -->
+        </li>
     {% empty %}
         <li>no results found</li>
     {% endfor %}
