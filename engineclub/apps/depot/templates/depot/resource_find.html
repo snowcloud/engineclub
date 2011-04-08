@@ -77,10 +77,11 @@ $(function() {
     {% for resource in results %}
         <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
             <p>{{ resource.description|truncatewords:30 }}</p>
-            <p class="resource-listing-meta"><a class="resource-url" href="{% url resource resource.id %}">more details...</a></p>
-            
-            
-            <!-- div class="more-btn"><a  href="">more details...</a></div -->
+            <p class="resource-listing-meta"><a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+            {% if resource.uri %} |
+                <h1><a href="{{ resource.uri }}">external site...</a></h1>
+            {% endif %}
+            </p>
         </li>
     {% empty %}
         <li>no results found</li>
