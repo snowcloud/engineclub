@@ -273,52 +273,55 @@ div.more-btn a:hover { background: #797979 url(../img/bg_more_btn.png) repeat-x 
 .resource-listing-title { font-size: 1.2em; }
 
 /* line 295, ../../compass/src/_master.scss */
-.resource-listing-meta { font-size: 0.8em; color: #085591; }
+li.resource-listing-locs { border-bottom-style: none; list-style-type: circle; margin-left: 1.4em; }
 
-/* line 299, ../../compass/src/_master.scss */
+/* line 300, ../../compass/src/_master.scss */
+.resource-listing-meta, li.resource-listing-locs { font-size: 0.8em; color: #085591; }
+
+/* line 304, ../../compass/src/_master.scss */
 .resource-description { padding: 2em 0em; }
 
-/* line 302, ../../compass/src/_master.scss */
+/* line 307, ../../compass/src/_master.scss */
 li.location-listing-item { xlist-style-type: square; xmargin-left: 1.5em; }
 
-/* line 306, ../../compass/src/_master.scss */
+/* line 311, ../../compass/src/_master.scss */
 .location-label { background-color: #f0dbc4; padding: 0.4em; }
 
-/* line 310, ../../compass/src/_master.scss */
+/* line 315, ../../compass/src/_master.scss */
 #id_new_location { width: 50%; }
 
-/* line 313, ../../compass/src/_master.scss */
+/* line 318, ../../compass/src/_master.scss */
 .del-link, .add-link { margin-left: 2em; font-size: 0.9em; padding: 4px 25px 4px 0; }
 
-/* line 318, ../../compass/src/_master.scss */
+/* line 323, ../../compass/src/_master.scss */
 .add-link { background: url(../media/img/add.png) no-repeat right center; }
 
-/* line 321, ../../compass/src/_master.scss */
+/* line 326, ../../compass/src/_master.scss */
 .del-link { background: url(../media/img/delete.png) no-repeat right center; }
 
-/* line 324, ../../compass/src/_master.scss */
+/* line 329, ../../compass/src/_master.scss */
 #results { float: left; width: 45%; }
 
-/* line 328, ../../compass/src/_master.scss */
+/* line 333, ../../compass/src/_master.scss */
 #map { height: 100%; width: 50%; float: right; margin-right: 10%; }
 
-/* line 334, ../../compass/src/_master.scss */
+/* line 339, ../../compass/src/_master.scss */
 .resource-detail #mapx { float: none; margin-top: 2em; }
 
-/* line 338, ../../compass/src/_master.scss */
+/* line 343, ../../compass/src/_master.scss */
 #map td { background-color: #fff; border: 0 none; padding: 0; }
 
-/* line 343, ../../compass/src/_master.scss */
+/* line 348, ../../compass/src/_master.scss */
 table.metadata { border: 2px solid #d5d5d5; float: left; margin-bottom: 2em; }
 
-/* line 348, ../../compass/src/_master.scss */
+/* line 353, ../../compass/src/_master.scss */
 .metadata th, .metadata td { padding: 0.3em 2em 0.3em 0.3em; border-bottom: 1px solid #e5e7e8; }
 
-/* line 352, ../../compass/src/_master.scss */
+/* line 357, ../../compass/src/_master.scss */
 .metadata th { font-weight: bold; background-color: #d8e1e7; vertical-align: top; }
 
 /* self-clear floats */
-/* line 358, ../../compass/src/_master.scss */
+/* line 363, ../../compass/src/_master.scss */
 .group:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 
 /* line 1, ../../compass/src/_forms.scss */

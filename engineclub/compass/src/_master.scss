@@ -292,7 +292,12 @@ div.more-btn a:hover {
 .resource-listing-title {
 	font-size: 1.2em;
 }
-.resource-listing-meta {
+li.resource-listing-locs {
+	border-bottom-style: none;
+	list-style-type: circle;
+	margin-left: 1.4em;
+}
+.resource-listing-meta, li.resource-listing-locs {
 	font-size: 0.8em;
 	color: #085591;
 }

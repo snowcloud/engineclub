@@ -76,11 +76,20 @@ $(function() {
     <ol class="resource-listing">
     {% for resource in results %}
         <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
-            <p>{{ resource.description|truncatewords:30 }}</p>
-            <p class="resource-listing-meta"><a class="resource-url" href="{% url resource resource.id %}">more details...</a>
-            {% if resource.uri %} |
-                <h1><a href="{{ resource.uri }}">external site...</a></h1>
+            {% if resource.loc_labels %}
+                <ol>
+                    {% for loc_label in resource.loc_labels %}
+                        <li class="resource-listing-locs">{{ loc_label }}</li>
+                    {% endfor %}
+                </ol>
             {% endif %}
+
+            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p class="resource-listing-meta">
+                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+                {% if resource.uri %} |
+                    <a href="{{ resource.uri }}">external site...</a>
+                {% endif %}
             </p>
         </li>
     {% empty %}

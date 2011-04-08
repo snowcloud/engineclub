@@ -145,7 +145,9 @@ class Resource(Document):
             'res_id': unicode(self.id),
             'title': self.title,
             'description': '\n'.join(description),
-            'keywords': ', '.join(tags)
+            'keywords': ', '.join(tags),
+            'uri': self.uri,
+            'loc_labels': [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
         if self.locations:
             doc['pt_location'] = [lat_lon_to_str(loc) for loc in self.locations]
