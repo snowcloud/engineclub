@@ -23,8 +23,8 @@ map{
     <a href="{% url resource-find %}">search items</a> |
     <a href="{% url curation-add object.id %}">new curation</a>
     {% if user|can_edit:object %} | <a href="{% url resource-edit object.id %}">edit resource</a>{% endif %}
-    {% if user|can_delete:object %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}
     {% if user.is_staff %} | 
+        {% if user|can_delete:object %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}
         <a href="{% url resource-list %}">all items</a>
     {% endif %}
 </p>
