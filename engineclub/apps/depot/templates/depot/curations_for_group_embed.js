@@ -29,5 +29,5 @@ document.write('</p>');
 {% empty %}
 document.write('<p class="line1">no results found</p>');
 {% endfor %}
-document.write('<p><strong>Powered by the <a href="http://aliss.org">ALISS Engine</a>.</strong>');
+document.write('<p><strong>Powered by the <a href="http://www.aliss.org">ALISS Engine</a>.</strong>');
 document.write('</div>');
