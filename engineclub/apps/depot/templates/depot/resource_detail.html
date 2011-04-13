@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markup utils %}
+{% load markup utils engine_groups_tags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 {% block head-extra %}
@@ -21,8 +21,8 @@ map{
 
 <p class="content-menu">
     <a href="{% url resource-find %}">search items</a> |
-    <a href="{% url curation-add object.id %}">new curation</a> | 
-    <a href="{% url resource-edit object.id %}">edit resource</a>
+    <a href="{% url curation-add object.id %}">new curation</a>
+    {% if user|can_edit:object %} | <a href="{% url resource-edit resource.id index %}">edit resource</a>{% endif %}
     {% if user.is_staff %} | 
         <a href="{% url resource-remove object.id %}">delete resource</a> | 
         <a href="{% url resource-list %}">all items</a>

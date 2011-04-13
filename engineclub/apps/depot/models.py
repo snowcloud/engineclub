@@ -9,7 +9,7 @@ from datetime import datetime
 from pymongo import Connection, GEO2D
 from pysolr import Solr
 
-from engine_groups.models import Account
+from engine_groups.models import Account, get_account
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
@@ -44,7 +44,7 @@ class Location(Document):
     lat_lon = GeoPointField()
     
     def __unicode__(self):
-        return ', '.join([self.label, self.place_name])  
+        return ', '.join([self.label, self.place_name])
         
 class Moderation(EmbeddedDocument):
     outcome = StringField()
@@ -60,6 +60,19 @@ class Curation(EmbeddedDocument):
     data = DictField()
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
 
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
@@ -171,6 +184,18 @@ class Resource(Document):
                 self.locations.append(location)
                 self.save()
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+        
 class RelatedResource(Document):
     """docstring for RelatedResource"""
     source = ReferenceField(Resource)

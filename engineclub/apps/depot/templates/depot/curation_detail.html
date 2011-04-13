@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% load markup utils %}
+{% load markup utils engine_groups_tags %}
 
 {% block title %}Curation{% endblock %}
 
 {% block content %}
 
 <p>
-    <a href="{% url resource resource.id %}">back to resource</a> | 
-    <a href="{% url curation-edit resource.id index %}">edit curation</a>
+    <a href="{% url resource resource.id %}">back to resource</a>
+    {% if user|can_edit:object %} | <a href="{% url curation-edit resource.id index %}">edit curation</a>{% endif %}
     {% if user.is_staff %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
 </p>
 
