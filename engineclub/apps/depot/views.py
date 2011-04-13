@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -21,7 +22,12 @@ from engine_groups.models import Account, get_account
 def get_one_or_404(obj_class=Resource, **kwargs):
     """helper function for Mongoengine documents"""
     try:
+       user = kwargs.pop('user', None)
+       perm = kwargs.pop('perm', None)
        object = obj_class.objects.get(**kwargs)
+       if user and perm:
+           if not user.has_perm(perm, object):
+               raise PermissionDenied()
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
@@ -97,7 +103,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
     
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+
     doc = ''
     places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
@@ -193,7 +200,7 @@ def resource_edit_complete(request, resource, template_info):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=ObjectId(object_id))
+    object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
@@ -266,7 +273,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
     
     if request.method == 'POST':
@@ -295,7 +302,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
@@ -303,7 +310,7 @@ def curation_remove(request, object_id, index):
 @login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=object_id, user=request.user, perm='can_edit')
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
