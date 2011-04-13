@@ -59,6 +59,15 @@ a, a:hover, a:visited {
 	width: auto;
 	height: auto;
 }
+#flash-tab {
+	font-size: 1.2em;
+	position: fixed;
+	top: 0;
+	right: 0;
+	padding: 10px 20px;
+	background-color: rgba(253,29,19,0.8);
+	z-index: 1;
+}
 #header {
 	background: #000 none repeat scroll 0 0;
 	border-bottom: 10px solid #c74a14;
@@ -271,7 +280,7 @@ div.more-btn a {
 	border-left: 1px solid #eaeaea;
 	border-right: 1px solid #74728c;
 	border-bottom: 1px solid #74728c;
-	background: #464646 url(../img/bg_more_btn.png) repeat-x 0 center;
+	background: #464646 url(../media/img/bg_more_btn.png) repeat-x 0 center;
 	color: white;
 	padding: 0.5em 1em;
 	border-radius: 6px;
@@ -279,7 +288,7 @@ div.more-btn a {
 	-mox-border-radius: 6px;
 }
 div.more-btn a:hover {
-	background: #797979 url(../img/bg_more_btn.png) repeat-x 0 center;
+	background: #797979 url(../media/img/bg_more_btn.png) repeat-x 0 center;
 }
 .resource-listing {
 	font-size: 0.9em;

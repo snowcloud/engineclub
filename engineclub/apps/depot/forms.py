@@ -36,7 +36,7 @@ class DocumentForm(forms.Form):
 class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(help_text='enter a post code or a place name', required=False)
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated text (spaces OK)', required=True)
+    tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=True)
 
     def __init__(self, *args, **kwargs):
         self.locations = []
@@ -67,6 +67,10 @@ class ShortResourceForm(DocumentForm):
     uri = forms.CharField()
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
+    tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
+
+    def clean_tags(self):
+        return clean_csvtextinput(self.cleaned_data['tags'])
 
     def clean_uri(self):
         data = self.cleaned_data['uri']
@@ -107,7 +111,7 @@ class MetadataForm(DocumentForm):
 
 class TagsForm(DocumentForm):
     """docstring for TagsForm"""
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
+    tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])

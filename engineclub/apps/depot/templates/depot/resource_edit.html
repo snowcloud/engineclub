@@ -20,10 +20,15 @@ $('#new_location_link').click(function() {$('#main-form').submit();});
              {{ resourceform.as_ul }}
         </ol>
     </fieldset>
-<!-- 
-</form>
-<form class="form" action="." method="POST">{% csrf_token %}
- -->
+    {% if tagsform %}
+	    <fieldset>
+	        
+			<ol>
+				{{ tagsform.as_ul }}
+		    </ol>
+	    </fieldset>
+	{% endif %}
+	
 	{% if locationform %}
 	    <fieldset>
 	        <legend><span>Locations:</span></legend>
@@ -46,22 +51,8 @@ $('#new_location_link').click(function() {$('#main-form').submit();});
 	                 <input type="text" name="new_location" id="id_new_location">&nbsp;&nbsp;
 	                 <input type="submit" id="new_location_submit" name="result" value="{{ UPDATE_LOCS }}">
 	            </li>
-	        
-	        {# </ol> #}
-	    {# </fieldset> #}
-	    {#  #}
-	    {# <fieldset> #}
-	        {# <ol> #}
 	        </ol>
 	        
-	    </fieldset>
-	{% endif %}
-	{% if tagsform %}
-	    <fieldset>
-	        <legend><span>Tags:</span></legend>
-			<ol>
-				{{ tagsform.as_ul }}
-		    </ol>
 	    </fieldset>
 	{% endif %}
 	{% if shelflifeform %}

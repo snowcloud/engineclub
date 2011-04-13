@@ -28,7 +28,9 @@
 </head>
 <body class="{% block body_class %}single{% endblock %}">
 
-    
+    {% if user.is_authenticated %}
+    <div id="flash-tab">demonstration</div>
+    {% endif %}
     <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
     <div id="header">
      
@@ -81,6 +83,7 @@
 <div id="footer">
     {% block footer-extra %}{% endblock %}
     <p>Geolocation data provided by <a href="http://www.geonames.org">www.geonames.org</a></p>
+    <p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://test.aliss.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();g">ALISS it</a> bookmark</p>
 </div>
 </body>
 </html>

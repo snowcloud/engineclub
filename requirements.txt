@@ -3,7 +3,7 @@ textile
 Markdown
 docutils
 PIL
-psycopg2
+# psycopg2
 
 -e git+git://github.com/snowcloud/engine-groups.git#egg=engine-groups
 -e git://github.com/stephrdev/django-mongoforms.git#egg=django_mongoforms

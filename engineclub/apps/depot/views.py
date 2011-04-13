@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import RequestContext, Context, loader
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
@@ -17,9 +18,10 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
 from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
-def get_one_or_404(**kwargs):
+def get_one_or_404(obj_class=Resource, **kwargs):
+    """helper function for Mongoengine documents"""
     try:
-       object = Resource.objects.get(**kwargs)
+       object = obj_class.objects.get(**kwargs)
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
@@ -106,10 +108,10 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             return resource_edit_complete(request, resource, template_info)
         resourceform = ShortResourceForm(request.POST, instance=resource)
         locationform = LocationUpdateForm(request.POST, instance=resource)
-        tagsform = TagsForm(request.POST, instance=resource)
-        shelflifeform = ShelflifeForm(request.POST, instance=resource)
+        # tagsform = TagsForm(request.POST, instance=resource)
+        # shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
-        if resourceform.is_valid() and locationform.is_valid() and tagsform.is_valid() and shelflifeform.is_valid():
+        if resourceform.is_valid() and locationform.is_valid(): # and tagsform.is_valid() and shelflifeform.is_valid():
             # del_loc = ''
             # for k in request.POST.keys():
             #     if k.startswith('del_loc:'):
@@ -140,7 +142,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 # if len(locations) > 0:
                 # resource.locations = locations
 
-                resource = tagsform.save()
+                # resource = tagsform.save()
                 # resource = shelflifeform.save()
             
                 try:
@@ -162,13 +164,13 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if not resource.locations:
             doc = resource.uri
         # places = fix_places(resource.locations, doc)
-        tagsform = TagsForm(instance=resource)
+        # tagsform = TagsForm(instance=resource)
         shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response(template,
         RequestContext( request, { 'template_info': template_info, 'object': resource,
             'resourceform': resourceform, 'locationform': locationform, #'places': places,
-            'tagsform': tagsform, #'shelflifeform': shelflifeform,
+            # 'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 
 @login_required
@@ -232,7 +234,7 @@ def curation_detail(request, object_id, index, template='depot/curation_detail.h
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=object_id)    
+    resource = get_one_or_404(id=ObjectId(object_id))    
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -264,7 +266,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     object = resource.curations[int(index)]
     
     if request.method == 'POST':
@@ -290,17 +292,59 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
     )
 
     
+@login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=ObjectId(object_id))
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
     
+@login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
     resource = get_one_or_404(id=object_id)
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
+    
+def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
+    """docstring for curations_for_group"""
+    object = get_one_or_404(obj_class=Account, id=object_id)
+
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    template_context = {'object': object, 'curations': curations}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+
+def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
+
+    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    template_context = {'object': object, 'curations': curations}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+    
+def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
+    
+    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    curations = list(Resource.objects(curations__owner=object)[:10])
+    base_url = Site.objects.get_current().domain
+    print base_url
+    template_context = Context(
+        {'object': object, 'curations': curations, 'base_url': 'http://%s' % base_url})
+
+    response = HttpResponse(mimetype='text/javascript')
+    t = loader.get_template(template_name)
+    response.write(t.render(template_context))
+    return response
+    
     

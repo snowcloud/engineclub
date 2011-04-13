@@ -7,7 +7,7 @@
 <script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
 <link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
 <!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
-<!-- 
+{% comment %}
 <script type="text/javascript">
 $(function() {
     $("#id_tags").autocomplete({
@@ -42,7 +42,8 @@ $(function() {
     .ui-autocomplete-loading { background: url(indicator.gif) no-repeat right; }
     #city { width: 25em; }
 </style>
- -->
+{% endcomment %}
+
 {% endblock %}
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
@@ -84,7 +85,7 @@ $(function() {
                 </ol>
             {% endif %}
 
-            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p>{{ resource.short_description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">
                 <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
                 {% if resource.uri %} |
