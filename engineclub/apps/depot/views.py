@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
@@ -241,7 +242,15 @@ def curation_detail(request, object_id, index, template='depot/curation_detail.h
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=ObjectId(object_id))    
+    resource = get_one_or_404(id=ObjectId(object_id))
+    user = get_account(request.user.id)
+    
+    # check if user already has a curation for this resource
+    for index, cur in enumerate(resource.curations):
+        if cur.owner.id == user.id:
+            messages.success(request, 'You already have a curation for this resource.')
+            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+    
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -249,7 +258,6 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         form = CurationForm(request.POST)
         if form.is_valid():
             curation = Curation(**form.cleaned_data)
-            user = get_account(request.user.id)
             curation.owner = user
             curation.item_metadata.update(author=user)
             resource.curations.append(curation)
