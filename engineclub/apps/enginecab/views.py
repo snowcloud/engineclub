@@ -25,7 +25,27 @@ def reindex(request):
     reindex_resources(settings.MONGO_DB)
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab'))
+
+
+@user_passes_test(lambda u: u.is_staff)
+def one_off_util(request):
+    reset_GCD_owners(request)
+    messages.success(request, 'job done.')
     
+    return HttpResponseRedirect(reverse('cab'))
+    
+
+def reset_GCD_owners(request):
+    """docstring for reset_GCD_owners(request)"""
+    acct = Account.objects.get(name='Grampian Care Data')
+    # print acct
+    for resource in Resource.objects(uri__startswith='http://www.grampian'):
+        # if len(resource.curations) > 1:
+        #     print resource.title
+        resource.owner = acct
+        resource.curations[0].owner = acct
+        resource.save()
+
 @user_passes_test(lambda u: u.is_staff)
 def fix_resource_accounts(request):
     
