@@ -1,6 +1,6 @@
 import sys, os
 
-# this is all that's needed to run from fabfile in top directory (icnp2)
+# this is all that's needed to run from fabfile in top directory (engineclub)
 sys.path.insert(0, os.getcwd())
 
 from engineclub import settings

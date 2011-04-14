@@ -71,4 +71,14 @@ def fix_resource_accounts(request):
         
         
     return HttpResponseRedirect(reverse('cab'))
+
+@user_passes_test(lambda u: u.is_staff)
+def fix_urls(request):
+
+    for resource in Resource.objects(uri__startswith='http://new.gramp'):
+        resource.uri = resource.uri.replace('//new.', '//www.')
+        resource.save()
+        
+    messages.success(request, 'URLs have been fixed.')
     
+    return HttpResponseRedirect(reverse('cab'))
