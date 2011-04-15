@@ -43,6 +43,7 @@ LATLON_SEP= ', '
 # SOLR_URL = 'http://127.0.0.1:8983/solr'
 SOLR_BATCH_SIZE = 100
 SOLR_ROWS = 20
+SOLR_LOC_BOOST_DEFAULT = 3.0
 
 YAHOO_KEY = 'your_key_here...'
 

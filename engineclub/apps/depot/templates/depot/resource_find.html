@@ -43,27 +43,57 @@ $(function() {
     #city { width: 25em; }
 </style>
 {% endcomment %}
+<style>
+    #slider { width: 50%; }
+</style>
 
 {% endblock %}
+
+{% block document-ready %}
+var loc = $( "#slider_label" );
+var select = $( "#id_boost_location" );
+var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
+	min: 10,
+	max: 100,
+	range: "min",
+	value: select.val(),
+	slide: function( event, ui ) {
+		select.val(ui.value);
+		//$("#submit_button").click()
+		
+	}
+});
+//$( "#minbeds" ).change(function() {
+//	slider.slider( "value", this.selectedIndex + 1 );
+//});
+
+
+
+{% endblock %}
+
+
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
 <!-- p><a href="{% url resource-list %}">all items</a></p -->
 
 <h1>Find Resources</h1>
 
-<form class="form" action="." method="POST">{% csrf_token %}
+<div id="slider"></div>
+
+<form class="form" action="." method="POST" id="search_form">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
         {# <div class="ui-widget"> #}
         
         <ol>
              {{ form.as_ul }}
+            <li><label for="slider" id="slider_label">Boost location:</label></li>
         </ol>
         {# </div> #}
     </fieldset>
 
      <fieldset class="submit">
-        <input type="submit" name="result" value="Find items">
+        <input type="submit" name="result" value="Find items" id="submit_button">
         <!-- input type="submit" name="result" value="Cancel" -->
     </fieldset>
 </form>

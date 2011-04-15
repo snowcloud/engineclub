@@ -37,22 +37,33 @@ class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(help_text='enter a post code or a place name', required=False)
     tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=True)
-
+    boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
+    
     def __init__(self, *args, **kwargs):
         self.locations = []
         self.results = []
         self.centre = None
         super(FindResourceForm, self).__init__(*args, **kwargs)
 
+    def clean_boost_location(self):
+        """docstring for clean_boost_location"""
+        data = self.cleaned_data['boost_location']
+        if data.isdigit():
+            data = int(data)
+            return data if data <= 100 else 100
+        return ''
+
     def clean(self):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('post_code', '').strip()
         kwords = cleaned_data.get('tags', '').strip()
+        boost_location = cleaned_data.get('boost_location', '') or settings.SOLR_LOC_BOOST_DEFAULT * 10
+        
         if not(data or kwords):
             raise forms.ValidationError("Please enter a location and/or some text and try again.")
 
-        loc, self.results = find_by_place_or_kwords(data, kwords)
+        loc, self.results = find_by_place_or_kwords(data, kwords, boost_location)
         if loc:
             self.centre = {'name': data, 'location': loc }
         elif data:

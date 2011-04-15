@@ -271,7 +271,7 @@ def lat_lon_to_str(loc):
     else:
         return ''
 
-def find_by_place(name, kwords):
+def find_by_place(name, kwords, loc_boost=None):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
     if loc:
@@ -281,18 +281,18 @@ def find_by_place(name, kwords):
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': lat_lon_to_str(loc['lat_lon']),
-            'bf': 'recip(geodist(),2,200,20)^3',
+            'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords):
+def find_by_place_or_kwords(name, kwords, loc_boost=None):
     """docstring for find_by_place_or_kwords"""
     conn = Solr(settings.SOLR_URL)
     if name:
-        return find_by_place(name, kwords)
+        return find_by_place(name, kwords, loc_boost)
     # keywords only
     kw = {
         'rows': settings.SOLR_ROWS,
