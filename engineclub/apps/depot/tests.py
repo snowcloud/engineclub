@@ -21,7 +21,7 @@ from django.test.simple import *
 from django.test import TransactionTestCase
 
 TEST_DB_NAME = 'test_db2'
-DB_NAME = 'test_db'
+DB_NAME = 'aliss'
 SOLR_URL = 'http://127.0.0.1:8983/solr'
 # SOLR_URL = settings.SOLR_URL
 
@@ -333,7 +333,7 @@ class SearchTest(TransactionTestCase):
         
         result = db.resource.map_reduce(map, reduce, "myresults")
         
-        print 'results: ', [doc for doc in list(result.find())[:10] if doc['_id']['owner'] == acct]
+        print 'results: ', [doc for doc in list(result.find())[:10] if doc['_id']['owner'] == acct.id]
         
         # 
         # 
