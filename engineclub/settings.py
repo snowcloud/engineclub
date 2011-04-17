@@ -35,7 +35,7 @@ TEST_RUNNER = 'depot.tests.MongoDBRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
-MONGO_DB= 'test_db'
+MONGO_DB= 'aliss'
 connect(MONGO_DB, host='localhost', port=27017)
 LATLON_SEP= ', '
 
