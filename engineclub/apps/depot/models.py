@@ -59,6 +59,7 @@ class Curation(Document):
     # rating - not used
     note = StringField()
     data = DictField()
+    resource = ReferenceField('Resource')
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
