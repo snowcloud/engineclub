@@ -86,6 +86,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # "sitedown.middleware.SitedownMiddleware",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
@@ -108,6 +109,7 @@ INSTALLED_APPS = (
     'engine_groups',
     'ecutils',
     'contact_form',
+    'sitedown'
     
 )
 # override any of the above in your own settings_local.py
