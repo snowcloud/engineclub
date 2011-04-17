@@ -330,7 +330,9 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
 
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    # curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
+    
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -342,7 +344,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
 
     object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -354,7 +356,7 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
     
     object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     base_url = Site.objects.get_current().domain
     print base_url
     template_context = Context(

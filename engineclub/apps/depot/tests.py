@@ -293,47 +293,53 @@ class SearchTest(TransactionTestCase):
         
         acct = Account.objects.get(id=ObjectId('4d9b791d3de074828b000003'))
         print acct, acct.id
-        resources = Resource.objects(curations__owner=acct)
-        # print [r.title for r in resources]
+        
+        print list(Resource.objects(curations__owner=acct))
+        
+        
+        curations = Curation.objects(owner=acct).order_by('-item_metadata__last_modified')
+        
+        for c in curations:
+            print c.owner, c.item_metadata.last_modified,  c.resource.title
         
         
         # see query option in map_reduce - http://www.mongodb.org/display/DOCS/MapReduce
         # { "author.name" : "joe" }
         
-        from bson.code import Code
-        map = """
-            function() {
-                this.curations.forEach(function(c) {
-                    x = {'owner': (c.owner.$id), 'lastmod': c.item_metadata.last_modified}
-                    emit(x, 1);
-                })
-            }
-        """ 
-        map2 = """
-            function() {
-                    emit(this, 1);
-            }
-        """ 
-        # print map
-        reduce = """
-            function(key, values) {
-            var total = 0;
-            for(var i=0; i<values.length; i++) {
-            total += values[i];
-            }
-            return total;
-            }
-        """
-        # print reduce
-        
-        from pymongo import Connection
-        db = Connection()['test_db']
-        # print db, db.resources
-        print db.resource.count()
-        
-        result = db.resource.map_reduce(map, reduce, "myresults")
-        
-        print 'results: ', [doc for doc in list(result.find())[:10] if doc['_id']['owner'] == acct.id]
+        # from bson.code import Code
+        # map = """
+        #     function() {
+        #         this.curations.forEach(function(c) {
+        #             x = {'owner': (c.owner.$id), 'lastmod': c.item_metadata.last_modified}
+        #             emit(x, 1);
+        #         })
+        #     }
+        # """ 
+        # map2 = """
+        #     function() {
+        #             emit(this, 1);
+        #     }
+        # """ 
+        # # print map
+        # reduce = """
+        #     function(key, values) {
+        #     var total = 0;
+        #     for(var i=0; i<values.length; i++) {
+        #     total += values[i];
+        #     }
+        #     return total;
+        #     }
+        # """
+        # # print reduce
+        # 
+        # from pymongo import Connection
+        # db = Connection()['test_db']
+        # # print db, db.resources
+        # print db.resource.count()
+        # 
+        # result = db.resource.map_reduce(map, reduce, "myresults")
+        # 
+        # print 'results: ', [doc for doc in list(result.find())[:10] if doc['_id']['owner'] == acct.id]
         
         # 
         # 

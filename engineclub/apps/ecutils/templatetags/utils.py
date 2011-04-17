@@ -223,7 +223,7 @@ def get_latest(parser, token):
 get_latest = register.tag(get_latest)
 
 
-from depot.models import Resource
+from depot.models import Curation
 
 class LatestCurationsNode(Node):
     def __init__(self, owner, num, varname):
@@ -232,7 +232,8 @@ class LatestCurationsNode(Node):
 
     def render(self, context):
         owner = self.owner.resolve(context)
-        context[self.varname] = list(Resource.objects(curations__owner=owner)[:int(self.num)])
+        # context[self.varname] = list(Resource.objects(curations__owner=owner)[:int(self.num)])
+        context[self.varname] = [c.resource for c in Curation.objects(owner=owner).order_by('-item_metadata__last_modified')[:int(self.num)]]
         return ''
 
 def get_latest_curations(parser, token):
