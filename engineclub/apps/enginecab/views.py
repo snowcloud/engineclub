@@ -38,12 +38,15 @@ def one_off_util(request):
 def make_tempcurations():
     """docstring for make_temp_curations"""
     for res in Resource.objects.all():
-        res.tempcurations = []
-        for cur in res.curations:
-            res.tempcurations.append(make_tempcuration(cur))
-        res.curations = []
-        res.save()
-        print res.id, res.curations, res.tempcurations
+        if res.curations:
+            res.tempcurations = []
+            for cur in res.curations:
+                res.tempcurations.append(make_tempcuration(cur))
+            if len(res.tempcurations) != len(res.curations):
+                raise Exception('bummer in %s' % res.id)
+            res.curations = []
+            res.save()
+            print res.id, res.curations, res.tempcurations
     
 def make_tempcuration(cur):
     """docstring for mak"""
