@@ -29,20 +29,18 @@ def reindex(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
-    link_curations_to_resources()
+    # link_curations_to_resources()
     # make_newcurations()
     messages.success(request, 'job done.')
     
     return HttpResponseRedirect(reverse('cab'))
 
-def link_curations_to_resources():
-    """docstring for link_curations_to_resources"""
-    for res in Resource.objects.all():
-        for cur in res.curations:
-            cur.resource = res
-            cur.save()
-
-
+# def link_curations_to_resources():
+#     """docstring for link_curations_to_resources"""
+#     for res in Resource.objects.all():
+#         for cur in res.curations:
+#             cur.resource = res
+#             cur.save()
 
 # def make_tempcurations():
 #     """docstring for make_temp_curations"""
