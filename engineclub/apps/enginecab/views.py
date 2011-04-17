@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from depot.models import Resource
+from depot.models import Resource, TempCuration, Curation, ItemMetadata
 from firebox.views import reindex_resources
 from engine_groups.models import Account
 from pymongo.objectid import ObjectId
@@ -29,12 +29,78 @@ def reindex(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
-    reset_GCD_owners(request)
+    make_tempcurations()
+    # make_newcurations()
     messages.success(request, 'job done.')
     
     return HttpResponseRedirect(reverse('cab'))
     
+def make_tempcurations():
+    """docstring for make_temp_curations"""
+    for res in Resource.objects.all():
+        res.tempcurations = []
+        for cur in res.curations:
+            res.tempcurations.append(make_tempcuration(cur))
+        res.curations = []
+        res.save()
+        print res.id, res.curations, res.tempcurations
+    
+def make_tempcuration(cur):
+    """docstring for mak"""
+    old_im = cur.item_metadata
+    item_metadata = ItemMetadata(
+        last_modified = old_im.last_modified,
+        author = old_im.author,
+        shelflife = old_im.shelflife,
+        status = old_im.status,
+        note = old_im.note,
+    )
+    
+    result = TempCuration(
+        outcome = cur.outcome,
+        tags = cur.tags,
+        # rating - not used
+        note = cur.note,
+        data = cur.data,
+        owner = cur.owner,
+        item_metadata = item_metadata
+    )
+    return result
 
+def make_newcurations():
+    """docstring for make_temp_curations"""
+    for res in Resource.objects.all():
+        res.curations = []
+        for cur in res.tempcurations:
+            res.curations.append(make_newcuration(cur))
+        res.tempcurations = []
+        res.save()
+        print res.id, res.curations, res.tempcurations
+    
+def make_newcuration(cur):
+    """docstring for mak"""
+    old_im = cur.item_metadata
+    item_metadata = ItemMetadata(
+        last_modified = old_im.last_modified,
+        author = old_im.author,
+        shelflife = old_im.shelflife,
+        status = old_im.status,
+        note = old_im.note,
+    )
+    
+    result = Curation(
+        outcome = cur.outcome,
+        tags = cur.tags,
+        # rating - not used
+        note = cur.note,
+        data = cur.data,
+        owner = cur.owner,
+        item_metadata = item_metadata
+    )
+    result.save()
+    return result
+    
+    
 def reset_GCD_owners(request):
     """docstring for reset_GCD_owners(request)"""
     acct = Account.objects.get(name='Grampian Care Data')
