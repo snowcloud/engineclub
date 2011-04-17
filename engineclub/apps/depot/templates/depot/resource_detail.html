@@ -59,16 +59,6 @@ map{
     <tr><th>curation</th><td>-</td></tr>
 {% endfor %}
 
-{% for curation in object.tempcurations %}
-    <tr>
-        <th>{% ifchanged %}tempcuration{% endifchanged %}</th>
-        <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
-    </tr>
-{% empty %}
-    <tr><th>tempcuration</th><td>-</td></tr>
-{% endfor %}
-
-
 </table>
 
 </div>

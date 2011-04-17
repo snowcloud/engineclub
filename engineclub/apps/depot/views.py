@@ -260,6 +260,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation = Curation(**form.cleaned_data)
             curation.owner = user
             curation.item_metadata.update(author=user)
+            curation.save()
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -292,7 +293,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         if form.is_valid():
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
-            curation.item_metadata.update(author=user) 
+            curation.item_metadata.update(author=user)
+            curation.save()
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -311,6 +313,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
     resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))

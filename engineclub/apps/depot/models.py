@@ -75,14 +75,14 @@ class Curation(Document):
         return self.owner == acct
 
 
-class TempCuration(EmbeddedDocument):
-    outcome = StringField()
-    tags = ListField(StringField(max_length=96), default=list)
-    # rating - not used
-    note = StringField()
-    data = DictField()
-    owner = ReferenceField(Account)
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+# class TempCuration(EmbeddedDocument):
+#     outcome = StringField()
+#     tags = ListField(StringField(max_length=96), default=list)
+#     # rating - not used
+#     note = StringField()
+#     data = DictField()
+#     owner = ReferenceField(Account)
+#     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 
 def place_as_cb_value(place):
@@ -121,7 +121,7 @@ class Resource(Document):
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     # curations = ListField(EmbeddedDocumentField(Curation), default=list)
     curations = ListField(ReferenceField(Curation), default=list)
-    tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
+    # tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account)
