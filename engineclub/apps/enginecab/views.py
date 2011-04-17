@@ -29,8 +29,8 @@ def reindex(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
-    make_tempcurations()
-    # make_newcurations()
+    # make_tempcurations()
+    make_newcurations()
     messages.success(request, 'job done.')
     
     return HttpResponseRedirect(reverse('cab'))
@@ -73,12 +73,16 @@ def make_tempcuration(cur):
 def make_newcurations():
     """docstring for make_temp_curations"""
     for res in Resource.objects.all():
-        res.curations = []
-        for cur in res.tempcurations:
-            res.curations.append(make_newcuration(cur))
-        res.tempcurations = []
-        res.save()
-        print res.id, res.curations, res.tempcurations
+        if res.tempcurations:
+            res.curations = []
+            for cur in res.tempcurations:
+                res.curations.append(make_newcuration(cur))
+            if len(res.tempcurations) != len(res.curations):
+                raise Exception('bummer in %s' % res.id)
+            
+            res.tempcurations = []
+            res.save()
+            # print res.id, res.curations, res.tempcurations
     
 def make_newcuration(cur):
     """docstring for mak"""

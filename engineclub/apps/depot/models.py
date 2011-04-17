@@ -52,8 +52,8 @@ class Moderation(EmbeddedDocument):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-class Curation(EmbeddedDocument):
-# class Curation(Document):
+# class Curation(EmbeddedDocument):
+class Curation(Document):
     outcome = StringField()
     tags = ListField(StringField(max_length=96), default=list)
     # rating - not used
@@ -119,8 +119,8 @@ class Resource(Document):
     locations = ListField(ReferenceField(Location), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
-    curations = ListField(EmbeddedDocumentField(Curation), default=list)
-    # curations = ListField(ReferenceField(Curation), default=list)
+    # curations = ListField(EmbeddedDocumentField(Curation), default=list)
+    curations = ListField(ReferenceField(Curation), default=list)
     tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
