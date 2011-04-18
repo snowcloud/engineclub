@@ -291,7 +291,7 @@ class SearchTest(TransactionTestCase):
         """docstring for test_curations"""
         
         
-        acct = Account.objects.get(id=ObjectId('4d9b791d3de074828b000003'))
+        acct = Account.objects.get(name="Derek Hoy")
         print acct, acct.id
         
         print list(Resource.objects(curations__owner=acct))
@@ -300,8 +300,11 @@ class SearchTest(TransactionTestCase):
         curations = Curation.objects(owner=acct).order_by('-item_metadata__last_modified')
         
         for c in curations:
-            print c.owner, c.item_metadata.last_modified,  c.resource.title
+            print c.owner, c.item_metadata.last_modified,  c.resource
         
+        # for c in Curation.objects.all():
+        #     if c.resource is None:
+        #         print '***', c.delete()
         
         # see query option in map_reduce - http://www.mongodb.org/display/DOCS/MapReduce
         # { "author.name" : "joe" }
