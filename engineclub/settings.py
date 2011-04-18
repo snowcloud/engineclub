@@ -35,7 +35,7 @@ TEST_RUNNER = 'depot.tests.MongoDBRunner'
 
 # repeated connects now fixed in mongoengine
 from mongoengine import connect
-MONGO_DB= 'test_db'
+MONGO_DB= 'aliss'
 connect(MONGO_DB, host='localhost', port=27017)
 LATLON_SEP= ', '
 
@@ -43,6 +43,7 @@ LATLON_SEP= ', '
 # SOLR_URL = 'http://127.0.0.1:8983/solr'
 SOLR_BATCH_SIZE = 100
 SOLR_ROWS = 20
+SOLR_LOC_BOOST_DEFAULT = 3.0
 
 YAHOO_KEY = 'your_key_here...'
 
@@ -72,6 +73,11 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'engine_groups.backends.EngineGroupsBackend',
+)
+
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,6 +86,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # "sitedown.middleware.SitedownMiddleware",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
@@ -102,6 +109,7 @@ INSTALLED_APPS = (
     'engine_groups',
     'ecutils',
     'contact_form',
+    'sitedown'
     
 )
 # override any of the above in your own settings_local.py

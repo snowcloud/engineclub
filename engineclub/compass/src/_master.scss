@@ -65,8 +65,11 @@ a, a:hover, a:visited {
 	top: 0;
 	right: 0;
 	padding: 10px 20px;
-	background-color: rgba(253,29,19,0.8);
 	z-index: 1;
+	background-color: #fd4a42;
+}
+.rgba #flash-tab {
+	background-color: rgba(253,29,19,0.8);
 }
 #header {
 	background: #000 none repeat scroll 0 0;
@@ -159,8 +162,9 @@ a, a:hover, a:visited {
 }
 #pageintro {
 	background-color: #fcfeff;
-	margin: 1% 10px 0 0;
+	float: left;
 	padding: 0 20px;
+	marginx: 1% 10px 0 0;
 }
 #pageintro h1 {
 	font-size: 3em;
@@ -176,6 +180,9 @@ a, a:hover, a:visited {
 #maincontent {
 	float: left;
 	padding: 2% 2% 40px 20px;
+	background-color: #ffffff;
+}
+.rgba #maincontent {
 	background-color: rgba(255,255,255,0.6);
 }
 #maincontent h1 {
@@ -340,10 +347,9 @@ li.location-listing-item {
 	width: 45%
 }
 #map {
-	height: 100%;
+	height: 400px;
 	width: 50%;
 	float: right;
-	margin-right: 10%;
 }
 .resource-detail #mapx {
 	float: none;

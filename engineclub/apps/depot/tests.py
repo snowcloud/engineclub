@@ -6,11 +6,14 @@ apps/depot/tests.py
 from django.conf import settings
 from django.test import TestCase
 
-from depot.models import Resource, Location, load_resource_data, \
+from depot.models import Resource, Curation, Location, load_resource_data, \
     get_place_for_postcode, lat_lon_to_str
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
+
+from engine_groups.models import Account, get_account
+from pymongo.objectid import ObjectId
 
 import re
 
@@ -18,7 +21,7 @@ from django.test.simple import *
 from django.test import TransactionTestCase
 
 TEST_DB_NAME = 'test_db2'
-DB_NAME = 'test_db'
+DB_NAME = 'aliss'
 SOLR_URL = 'http://127.0.0.1:8983/solr'
 # SOLR_URL = settings.SOLR_URL
 
@@ -78,12 +81,12 @@ class MongoDBRunner(DjangoTestSuiteRunner):
         # _load_data()
         return super(MongoDBRunner, self).setup_databases(**kwargs)
 
-    def teardown_databases(self, db_name, **kwargs):
+    def teardown_databases(self, db, **kwargs):
         # from pymongo import Connection
         # conn = Connection()
         # conn.drop_database(db_name)
-        print 'Closing test-db: ', db_name, ' (data intact)'
-        super(MongoDBRunner, self).teardown_databases(db_name, **kwargs)
+        print 'Closing test-db: ', db[0][0][1], ' (data intact)'
+        super(MongoDBRunner, self).teardown_databases(db, **kwargs)
 
 
 class ResourceTest(TransactionTestCase):
@@ -169,7 +172,7 @@ class ResourceTest(TransactionTestCase):
 
 from pysolr import Solr
 
-class SolrTest(TransactionTestCase):
+class SearchTest(TransactionTestCase):
     
     # def test_load_resources(self):
     #     print 'SHOULDN\'T BE IN HERE'
@@ -283,7 +286,83 @@ class SolrTest(TransactionTestCase):
         print '\n--\nsearch on [%s] : ' % (kwords)
         for result in results:
             print '-', result['score'], result['title'], result.get('pt_location', '')
-          
+    
+    def test_curations(self):
+        """docstring for test_curations"""
+        
+        
+        acct = Account.objects.get(name="Derek Hoy")
+        print acct, acct.id
+        
+        print list(Resource.objects(curations__owner=acct))
+        
+        
+        curations = Curation.objects(owner=acct).order_by('-item_metadata__last_modified')
+        
+        for c in curations:
+            print c.owner, c.item_metadata.last_modified,  c.resource
+        
+        # for c in Curation.objects.all():
+        #     if c.resource is None:
+        #         print '***', c.delete()
+        
+        # see query option in map_reduce - http://www.mongodb.org/display/DOCS/MapReduce
+        # { "author.name" : "joe" }
+        
+        # from bson.code import Code
+        # map = """
+        #     function() {
+        #         this.curations.forEach(function(c) {
+        #             x = {'owner': (c.owner.$id), 'lastmod': c.item_metadata.last_modified}
+        #             emit(x, 1);
+        #         })
+        #     }
+        # """ 
+        # map2 = """
+        #     function() {
+        #             emit(this, 1);
+        #     }
+        # """ 
+        # # print map
+        # reduce = """
+        #     function(key, values) {
+        #     var total = 0;
+        #     for(var i=0; i<values.length; i++) {
+        #     total += values[i];
+        #     }
+        #     return total;
+        #     }
+        # """
+        # # print reduce
+        # 
+        # from pymongo import Connection
+        # db = Connection()['test_db']
+        # # print db, db.resources
+        # print db.resource.count()
+        # 
+        # result = db.resource.map_reduce(map, reduce, "myresults")
+        # 
+        # print 'results: ', [doc for doc in list(result.find())[:10] if doc['_id']['owner'] == acct.id]
+        
+        # 
+        # 
+        # # # run a map/reduce operation spanning all posts
+        # results = Resource.objects(curations__owner=acct)[:2].map_reduce(map_f, reduce_f)
+        # results = list(results)
+        # print results
+        # self.assertEqual(len(results), 4)
+        # 
+        # music = filter(lambda r: r.key == "music", results)[0]
+        # self.assertEqual(music.value, 2)
+        # 
+        # film = filter(lambda r: r.key == "film", results)[0]
+        # self.assertEqual(film.value, 3)
+        # 
+        # BlogPost.drop_collection()
+
+
+
+
 #     # def test_form(self):
 #     #   """test form creation"""
 #     #   uri = 'http://test.example.com/10/'

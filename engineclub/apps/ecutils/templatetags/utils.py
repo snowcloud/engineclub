@@ -1,4 +1,4 @@
-from django.template import Library, Node
+from django.template import Library, Node, Variable
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
@@ -213,7 +213,7 @@ class LatestContentNode(Node):
         return ''
 
 def get_latest(parser, token):
-    bits = token.contents.split()
+    bits = token.split_contents()
     if len(bits) != 5:
         raise TemplateSyntaxError, "get_latest tag takes exactly four arguments"
     if bits[3] != 'as':
@@ -221,4 +221,30 @@ def get_latest(parser, token):
     return LatestContentNode(bits[1], bits[2], bits[4])
 
 get_latest = register.tag(get_latest)
+
+
+from depot.models import Curation
+
+class LatestCurationsNode(Node):
+    def __init__(self, owner, num, varname):
+        self.num, self.varname = num, varname
+        self.owner = Variable(owner)
+
+    def render(self, context):
+        owner = self.owner.resolve(context)
+        # context[self.varname] = list(Resource.objects(curations__owner=owner)[:int(self.num)])
+        context[self.varname] = [c.resource for c in Curation.objects(owner=owner).order_by('-item_metadata__last_modified')[:int(self.num)]]
+        return ''
+
+def get_latest_curations(parser, token):
+    """{% get_latest_curations owner 20 as latest_curations %}
+    """
+    bits = token.split_contents()
+    if len(bits) != 5:
+        raise TemplateSyntaxError, "get_latest_curations tag takes exactly four arguments"
+    if bits[3] != 'as':
+        raise TemplateSyntaxError, "third argument to get_latest_curations tag must be 'as'"
+    return LatestCurationsNode(bits[1], bits[2], bits[4])
+
+get_latest = register.tag(get_latest_curations)
 

@@ -1,0 +1,44 @@
+{% load markup utils %}
+
+<h2>Latest curations for {{ object.name }}</h2>
+
+<div id="results">
+    
+    {% get_latest_curations object 20 as latest_curations %}
+
+    <ol class="resource-listing">
+    {% for resource in latest_curations %}
+        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+
+            {% if resource.locations %}
+                <ol>
+                    {% for loc in resource.locations %}
+                        <li class="resource-listing-locs">{{ loc }}</li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+
+            <p>{{ resource.description|truncatewords:30 }}</p>
+            <p class="resource-listing-meta">
+                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
+                {% if resource.uri %} |
+                    <a href="{{ resource.uri }}">external site...</a>
+                {% endif %}
+            </p>
+<!-- 
+-->
+        </li>
+    {% empty %}
+        <li>no results found</li>
+    {% endfor %}
+    </ol>
+
+    <form class="form">
+        <fieldset>
+        <label>Widget code for last 20 curations for this account:</label>
+        <p class="helptext">Copy and paste into HTML code of a web page.</p>
+        <textarea>{% autoescape on %}<script type="text/javascript" src="http://www.aliss.org/depot/group/{{object.id}}/curations.js"></script>{% endautoescape %}</textarea>
+        </fieldset>
+        
+    </form>
+</div>

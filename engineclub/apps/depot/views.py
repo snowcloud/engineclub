@@ -1,6 +1,8 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -21,7 +23,12 @@ from engine_groups.models import Account, get_account
 def get_one_or_404(obj_class=Resource, **kwargs):
     """helper function for Mongoengine documents"""
     try:
+       user = kwargs.pop('user', None)
+       perm = kwargs.pop('perm', None)
        object = obj_class.objects.get(**kwargs)
+       if user and perm:
+           if not user.has_perm(perm, object):
+               raise PermissionDenied()
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
@@ -37,7 +44,7 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
     object = get_one_or_404(id=ObjectId(object_id))
 
     return render_to_response(template,
-        RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
 def _template_info(popup):
     """docstring for _template_info"""
@@ -97,7 +104,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
     
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+
     doc = ''
     places = None
     template_info = _template_info(request.REQUEST.get('popup', ''))
@@ -193,7 +201,7 @@ def resource_edit_complete(request, resource, template_info):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=ObjectId(object_id))
+    object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
@@ -218,11 +226,11 @@ def resource_find(request, template='depot/resource_find.html'):
             # pins = [loc['obj'] for loc in locations]
             
     else:
-        form = FindResourceForm(initial={'post_code': 'aberdeen'})
+        form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT * 10})
 
     # print places
     return render_to_response(template,
-        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
 def curation_detail(request, object_id, index, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
@@ -234,7 +242,15 @@ def curation_detail(request, object_id, index, template='depot/curation_detail.h
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=ObjectId(object_id))    
+    resource = get_one_or_404(id=ObjectId(object_id))
+    user = get_account(request.user.id)
+    
+    # check if user already has a curation for this resource
+    for index, cur in enumerate(resource.curations):
+        if cur.owner.id == user.id:
+            messages.success(request, 'You already have a curation for this resource.')
+            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+    
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -242,9 +258,9 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         form = CurationForm(request.POST)
         if form.is_valid():
             curation = Curation(**form.cleaned_data)
-            user = get_account(request.user.id)
             curation.owner = user
             curation.item_metadata.update(author=user)
+            curation.save()
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -266,7 +282,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
     
     if request.method == 'POST':
@@ -277,7 +293,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         if form.is_valid():
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
-            curation.item_metadata.update(author=user) 
+            curation.item_metadata.update(author=user)
+            curation.save()
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -295,7 +312,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
@@ -303,7 +321,7 @@ def curation_remove(request, object_id, index):
 @login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
-    resource = get_one_or_404(id=object_id)
+    resource = get_one_or_404(id=object_id, user=request.user, perm='can_edit')
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
@@ -312,7 +330,9 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
 
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    # curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
+    
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -324,7 +344,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
 
     object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -336,7 +356,7 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
     
     object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
-    curations = list(Resource.objects(curations__owner=object)[:10])
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     base_url = Site.objects.get_current().domain
     print base_url
     template_context = Context(

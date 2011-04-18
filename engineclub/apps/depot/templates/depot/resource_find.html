@@ -2,12 +2,16 @@
 {% load utils %}
 {% block title %}find resources{% endblock %}
 {% block head-extra %}
-<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}">  
-</script>  
 <script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
 <link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
 <!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
+
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
+<!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
+<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script>
+
 {% comment %}
+<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}"></script>  
 <script type="text/javascript">
 $(function() {
     $("#id_tags").autocomplete({
@@ -43,27 +47,109 @@ $(function() {
     #city { width: 25em; }
 </style>
 {% endcomment %}
+<style>
+    #slider { width: 50%; }
+</style>
 
 {% endblock %}
+
+{% block document-ready %}
+var loc = $( "#slider_label" );
+var select = $( "#id_boost_location" );
+var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
+	min: 10,
+	max: 100,
+	range: "min",
+	value: select.val(),
+	slide: function( event, ui ) {
+		select.val(ui.value);
+		//$("#submit_button").click()
+		
+	}
+});
+//$( "#minbeds" ).change(function() {
+//	slider.slider( "value", this.selectedIndex + 1 );
+//});
+{% if results and centre %}
+
+    var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
+    mapstraction = new mxn.Mapstraction('map','google');
+    mapstraction.addMarker( new mxn.Marker(centre_pt));
+    {% for loc in object.locations %}
+        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
+        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
+        //map.addMarker(currentGeoPoint);  
+	{% endfor %}
+
+
+    {% for res in results %}
+        {% for loc in res.pt_location %}
+            
+            //mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc|get_lat}}, {{loc|get_lon}})));
+            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>')
+        
+//            pinPoint = new YGeoPoint( "{{loc|get_lat}}" , "{{loc|get_lon}}");  
+//            var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
+//            newMarker.addAutoExpand('<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>');
+        
+//            map.addOverlay(newMarker);
+        {% endfor %}
+    {% endfor %}
+
+    function advancedMarker(lat, lon, info) {
+        mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
+            infoBubble : info,
+            label : "tooltip",
+            //date : "new Date()",
+            marker : 3,
+            //iconShadow: "http://mapufacture.com/images/providers/blank.png",
+            //iconShadowSize : [0,0],
+            icon : "/static/media/img/ymarker_or.png",
+            iconSize : [25,25],
+            draggable : false,
+            hover : true
+        });
+
+    }​
+
+    mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true 
+    });
+    
+    mapstraction.setCenterAndZoom(centre_pt, 9);
+
+
+{% endif %}
+
+{% endblock %}
+
+
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
-<p><a href="{% url resource-list %}">all items</a></p>
+<!-- p><a href="{% url resource-list %}">all items</a></p -->
 
 <h1>Find Resources</h1>
 
-<form class="form" action="." method="POST">{% csrf_token %}
+<div id="slider"></div>
+
+<form class="form" action="." method="POST" id="search_form">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
         {# <div class="ui-widget"> #}
         
         <ol>
              {{ form.as_ul }}
+            <li><label for="slider" id="slider_label">Make results more local:</label>
+            <span class="helptext">drag slider to the right to make location more important than search text.</span>
+            </li>
         </ol>
         {# </div> #}
     </fieldset>
 
      <fieldset class="submit">
-        <input type="submit" name="result" value="Find items">
+        <input type="submit" name="result" value="Find items" id="submit_button">
         <!-- input type="submit" name="result" value="Cancel" -->
     </fieldset>
 </form>
@@ -100,6 +186,8 @@ $(function() {
 
 </div>
 <div id="map"></div>
+
+{% comment %}
 
 {% if results and centre %}
 <script type="text/javascript">  
@@ -146,6 +234,8 @@ $(function() {
 window.onload = startMap;     
 </script>  
 {% endif %}
+
+{% endcomment %}
 
 {% endblock %}
 

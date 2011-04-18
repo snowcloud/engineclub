@@ -11,6 +11,8 @@
     <link rel="stylesheet" type="text/css" media="all" href="/static/css/screen.css" />
     <!--[if IE 6]> <link rel="stylesheet" href="/static/css/ie6.css" media="screen, projection">
     <![endif]-->
+    <!--[if IE 7]> <link rel="stylesheet" href="/static/css/ie7.css" media="screen, projection">
+    <![endif]-->
     <link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
     <script type="text/javascript" src="http://use.typekit.com/raw4saf.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -25,12 +27,24 @@
         {% block document-ready %}{% endblock %}
       });
     </script>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-563964-9']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
 </head>
 <body class="{% block body_class %}single{% endblock %}">
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated %}{% endif %}
     <div id="flash-tab">demonstration</div>
-    {% endif %}
     <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
     <div id="header">
      
@@ -83,7 +97,10 @@
 <div id="footer">
     {% block footer-extra %}{% endblock %}
     <p>Geolocation data provided by <a href="http://www.geonames.org">www.geonames.org</a></p>
-    <p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://test.aliss.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();g">ALISS it</a> bookmark</p>
+    <p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://www.aliss.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();g">ALISS it</a> bookmark</p>
 </div>
+<script type="text/javascript" src="http://static.wehearvoices.net/widget.js"></script>
+<script type="text/javascript" src="http://widget.wehearvoices.net/node/init.js?user_id=9cac9f62-69cd-11e0-bf5e-fefdb24f91c5"></script>
+
 </body>
 </html>

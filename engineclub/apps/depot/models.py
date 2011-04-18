@@ -9,7 +9,7 @@ from datetime import datetime
 from pymongo import Connection, GEO2D
 from pysolr import Solr
 
-from engine_groups.models import Account
+from engine_groups.models import Account, get_account
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
@@ -44,7 +44,7 @@ class Location(Document):
     lat_lon = GeoPointField()
     
     def __unicode__(self):
-        return ', '.join([self.label, self.place_name])  
+        return ', '.join([self.label, self.place_name])
         
 class Moderation(EmbeddedDocument):
     outcome = StringField()
@@ -52,14 +52,39 @@ class Moderation(EmbeddedDocument):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-class Curation(EmbeddedDocument):
+# class Curation(EmbeddedDocument):
+class Curation(Document):
     outcome = StringField()
     tags = ListField(StringField(max_length=96), default=list)
     # rating - not used
     note = StringField()
     data = DictField()
+    resource = ReferenceField('Resource')
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
+
+# class TempCuration(EmbeddedDocument):
+#     outcome = StringField()
+#     tags = ListField(StringField(max_length=96), default=list)
+#     # rating - not used
+#     note = StringField()
+#     data = DictField()
+#     owner = ReferenceField(Account)
+#     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
 
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
@@ -95,7 +120,9 @@ class Resource(Document):
     locations = ListField(ReferenceField(Location), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
-    curations = ListField(EmbeddedDocumentField(Curation), default=list)
+    # curations = ListField(EmbeddedDocumentField(Curation), default=list)
+    curations = ListField(ReferenceField(Curation), default=list)
+    # tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account)
@@ -171,6 +198,18 @@ class Resource(Document):
                 self.locations.append(location)
                 self.save()
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        # print self.owner, acct
+        return self.owner == acct
+        
 class RelatedResource(Document):
     """docstring for RelatedResource"""
     source = ReferenceField(Resource)
@@ -246,7 +285,7 @@ def lat_lon_to_str(loc):
     else:
         return ''
 
-def find_by_place(name, kwords):
+def find_by_place(name, kwords, loc_boost=None):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
     if loc:
@@ -256,18 +295,18 @@ def find_by_place(name, kwords):
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': lat_lon_to_str(loc['lat_lon']),
-            'bf': 'recip(geodist(),2,200,20)^3',
+            'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords):
+def find_by_place_or_kwords(name, kwords, loc_boost=None):
     """docstring for find_by_place_or_kwords"""
     conn = Solr(settings.SOLR_URL)
     if name:
-        return find_by_place(name, kwords)
+        return find_by_place(name, kwords, loc_boost)
     # keywords only
     kw = {
         'rows': settings.SOLR_ROWS,
