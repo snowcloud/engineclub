@@ -44,7 +44,7 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
     object = get_one_or_404(id=ObjectId(object_id))
 
     return render_to_response(template,
-        RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
 def _template_info(popup):
     """docstring for _template_info"""
