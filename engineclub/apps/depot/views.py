@@ -230,7 +230,7 @@ def resource_find(request, template='depot/resource_find.html'):
 
     # print places
     return render_to_response(template,
-        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY }))
+        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
 def curation_detail(request, object_id, index, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
