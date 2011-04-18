@@ -8,7 +8,7 @@
 <!-- script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}"></script -->  
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
-<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google, yahoo)"></script>
+<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script>
 
 <!-- script type="text/javascript" src="/static/js/jquery.gmap-1.1.0-min.js"></script -->
 
@@ -25,6 +25,12 @@
         //map.addMarker(currentGeoPoint);  
 	{% endfor %}
 	
+	mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true 
+    });
+    
     //mapstraction.autoCenterAndZoom();
     mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 9);
 
@@ -82,11 +88,11 @@
 </div>
 
 <div id="map"></div>
+{% comment %}
 {% if object.locations %}
 
 
 
-{% comment %}
 
 <script type="text/javascript">  
     // Create a Map that will be placed in the "map" div.  
@@ -109,9 +115,9 @@
     }
 window.onload = startMap;
 </script>
-{% endcomment %}
 
 {% endif %}
+{% endcomment %}
 
 
 {% endblock %}
