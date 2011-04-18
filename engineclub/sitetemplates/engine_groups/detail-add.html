@@ -33,4 +33,12 @@
     {% endfor %}
     </ol>
 
+    <form class="form">
+        <fieldset>
+        <label>Widget code for last 20 curations for this account:</label>
+        <p class="helptext">Copy and paste into HTML code of a web page.</p>
+        <textarea>{% autoescape on %}<script type="text/javascript" src="http://www.aliss.org/depot/group/{{object.id}}/curations.js"></script>{% endautoescape %}</textarea>
+        </fieldset>
+        
+    </form>
 </div>
