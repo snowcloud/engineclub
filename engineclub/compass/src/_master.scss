@@ -65,8 +65,11 @@ a, a:hover, a:visited {
 	top: 0;
 	right: 0;
 	padding: 10px 20px;
-	background-color: rgba(253,29,19,0.8);
 	z-index: 1;
+	background-color: #fd4a42;
+}
+.rgba #flash-tab {
+	background-color: rgba(253,29,19,0.8);
 }
 #header {
 	background: #000 none repeat scroll 0 0;

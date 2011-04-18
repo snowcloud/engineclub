@@ -28,9 +28,8 @@
 </head>
 <body class="{% block body_class %}single{% endblock %}">
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated %}{% endif %}
     <div id="flash-tab">demonstration</div>
-    {% endif %}
     <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
     <div id="header">
      
