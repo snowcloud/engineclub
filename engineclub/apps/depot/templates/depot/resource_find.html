@@ -77,40 +77,24 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
     mapstraction.addMarker( new mxn.Marker(centre_pt));
     {% for loc in object.locations %}
         mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
-        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
-        //map.addMarker(currentGeoPoint);  
 	{% endfor %}
 
 
-    {% for res in results %}
-        {% for loc in res.pt_location %}
-            
-            //mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc|get_lat}}, {{loc|get_lon}})));
-            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>')
-        
-//            pinPoint = new YGeoPoint( "{{loc|get_lat}}" , "{{loc|get_lon}}");  
-//            var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-//            newMarker.addAutoExpand('<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>');
-        
-//            map.addOverlay(newMarker);
-        {% endfor %}
-    {% endfor %}
+    {% for res in results %}{% for loc in res.pt_location %}
+        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>')
+    {% endfor %}{% endfor %}
 
     function advancedMarker(lat, lon, info) {
         mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
             infoBubble : info,
             label : "tooltip",
-            //date : "new Date()",
             marker : 3,
-            //iconShadow: "http://mapufacture.com/images/providers/blank.png",
-            //iconShadowSize : [0,0],
             icon : "/static/media/img/ymarker_or.png",
             iconSize : [25,25],
             draggable : false,
             hover : true
         });
-
-    }​
+    };
 
     mapstraction.addControls({
         pan: true, 
@@ -120,9 +104,7 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
     
     mapstraction.setCenterAndZoom(centre_pt, 9);
 
-
 {% endif %}
-
 {% endblock %}
 
 
