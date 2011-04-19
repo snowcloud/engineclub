@@ -134,7 +134,7 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
 <div id="slider"></div>
 
-<form class="form" action="." method="POST" id="search_form">{% csrf_token %}
+<form class="form" action="." method="GET" id="search_form">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
         {# <div class="ui-widget"> #}
