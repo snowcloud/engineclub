@@ -176,9 +176,9 @@ class Resource(Document):
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
             # print "error in %s, %s" % (self.id, self.title)
-            logger.error("error in curations while indexing resource: %s, %s" % (self.id, self.title))
-            # self.curations = []
-            # self.save()
+            logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
+            self.curations = []
+            self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),

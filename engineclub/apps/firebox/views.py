@@ -164,7 +164,7 @@ def load_placenames(fname, dbname):
 
 def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
     """docstring for reindex_resources"""
-    logger.error("indexing resources:")
+    # logger.error("indexing resources:")
     
     if printit:
         print 'CLEARING SOLR INDEX: ', url
