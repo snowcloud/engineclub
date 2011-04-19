@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
+from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
@@ -206,6 +207,7 @@ def resource_remove(request, object_id):
     return HttpResponseRedirect(reverse('resource-list'))
 
 # @login_required
+@cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
 
@@ -213,11 +215,12 @@ def resource_find(request, template='depot/resource_find.html'):
     centre = None
     pins = []
     # places = []
-    if request.method == 'POST':
-        result = request.POST.get('result', '')
+    result = request.REQUEST.get('result', '')
+    if request.method == 'POST' or result:
+        # result = request.REQUEST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource-list'))
-        form = FindResourceForm(request.POST)
+        form = FindResourceForm(request.REQUEST)
     
         if form.is_valid():
             results = form.results
