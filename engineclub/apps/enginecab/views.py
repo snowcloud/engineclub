@@ -22,7 +22,7 @@ def index(request):
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request):
     
-    reindex_resources(settings.MONGO_DB)
+    reindex_resources(settings.MONGO_DB, printit=False)
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab'))
 

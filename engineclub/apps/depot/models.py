@@ -20,6 +20,9 @@ COLL_STATUS_COMPLETE = 'complete'
 STATUS_OK = 'OK'
 STATUS_BAD = 'BAD'
 
+import logging
+logger = logging.getLogger('aliss')
+
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
     author = ReferenceField(Account)
@@ -166,10 +169,16 @@ class Resource(Document):
         """conn is Solr connection"""
         tags = self.tags
         description = [self.description]
-        for obj in self.curations:
-            tags.extend(obj.tags)
-            description.extend([obj.note or u'', unicode(obj.data) or u''])
         
+        try:
+            for obj in self.curations:
+                tags.extend(obj.tags)
+                description.extend([obj.note or u'', unicode(obj.data) or u''])
+        except AttributeError:
+            # print "error in %s, %s" % (self.id, self.title)
+            logger.error("error in curations while indexing resource: %s, %s" % (self.id, self.title))
+            # self.curations = []
+            # self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
