@@ -11,6 +11,8 @@ from pysolr import Solr
 
 from engine_groups.models import Account, get_account
 
+from copy import deepcopy
+
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
 COLL_STATUS_TAGS_CONF = 'tags_confirm'
@@ -164,7 +166,8 @@ class Resource(Document):
         conn = Solr(settings.SOLR_URL)
         conn.delete(q='id:%s' % self.id)
         self.index(conn)
-        
+    
+    
     def index(self, conn=None):
         """conn is Solr connection"""
         tags = self.tags
@@ -187,13 +190,22 @@ class Resource(Document):
             'description': '\n'.join(description),
             'keywords': ', '.join(tags),
             'uri': self.uri,
-            'loc_labels': [', '.join([loc.label, loc.place_name]) for loc in self.locations]
+            'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
+        result = []
         if self.locations:
-            doc['pt_location'] = [lat_lon_to_str(loc) for loc in self.locations]
+            for i, loc in enumerate(self.locations):
+                loc_doc = deepcopy(doc)
+                loc_doc['id'] = u'%s_%s' % (unicode(self.id), i)
+                loc_doc['pt_location'] = [lat_lon_to_str(loc)]
+                loc_doc['loc_labels'] = [', '.join([loc.label, loc.place_name])]
+                result.append(loc_doc)
+        else:
+            result = [doc]    
+            
         if conn:
-            conn.add([doc])
-        return doc
+            conn.add(result)
+        return result
 
     def add_location_from_name(self, placestr):
         """place_str can be anything"""

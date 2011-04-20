@@ -176,7 +176,7 @@ def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
     
     docs = []
     for i, res in enumerate(Resource.objects):
-        docs.append(res.index())
+        docs.extend(res.index())
         if i % batch_size == 0:
             conn.add(docs)
             docs = []
