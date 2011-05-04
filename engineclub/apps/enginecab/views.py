@@ -29,12 +29,23 @@ def reindex(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
+    note = ''
     # link_curations_to_resources()
     # make_newcurations()
-    messages.success(request, 'job done.')
+    note = remove_dud_curations()
+    messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab'))
 
+def remove_dud_curations():
+    """docstring for remove_dud_curations"""
+    i = 0
+    for c in Curation.objects.all():
+        if c.resource is None:
+            print c.owner
+            i += 1
+    return i
+    
 # def link_curations_to_resources():
 #     """docstring for link_curations_to_resources"""
 #     for res in Resource.objects.all():
