@@ -42,7 +42,7 @@ def remove_dud_curations():
     i = 0
     for c in Curation.objects.all():
         if c.resource is None:
-            print c.owner
+            c.delete()
             i += 1
     return i
     
