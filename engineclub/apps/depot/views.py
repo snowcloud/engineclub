@@ -75,9 +75,10 @@ def resource_add(request, template='depot/resource_edit.html'):
             # resource.metadata.author = str(request.user.id)
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
-                resource.owner = get_account(request.user.id)
+                user = get_account(request.user.id)
+                resource.owner = user
                 # save will create default moderation and curation using owner acct
-                resource.save(author=resource.owner, reindex=True)
+                resource.save(author=user, reindex=True)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))

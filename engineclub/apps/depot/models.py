@@ -142,7 +142,9 @@ class Resource(Document):
         # if self.owner:
         # self.item_metadata.author = Account.objects.get(local_id=local_id)
         # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
-        if self.id is None:
+        created = self.id is None
+        super(Resource, self).save(*args, **kwargs)
+        if created:
             if not self.moderations:
                 obj = Moderation(outcome=STATUS_OK, owner=self.owner)
                 obj.item_metadata.author = self.owner
@@ -151,7 +153,7 @@ class Resource(Document):
                 obj = Curation(outcome=STATUS_OK, tags=self.tags, owner=self.owner)
                 obj.item_metadata.author = self.owner
                 self.curations.append(obj)
-        super(Resource, self).save(*args, **kwargs)
+        
         if reindex:
             self.reindex()
 
