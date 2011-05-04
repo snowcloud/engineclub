@@ -152,7 +152,10 @@ class Resource(Document):
             if not self.curations:
                 obj = Curation(outcome=STATUS_OK, tags=self.tags, owner=self.owner)
                 obj.item_metadata.author = self.owner
+                obj.resource = self
+                obj.save()
                 self.curations.append(obj)
+            super(Resource, self).save(*args, **kwargs)
         
         if reindex:
             self.reindex()
