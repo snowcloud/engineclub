@@ -34,16 +34,16 @@ LOGGING = {
         }
     },
     'loggers': {
-        # 'django': {
-        #     'handlers':['null'],
-        #     'propagate': True,
-        #     'level':'INFO',
-        # },
-        # 'django.request': {
-        #     'handlers': ['mail_admins'],
-        #     'level': 'ERROR',
-        #     'propagate': False,
-        # },
+        'django': {
+            'handlers':['null'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
         'aliss': {
             'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
