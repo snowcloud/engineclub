@@ -8,7 +8,10 @@
 
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
-<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script>
+<!-- script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script -->
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.googlev3.core-min.js"></script>
 
 <style>
     #slider { width: 50%; }
@@ -73,8 +76,11 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
 <h1>Find Resources</h1>
 
-<div class="usermessage"><p>This is a demonstration only, and shows how any web site might access the ALISS engine.</p>
-    <p>ALISS demonstration data is mainly from <a href="/groups/4d9b9a4489cb16665c000002/">Grampian</a> and <a href="/groups/4d9fbd5789cb1673fb000000/">Renfrewshire</a>. Searches in other areas may produce strange results!</p></div>
+<div class="usermessage">
+    <p>This is a demonstration only, and shows how any web site might access the ALISS engine.</p>
+    <p>ALISS demonstration data is mainly from <a href="/groups/4d9b9a4489cb16665c000002/">Grampian</a> and <a href="/groups/4d9fbd5789cb1673fb000000/">Renfrewshire</a>. Searches in other areas may produce strange results!</p>
+
+</div>
 
 <div id="slider"></div>
 
