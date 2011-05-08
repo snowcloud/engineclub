@@ -4,9 +4,43 @@
 {% block head-extra %}
     <script type="text/javascript" src="/static/verticaltabs/js/verticaltabs.js"></script>
     <link rel="stylesheet" href="/static/css/verticaltabs.css" />
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+    <link class="ui-theme" rel="Stylesheet" type="text/css" href="http://jqueryui.com/themeroller/css/parseTheme.css.php?ffDefault=Segoe+UI%2C+Arial%2C+sans-serif&amp;fwDefault=bold&amp;fsDefault=1.1em&amp;cornerRadius=6px&amp;bgColorHeader=333333&amp;bgTextureHeader=12_gloss_wave.png&amp;bgImgOpacityHeader=25&amp;borderColorHeader=333333&amp;fcHeader=ffffff&amp;iconColorHeader=ffffff&amp;bgColorContent=000000&amp;bgTextureContent=05_inset_soft.png&amp;bgImgOpacityContent=25&amp;borderColorContent=666666&amp;fcContent=ffffff&amp;iconColorContent=cccccc&amp;bgColorDefault=555555&amp;bgTextureDefault=02_glass.png&amp;bgImgOpacityDefault=20&amp;borderColorDefault=666666&amp;fcDefault=eeeeee&amp;iconColorDefault=cccccc&amp;bgColorHover=0078a3&amp;bgTextureHover=02_glass.png&amp;bgImgOpacityHover=40&amp;borderColorHover=59b4d4&amp;fcHover=ffffff&amp;iconColorHover=ffffff&amp;bgColorActive=f58400&amp;bgTextureActive=05_inset_soft.png&amp;bgImgOpacityActive=30&amp;borderColorActive=ffaf0f&amp;fcActive=ffffff&amp;iconColorActive=222222&amp;bgColorHighlight=eeeeee&amp;bgTextureHighlight=03_highlight_soft.png&amp;bgImgOpacityHighlight=80&amp;borderColorHighlight=cccccc&amp;fcHighlight=2e7db2&amp;iconColorHighlight=4b8e0b&amp;bgColorError=ffc73d&amp;bgTextureError=02_glass.png&amp;bgImgOpacityError=40&amp;borderColorError=ffb73d&amp;fcError=111111&amp;iconColorError=a83300&amp;bgColorOverlay=5c5c5c&amp;bgTextureOverlay=01_flat.png&amp;bgImgOpacityOverlay=50&amp;opacityOverlay=80&amp;bgColorShadow=cccccc&amp;bgTextureShadow=01_flat.png&amp;bgImgOpacityShadow=30&amp;opacityShadow=60&amp;thicknessShadow=7px&amp;offsetTopShadow=-7px&amp;offsetLeftShadow=-7px&amp;cornerRadiusShadow=8px">
 {% endblock head-extra %}
 {% block document-ready %}
     $("#textExample").verticaltabs({slideShow: false, speed: 500, activeIndex: 0});
+    var $dialog = $('<div></div>')
+    		.html('<iframe src="http://player.vimeo.com/video/23257731?title=0&amp;byline=0&amp;portrait=0" width="600" height="375" frameborder="0"></iframe><p><a href="http://vimeo.com/23257731">What is ALISS?</a>.</p>')
+    		.dialog({
+    			autoOpen: false,
+    			title: 'What is ALISS?',
+    			modal: true,
+    			width: 650,
+    			buttons: { "Close": function() { $dialog.dialog("close"); } }
+    		});
+    var $dialog2 = $('<div></div>')
+    		.html('<iframe src="http://player.vimeo.com/video/22614113?title=0&amp;byline=0&amp;portrait=0" width="600" height="450" frameborder="0"></iframe><p><a href="http://vimeo.com/22614113">How will ALISS work?</a></p>')
+    		.dialog({
+    			autoOpen: false,
+    			title: 'How will ALISS work?',
+    			modal: true,
+    			width: 650,
+    			buttons: { "Close": function() { $dialog2.dialog("close"); } }
+    		});
+    $('.ui-widget-overlay').live("click", function() {
+       //Close the dialog
+       $dialog.dialog("close");
+       $dialog2.dialog("close");
+    });
+	$('#opener').click(function() {
+		$dialog.dialog('open');
+		return false;
+	});	
+	$('#opener2').click(function() {
+		$dialog2.dialog('open');
+		return false;
+	});	
 {% endblock %}
 
 {% block pageintro %}
@@ -14,6 +48,8 @@
 <h1>Better information for self&nbsp;management</h1>
 
 <p>About 40% of the Scottish population live with a long term health condition, such as heart disease, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="/about/">Learn&nbsp;more&nbsp;»</a></p>
+<div class="call-btn grid_6 alpha" id="opener"><a href="/info/what-is-aliss/">What is ALISS?</a> <span class="sub-info">(7 min screencast)</span></div>
+<div class="call-btn grid_6 omega" id="opener2"><a href="/info/how-will-it-work/">How will it work?</a> <span class="sub-info">(10 min screencast)</span></div>
 </div>
 {%endblock%}
 

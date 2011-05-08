@@ -40,6 +40,10 @@ a:hover {
 a, a:hover, a:visited {
 	border-bottom: 1px dotted #919191;
 }
+.sub-info {
+	font-size: 70%;
+	color: gray;
+}
 .article li {
 	padding-bottom: 0.5em;
 }
@@ -165,6 +169,7 @@ a, a:hover, a:visited {
 	float: left;
 	padding: 0 20px;
 	marginx: 1% 10px 0 0;
+	width: 100%;
 }
 #pageintro h1 {
 	font-size: 3em;
@@ -292,10 +297,24 @@ div.more-btn a {
 	padding: 0.5em 1em;
 	border-radius: 6px;
 	-webkit-border-radius: 6px;
-	-mox-border-radius: 6px;
+	-moz-border-radius: 6px;
 }
 div.more-btn a:hover {
 	background: #797979 url(../media/img/bg_more_btn.png) repeat-x 0 center;
+}
+div.call-btn {
+	background-color: #f3ebde;
+	font-size: 1.5em;
+	margin-top: 1.5em;
+	text-align: center;
+	margin-bottom: 0.5em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	-moz-box-shadow: 3px 3px 6px #555;
+-webkit-box-shadow: 3px 3px 6px #555;
+box-shadow: 3px 3px 6px #555;
+	border: 6px solid #e7c597;
+	width: 47.7%;
 }
 .resource-listing {
 	font-size: 0.9em;
