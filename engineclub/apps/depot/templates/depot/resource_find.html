@@ -10,43 +10,6 @@
 <!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
 <script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script>
 
-{% comment %}
-<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}"></script>  
-<script type="text/javascript">
-$(function() {
-    $("#id_tags").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: "/api/tags/",
-                dataType: "jsonp",
-                data: {
-                    match: request.term
-                },
-                success: function(data) {
-                    response($.map(data.data, function(item) {
-                        return {
-                            label: item,
-                            value: item
-                        }
-                    }))
-                }
-            })
-        },
-        minLength: 2,
-        open: function() {
-            $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-        },
-        close: function() {
-            $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-        }
-    });
-});
-</script>
-<style>
-    .ui-autocomplete-loading { background: url(indicator.gif) no-repeat right; }
-    #city { width: 25em; }
-</style>
-{% endcomment %}
 <style>
     #slider { width: 50%; }
 </style>
@@ -67,9 +30,6 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 		
 	}
 });
-//$( "#minbeds" ).change(function() {
-//	slider.slider( "value", this.selectedIndex + 1 );
-//});
 {% if results and centre %}
 
     var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
@@ -110,9 +70,11 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
 {% block main-content-class %}onecol{% endblock %}
 {% block content %}
-<!-- p><a href="{% url resource-list %}">all items</a></p -->
 
 <h1>Find Resources</h1>
+
+<div class="usermessage"><p>This is a demonstration only, and shows how any web site might access the ALISS engine.</p>
+    <p>ALISS demonstration data is mainly from <a href="/groups/4d9b9a4489cb16665c000002/">Grampian</a> and <a href="/groups/4d9fbd5789cb1673fb000000/">Renfrewshire</a>. Searches in other areas may produce strange results!</p></div>
 
 <div id="slider"></div>
 
