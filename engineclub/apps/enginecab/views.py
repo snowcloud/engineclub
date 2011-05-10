@@ -82,7 +82,7 @@ def remove_dud_curations(request):
             i += 1
     # return i
     
-    note = 'removed %s dud curations' % i
+    note = 'removed %s dud curations- do a reindex now, will find/fix errors in curations.' % i
     messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab'))

@@ -264,6 +264,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation = Curation(**form.cleaned_data)
             curation.owner = user
             curation.item_metadata.update(author=user)
+            curation.resource = resource
             curation.save()
             resource.curations.append(curation)
             resource.save(reindex=True)
