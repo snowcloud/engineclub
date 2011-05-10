@@ -33,7 +33,7 @@ def one_off_util(request):
     # link_curations_to_resources()
     # make_newcurations()
     # note = remove_dud_curations()
-    note = fix_curationless_resources()
+    # note = fix_curationless_resources()
     messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab'))
@@ -72,9 +72,8 @@ def fix_curationless_resources(request):
     
     return HttpResponseRedirect(reverse('cab'))
     
-    
-    
-def remove_dud_curations():
+@user_passes_test(lambda u: u.is_staff)
+def remove_dud_curations(request):
     """docstring for remove_dud_curations"""
     i = 0
     for c in Curation.objects.all():
@@ -82,6 +81,11 @@ def remove_dud_curations():
             c.delete()
             i += 1
     return i
+    
+    note = 'removed %s dud curations' % i)
+    messages.success(request, 'job done. %s' % note)
+    
+    return HttpResponseRedirect(reverse('cab'))
     
 # def link_curations_to_resources():
 #     """docstring for link_curations_to_resources"""

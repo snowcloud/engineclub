@@ -16,6 +16,7 @@
 {% if user.is_superuser %}
 <ul>
     <li><a href="{% url cab-reindex %}">reindex resources</a></li>
+    <li><a href="{% url remove-dud-curations %}">remove-dud-curations</a></li>
     <li><a href="{% url show-curationless-resources %}">show-curationless-resources</a></li>
     <li><a href="{% url fix-curationless-resources %}">fix-curationless-resources</a></li>
     <li><a href="{% url cab-one-off-util %}">one off util</a></li>
