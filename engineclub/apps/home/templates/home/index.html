@@ -130,6 +130,10 @@
 <div class="article grid_4 alpha">
 <h3>Blog</h3>
 <p>The <a href="http://www.aliss.scot.nhs.uk/">ALISS project blog</a> is your first stop to get background on the project, news of current work, and find out about upcoming events.</p>
+
+<p><strong>* Blog not available for now. *</strong></p>
+{% comment %}    
+
 {% get_feed_items as items %}
 
 <ul>
@@ -137,6 +141,7 @@
     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
 {% endfor %}
 </ul>
+{% endcomment %}    
 
 <div class="more-btn"><a href="http://www.aliss.scot.nhs.uk/">more...</a></div>
 
@@ -144,7 +149,7 @@
 
 <div class="article grid_4 twitterlinks">
     <h3>Twitter</h3>
-    
+
     <script src="http://widgets.twimg.com/j/2/widget.js"></script>
     <script>
     new TWTR.Widget({
@@ -176,7 +181,6 @@
       }
     }).render().setUser('alissproject').start();
     </script>
-    
 </div>
 
 <div class="article grid_4 omega">
