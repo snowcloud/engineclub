@@ -80,7 +80,7 @@ def remove_dud_curations(request):
         if c.resource is None:
             c.delete()
             i += 1
-    return i
+    # return i
     
     note = 'removed %s dud curations' % i
     messages.success(request, 'job done. %s' % note)
