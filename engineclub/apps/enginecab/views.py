@@ -44,7 +44,7 @@ def show_curationless_resources(request):
     r = []
     for res in Resource.objects.all():
         if not res.curations:
-            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+            r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
             i += 1
     note = 'found %s resources with no curations: %s' % (i, ', '.join(r))
     messages.success(request, 'job done. %s' % note)
