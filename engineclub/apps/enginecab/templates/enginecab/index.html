@@ -15,12 +15,12 @@
 <hr>
 {% if user.is_superuser %}
 <p><a href="{% url cab-reindex %}">reindex resources</a></p>
-{% endif %}
 
-{% comment %}
 <p><a href="{% url cab-one-off-util %}">remove dud curations</a></p>
+{% comment %}
 <!-- p><a href="{% url cab-fix-resource-accounts %}">fix resource accounts</a></p -->
 {% endcomment %}
+{% endif %}
 
 
 {% endblock %}

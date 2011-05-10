@@ -32,7 +32,7 @@ def one_off_util(request):
     note = ''
     # link_curations_to_resources()
     # make_newcurations()
-    # note = remove_dud_curations()
+    note = remove_dud_curations()
     messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab'))
