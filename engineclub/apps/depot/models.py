@@ -32,10 +32,10 @@ class ItemMetadata(EmbeddedDocument):
     status = StringField()
     note = StringField()
     
-    def update(self, author, last_modified=datetime.now()):
+    def update(self, author, last_modified=None):
         """docstring for update"""
         self.author = author
-        self.last_modified = last_modified
+        self.last_modified = last_modified or datetime.now()
             
 class Location(Document):
     """Location document, based on Ordnance Survey data
