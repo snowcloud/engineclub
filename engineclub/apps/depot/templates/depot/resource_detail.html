@@ -8,7 +8,10 @@
 <!-- script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}"></script -->  
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
-<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script>
+<!-- script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script -->
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
 
 <!-- script type="text/javascript" src="/static/js/jquery.gmap-1.1.0-min.js"></script -->
 
@@ -49,7 +52,7 @@
     {% if user|can_edit:object %} | <a href="{% url resource-edit object.id %}">edit resource</a>{% endif %}
     {% if user.is_staff %}
         {% if user|can_delete:object %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}
-        <a href="{% url resource-list %}">all items</a>
+        | <a href="{% url resource-list %}">all items</a>
     {% endif %}
 </p>
 

@@ -13,12 +13,20 @@
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <hr>
-<p><a href="{% url cab-reindex %}">reindex resources</a></p>
+{% if user.is_superuser %}
+<ul>
+    <li><a href="{% url cab-reindex %}">reindex resources</a></li>
+    <li><a href="{% url remove-dud-curations %}">remove-dud-curations</a></li>
+    <li><a href="{% url show-curationless-resources %}">show-curationless-resources</a></li>
+    <li><a href="{% url fix-curationless-resources %}">fix-curationless-resources</a></li>
+    <li><a href="{% url cab-one-off-util %}">one off util</a></li>
+    
+    {% comment %}
+    <!-- li><a href="{% url cab-fix-resource-accounts %}">fix resource accounts</a></li -->
+    {% endcomment %}
 
-{% comment %}
-<p><a href="{% url cab-one-off-util %}">link curations to resources</a></p>
-<!-- p><a href="{% url cab-fix-resource-accounts %}">fix resource accounts</a></p -->
-{% endcomment %}
+</ul>
+{% endif %}
 
 
 {% endblock %}

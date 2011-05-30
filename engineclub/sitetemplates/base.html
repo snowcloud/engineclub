@@ -2,7 +2,8 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>aliss.org: {% block title %}{% endblock %}
+    <meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+    <title>ALISS: {% block title %}{% endblock %}
     </title>
     <script type='text/javascript' src='/static/js/modernizr-1.6.min.js'></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
@@ -19,11 +20,6 @@
     {% block head-extra %}{% endblock %}
     <script type="text/javascript">
       $('document').ready(function(){
-        $('.js .media').embedly({
-          maxWidth: 450,
-          wmode: 'transparent',
-          methodx: 'before'
-        });
         {% block document-ready %}{% endblock %}
       });
     </script>
@@ -44,7 +40,7 @@
 <body class="{% block body_class %}single{% endblock %}">
 
     {% if user.is_authenticated %}{% endif %}
-    <div id="flash-tab">demonstration</div>
+    <div id="flash-tab">demonstration site</div>
     <div id="skip"><a href="#maincontent">Skip to content</a> <a href="#login">Skip to login</a></div>
     <div id="header">
      
@@ -55,9 +51,7 @@
         <li><a href="/about/">about</a></li>
         {# <li><a href="project-info.html">info</a></li> #}
         <li><a href="/contact/">contact</a></li>
-        {% if user.is_authenticated %}
-            <li><a href="/depot/resource/find/">search</a></li>
-        {% endif %}
+        <li><a href="/depot/resource/find/">search</a></li>
         {% if user.is_staff %}
             <li><a href="/cab/">cab</a></li>
             <li><a href="/admin/">admin</a></li>
@@ -99,8 +93,10 @@
     <p>Geolocation data provided by <a href="http://www.geonames.org">www.geonames.org</a></p>
     <p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://www.aliss.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();g">ALISS it</a> bookmark</p>
 </div>
+{% comment %}
 <script type="text/javascript" src="http://static.wehearvoices.net/widget.js"></script>
 <script type="text/javascript" src="http://widget.wehearvoices.net/node/init.js?user_id=9cac9f62-69cd-11e0-bf5e-fefdb24f91c5"></script>
+{% endcomment %}
 
 </body>
 </html>

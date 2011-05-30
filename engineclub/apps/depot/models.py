@@ -11,6 +11,8 @@ from pysolr import Solr
 
 from engine_groups.models import Account, get_account
 
+from copy import deepcopy
+
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'
 COLL_STATUS_TAGS_CONF = 'tags_confirm'
@@ -20,6 +22,9 @@ COLL_STATUS_COMPLETE = 'complete'
 STATUS_OK = 'OK'
 STATUS_BAD = 'BAD'
 
+import logging
+logger = logging.getLogger('aliss')
+
 class ItemMetadata(EmbeddedDocument):
     last_modified = DateTimeField(default=datetime.now)
     author = ReferenceField(Account)
@@ -27,10 +32,10 @@ class ItemMetadata(EmbeddedDocument):
     status = StringField()
     note = StringField()
     
-    def update(self, author, last_modified=datetime.now()):
+    def update(self, author, last_modified=None):
         """docstring for update"""
         self.author = author
-        self.last_modified = last_modified
+        self.last_modified = last_modified or datetime.now()
             
 class Location(Document):
     """Location document, based on Ordnance Survey data
@@ -137,7 +142,9 @@ class Resource(Document):
         # if self.owner:
         # self.item_metadata.author = Account.objects.get(local_id=local_id)
         # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
-        if self.id is None:
+        created = self.id is None
+        super(Resource, self).save(*args, **kwargs)
+        if created:
             if not self.moderations:
                 obj = Moderation(outcome=STATUS_OK, owner=self.owner)
                 obj.item_metadata.author = self.owner
@@ -145,8 +152,11 @@ class Resource(Document):
             if not self.curations:
                 obj = Curation(outcome=STATUS_OK, tags=self.tags, owner=self.owner)
                 obj.item_metadata.author = self.owner
+                obj.resource = self
+                obj.save()
                 self.curations.append(obj)
-        super(Resource, self).save(*args, **kwargs)
+            super(Resource, self).save(*args, **kwargs)
+        
         if reindex:
             self.reindex()
 
@@ -161,15 +171,22 @@ class Resource(Document):
         conn = Solr(settings.SOLR_URL)
         conn.delete(q='id:%s' % self.id)
         self.index(conn)
-        
+    
+    
     def index(self, conn=None):
         """conn is Solr connection"""
         tags = self.tags
         description = [self.description]
-        for obj in self.curations:
-            tags.extend(obj.tags)
-            description.extend([obj.note or u'', unicode(obj.data) or u''])
         
+        try:
+            for obj in self.curations:
+                tags.extend(obj.tags)
+                description.extend([obj.note or u'', unicode(obj.data) or u''])
+        except AttributeError:
+            # print "error in %s, %s" % (self.id, self.title)
+            logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
+            self.curations = []
+            self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
@@ -178,13 +195,22 @@ class Resource(Document):
             'description': '\n'.join(description),
             'keywords': ', '.join(tags),
             'uri': self.uri,
-            'loc_labels': [', '.join([loc.label, loc.place_name]) for loc in self.locations]
+            'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
+        result = []
         if self.locations:
-            doc['pt_location'] = [lat_lon_to_str(loc) for loc in self.locations]
+            for i, loc in enumerate(self.locations):
+                loc_doc = deepcopy(doc)
+                loc_doc['id'] = u'%s_%s' % (unicode(self.id), i)
+                loc_doc['pt_location'] = [lat_lon_to_str(loc)]
+                loc_doc['loc_labels'] = [', '.join([loc.label, loc.place_name])]
+                result.append(loc_doc)
+        else:
+            result = [doc]    
+            
         if conn:
-            conn.add([doc])
-        return doc
+            conn.add(result)
+        return result
 
     def add_location_from_name(self, placestr):
         """place_str can be anything"""

@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from depot.models import Resource, Curation, ItemMetadata #, TempCuration
+from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
 from engine_groups.models import Account
 from pymongo.objectid import ObjectId
@@ -22,19 +22,71 @@ def index(request):
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request):
     
-    reindex_resources(settings.MONGO_DB)
+    reindex_resources(settings.MONGO_DB, printit=False)
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab'))
 
 
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
+    note = ''
     # link_curations_to_resources()
     # make_newcurations()
-    messages.success(request, 'job done.')
+    # note = remove_dud_curations()
+    # note = fix_curationless_resources()
+    messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab'))
 
+@user_passes_test(lambda u: u.is_staff)
+def show_curationless_resources(request):
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
+    note = 'found %s resources with no curations: %s' % (i, ', '.join(r))
+    messages.success(request, 'job done. %s' % note)
+    
+    return HttpResponseRedirect(reverse('cab'))
+
+@user_passes_test(lambda u: u.is_staff)
+def fix_curationless_resources(request):
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            obj = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
+            obj.item_metadata.author = res.owner
+            obj.resource = res
+            obj.save()
+            res.curations.append(obj)
+            res.save(reindex=True)
+            
+            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
+            
+    note = 'fixed %s resources with no curations: %s' % (i, ', '.join(r))
+    messages.success(request, 'job done. %s' % note)
+    
+    return HttpResponseRedirect(reverse('cab'))
+    
+@user_passes_test(lambda u: u.is_staff)
+def remove_dud_curations(request):
+    """docstring for remove_dud_curations"""
+    i = 0
+    for c in Curation.objects.all():
+        if c.resource is None:
+            c.delete()
+            i += 1
+    # return i
+    
+    note = 'removed %s dud curations- do a reindex now, will find/fix errors in curations.' % i
+    messages.success(request, 'job done. %s' % note)
+    
+    return HttpResponseRedirect(reverse('cab'))
+    
 # def link_curations_to_resources():
 #     """docstring for link_curations_to_resources"""
 #     for res in Resource.objects.all():

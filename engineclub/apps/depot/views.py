@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
+from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
@@ -74,9 +75,10 @@ def resource_add(request, template='depot/resource_edit.html'):
             # resource.metadata.author = str(request.user.id)
             try:
                 # resource.collection_status = COLL_STATUS_LOC_CONF
-                resource.owner = get_account(request.user.id)
+                user = get_account(request.user.id)
+                resource.owner = user
                 # save will create default moderation and curation using owner acct
-                resource.save(author=resource.owner, reindex=True)
+                resource.save(author=user, reindex=True)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -206,6 +208,7 @@ def resource_remove(request, object_id):
     return HttpResponseRedirect(reverse('resource-list'))
 
 # @login_required
+@cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
 
@@ -213,11 +216,12 @@ def resource_find(request, template='depot/resource_find.html'):
     centre = None
     pins = []
     # places = []
-    if request.method == 'POST':
-        result = request.POST.get('result', '')
+    result = request.REQUEST.get('result', '')
+    if request.method == 'POST' or result:
+        # result = request.REQUEST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource-list'))
-        form = FindResourceForm(request.POST)
+        form = FindResourceForm(request.REQUEST)
     
         if form.is_valid():
             results = form.results
@@ -260,6 +264,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation = Curation(**form.cleaned_data)
             curation.owner = user
             curation.item_metadata.update(author=user)
+            curation.resource = resource
             curation.save()
             resource.curations.append(curation)
             resource.save(reindex=True)

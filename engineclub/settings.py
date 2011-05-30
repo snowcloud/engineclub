@@ -5,6 +5,53 @@ import sys
 
 _TESTING= 'test' in sys.argv
 
+import logging
+
+# logging.basicConfig(level=logging.WARNING,
+#     format='%(asctime)s | %(levelname)s | %(message)s')
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s | %(levelname)s | %(message)s'
+        },
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            # 'filters': ['simple']
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers':['null'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'aliss': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+            # 'filters': ['simple']
+        }
+    }
+}
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

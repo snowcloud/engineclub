@@ -13,6 +13,9 @@ from pysolr import Solr
 
 from depot.models import Resource, Location
 
+import logging
+logger = logging.getLogger('aliss')
+
 # probably move this code to utils.py if enough
 def get_url_content(url):
     """takes a url and returns the text content of the page"""
@@ -161,6 +164,8 @@ def load_placenames(fname, dbname):
 
 def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
     """docstring for reindex_resources"""
+    # logger.error("indexing resources:")
+    
     if printit:
         print 'CLEARING SOLR INDEX: ', url
     conn = Solr(url)
@@ -171,7 +176,7 @@ def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
     
     docs = []
     for i, res in enumerate(Resource.objects):
-        docs.append(res.index())
+        docs.extend(res.index())
         if i % batch_size == 0:
             conn.add(docs)
             docs = []
