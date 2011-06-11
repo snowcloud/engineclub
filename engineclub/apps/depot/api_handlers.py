@@ -14,7 +14,7 @@ from django.utils import simplejson as json
 
 class JsonResponse(HttpResponse):
     """from http://www.djangosnippets.org/snippets/1639/"""
-    error = ""
+    errors = {}
     __data = []
     callback = None
     
@@ -31,7 +31,7 @@ class JsonResponse(HttpResponse):
         content = json.dumps( 
             {
                 "data": self.__data, 
-                "error":self.error,
+                "errors":self.errors,
             }, cls = DjangoJSONEncoder)
         if self.callback:
             return '%s (%s)' % (self.callback, content)
@@ -49,8 +49,8 @@ class JsonResponse(HttpResponse):
         if "data" in kwargs:
             self.data = kwargs.pop("data")
             
-        if "error" in kwargs:
-            self.error = kwargs.pop("error")
+        if "errors" in kwargs:
+            self.errors = kwargs.pop("errors")
         
         if "callback" in kwargs:
             self.callback = kwargs.pop('callback')
@@ -73,7 +73,7 @@ def resource_by_id(request, id):
     # print item.title
 
     if errors:
-        return JsonResponse(error={ 'code': result_code, 'message': '. '.join(errors)})
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
 
     data=[{
         'id': unicode(item.id),
@@ -127,7 +127,7 @@ def resource_search(request):
         result_code = 10
         errors.append('Param \'boostlocation\' must be an integer number between 0 and %s' % int(settings.SOLR_LOC_BOOST_MAX))
     if errors:
-        return JsonResponse(error={ 'code': result_code, 'message': '. '.join(errors)})
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
     else:
         kwords = query
         loc, resources = find_by_place_or_kwords(location, kwords, boost_location, start=start, max=int(max), accounts=accounts.split())

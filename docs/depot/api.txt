@@ -6,31 +6,114 @@ Engineclub API
 
 
 
+.. Authentication
+
+Authentication
+=========================
+Authentication is not used yet- the API is currently read-only and provides public data.
+
 .. Retrieve an item by id
 
-Retrieve an item by id
+Retrieve a resource by id
 =========================
 
+Parameters
+----------
+
+An optional callback parameter can be added to provide a user defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+
+Response
+--------
+
+json response is dict::
+
+    { 'data': [{'item': data, 'item': data, ...}], 'error': "string message if error..." }
+
 ==================      =====================================
-field name              type
+item name               type
 ==================      =====================================
+id                      ObjectID *
+title                   string
+description             string
+resourcetype            string ['web', 'group', ...]
+uri                     string [web URI format]
+locations               list of `location`
+service_area            not implemented
+tags                    list of string
+relatedresources        not implemented
+lastmodified            date time as string, eg "2011-04-06 15:58:23"
 ==================      =====================================
 
-url: /api/item/[item id]/
-example: /api/item/4b91379689cb160dda000000/
+url: /api/resources/[resource id]/
+
+example: /api/resources/4b91379689cb160dda000000/
+
 method: GET
+
 access: public
 
+**Example of successful result**::
 
-.. Retrieve items by location and/or categories
+    {
+        data: [
+            {
+                "last_modified": "2011-04-06 15:58:23",
+                "description": "Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... ",
+                "title": "Womens Mental Health Project",
+                "locations": [ "EH17 8QG" ],
+                "tags": [ "women", "mental health", "depression", "sexual abuse" ],
+                "id": "4d964f2489cb161ac5000000",
+                "resource_type": "",
+                "uri": "http://www.gilmerton.btik.com/WomensMentalHealthProject"
+            }
+        ]
+        errors: {}
+    }
 
-Retrieve items by location and/or categories
-============================================
+If there has been an error, data will be an empty array, and errors will be a dict { 'code': xx, 'message': 'error message(s) here...'}. Error codes are not currently defined. 
+
+.. Search resources
+
+Retrieve resources by search parameters
+=======================================
+
+Parameters
+----------
+
+==================      ==========    ==========================
+parameter name          required      value
+==================      ==========    ==========================
+location                no            A post code or place name.
+query	                yes           Keywords, can be comma-separated.
+start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results.
+max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100, default is 100.
+boostlocation           no            An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
+accounts                no            A list of ALISS.org account IDs, separated a '+'.
+output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ==========    ==========================
+
+Response
+--------
 
 ==================      =====================================
-field name              type
+item name               type
 ==================      =====================================
+to do                   to do
 ==================      =====================================
+
+
+
+url: /api/resources/search/
+
+examples::
+
+    /api/resources/search/?location=paisley&query=mental%20health&max=30&start=0&boostlocation=50
+    /api/resources/search/?location=edinburgh&query=mental%20health&max=30&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000
+
+method: GET
+
+access: public
 
 
 .. Submit an item
