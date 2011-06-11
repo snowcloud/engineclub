@@ -100,6 +100,7 @@ def resource_search(request):
             # u'loc_labels': [u'EH17 8QG, Liberton/Gilmerton, of Edinburgh'], u'pt_location': [u'55.9062925785, -3.13446285433']
             'tags': r.get('keywords', ''),
             'accounts': r.get('accounts', ''),
+            'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
         
