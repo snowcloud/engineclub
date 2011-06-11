@@ -73,19 +73,6 @@ DATABASES = {
     }
 }
 
-
-# MongoDBTestRunner creates/drops test db
-# TEST_RUNNER = 'depot.tests.MongoDBTestRunner'
-
-# MongoDBRunner uses current db
-TEST_RUNNER = 'depot.tests.MongoDBRunner'
-
-# repeated connects now fixed in mongoengine
-from mongoengine import connect
-MONGO_DB= 'aliss'
-# connect(MONGO_DB, host='localhost', port=27017)
-connect(MONGO_DB, host='192.168.176.78', port=27017)
-
 LATLON_SEP= ', '
 
 # set/override these in settings_local
