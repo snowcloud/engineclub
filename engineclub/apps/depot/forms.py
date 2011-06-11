@@ -58,7 +58,7 @@ class FindResourceForm(forms.Form):
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('post_code', '').strip()
         kwords = cleaned_data.get('tags', '').strip()
-        boost_location = cleaned_data.get('boost_location', '') or settings.SOLR_LOC_BOOST_DEFAULT * 10
+        boost_location = cleaned_data.get('boost_location', '') or settings.SOLR_LOC_BOOST_DEFAULT
         
         if not(data or kwords):
             raise forms.ValidationError("Please enter a location and/or some text and try again.")

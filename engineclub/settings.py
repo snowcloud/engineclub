@@ -78,8 +78,9 @@ LATLON_SEP= ', '
 # set/override these in settings_local
 # SOLR_URL = 'http://127.0.0.1:8983/solr'
 SOLR_BATCH_SIZE = 100
-SOLR_ROWS = 20
-SOLR_LOC_BOOST_DEFAULT = 3.0
+SOLR_ROWS = 100
+SOLR_LOC_BOOST_DEFAULT = 30.0
+SOLR_LOC_BOOST_MAX = 100.0
 
 YAHOO_KEY = 'your_key_here...'
 
