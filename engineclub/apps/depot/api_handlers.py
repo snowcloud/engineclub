@@ -113,7 +113,7 @@ def resource_search(request):
     boost_location = request.REQUEST.get('boostlocation', int(settings.SOLR_LOC_BOOST_DEFAULT))
     callback = request.REQUEST.get('callback')
 
-    print accounts.split()
+    # print accounts.split()
     
     result_code = 200
     

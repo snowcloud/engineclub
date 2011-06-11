@@ -333,7 +333,6 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
         }
         if accounts:
             kw['fq'] = 'accounts:(%s)'% ' OR '.join(accounts)
-            print kw
         
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
