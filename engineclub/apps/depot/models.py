@@ -9,6 +9,7 @@ from datetime import datetime
 from pymongo import Connection, GEO2D
 from pysolr import Solr
 
+from ecutils.utils import minmax
 from engine_groups.models import Account, get_account
 
 from copy import deepcopy
@@ -176,11 +177,13 @@ class Resource(Document):
     def index(self, conn=None):
         """conn is Solr connection"""
         tags = self.tags
+        accounts = []
         description = [self.description]
         
         try:
             for obj in self.curations:
                 tags.extend(obj.tags)
+                accounts.append(unicode(obj.owner.id))
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
             # print "error in %s, %s" % (self.id, self.title)
@@ -194,6 +197,7 @@ class Resource(Document):
             'short_description': self.description,
             'description': '\n'.join(description),
             'keywords': ', '.join(tags),
+            'accounts': ', '.join(accounts),
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
@@ -311,31 +315,39 @@ def lat_lon_to_str(loc):
     else:
         return ''
 
-def find_by_place(name, kwords, loc_boost=None):
+def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
+        
     if loc:
         kw = {
-            'rows': settings.SOLR_ROWS,
+            'start': start,
+            'rows': minmax(0, settings.SOLR_ROWS, max, settings.SOLR_ROWS),
             'fl': '*,score',
+            # 'fq': 'accounts:(4d9c3ced89cb162e5e000000 OR 4d9b99d889cb16665c000000) ',
             'qt': 'resources',
             'sfield': 'pt_location',
             'pt': lat_lon_to_str(loc['lat_lon']),
             'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
+        if accounts:
+            kw['fq'] = 'accounts:(%s)'% ' OR '.join(accounts)
+            print kw
+        
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords, loc_boost=None):
+def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
     """docstring for find_by_place_or_kwords"""
     conn = Solr(settings.SOLR_URL)
     if name:
-        return find_by_place(name, kwords, loc_boost)
+        return find_by_place(name, kwords, loc_boost, start, max, accounts)
     # keywords only
     kw = {
-        'rows': settings.SOLR_ROWS,
+        'start': start,
+        'rows': minmax(0, settings.SOLR_ROWS, max, settings.SOLR_ROWS),
         'fl': '*,score',
         'qt': 'resources',
     }
