@@ -68,7 +68,7 @@ class MongoDBTestRunner(DjangoTestSuiteRunner):
 
     def teardown_databases(self, db_name, **kwargs):
         from pymongo import Connection
-        conn = Connection()
+        conn = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
         conn.drop_database(db_name)
         print 'Dropping test-databasey: ' + db_name
         super(teardown_databases, self).setup_databases(db_name, **kwargs)
@@ -83,7 +83,7 @@ class MongoDBRunner(DjangoTestSuiteRunner):
 
     def teardown_databases(self, db, **kwargs):
         # from pymongo import Connection
-        # conn = Connection()
+        # conn = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
         # conn.drop_database(db_name)
         print 'Closing test-db: ', db[0][0][1], ' (data intact)'
         super(MongoDBRunner, self).teardown_databases(db, **kwargs)
@@ -336,7 +336,7 @@ class SearchTest(TransactionTestCase):
         # # print reduce
         # 
         # from pymongo import Connection
-        # db = Connection()['test_db']
+        # db = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)['test_db']
         # # print db, db.resources
         # print db.resource.count()
         # 

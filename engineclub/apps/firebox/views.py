@@ -97,7 +97,7 @@ def load_postcodes(fname, dbname):
     GB	AB10	Midstocket/Rosemount Ward	Scotland	SCT		00	Aberdeen City	QA	57.1454241278722	-2.10952454025988	6
     """
     
-    connection = Connection()
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
     postcode_coll = db.postcode_locations
     postcode_coll.drop()
@@ -135,7 +135,7 @@ def load_placenames(fname, dbname):
     2633415	Yarm	Yarm	Yarm,Yarm on Tees	54.50364	-1.35793	P	PPL	GB		ENG	J7			0		31	Europe/London	9 Dec 2010
     
     """
-    connection = Connection()
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
     placename_coll = db.placename_locations
     placename_coll.drop()

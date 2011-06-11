@@ -281,7 +281,7 @@ def get_place_for_name(namestr, collname, field, dbname):
     
     """
     name = namestr.upper().replace(' ', '').strip()
-    connection = Connection()
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
     coll = db[collname]
     result = coll.find_one({field: name})
