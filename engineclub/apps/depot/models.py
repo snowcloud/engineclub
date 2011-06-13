@@ -297,7 +297,7 @@ def get_place_for_placename(name, dbname=settings.MONGO_DB):
 
 def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
     """looks up nearest postcode for lat_lon in geonames data"""
-    connection = Connection()
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
     coll = db['postcode_locations']
     coll.create_index([("lat_lon", GEO2D)])
