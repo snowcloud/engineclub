@@ -8,7 +8,7 @@
 <p>
     <a href="{% url resource resource.id %}">back to resource</a>
     {% if user|can_edit:object %} | <a href="{% url curation-edit resource.id index %}">edit curation</a>{% endif %}
-    {% if user.is_staff %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
+    {% if user|can_delete:object %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
 </p>
 
 <h1>Curation for {{ resource.title }}</h1>
