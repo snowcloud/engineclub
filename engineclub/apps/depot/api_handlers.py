@@ -103,14 +103,20 @@ def resource_search(request):
             'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
-        
+    def _check_int(i):
+        try:
+            return int(i)
+        except ValueError:
+            print i
+            return None
+            
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     query = request.REQUEST.get('query')
-    max = request.REQUEST.get('max', settings.SOLR_ROWS)
+    max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
     start = request.REQUEST.get('start', 0)
     output = request.REQUEST.get('output', 'json')
-    boost_location = request.REQUEST.get('boostlocation', int(settings.SOLR_LOC_BOOST_DEFAULT))
+    boost_location = request.REQUEST.get('boostlocation', (settings.SOLR_LOC_BOOST_DEFAULT))
     callback = request.REQUEST.get('callback')
 
     # print accounts.split()
@@ -121,12 +127,15 @@ def resource_search(request):
     if not query:
         result_code = 10
         errors.append('Param \'query\' must be valid search query')
-    if not max.isdigit() or int(max) > settings.SOLR_ROWS:
+    if not _check_int(max) or int(max) > settings.SOLR_ROWS:
         result_code = 10
-        errors.append('Param \'max\' must be positive integer maximum value of %s' % settings.SOLR_ROWS)
-    if not boost_location.isdigit() or int(boost_location) > int(settings.SOLR_LOC_BOOST_MAX):
+        errors.append('Param \'max\' must be positive integer maximum value of %s. You sent %s' % (settings.SOLR_ROWS, max))
+    if not _check_int(start) or int(start) < 0:
         result_code = 10
-        errors.append('Param \'boostlocation\' must be an integer number between 0 and %s' % int(settings.SOLR_LOC_BOOST_MAX))
+        errors.append('Param \'start\' must be positive integer. You sent %s' % start)
+    if not _check_int(boost_location) or int(boost_location) > int(settings.SOLR_LOC_BOOST_MAX):
+        result_code = 10
+        errors.append('Param \'boostlocation\' must be an integer number between 0 and %s. You sent %s' % (int(settings.SOLR_LOC_BOOST_MAX), boost_location))
     if errors:
         return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
     else:
@@ -135,7 +144,7 @@ def resource_search(request):
 
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
-            'location': loc,
+            'location': loc, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
