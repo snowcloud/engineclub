@@ -77,7 +77,13 @@ def remove_dud_curations(request):
     """docstring for remove_dud_curations"""
     i = 0
     for c in Curation.objects.all():
-        if c.resource is None:
+        try:
+            # print c.resource.id
+            x = c.resource.title
+        except AttributeError:
+            # if c.resource is None:
+            # print '**** DELETING ', c.resource.id
+            # print c.owner.name
             c.delete()
             i += 1
     # return i
