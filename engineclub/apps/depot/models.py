@@ -163,6 +163,8 @@ class Resource(Document):
 
     def delete(self, *args, **kwargs):
         """docstring for delete"""
+        for c in self.curations:
+            c.delete()
         conn = Solr(settings.SOLR_URL)
         conn.delete(q='id:%s' % self.id)        
         super(Resource, self).delete(*args, **kwargs)
