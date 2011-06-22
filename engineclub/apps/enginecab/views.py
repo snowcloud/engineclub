@@ -14,22 +14,18 @@ from pymongo.objectid import ObjectId
 
 
 @user_passes_test(lambda u: u.is_staff)
-def index(request):
-    
-    return render_to_response('enginecab/index.html', RequestContext(request))
-
+def index(request):    
+    return render_to_response('enginecab/index.html', RequestContext(request, {}))
 
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request):
-    
     reindex_resources(settings.MONGO_DB, printit=False)
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab'))
 
-
 @user_passes_test(lambda u: u.is_staff)
 def one_off_util(request):
-    note = ''
+    note = 'Nothing enabled.'
     # link_curations_to_resources()
     # make_newcurations()
     # note = remove_dud_curations()
@@ -77,7 +73,13 @@ def remove_dud_curations(request):
     """docstring for remove_dud_curations"""
     i = 0
     for c in Curation.objects.all():
-        if c.resource is None:
+        try:
+            if not c in c.resource.curations:
+                # c points to resource, but c not in resource.curations = orphan
+                c.delete()
+                i += 1
+        except AttributeError:
+            # c.resource can't be dereferenced, ie ref doesn't exist
             c.delete()
             i += 1
     # return i
@@ -220,13 +222,11 @@ def fix_resource_accounts(request):
     print 'done' #, fixes
     # for u in User.objects.all():
     #     print u.id
-        
-        
+                
     return HttpResponseRedirect(reverse('cab'))
 
 @user_passes_test(lambda u: u.is_staff)
 def fix_urls(request):
-
     for resource in Resource.objects(uri__startswith='http://new.gramp'):
         resource.uri = resource.uri.replace('//new.', '//www.')
         resource.save()
