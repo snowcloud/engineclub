@@ -10,8 +10,15 @@ setup_environ(settings)
 
 from firebox.views import load_postcodes, load_placenames, reindex_resources
 
-
-
+def temp():
+    """docstring for temp"""
+    from django.core.urlresolvers import resolve
+    print resolve('/depot/resource/find/').url_name
+    # this fails:
+    # print resolve('/depot/resource/find/?csrfmiddlewaretoken=a4b92155bab6bbff7d4f51be9514940d&post_code=aberdeen&tags=fash&boost_location=30.0&result=Find+items')
+    # so params need stripped and passed in separately
+    
+    
 if __name__ == "__main__":
 
     from optparse import OptionParser
@@ -39,6 +46,9 @@ if __name__ == "__main__":
     elif options.command == 'reindex':
         print("\nreindexing resources...")
         reindex_resources(options.dbname or settings.MONGO_DB, printit=True)
+    elif options.command == 'temp':
+        print("\ntemp...")
+        temp()
 
     else:
         print 'no command recognised'
