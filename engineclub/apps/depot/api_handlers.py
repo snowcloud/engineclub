@@ -105,7 +105,8 @@ def resource_search(request):
         }
     def _check_int(i):
         try:
-            return int(i)
+            int(i)
+            return True
         except ValueError:
             print i
             return None
