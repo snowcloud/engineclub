@@ -179,10 +179,21 @@ def publish_data(request):
     start = request.REQUEST.get('start', 0)
     callback = request.REQUEST.get('callback')
     
+    result_code = 200
     
-    results = [_resource_result(r) for r in Resource.objects[int(start):int(start)+int(max)]]
-    data = [ { 'max': max, 'start': start, 'results': results }]
-    return JsonResponse(data=data, callback=callback)
+    errors = []
+    if not _check_int(max) or int(max) > settings.SOLR_ROWS:
+        result_code = 10
+        errors.append('Param \'max\' must be positive integer maximum value of %s. You sent %s' % (settings.SOLR_ROWS, max))
+    if not _check_int(start) or int(start) < 0:
+        result_code = 10
+        errors.append('Param \'start\' must be positive integer. You sent %s' % start)
+    if errors:
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
+    else:
+        results = [_resource_result(r) for r in Resource.objects[int(start):int(start)+int(max)]]
+        data = [ { 'max': max, 'start': start, 'results': results }]
+        return JsonResponse(data=data, callback=callback)
 
 def tags(request):
     """docstring for tags"""
