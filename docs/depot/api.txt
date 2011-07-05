@@ -85,7 +85,7 @@ parameter name          required      value
 ==================      ==========    ==========================
 location                no            A post code or place name.
 query	                yes           Keywords, can be comma-separated.
-start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 100.
+start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.
 max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
 boostlocation           no            An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
 accounts                no            A list of ALISS.org account IDs, separated a '+'.
