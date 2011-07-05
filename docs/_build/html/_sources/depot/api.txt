@@ -106,10 +106,10 @@ to do                   to do
 
 url: /api/resources/search/
 
-examples::
+examples:
 
-    `<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=30&start=0&boostlocation=50>`_
-    `<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=30&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
+`<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=30&start=0&boostlocation=50>`_
+`<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=30&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
 
 method: GET
 
@@ -146,10 +146,10 @@ to do                   to do
 
 url: /api/resources/publish-data/
 
-examples::
+examples:
 
-    `<http://www.aliss.org/api/resources/publish-data/?start=0&max=50>`_
-    `<http://www.aliss.org/api/resources/publish-data/>`_
+`<http://www.aliss.org/api/resources/publish-data/?start=0&max=50>`_
+`<http://www.aliss.org/api/resources/publish-data/>`_
 
 method: GET
 
