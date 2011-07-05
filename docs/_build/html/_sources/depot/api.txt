@@ -46,7 +46,7 @@ lastmodified            date time as string, eg "2011-04-06 15:58:23"
 
 url: /api/resources/[resource id]/
 
-example: /api/resources/4b91379689cb160dda000000/
+example: `<http://www.aliss.org/api/resources/4b91379689cb160dda000000/>`_
 
 method: GET
 
