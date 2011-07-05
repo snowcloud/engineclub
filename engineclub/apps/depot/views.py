@@ -236,13 +236,17 @@ def resource_find(request, template='depot/resource_find.html'):
     return render_to_response(template,
         RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
-def curation_detail(request, object_id, index, template='depot/curation_detail.html'):
+def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
-    
-    object = get_one_or_404(id=ObjectId(object_id))
-
+    if index:
+        object = get_one_or_404(id=ObjectId(object_id))
+        curation = object.curations[int(index)]
+    else:
+        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
+        object = curation.resource
+        
     return render_to_response(template,
-        RequestContext( request, { 'resource': object, 'object': object.curations[int(index)], 'index': index }))
+        RequestContext( request, { 'resource': object, 'object': curation, 'index': index }))
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
