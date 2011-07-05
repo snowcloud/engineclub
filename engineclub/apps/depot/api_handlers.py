@@ -87,6 +87,14 @@ def resource_by_id(request, id):
     }]
     return JsonResponse(data=data, callback=callback)
 
+def _check_int(i):
+    try:
+        int(i)
+        return True
+    except ValueError:
+        print i
+        return None
+        
 def resource_search(request):
     def _resource_result(r):
         return {
@@ -103,14 +111,6 @@ def resource_search(request):
             'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
-    def _check_int(i):
-        try:
-            int(i)
-            return True
-        except ValueError:
-            print i
-            return None
-            
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     query = request.REQUEST.get('query')
@@ -149,7 +149,41 @@ def resource_search(request):
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
-        
+
+def publish_data(request):
+    """docstring for publish_data"""
+    def _resource_result(r):
+        return {
+            'id': unicode(r.id),
+            'title': r.title, 
+            'description': r.description[:120],
+            'resource_type': r.resource_type,
+            'uri': r.uri,
+            'locations': [{
+                'os_id': l.os_id, 
+                'label': l.label, 
+                'place_name': l.place_name, 
+                'os_type': l.os_type, 
+                'lat_lon': l.lat_lon, 
+                
+                } for l in r.locations],
+            # 'locationnames': r.get('loc_labels', []),
+            # # u'loc_labels': [u'EH17 8QG, Liberton/Gilmerton, of Edinburgh'], u'pt_location': [u'55.9062925785, -3.13446285433']
+            'tags': r.tags,
+            # 'accounts': r.get('accounts', ''),
+            # 'score': r['score']
+            # # 'last_modified': r[''] .item_metadata.last_modified,
+        }
+    
+    max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
+    start = request.REQUEST.get('start', 0)
+    callback = request.REQUEST.get('callback')
+    
+    
+    results = [_resource_result(r) for r in Resource.objects[int(start):int(start)+int(max)]]
+    data = [ { 'max': max, 'start': start, 'results': results }]
+    return JsonResponse(data=data, callback=callback)
+
 def tags(request):
     """docstring for tags"""
     error = ''
