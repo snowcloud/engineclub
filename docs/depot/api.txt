@@ -85,8 +85,8 @@ parameter name          required      value
 ==================      ==========    ==========================
 location                no            A post code or place name.
 query	                yes           Keywords, can be comma-separated.
-start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results.
-max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100, default is 100.
+start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 100.
+max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
 boostlocation           no            An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
 accounts                no            A list of ALISS.org account IDs, separated a '+'.
 output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
@@ -126,8 +126,8 @@ Parameters
 ==================      ==========    ==========================
 parameter name          required      value
 ==================      ==========    ==========================
-start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results.
-max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100, default is 100.
+start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results. Default is 0.
+max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
 since                   no            Return resources modified since this date/time [not implemented]
 output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
 callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
