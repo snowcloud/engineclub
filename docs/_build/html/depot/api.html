@@ -211,6 +211,73 @@
 <p>access: public</p>
 </div>
 </div>
+<div class="section" id="retrieve-resources-by-batch">
+<h2>Retrieve resources by batch<a class="headerlink" href="#retrieve-resources-by-batch" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="5%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>start</td>
+<td>no</td>
+<td>This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results.</td>
+</tr>
+<tr><td>max</td>
+<td>no</td>
+<td>This is the number of documents to be returned starting at index start, up to a maximum of 100, default is 100.</td>
+</tr>
+<tr><td>since</td>
+<td>no</td>
+<td>Return resources modified since this date/time [not implemented]</td>
+</tr>
+<tr><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h3>Response<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>to do</td>
+<td>to do</td>
+</tr>
+</tbody>
+</table>
+<p>url: /api/resources/publish-data/</p>
+<p>examples:</p>
+<div class="highlight-python"><pre>/api/resources/publish-data/?start=0&amp;max=50
+/api/resources/publish-data/</pre>
+</div>
+<p>method: GET</p>
+<p>access: public</p>
+</div>
+</div>
 <div class="section" id="submit-an-item">
 <h2>Submit an item<a class="headerlink" href="#submit-an-item" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
@@ -312,6 +379,11 @@ could be done as an update, but also have as an alert as shortcut</p>
 <li><a class="reference internal" href="#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a><ul>
 <li><a class="reference internal" href="#id1">Parameters</a></li>
 <li><a class="reference internal" href="#id2">Response</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#retrieve-resources-by-batch">Retrieve resources by batch</a><ul>
+<li><a class="reference internal" href="#id3">Parameters</a></li>
+<li><a class="reference internal" href="#id4">Response</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#submit-an-item">Submit an item</a></li>
