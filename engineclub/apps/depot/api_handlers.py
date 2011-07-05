@@ -169,7 +169,7 @@ def publish_data(request):
                 
                 } for l in r.locations],
             'tags': r.tags,
-            'curations': ['http://129.215.110.191:8080/depot/curation/%s/' % unicode(c.id) for c in r.curations],
+            'curations': ['http://aliss.org/depot/curation/%s/' % unicode(c.id) for c in r.curations],
             # 'accounts': r.get('accounts', ''),
             # 'score': r['score']
             # # 'last_modified': r[''] .item_metadata.last_modified,
