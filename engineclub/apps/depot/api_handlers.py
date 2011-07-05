@@ -158,7 +158,8 @@ def publish_data(request):
             'title': r.title, 
             'description': r.description[:120],
             'resource_type': r.resource_type,
-            'uri': r.uri,
+            'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
+            'source_uri': r.uri,
             'locations': [{
                 'os_id': l.os_id, 
                 'label': l.label, 
@@ -167,9 +168,8 @@ def publish_data(request):
                 'lat_lon': l.lat_lon, 
                 
                 } for l in r.locations],
-            # 'locationnames': r.get('loc_labels', []),
-            # # u'loc_labels': [u'EH17 8QG, Liberton/Gilmerton, of Edinburgh'], u'pt_location': [u'55.9062925785, -3.13446285433']
             'tags': r.tags,
+            'curations': ['http://129.215.110.191:8080/depot/curation/%s/' % unicode(c.id) for c in r.curations],
             # 'accounts': r.get('accounts', ''),
             # 'score': r['score']
             # # 'last_modified': r[''] .item_metadata.last_modified,
