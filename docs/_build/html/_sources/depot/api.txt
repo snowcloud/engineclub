@@ -46,7 +46,7 @@ lastmodified            date time as string, eg "2011-04-06 15:58:23"
 
 url: /api/resources/[resource id]/
 
-example: `<http://www.aliss.org/api/resources/4b91379689cb160dda000000/>`_
+example: `<http://www.aliss.org/api/resources/4d93d88c3de074fca600031e/>`_
 
 method: GET
 
@@ -108,8 +108,8 @@ url: /api/resources/search/
 
 examples::
 
-    /api/resources/search/?location=paisley&query=mental%20health&max=30&start=0&boostlocation=50
-    /api/resources/search/?location=edinburgh&query=mental%20health&max=30&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000
+    `<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=30&start=0&boostlocation=50>`_
+    `<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=30&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
 
 method: GET
 
@@ -148,8 +148,8 @@ url: /api/resources/publish-data/
 
 examples::
 
-    /api/resources/publish-data/?start=0&max=50
-    /api/resources/publish-data/
+    `<http://www.aliss.org/api/resources/publish-data/?start=0&max=50>`_
+    `<http://www.aliss.org/api/resources/publish-data/>`_
 
 method: GET
 
