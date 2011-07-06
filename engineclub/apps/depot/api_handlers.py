@@ -168,7 +168,7 @@ def publish_data(request):
                 'lat_lon': l.lat_lon, 
                 
                 } for l in r.locations],
-            'tags': r.tags,
+            'tags': r.all_tags,
             'curations': ['http://aliss.org/depot/curation/%s/' % unicode(c.id) for c in r.curations],
             # 'accounts': r.get('accounts', ''),
             # 'score': r['score']
