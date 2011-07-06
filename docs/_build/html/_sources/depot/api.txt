@@ -115,6 +115,31 @@ method: GET
 
 access: public
 
+example of successful result::
+    
+    {   
+        "errors": {}, 
+        "data": [
+            {   
+                "max": "1", 
+                "results": [
+                    {
+                        "description": "Details: Office hours 9.30am-12.30pm (Monday-Friday)...", 
+                        "title": "Ralston Golf Club.", 
+                        "source_uri": "http://www.ralstongolfclub.co.uk", 
+                        "tags": ["Sport and fitness", "Golf"], 
+                        "uri": "http://aliss.org/depot/resource/4da043dd89cb164d1500008e/", 
+                        "locations": [{"os_type": "POSTCODE", "os_id": "PA13DT", "place_name": "Paisley East and Ralston, Renfrewshire", "lat_lon": [55.845313580276802, -4.3843151677009597], "label": "PA1 3DT"}], 
+                        "curations": ["http://aliss.org/depot/curation/4dab5a6a89cb1625e9000247/"], 
+                        "id": "4da043dd89cb164d1500008e", 
+                        "resource_type": null
+                    }
+                ], 
+                "start": "1800"
+            }
+        ]
+    }
+
 .. publish data
 
 Retrieve resources by batch
