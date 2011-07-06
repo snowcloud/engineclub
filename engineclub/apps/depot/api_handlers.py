@@ -156,7 +156,7 @@ def publish_data(request):
         return {
             'id': unicode(r.id),
             'title': r.title, 
-            'description': r.description[:120],
+            'description': r.description,
             'resource_type': r.resource_type,
             'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
             'source_uri': r.uri,
