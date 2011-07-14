@@ -55,7 +55,7 @@ access: public
 **Example of successful result**::
 
     {
-        data: [
+        "data": [
             {
                 "last_modified": "2011-04-06 15:58:23",
                 "description": "Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... ",
@@ -66,8 +66,8 @@ access: public
                 "resource_type": "",
                 "uri": "http://www.gilmerton.btik.com/WomensMentalHealthProject"
             }
-        ]
-        errors: {}
+        ],
+        "errors": {}
     }
 
 If there has been an error, data will be an empty array, and errors will be a dict { 'code': xx, 'message': 'error message(s) here...'}. Error codes are not currently defined. 
