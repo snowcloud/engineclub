@@ -113,21 +113,22 @@
 <p>method: GET</p>
 <p>access: public</p>
 <p><strong>Example of successful result</strong>:</p>
-<div class="highlight-python"><pre>{
-    data: [
-        {
-            "last_modified": "2011-04-06 15:58:23",
-            "description": "Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... ",
-            "title": "Womens Mental Health Project",
-            "locations": [ "EH17 8QG" ],
-            "tags": [ "women", "mental health", "depression", "sexual abuse" ],
-            "id": "4d964f2489cb161ac5000000",
-            "resource_type": "",
-            "uri": "http://www.gilmerton.btik.com/WomensMentalHealthProject"
-        }
-    ]
-    errors: {}
-}</pre>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s">&quot;last_modified&quot;</span><span class="p">:</span> <span class="s">&quot;2011-04-06 15:58:23&quot;</span><span class="p">,</span>
+            <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... &quot;</span><span class="p">,</span>
+            <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Womens Mental Health Project&quot;</span><span class="p">,</span>
+            <span class="s">&quot;locations&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;EH17 8QG&quot;</span> <span class="p">],</span>
+            <span class="s">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;women&quot;</span><span class="p">,</span> <span class="s">&quot;mental health&quot;</span><span class="p">,</span> <span class="s">&quot;depression&quot;</span><span class="p">,</span> <span class="s">&quot;sexual abuse&quot;</span> <span class="p">],</span>
+            <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;4d964f2489cb161ac5000000&quot;</span><span class="p">,</span>
+            <span class="s">&quot;resource_type&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+            <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.gilmerton.btik.com/WomensMentalHealthProject&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
 <p>If there has been an error, data will be an empty array, and errors will be a dict { &#8216;code&#8217;: xx, &#8216;message&#8217;: &#8216;error message(s) here...&#8217;}. Error codes are not currently defined.</p>
 </div>
