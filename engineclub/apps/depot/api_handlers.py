@@ -137,12 +137,15 @@ def resource_search(request):
     if not _check_int(boost_location) or int(boost_location) > int(settings.SOLR_LOC_BOOST_MAX):
         result_code = 10
         errors.append('Param \'boostlocation\' must be an integer number between 0 and %s. You sent %s' % (int(settings.SOLR_LOC_BOOST_MAX), boost_location))
+    if not errors:
+        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split())
+        if not loc:
+            result_code = 10
+            errors.append('Location \'%s\' not found.' % location)
+        
     if errors:
-        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
+        return JsonResponse(errors=[{ 'code': result_code, 'message': '. '.join(errors)}], callback=callback)
     else:
-        kwords = query
-        loc, resources = find_by_place_or_kwords(location, kwords, boost_location, start=start, max=int(max), accounts=accounts.split())
-
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
             'location': loc, 'boostlocation': boost_location,
@@ -189,7 +192,8 @@ def publish_data(request):
         result_code = 10
         errors.append('Param \'start\' must be positive integer. You sent %s' % start)
     if errors:
-        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
+        # return JsonResponse(data=[],  callback=callback)
     else:
         results = [_resource_result(r) for r in Resource.objects[int(start):int(start)+int(max)]]
         data = [ { 'max': max, 'start': start, 'results': results }]

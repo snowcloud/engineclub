@@ -67,10 +67,10 @@ access: public
                 "uri": "http://www.gilmerton.btik.com/WomensMentalHealthProject"
             }
         ],
-        "errors": {}
+        "errors": [{}]
     }
 
-If there has been an error, data will be an empty array, and errors will be a dict { 'code': xx, 'message': 'error message(s) here...'}. Error codes are not currently defined. 
+If there has been an error, data will be an empty array, and errors will be an array holding a dict [{ 'code': xx, 'message': 'error message(s) here...'}]. Error codes are not currently defined. 
 
 .. Search resources
 
@@ -118,7 +118,7 @@ access: public
 example of successful result::
     
     {   
-        "errors": {}, 
+        "errors": [{}], 
         "data": [
             {   
                 "max": "1", 

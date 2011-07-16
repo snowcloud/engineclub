@@ -126,11 +126,11 @@
             <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.gilmerton.btik.com/WomensMentalHealthProject&quot;</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[{}]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>If there has been an error, data will be an empty array, and errors will be a dict { &#8216;code&#8217;: xx, &#8216;message&#8217;: &#8216;error message(s) here...&#8217;}. Error codes are not currently defined.</p>
+<p>If there has been an error, data will be an empty array, and errors will be an array holding a dict [{ &#8216;code&#8217;: xx, &#8216;message&#8217;: &#8216;error message(s) here...&#8217;}]. Error codes are not currently defined.</p>
 </div>
 </div>
 <div class="section" id="retrieve-resources-by-search-parameters">
@@ -213,7 +213,7 @@
 <p>access: public</p>
 <p>example of successful result:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[{}],</span>
     <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
