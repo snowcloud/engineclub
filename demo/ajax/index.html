@@ -41,48 +41,51 @@
 	<script src="javascripts/app.js"></script>
 	<script type="text/javascript">   
         show_results = function() {
-            $("#results").append('results here...');
-        }
-    	$(document).ready(function() {
-    	    
+            host = "http://aliss.org";
+    	    searchlocation = $('#searchlocation').attr('value'),
+            searchkeywords = $('#searchkeywords').attr('value'),
+            
     	    // see http://engineclub.org/depot/api.html#retrieve-resources-by-search-parameters
-    	    $.getJSON("http://127.0.0.1:8080/api/resources/search/?callback=?",
+    	    $.getJSON(host+"/api/resources/search/?callback=?",
               {
-                location: "paisley",
-                //query: "mental health",
+                location: searchlocation,
+                query: searchkeywords,
                 max: 3,
                 //output: "json"
               },
               function(data) {
-                  if (data["errors"]) {
-                      // this fails- probly needs an error handler
-                      $("#results").append('error: ');
+                  $("#results").html('<h2>Results for "'+ searchkeywords +'" in '+ searchlocation +':</h2>');
+                  if (data["errors"].length > 0) {
+                      $("#results").append('error: ' + data['errors'][0]['message']);
                   }
                   else {
-                      //results =
-                      //$("#results").append(data["data"][0]["results"].length);
+                      if (data["data"][0]["results"].length > 0) {
+                          results = data["data"][0]["results"]
+                          var items = [];
+
+                           $.each(results, function(key, result) {
+                             items.push('<li id="' + key + '">' + 
+                             '<a href="http://aliss.org/depot/resource/'+result['id']+'">'+result['title']+'</a>' + 
+                             '<p>' + result['description'] + '</p>' + '</li>');
+                           });
+
+                           $('<ul/>', {
+                             'class': 'disc',
+                             html: items.join('')
+                           }).appendTo('#results');
+                      }
+                      else {
+                          $("#results").append('no results found');
+                      }
                   }
               });
-    	    
-    	    
-    	    
-/*     	    
-            $.ajax({
-              url: "http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=10&start=0&boostlocation=50&callback=show_results",
-              cache: false,
-              success: function(){
-                $("#results").append('html');
-              }
-            });
-            show_results();
-*/
-        });     
+        };     
+        $(document).ready(function() {
+            $('#searchbutton').click(function() {show_results();return false;});
+        });
     </script>                                                               
 </head>
 <body>
-
-
-
 
 
 	<!-- Primary Page Layout
@@ -95,14 +98,15 @@
 			<hr />
 		</div>
         <div class="sixteen columns">
-            <form>
-                
-                
-                
+            <form name="searchform" id="searchform">
+                <fieldset>
+                    <label for="searchlocation">location (postcode or place name)</label>
+                    <input id="searchlocation"value=""/>
+                    <label for="searchkeywords">keywords</label>
+                    <input id="searchkeywords"value=""/>
+                </fieldset>
+                <button type="submit" id="searchbutton">Search ALISS</button>
             </form>
-            
-            
-            
         </div>
         <div id="results" class="sixteen columns"></div>
     </div>
