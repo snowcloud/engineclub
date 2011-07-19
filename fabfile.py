@@ -13,3 +13,6 @@ def reload_placenames():
 def reindex():
     local('python engineclub/apps/firebox/utils.py -c reindex', capture=False)
     
+def temp():
+    local('python engineclub/apps/firebox/utils.py -c temp', capture=False)
+

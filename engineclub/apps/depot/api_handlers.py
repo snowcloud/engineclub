@@ -87,6 +87,14 @@ def resource_by_id(request, id):
     }]
     return JsonResponse(data=data, callback=callback)
 
+def _check_int(i):
+    try:
+        int(i)
+        return True
+    except ValueError:
+        print i
+        return None
+        
 def resource_search(request):
     def _resource_result(r):
         return {
@@ -103,13 +111,6 @@ def resource_search(request):
             'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
-    def _check_int(i):
-        try:
-            return int(i)
-        except ValueError:
-            print i
-            return None
-            
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     query = request.REQUEST.get('query')
@@ -136,19 +137,68 @@ def resource_search(request):
     if not _check_int(boost_location) or int(boost_location) > int(settings.SOLR_LOC_BOOST_MAX):
         result_code = 10
         errors.append('Param \'boostlocation\' must be an integer number between 0 and %s. You sent %s' % (int(settings.SOLR_LOC_BOOST_MAX), boost_location))
+    if not errors:
+        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split())
+        if not loc:
+            result_code = 10
+            errors.append('Location \'%s\' not found.' % location)
+        
     if errors:
-        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
+        return JsonResponse(errors=[{ 'code': result_code, 'message': '. '.join(errors)}], callback=callback)
     else:
-        kwords = query
-        loc, resources = find_by_place_or_kwords(location, kwords, boost_location, start=start, max=int(max), accounts=accounts.split())
-
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
             'location': loc, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
-        
+
+def publish_data(request):
+    """docstring for publish_data"""
+    def _resource_result(r):
+        return {
+            'id': unicode(r.id),
+            'title': r.title, 
+            'description': r.description,
+            'resource_type': r.resource_type,
+            'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
+            'source_uri': r.uri,
+            'locations': [{
+                'os_id': l.os_id, 
+                'label': l.label, 
+                'place_name': l.place_name, 
+                'os_type': l.os_type, 
+                'lat_lon': l.lat_lon, 
+                
+                } for l in r.locations],
+            'tags': r.all_tags,
+            'curations': ['http://aliss.org/depot/curation/%s/' % unicode(c.id) for c in r.curations],
+            # 'accounts': r.get('accounts', ''),
+            # 'score': r['score']
+            # # 'last_modified': r[''] .item_metadata.last_modified,
+        }
+    
+    max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
+    start = request.REQUEST.get('start', 0)
+    callback = request.REQUEST.get('callback')
+    
+    result_code = 200
+    
+    errors = []
+    if not _check_int(max) or int(max) > settings.SOLR_ROWS:
+        result_code = 10
+        errors.append('Param \'max\' must be positive integer maximum value of %s. You sent %s' % (settings.SOLR_ROWS, max))
+    if not _check_int(start) or int(start) < 0:
+        result_code = 10
+        errors.append('Param \'start\' must be positive integer. You sent %s' % start)
+    if errors:
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
+        # return JsonResponse(data=[],  callback=callback)
+    else:
+        results = [_resource_result(r) for r in Resource.objects[int(start):int(start)+int(max)]]
+        data = [ { 'max': max, 'start': start, 'results': results }]
+        return JsonResponse(data=data, callback=callback)
+
 def tags(request):
     """docstring for tags"""
     error = ''

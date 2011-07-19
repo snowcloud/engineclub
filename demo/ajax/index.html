@@ -1,0 +1,154 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8" />
+	<title>ALISS AJAX example</title>
+	<meta name="description" content="An example of using AJAX to pull data via ALLIS API">
+	<meta name="author" content="Derek Hoy">
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+	
+	<!-- CSS
+  ================================================== -->
+	<link rel="stylesheet" href="stylesheets/base.css">
+	<link rel="stylesheet" href="stylesheets/skeleton.css">
+	<link rel="stylesheet" href="stylesheets/layout.css">
+	
+	<!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+	
+	
+	
+    <!-- Scripts
+	================================================== -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+	<script>window.jQuery || document.write("<script src='javascripts/jquery-1.5.1.min.js'>\x3C/script>")</script>
+	<script src="javascripts/app.js"></script>
+	<script type="text/javascript">   
+        show_results = function() {
+            host = "http://aliss.org";
+    	    searchlocation = $('#searchlocation').attr('value'),
+            searchkeywords = $('#searchkeywords').attr('value'),
+            
+    	    // see http://engineclub.org/depot/api.html#retrieve-resources-by-search-parameters
+    	    $.getJSON(host+"/api/resources/search/?callback=?",
+              {
+                location: searchlocation,
+                query: searchkeywords,
+                max: 3,
+                //output: "json"
+              },
+              function(data) {
+                  $("#results").html('<h2>Results for "'+ searchkeywords +'" in '+ searchlocation +':</h2>');
+                  if (data["errors"].length > 0) {
+                      $("#results").append('error: ' + data['errors'][0]['message']);
+                  }
+                  else {
+                      if (data["data"][0]["results"].length > 0) {
+                          results = data["data"][0]["results"]
+                          var items = [];
+
+                           $.each(results, function(key, result) {
+                             items.push('<li id="' + key + '">' + 
+                             '<a href="http://aliss.org/depot/resource/'+result['id']+'">'+result['title']+'</a>' + 
+                             '<p>' + result['description'] + '</p>' + '</li>');
+                           });
+
+                           $('<ul/>', {
+                             'class': 'disc',
+                             html: items.join('')
+                           }).appendTo('#results');
+                      }
+                      else {
+                          $("#results").append('no results found');
+                      }
+                  }
+              });
+        };     
+        $(document).ready(function() {
+            $('#searchbutton').click(function() {show_results();return false;});
+        });
+    </script>                                                               
+</head>
+<body>
+
+
+	<!-- Primary Page Layout
+	================================================== -->
+
+	<div class="container">	
+		<div class="sixteen columns">
+			<h1 class="remove-bottom" style="margin-top: 40px">ALISS example</h1>
+			<h5>Results taken from ALISS engine. Demonstration only.</h5>
+			<hr />
+		</div>
+        <div class="sixteen columns">
+            <form name="searchform" id="searchform">
+                <fieldset>
+                    <label for="searchlocation">location (postcode or place name)</label>
+                    <input id="searchlocation"value=""/>
+                    <label for="searchkeywords">keywords</label>
+                    <input id="searchkeywords"value=""/>
+                </fieldset>
+                <button type="submit" id="searchbutton">Search ALISS</button>
+            </form>
+        </div>
+        <div id="results" class="sixteen columns"></div>
+        <hr>
+        <div class="sixteen columns">
+			<h5><em>NB, not currently working in Internet Explorer 6/7/8.</em></h5>
+            <p>See <a href="http://engineclub.org/depot/api.html#retrieve-resources-by-search-parameters">API documentation</a> for details.</p>            
+            <p><a href="http://aliss.org">ALISS home page</a>.</p>
+        </div>
+    </div>
+
+	
+	<!-- 
+
+	<div class="container">	
+		<div class="sixteen columns">
+			<h1 class="remove-bottom" style="margin-top: 40px">ALISS example</h1>
+			<h5>Results taken from ALISS engine. Demonstration only.</h5>
+			<hr />
+		</div>
+		<div class="one-third column">
+			<h3>About Skeleton?</h3>	
+			<p>Skeleton is a small collection of well-organized CSS & JS files that can help you rapidly develop sites that look beautiful at any size, be it a 17" laptop screen or an iPhone. It's based on a responsive grid, but also provides very basic CSS for typography, buttons, tabs, forms and media queries. Go ahead, resize this super basic page to see the grid in action.</p>
+		</div>
+		<div class="one-third column">
+			<h3>Three Core Principles</h3>	
+			<p>Skeleton is built on three core principles:</p>
+			<ul class="square">
+				<li><strong>A Responsive Grid Down To Mobile</strong>: Elegant scaling from a browser to tablets to mobile.</li>
+				<li><strong>Fast to Start</strong>: It's a tool for rapid development with best practices</li>
+				<li><strong>Style Agnostic</strong>: It provides the most basic, beautiful styles, but is meant to be overwritten.</li>
+			</ul>
+		</div>
+		<div class="one-third column">
+			<h3>Docs &amp; Support</h3>	
+			<p>The easiest way to really get started with Skeleton is to check out the full docs and info at <a href="http://www.getskeleton.com">www.getskeleton.com.</a>. Skeleton is also open-source and has a <a href="https://github.com/dhgamache/skeleton">project on git</a>, so check that out if you want to report bugs or create a pull request. If you have any questions, thoughts, concerns or feedback, please don't hesitate to email me at <a href="mailto:hi@getskeleton.com">hi@getskeleton.com</a>.</p>
+		</div>
+
+	</div>
+ -->
+
+	
+<!-- End Document
+================================================== -->
+</body>
+</html>

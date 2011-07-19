@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^resource/popup-close/$', direct_to_template, {'template': 'depot/resource_popup_done.html'}, name='resource-popup-close' ),
     url(r'^resource/(?P<object_id>\w+)/$', 'depot.views.resource_detail', name='resource'),
 
+    url(r'^curation/(?P<object_id>\w+)/$', 'depot.views.curation_detail', name='curation-by-id'),
     url(r'^curation/(?P<object_id>\w+)/add/$', 'depot.views.curation_add', name='curation-add'),
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/$', 'depot.views.curation_detail', name='curation'),
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/edit/$', 'depot.views.curation_edit', name='curation-edit'),
