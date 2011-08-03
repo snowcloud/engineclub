@@ -48,7 +48,7 @@ class CalendarEvent(EmbeddedDocument):
 class Location(Document):
     """Location document, based on Ordnance Survey data
     ALISS only uses 4 types: postcode, ward, district, country
-    """    
+    """
     os_id = StringField(unique=True, required=True)
     label = StringField(required=True)
     place_name = StringField()
@@ -65,7 +65,6 @@ class Moderation(EmbeddedDocument):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-# class Curation(EmbeddedDocument):
 class Curation(Document):
     outcome = StringField()
     tags = ListField(StringField(max_length=96), default=list)
@@ -87,17 +86,6 @@ class Curation(Document):
         acct = get_account(user.id)
         # print self.owner, acct
         return self.owner == acct
-
-
-# class TempCuration(EmbeddedDocument):
-#     outcome = StringField()
-#     tags = ListField(StringField(max_length=96), default=list)
-#     # rating - not used
-#     note = StringField()
-#     data = DictField()
-#     owner = ReferenceField(Account)
-#     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
-
 
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
@@ -124,7 +112,7 @@ def location_from_cb_value(cb_value):
     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Resource(Document):
-    """ """
+    """ Main model for ALISS resource """
     title = StringField(required=True)
     description = StringField()
     resource_type = StringField()
@@ -144,10 +132,6 @@ class Resource(Document):
         author = kwargs.pop('author', None)
         if author:
             self.item_metadata.update(author)
-        # print local_id
-        # if self.owner:
-        # self.item_metadata.author = Account.objects.get(local_id=local_id)
-        # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         created = self.id is None
         super(Resource, self).save(*args, **kwargs)
         if created:
@@ -200,7 +184,6 @@ class Resource(Document):
                 accounts.append(unicode(obj.owner.id))
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
-            # print "error in %s, %s" % (self.id, self.title)
             logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
             self.curations = []
             self.save()
