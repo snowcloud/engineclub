@@ -37,7 +37,14 @@ class ItemMetadata(EmbeddedDocument):
         """docstring for update"""
         self.author = author
         self.last_modified = last_modified or datetime.now()
-            
+
+class CalendarEvent(EmbeddedDocument):
+    """used to add event data to Resource. Subset of W3C Calendar API: http://www.w3.org/TR/calendar-api/"""
+    start = DateTimeField()
+    end = DateTimeField()
+    status = StringField(default='confirmed') # 'provisional', 'confirmed', 'cancelled'.
+    # recurrence = EmbeddedDocumentField(CalendarRepeatRule)
+           
 class Location(Document):
     """Location document, based on Ordnance Survey data
     ALISS only uses 4 types: postcode, ward, district, country
@@ -124,7 +131,7 @@ class Resource(Document):
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
-    event_date = DateTimeField()
+    calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
     curations = ListField(ReferenceField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)

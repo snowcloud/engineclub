@@ -18,11 +18,13 @@ description             string
 resource_type           string ['web', 'group', ...]
 uri                     string [web URI format]
 locations               list of :ref:`location`
-service_area            list of :ref:`location` 
+service_area            list of :ref:`location`
+calendar_event          :ref:`calendarEvent`
 moderations             list of :ref:`moderation` 
 curations               list of :ref:`curation` 
 tags                    list of string
 related_resources       list of :ref:`relatedResource`
+owner                   :ref:`account`
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
@@ -66,6 +68,29 @@ parents                 list of Location
 
 ref source + URI
 
+.. _calendarEvent:
+
+CalendarEvent
+=========================
+
+Adds event data to Resource. Subset of W3C Calendar API: `<http://www.w3.org/TR/calendar-api/>`_
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+start                   datetime
+end                     datetime
+status                  string ['provisional', 'confirmed', 'cancelled']
+recurrence              not used- will be :ref:`calendarRepeatRule`
+==================      =========================================================================
+
+.. _calendarRepeatRule:
+
+CalendarRepeatRule
+=========================
+
+Not implemented. Will be subset of W3C Calendar API: `<http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface>`_
+
 .. _moderation:
 
 Moderation
@@ -95,7 +120,7 @@ data                    dict (dictionary with field names as keys) *
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
-* This will be used to allow trusted accounts to add their own metadata using their own schema.
+\* This will be used to allow trusted accounts to add their own metadata using their own schema.
 Data will be converted to required formats on client access (may be cached for performance)
 
 .. _itemMetadata:
