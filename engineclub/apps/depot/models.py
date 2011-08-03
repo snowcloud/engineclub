@@ -149,7 +149,7 @@ class Resource(Document):
         
         if reindex:
             self.reindex()
-
+     
     def delete(self, *args, **kwargs):
         """docstring for delete"""
         for c in self.curations:
@@ -174,7 +174,7 @@ class Resource(Document):
     
     def index(self, conn=None):
         """conn is Solr connection"""
-        tags = self.tags
+        tags = list(self.tags)
         accounts = []
         description = [self.description]
         
@@ -193,7 +193,7 @@ class Resource(Document):
             'title': self.title,
             'short_description': self.description,
             'description': '\n'.join(description),
-            'keywords': ', '.join(tags),
+            'keywords': ', '.join(list(set(tags))),
             'accounts': ', '.join(accounts),
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
