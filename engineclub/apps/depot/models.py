@@ -117,18 +117,16 @@ def location_from_cb_value(cb_value):
     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Resource(Document):
-    """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
-    # uri = StringField(unique=True, required=True)
+    """ """
     title = StringField(required=True)
     description = StringField()
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
+    event_date = DateTimeField()
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
-    # curations = ListField(EmbeddedDocumentField(Curation), default=list)
     curations = ListField(ReferenceField(Curation), default=list)
-    # tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account)

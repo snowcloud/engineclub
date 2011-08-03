@@ -78,6 +78,7 @@ class ShortResourceForm(DocumentForm):
     uri = forms.CharField()
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
+    event = forms.DateTimeField(required=False)
     tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
