@@ -16,7 +16,7 @@ def event_date(value, arg=None):
         # uses django date filter, format defaults to settings.DATE_FORMAT
         return  date(d, format).replace(', 00:00', '')
 
-    if value.start:
+    if value and value.start:
         s = _format_date(value.start)
         e = ' - %s' % _format_date(value.end) if value.end else ''
         return '%s%s' % (s, e)
