@@ -8,7 +8,7 @@ from time import strftime
 
 class JqSplitDateTimeWidget(MultiWidget):
 
-    def __init__(self, attrs=None, date_format=None, time_format=None):
+    def __init__(self, attrs=None, date_format='%d/%m/%Y', time_format=None):
         date_class = attrs['date_class']
         time_class = attrs['time_class']
         del attrs['date_class']
@@ -19,6 +19,7 @@ class JqSplitDateTimeWidget(MultiWidget):
         date_attrs = attrs.copy()
         date_attrs['class'] = date_class
 
+        self.date_format = date_format
         widgets = (DateInput(attrs=date_attrs, format=date_format),
                    TextInput(attrs=time_attrs), TextInput(attrs=time_attrs),
                    Select(attrs=attrs, choices=[('AM','AM'),('PM','PM')]))
@@ -27,7 +28,7 @@ class JqSplitDateTimeWidget(MultiWidget):
 
     def decompress(self, value):
         if value:
-            d = strftime("%Y-%m-%d", value.timetuple())
+            d = strftime(self.date_format, value.timetuple())
             hour = strftime("%I", value.timetuple())
             minute = strftime("%M", value.timetuple())
             meridian = strftime("%p", value.timetuple())

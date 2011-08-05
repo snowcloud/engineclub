@@ -103,13 +103,13 @@ class EventForm(DocumentForm):
     from ecutils.fields import JqSplitDateTimeField
     from ecutils.widgets import JqSplitDateTimeWidget
 
-    event_start = JqSplitDateTimeField(required=False,
+    start = JqSplitDateTimeField(required=False,
         widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}, date_format='%d/%m/%Y'))
-    event_finish = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
+    end = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
 
     def clean(self):
-        start = self.cleaned_data['event_start']
-        end = self.cleaned_data['event_finish']
+        start = self.cleaned_data.get('start', None)
+        end = self.cleaned_data.get('end', None)
         now = datetime.now()
         if end:
             if start:
@@ -128,20 +128,6 @@ class EventForm(DocumentForm):
 class LocationUpdateForm(DocumentForm):
     
     new_location = forms.CharField(required=False)
-    # address = forms.CharField(label="Location information", widget=forms.Textarea, required=False)
-    # tags = forms.CharField(required=False)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(LocationUpdateForm, self).__init__(*args, **kwargs)
-    #     if self.instance:
-    #         for i, loc in enumerate(self.instance.locations):
-    #             self.fields['itemloc_%s' % 1] = forms.BooleanField(label=loc.name, required=False)
-    #     self.fields['address'] = forms.CharField(widget=forms.Textarea, required=False)
-        
-    
-    # def content(self):
-    #     # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
-    #     return self.cleaned_data['address']
     
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
