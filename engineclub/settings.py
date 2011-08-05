@@ -85,7 +85,7 @@ SOLR_LOC_BOOST_MAX = 100.0
 YAHOO_KEY = 'your_key_here...'
 
 TIME_ZONE = 'Europe/London'
-DATE_FORMAT='%d %B %Y, %H:%M'
+DATE_FORMAT='d M Y, H:i'
 LANGUAGE_CODE = 'en-gb'
 
 SITE_ID = 1
