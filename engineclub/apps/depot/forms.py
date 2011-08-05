@@ -112,11 +112,14 @@ class EventForm(DocumentForm):
         end = self.cleaned_data['event_finish']
         now = datetime.now()
         if end:
-            if end < start:
-                raise forms.ValidationError('The start date must be earlier than the finish date.')
+            if start:
+                if end < start:
+                    raise forms.ValidationError('The start date must be earlier than the finish date.')
+            else:
+                raise forms.ValidationError('Please enter a start date.')
             if end < now:
                 raise forms.ValidationError('The end date must be in the future.')
-        else:
+        elif start:
             if start < now:
                 raise forms.ValidationError('The start date must be in the future.')
 
