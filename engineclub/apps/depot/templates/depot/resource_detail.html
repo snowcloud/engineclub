@@ -77,6 +77,7 @@
 {% empty %}
     <tr><th>location</th><td>-</td></tr>
 {% endfor %}
+<tr><th>event</th><td>{{ object.calendar_event.start }} - {{ object.calendar_event.end }}</td></tr>
 {% for curation in object.curations %}
     <tr>
         <th>{% ifchanged %}curation{% endifchanged %}</th>

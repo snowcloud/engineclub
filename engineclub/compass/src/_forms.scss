@@ -43,6 +43,16 @@ fieldset input[type="text"], fieldset input[type="password"], fieldset textarea 
 	padding: 0.5em;
 	width: 90%;
 }
+fieldset input[type="text"].datepicker {
+	width: 12em;
+}
+fieldset input[type="text"].timepicker {
+	width: 2em;
+}
+fieldset span.sublabel {
+	width: 3em;
+	display: inline-block;
+}
 fieldset .helptext {
 	display: block;
 	font-size: 0.8em;

@@ -13,11 +13,12 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from depot.models import Resource, Curation, Location,  \
+from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
-from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, TagsForm, ShelflifeForm, \
-    CurationForm
+from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
+    TagsForm, ShelflifeForm, CurationForm
+    
 from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
@@ -117,11 +118,12 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if result == 'Cancel':
             return resource_edit_complete(request, resource, template_info)
         resourceform = ShortResourceForm(request.POST, instance=resource)
+        eventform = EventForm(request.POST, instance=resource)
         locationform = LocationUpdateForm(request.POST, instance=resource)
         # tagsform = TagsForm(request.POST, instance=resource)
         # shelflifeform = ShelflifeForm(request.POST, instance=resource)
         
-        if resourceform.is_valid() and locationform.is_valid(): # and tagsform.is_valid() and shelflifeform.is_valid():
+        if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             # del_loc = ''
             # for k in request.POST.keys():
             #     if k.startswith('del_loc:'):
@@ -142,6 +144,11 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             #     # print resource.locations
             #     # places = fix_places(resource.locations, locationform.content() or resource.url)
             else:
+                event_start = eventform.cleaned_data['event_start']
+                if event_start:
+                    resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['event_finish'])
+                    print 'event_start', event_start
+                    print 'event_finish', eventform.cleaned_data['event_finish']
                 resource = resourceform.save()
                 
                 # read location checkboxes
@@ -171,15 +178,16 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     else:
         resourceform = ShortResourceForm(instance=resource)
         locationform = LocationUpdateForm(instance=resource)
+        eventform = EventForm(instance=resource)
         if not resource.locations:
             doc = resource.uri
         # places = fix_places(resource.locations, doc)
         # tagsform = TagsForm(instance=resource)
-        shelflifeform = ShelflifeForm(instance=resource)
+        # shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response(template,
         RequestContext( request, { 'template_info': template_info, 'object': resource,
-            'resourceform': resourceform, 'locationform': locationform, #'places': places,
+            'resourceform': resourceform, 'locationform': locationform, 'eventform': eventform, #'places': places,
             # 'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
 

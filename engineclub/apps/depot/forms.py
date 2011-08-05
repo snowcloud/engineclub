@@ -8,6 +8,7 @@ from firebox.views import *
 from mongoengine.queryset import DoesNotExist
 from mongoforms import MongoForm
 
+from datetime import datetime
 
 class FormHasNoInstanceException(Exception):
     pass
@@ -28,7 +29,10 @@ class DocumentForm(forms.Form):
         if self.instance is None:
             raise FormHasNoInstanceException("Form cannot save- document instance is None.")
         for f in self.fields:
-            self.instance[f] = self.cleaned_data[f]
+            try:
+                self.instance[f] = self.cleaned_data[f]
+            except KeyError:
+                pass
         if do_save:
             self.instance.save()
         return self.instance
@@ -75,10 +79,9 @@ class FindResourceForm(forms.Form):
 
 class ShortResourceForm(DocumentForm):
 
-    uri = forms.CharField()
+    uri = forms.CharField(required=False)
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
-    # event = forms.DateTimeField(required=False)
     tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
@@ -86,14 +89,39 @@ class ShortResourceForm(DocumentForm):
 
     def clean_uri(self):
         data = self.cleaned_data['uri']
-        try:
-            item =Resource.objects.get(uri=data)
-            if not (self.instance and (self.instance.uri == data)):
-                raise forms.ValidationError("There is already an item with this uri")
-        except DoesNotExist:
-            pass
+        if data:
+            try:
+                item =Resource.objects.get(uri=data)
+                if not (self.instance and (self.instance.uri == data)):
+                    raise forms.ValidationError("There is already an item with this uri")
+            except DoesNotExist:
+                pass
         return data
     
+class EventForm(DocumentForm):
+    
+    from ecutils.fields import JqSplitDateTimeField
+    from ecutils.widgets import JqSplitDateTimeWidget
+
+    event_start = JqSplitDateTimeField(required=False,
+        widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}, date_format='%d/%m/%Y'))
+    event_finish = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
+
+    def clean(self):
+        start = self.cleaned_data['event_start']
+        end = self.cleaned_data['event_finish']
+        now = datetime.now()
+        if end:
+            if end < start:
+                raise forms.ValidationError('The start date must be earlier than the finish date.')
+            if end < now:
+                raise forms.ValidationError('The end date must be in the future.')
+        else:
+            if start < now:
+                raise forms.ValidationError('The start date must be in the future.')
+
+        return self.cleaned_data
+
 class LocationUpdateForm(DocumentForm):
     
     new_location = forms.CharField(required=False)
