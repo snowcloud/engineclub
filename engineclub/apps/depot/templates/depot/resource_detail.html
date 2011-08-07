@@ -69,16 +69,18 @@
 <div id="results">
 
 <table class="metadata">
-<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
-<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
-<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+
+{% if object.calendar_event %}
+    <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
+{% endif %}
 {% for loc in object.locations %}
     <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc.label }}, {{ loc.place_name }}</td></tr>
 {% empty %}
     <tr><th>location</th><td>-</td></tr>
 {% endfor %}
-<tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
-{% for curation in object.curations %}
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
     <tr>
         <th>{% ifchanged %}curation{% endifchanged %}</th>
         <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
