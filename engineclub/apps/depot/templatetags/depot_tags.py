@@ -29,7 +29,6 @@ def event_date(value, arg=None):
 @register.filter
 def idx_event_date(value, arg=None):
     if value.get('event_start', None):
-        print value['event_start']
         dt = parser.parse(value['event_start'])
 
         return date(dt).replace(', 00:00', '')
