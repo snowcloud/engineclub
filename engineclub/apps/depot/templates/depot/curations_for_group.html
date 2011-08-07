@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markup utils %}
+{% load markup utils depot_tags %}
 
 {% block title %}Curations for {{ object.name }}{% endblock %}
 
@@ -24,6 +24,10 @@
                     {% endfor %}
                 </ol>
             {% endif %}
+            {% if resource.event_start %}
+                <ol><li class="resource-listing-locs">event: {{ resource|idx_event_date }}</li></ol>
+            {% endif %}
+
 
             <p>{{ resource.description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">

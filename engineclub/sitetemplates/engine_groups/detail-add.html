@@ -1,4 +1,4 @@
-{% load markup utils %}
+{% load markup utils depot_tags %}
 
 <h2>Latest curations for {{ object.name }}</h2>
 
@@ -16,6 +16,11 @@
                         <li class="resource-listing-locs">{{ loc }}</li>
                     {% endfor %}
                 </ol>
+            {% endif %}
+            {% if resource.calendar_event %}
+                <ol><li class="resource-listing-locs">event: {{ resource.calendar_event.start }} 
+                {% if resource.calendar_event.end %}- {{ resource.calendar_event.end }}{% endif %}
+                </li></ol>
             {% endif %}
 
             <p>{{ resource.description|truncatewords:30 }}</p>
