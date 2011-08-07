@@ -198,6 +198,11 @@ class Resource(Document):
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
+        if self.calendar_event:
+            # print self.calendar_event.start.date(), self.calendar_event.end
+            doc['event_start'] = self.calendar_event.start #.date()
+            if self.calendar_event.end:
+                doc['event_end'] = self.calendar_event.end #.date()
         result = []
         if self.locations:
             for i, loc in enumerate(self.locations):
@@ -312,7 +317,17 @@ def lat_lon_to_str(loc):
     else:
         return ''
 
-def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
+def _make_fq(event, accounts):
+    fq = []
+    if event:
+        fq.append('(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *])')
+    if accounts:
+        fq.append('accounts:(%s)'% ' OR '.join(accounts))
+    if fq:
+        return ' AND '.join(fq)
+    return None
+
+def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
         
@@ -328,18 +343,19 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
             'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
-        if accounts:
-            kw['fq'] = 'accounts:(%s)'% ' OR '.join(accounts)
-        
+        fq =  _make_fq(event, accounts)
+        if fq:
+            kw['fq'] = fq        
+
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
+def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
     """docstring for find_by_place_or_kwords"""
     conn = Solr(settings.SOLR_URL)
     if name:
-        return find_by_place(name, kwords, loc_boost, start, max, accounts)
+        return find_by_place(name, kwords, loc_boost, start, max, accounts, event)
     # keywords only
     kw = {
         'start': start,
@@ -347,5 +363,9 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
         'fl': '*,score',
         'qt': 'resources',
     }
-    return None, conn.search(kwords.strip() or '*:*', **kw)
+    fq =  _make_fq(event, accounts)
+    # example 'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *]) AND accounts:4d9b99d889cb16665c000000'
+    if fq:
+        kw['fq'] = fq
 
+    return None, conn.search(kwords.strip() or '*:*', **kw)

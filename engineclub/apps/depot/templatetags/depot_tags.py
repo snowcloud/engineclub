@@ -22,3 +22,10 @@ def event_date(value, arg=None):
         return '%s%s' % (s, e)
     else:
         return ''
+
+@register.filter
+def idx_event_date(value, arg=None):
+    if value.get('event_start', None):
+        return value['event_start']
+    else:
+        return ''
