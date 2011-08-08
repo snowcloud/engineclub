@@ -67,8 +67,8 @@
 </div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="71%" />
+<col width="30%" />
+<col width="70%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">item name</th>
@@ -100,11 +100,17 @@
 <tr><td>tags</td>
 <td>list of string</td>
 </tr>
+<tr><td>event_start</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr><td>event_end</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
 <tr><td>relatedresources</td>
 <td>not implemented</td>
 </tr>
 <tr><td>lastmodified</td>
-<td>date time as string, eg &#8220;2011-04-06 15:58:23&#8221;</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
 </tr>
 </tbody>
 </table>
@@ -173,6 +179,10 @@
 <tr><td>accounts</td>
 <td>no</td>
 <td>A list of ALISS.org account IDs, separated a &#8216;+&#8217;.</td>
+</tr>
+<tr><td>event</td>
+<td>no</td>
+<td>Only &#8216;*&#8217; is implemented- return only events, and only those that start and/or end today or in the future.</td>
 </tr>
 <tr><td>output</td>
 <td>no</td>
