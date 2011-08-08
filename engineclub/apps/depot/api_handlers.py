@@ -98,7 +98,7 @@ def _check_int(i):
         
 def resource_search(request):
     def _resource_result(r):
-        return {
+        result = {
             'id': r['res_id'],
             'title': r['title'], 
             'description': r['short_description'],
@@ -109,11 +109,15 @@ def resource_search(request):
             # u'loc_labels': [u'EH17 8QG, Liberton/Gilmerton, of Edinburgh'], u'pt_location': [u'55.9062925785, -3.13446285433']
             'tags': r.get('keywords', ''),
             'accounts': r.get('accounts', ''),
-            'event_start': r.get('event_start'),
-            'event_end': r.get('event_end'),
             'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
+        if r.get('event_start'):
+            result['event_start'] = r.get('event_start')
+        if r.get('event_end'):
+            result['event_end'] = r.get('event_end')
+        return result
+        
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     event = request.REQUEST.get('event', None)
