@@ -187,10 +187,10 @@ event scheduling</p>
 </thead>
 <tbody valign="top">
 <tr><td>start</td>
-<td>datetime</td>
+<td>datetime (day required, time optional) *</td>
 </tr>
 <tr><td>end</td>
-<td>datetime</td>
+<td>datetime (optional day and time) *</td>
 </tr>
 <tr><td>status</td>
 <td>string [&#8216;provisional&#8217;, &#8216;confirmed&#8217;, &#8216;cancelled&#8217;]</td>
@@ -200,6 +200,7 @@ event scheduling</p>
 </tr>
 </tbody>
 </table>
+<p>* a CalendarEvent must have a start date, but an end date is optional. Times are optional for both. Where no time is set, the datetime will be for midnight of the date, for example if start is set to 24 Sep 2011, the Engine will store &#8220;2011-09-24T00:00:00Z&#8221;</p>
 </div>
 <div class="section" id="calendarrepeatrule">
 <span id="id5"></span><h2>CalendarRepeatRule<a class="headerlink" href="#calendarrepeatrule" title="Permalink to this headline">¶</a></h2>

@@ -78,11 +78,13 @@ Adds event data to Resource. Subset of W3C Calendar API: `<http://www.w3.org/TR/
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-start                   datetime
-end                     datetime
+start                   datetime (day required, time optional) *
+end                     datetime (optional day and time) *
 status                  string ['provisional', 'confirmed', 'cancelled']
 recurrence              not used- will be :ref:`calendarRepeatRule`
 ==================      =========================================================================
+
+\* a CalendarEvent must have a start date, but an end date is optional. Times are optional for both. Where no time is set, the datetime will be for midnight of the date, for example if start is set to 24 Sep 2011, the Engine will store "2011-09-24T00:00:00Z"
 
 .. _calendarRepeatRule:
 

@@ -113,6 +113,7 @@ examples:
 
 * `<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=10&start=0&boostlocation=50>`_
 * `<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=10&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
+* `<http://www.aliss.org/api/resources/search/?location=gorgie&query=dance&event=*>`_
 * AJAX form example: `<http://demo.aliss.org/ajax/>`_
 
 method: GET
