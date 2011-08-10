@@ -11,6 +11,7 @@ PIL
 -e git://github.com/stephrdev/django-mongoforms.git#egg=django_mongoforms
 -e hg+http://bitbucket.org/ubernostrum/django-contact-form/#egg=django-contact-form
 -e hg+http://bitbucket.org/ubernostrum/django-registration/#egg=django-registration
+# -e hg+http://bitbucket.org/offline/django-annoying/#egg=django-annoying
 -e git+git://github.com/jsocol/bleach.git#egg=bleach
 beautifulsoup
 feedparser
