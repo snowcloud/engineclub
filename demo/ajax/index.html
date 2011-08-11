@@ -39,6 +39,7 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
 	<script>window.jQuery || document.write("<script src='javascripts/jquery-1.5.1.min.js'>\x3C/script>")</script>
 	<script src="javascripts/app.js"></script>
+  <script src="javascripts/date.js"></script>
 	<script type="text/javascript">   
         show_results = function() {
             host = "http://aliss.org";
@@ -66,7 +67,20 @@
                           var items = [];
 
                            $.each(results, function(key, result) {
-                           	 event_start = ('event_start' in result) ? ('<p>' + new Date(result['event_start']) + '</p>') : '';
+                             var event_start = '';
+                             if (('event_start' in result)) {
+                                // seems date.js doesn't parse RFC 3339 format in IE anyway
+                                // removing final 'Z' works- no time zone issues with example
+                                // see http://code.google.com/p/datejs/ for docs and formatting examples
+
+                                // strip final 'Z' char from datetime string and parse to date
+                                d = Date.parse(result['event_start'].substring(0, result['event_start'].length - 1));
+                                // if the time part is 00:00 then it's just a date so don't include time
+                                if (d.toString('hh:mm') == '00:00') { timestr = ''; }
+                                else { timestr = d.toString(' h.mmtt'); }
+                                // format in html
+                               event_start = '<p>' + d.toString('d MMM, yyyy') + timestr  + '</p>';
+                             };
                              items.push('<li id="' + key + '">' + 
                              '<a href="http://aliss.org/depot/resource/'+result['id']+'">'+result['title']+'</a>' + 
                              event_start +
