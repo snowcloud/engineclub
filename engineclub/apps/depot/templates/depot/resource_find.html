@@ -7,12 +7,12 @@
 <!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
 
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
-<!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
-<!-- script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script -->
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
-
+<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
+ -->
 <style>
     #slider { width: 50%; }
 </style>
@@ -37,14 +37,15 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
     var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
     mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
     mapstraction.addMarker( new mxn.Marker(centre_pt));
     {% for loc in object.locations %}
         mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
 	{% endfor %}
 
 
-    {% for res in results %}{% for loc in res.pt_location %}
-        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>')
+    {% for resource in results %}{% for loc in resource.pt_location %}
+        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>')
     {% endfor %}{% endfor %}
 
     function advancedMarker(lat, lon, info) {
@@ -114,7 +115,7 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
     {% for resource in results %}
         <li><p class="resource-listing-title"><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>
             {% if resource.event_start %}
-            <p class="event">{{ resource|idx_event_date }}</p>
+                <p class="event">{{ resource|idx_event_date }}</p>
             {% endif %}
             {% if resource.loc_labels %}
                 <ol>
@@ -140,56 +141,6 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
 </div>
 <div id="map"></div>
-
-{% comment %}
-
-{% if results and centre %}
-<script type="text/javascript">  
-    // Create a Map that will be placed in the "map" div.  
-    var map = new YMap(document.getElementById('map'));   
-    function createCustomMarkerImage(img, larger){  
-        var myImage = new YImage();  
-        myImage.src = '/static/media/img/'+img;
-        if (larger) {
-            myImage.size = new YSize(34,36); 
-        } else {
-            myImage.size = new YSize(30,32);  
-        }
-        myImage.offsetSmartWindow = new YCoordPoint(0,0);  
-        return myImage;   
-        }  
-    function startMap(){  
-        // Add the ability to change between Sat, Hybrid, and Regular Maps  
-        map.addTypeControl();     
-        // Add the zoom control. Long specifies a Slider versus a "+" and "-" zoom control  
-        map.addZoomLong();            
-        // Add the Pan control to have North, South, East and West directional control  
-        map.addPanControl();    
-        // Specifying the Map starting location and zoom level  
-        var currentGeoPoint = new YGeoPoint( "{{centre.location.0}}" , "{{centre.location.1}}"  );  
-        {# map.addMarker(new YGeoPoint( "{{centre.centroid.latitude}}" , "{{centre.centroid.longitude}}"));   #}
-        map.drawZoomAndCenter(currentGeoPoint, 8);
-
-        var newMarker= new YMarker(currentGeoPoint, createCustomMarkerImage('ymarker_bl.png', false));  
-        newMarker.addAutoExpand("your location");  
-        map.addOverlay(newMarker);
-
-        {% for res in results %}
-            {% for loc in res.pt_location %}
-            
-                pinPoint = new YGeoPoint( "{{loc|get_lat}}" , "{{loc|get_lon}}");  
-                var newMarker= new YMarker(pinPoint, createCustomMarkerImage('ymarker_or.png', false));  
-                newMarker.addAutoExpand('<p><a href="{% url resource res.id %}">{{ res.title }}</a></p>');
-            
-                map.addOverlay(newMarker);
-            {% endfor %}
-        {% endfor %}
-    }  
-window.onload = startMap;     
-</script>  
-{% endif %}
-
-{% endcomment %}
 
 {% endblock %}
 
