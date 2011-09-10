@@ -37,11 +37,18 @@ class ItemMetadata(EmbeddedDocument):
         """docstring for update"""
         self.author = author
         self.last_modified = last_modified or datetime.now()
-            
+
+class CalendarEvent(EmbeddedDocument):
+    """used to add event data to Resource. Subset of W3C Calendar API: http://www.w3.org/TR/calendar-api/"""
+    start = DateTimeField()
+    end = DateTimeField()
+    status = StringField(default='confirmed') # 'provisional', 'confirmed', 'cancelled'.
+    # recurrence = EmbeddedDocumentField(CalendarRepeatRule)
+           
 class Location(Document):
     """Location document, based on Ordnance Survey data
     ALISS only uses 4 types: postcode, ward, district, country
-    """    
+    """
     os_id = StringField(unique=True, required=True)
     label = StringField(required=True)
     place_name = StringField()
@@ -58,7 +65,6 @@ class Moderation(EmbeddedDocument):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
-# class Curation(EmbeddedDocument):
 class Curation(Document):
     outcome = StringField()
     tags = ListField(StringField(max_length=96), default=list)
@@ -80,17 +86,6 @@ class Curation(Document):
         acct = get_account(user.id)
         # print self.owner, acct
         return self.owner == acct
-
-
-# class TempCuration(EmbeddedDocument):
-#     outcome = StringField()
-#     tags = ListField(StringField(max_length=96), default=list)
-#     # rating - not used
-#     note = StringField()
-#     data = DictField()
-#     owner = ReferenceField(Account)
-#     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
-
 
 def place_as_cb_value(place):
     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
@@ -117,18 +112,16 @@ def location_from_cb_value(cb_value):
     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Resource(Document):
-    """uri is now using ALISS ID. Could also put a flag in resources for canonical uri?"""
-    # uri = StringField(unique=True, required=True)
+    """ Main model for ALISS resource """
     title = StringField(required=True)
     description = StringField()
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
+    calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
-    # curations = ListField(EmbeddedDocumentField(Curation), default=list)
     curations = ListField(ReferenceField(Curation), default=list)
-    # tempcurations = ListField(EmbeddedDocumentField(TempCuration), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account)
@@ -139,10 +132,6 @@ class Resource(Document):
         author = kwargs.pop('author', None)
         if author:
             self.item_metadata.update(author)
-        # print local_id
-        # if self.owner:
-        # self.item_metadata.author = Account.objects.get(local_id=local_id)
-        # created = (self.id is None) # and not self.url.startswith('http://test.example.com')
         created = self.id is None
         super(Resource, self).save(*args, **kwargs)
         if created:
@@ -160,7 +149,7 @@ class Resource(Document):
         
         if reindex:
             self.reindex()
-
+     
     def delete(self, *args, **kwargs):
         """docstring for delete"""
         for c in self.curations:
@@ -185,7 +174,7 @@ class Resource(Document):
     
     def index(self, conn=None):
         """conn is Solr connection"""
-        tags = self.tags
+        tags = list(self.tags)
         accounts = []
         description = [self.description]
         
@@ -195,7 +184,6 @@ class Resource(Document):
                 accounts.append(unicode(obj.owner.id))
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
-            # print "error in %s, %s" % (self.id, self.title)
             logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
             self.curations = []
             self.save()
@@ -205,11 +193,16 @@ class Resource(Document):
             'title': self.title,
             'short_description': self.description,
             'description': '\n'.join(description),
-            'keywords': ', '.join(tags),
+            'keywords': ', '.join(list(set(tags))),
             'accounts': ', '.join(accounts),
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
+        if self.calendar_event:
+            # print self.calendar_event.start.date(), self.calendar_event.end
+            doc['event_start'] = self.calendar_event.start #.date()
+            if self.calendar_event.end:
+                doc['event_end'] = self.calendar_event.end #.date()
         result = []
         if self.locations:
             for i, loc in enumerate(self.locations):
@@ -324,7 +317,17 @@ def lat_lon_to_str(loc):
     else:
         return ''
 
-def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
+def _make_fq(event, accounts):
+    fq = []
+    if event:
+        fq.append('(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *])')
+    if accounts:
+        fq.append('accounts:(%s)'% ' OR '.join(accounts))
+    if fq:
+        return ' AND '.join(fq)
+    return None
+
+def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
     conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
         
@@ -340,18 +343,19 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
             'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
-        if accounts:
-            kw['fq'] = 'accounts:(%s)'% ' OR '.join(accounts)
-        
+        fq =  _make_fq(event, accounts)
+        if fq:
+            kw['fq'] = fq        
+
         return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None):
+def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
     """docstring for find_by_place_or_kwords"""
     conn = Solr(settings.SOLR_URL)
     if name:
-        return find_by_place(name, kwords, loc_boost, start, max, accounts)
+        return find_by_place(name, kwords, loc_boost, start, max, accounts, event)
     # keywords only
     kw = {
         'start': start,
@@ -359,5 +363,9 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
         'fl': '*,score',
         'qt': 'resources',
     }
-    return None, conn.search(kwords.strip() or '*:*', **kw)
+    fq =  _make_fq(event, accounts)
+    # example 'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *]) AND accounts:4d9b99d889cb16665c000000'
+    if fq:
+        kw['fq'] = fq
 
+    return None, conn.search(kwords.strip() or '*:*', **kw)

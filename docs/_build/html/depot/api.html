@@ -67,8 +67,8 @@
 </div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="71%" />
+<col width="30%" />
+<col width="70%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">item name</th>
@@ -100,11 +100,17 @@
 <tr><td>tags</td>
 <td>list of string</td>
 </tr>
+<tr><td>event_start</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr><td>event_end</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
 <tr><td>relatedresources</td>
 <td>not implemented</td>
 </tr>
 <tr><td>lastmodified</td>
-<td>date time as string, eg &#8220;2011-04-06 15:58:23&#8221;</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
 </tr>
 </tbody>
 </table>
@@ -174,6 +180,10 @@
 <td>no</td>
 <td>A list of ALISS.org account IDs, separated a &#8216;+&#8217;.</td>
 </tr>
+<tr><td>event</td>
+<td>no</td>
+<td>Only &#8216;*&#8217; is implemented- return only events, and only those that start and/or end today or in the future.</td>
+</tr>
 <tr><td>output</td>
 <td>no</td>
 <td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
@@ -208,6 +218,8 @@
 <ul class="simple">
 <li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=paisley&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=50">http://www.aliss.org/api/resources/search/?location=paisley&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=50</a></li>
 <li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=edinburgh&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=10&amp;accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000">http://www.aliss.org/api/resources/search/?location=edinburgh&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=10&amp;accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000</a></li>
+<li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=gorgie&amp;query=dance&amp;event=*">http://www.aliss.org/api/resources/search/?location=gorgie&amp;query=dance&amp;event=*</a></li>
+<li>AJAX form example: <a class="reference external" href="http://demo.aliss.org/ajax/">http://demo.aliss.org/ajax/</a></li>
 </ul>
 <p>method: GET</p>
 <p>access: public</p>

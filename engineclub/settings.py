@@ -85,7 +85,7 @@ SOLR_LOC_BOOST_MAX = 100.0
 YAHOO_KEY = 'your_key_here...'
 
 TIME_ZONE = 'Europe/London'
-DATE_FORMAT='%d %B %Y, %H:%M'
+DATE_FORMAT='d M Y, H:i'
 LANGUAGE_CODE = 'en-gb'
 
 SITE_ID = 1
@@ -95,14 +95,18 @@ PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 # sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
-MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
+MEDIA_URL = '/media/'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
+
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, 'sitetemplates')
 )
 
 USE_I18N = True
-MEDIA_URL = ''
-ADMIN_MEDIA_PREFIX = '/admin/media/'
+# ADMIN_MEDIA_PREFIX = '/admin/media/'
 SECRET_KEY = 'ep1n==cyo=%%p#+aie!ixnuky&tnpwz8_7!i8ot^a()#--0ls3'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

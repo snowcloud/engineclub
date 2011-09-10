@@ -8,6 +8,7 @@ from firebox.views import *
 from mongoengine.queryset import DoesNotExist
 from mongoforms import MongoForm
 
+from datetime import datetime
 
 class FormHasNoInstanceException(Exception):
     pass
@@ -28,7 +29,10 @@ class DocumentForm(forms.Form):
         if self.instance is None:
             raise FormHasNoInstanceException("Form cannot save- document instance is None.")
         for f in self.fields:
-            self.instance[f] = self.cleaned_data[f]
+            try:
+                self.instance[f] = self.cleaned_data[f]
+            except KeyError:
+                pass
         if do_save:
             self.instance.save()
         return self.instance
@@ -37,6 +41,7 @@ class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(label='Location', help_text='enter a post code or a place name', required=False)
     tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=True)
+    events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
     
     def __init__(self, *args, **kwargs):
@@ -59,11 +64,12 @@ class FindResourceForm(forms.Form):
         data = cleaned_data.get('post_code', '').strip()
         kwords = cleaned_data.get('tags', '').strip()
         boost_location = cleaned_data.get('boost_location', '') or settings.SOLR_LOC_BOOST_DEFAULT
-        
+        event = cleaned_data.get('events_only')
+
         if not(data or kwords):
             raise forms.ValidationError("Please enter a location and/or some text and try again.")
 
-        loc, self.results = find_by_place_or_kwords(data, kwords, boost_location)
+        loc, self.results = find_by_place_or_kwords(data, kwords, boost_location, event='*' if event else None)
         if loc:
             self.centre = {'name': data, 'location': loc }
         elif data:
@@ -75,7 +81,7 @@ class FindResourceForm(forms.Form):
 
 class ShortResourceForm(DocumentForm):
 
-    uri = forms.CharField()
+    uri = forms.CharField(required=False)
     title = forms.CharField()
     description = forms.CharField(widget=forms.Textarea, required=False)
     tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
@@ -85,31 +91,45 @@ class ShortResourceForm(DocumentForm):
 
     def clean_uri(self):
         data = self.cleaned_data['uri']
-        try:
-            item =Resource.objects.get(uri=data)
-            if not (self.instance and (self.instance.uri == data)):
-                raise forms.ValidationError("There is already an item with this uri")
-        except DoesNotExist:
-            pass
+        if data:
+            try:
+                item =Resource.objects.get(uri=data)
+                if not (self.instance and (self.instance.uri == data)):
+                    raise forms.ValidationError("There is already an item with this uri")
+            except DoesNotExist:
+                pass
         return data
     
+class EventForm(DocumentForm):
+    
+    from ecutils.fields import JqSplitDateTimeField
+    from ecutils.widgets import JqSplitDateTimeWidget
+
+    start = JqSplitDateTimeField(required=False,
+        widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}, date_format='%d/%m/%Y'))
+    end = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
+
+    def clean(self):
+        start = self.cleaned_data.get('start', None)
+        end = self.cleaned_data.get('end', None)
+        now = datetime.now()
+        if end:
+            if start:
+                if end < start:
+                    raise forms.ValidationError('The start date must be earlier than the finish date.')
+            else:
+                raise forms.ValidationError('Please enter a start date.')
+            if end < now:
+                raise forms.ValidationError('The end date must be in the future.')
+        elif start:
+            if start < now:
+                raise forms.ValidationError('The start date must be in the future.')
+
+        return self.cleaned_data
+
 class LocationUpdateForm(DocumentForm):
     
     new_location = forms.CharField(required=False)
-    # address = forms.CharField(label="Location information", widget=forms.Textarea, required=False)
-    # tags = forms.CharField(required=False)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(LocationUpdateForm, self).__init__(*args, **kwargs)
-    #     if self.instance:
-    #         for i, loc in enumerate(self.instance.locations):
-    #             self.fields['itemloc_%s' % 1] = forms.BooleanField(label=loc.name, required=False)
-    #     self.fields['address'] = forms.CharField(widget=forms.Textarea, required=False)
-        
-    
-    # def content(self):
-    #     # return '%s, %s' % (self.cleaned_data['postcode'], self.cleaned_data['address'])
-    #     return self.cleaned_data['address']
     
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""

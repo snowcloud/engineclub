@@ -82,6 +82,7 @@ def resource_by_id(request, id):
         'resourcetype': item.resource_type or '',
         'uri': item.uri,
         'locations': [loc.label for loc in item.locations],
+        # 'event_start': 
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
     }]
@@ -97,7 +98,7 @@ def _check_int(i):
         
 def resource_search(request):
     def _resource_result(r):
-        return {
+        result = {
             'id': r['res_id'],
             'title': r['title'], 
             'description': r['short_description'],
@@ -111,8 +112,15 @@ def resource_search(request):
             'score': r['score']
             # 'last_modified': r[''] .item_metadata.last_modified,
         }
+        if r.get('event_start'):
+            result['event_start'] = r.get('event_start')
+        if r.get('event_end'):
+            result['event_end'] = r.get('event_end')
+        return result
+        
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
+    event = request.REQUEST.get('event', None)
     query = request.REQUEST.get('query')
     max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
     start = request.REQUEST.get('start', 0)
@@ -120,8 +128,6 @@ def resource_search(request):
     boost_location = request.REQUEST.get('boostlocation', (settings.SOLR_LOC_BOOST_DEFAULT))
     callback = request.REQUEST.get('callback')
 
-    # print accounts.split()
-    
     result_code = 200
     
     errors = []
@@ -137,9 +143,12 @@ def resource_search(request):
     if not _check_int(boost_location) or int(boost_location) > int(settings.SOLR_LOC_BOOST_MAX):
         result_code = 10
         errors.append('Param \'boostlocation\' must be an integer number between 0 and %s. You sent %s' % (int(settings.SOLR_LOC_BOOST_MAX), boost_location))
+    if event and event != '*':
+        result_code = 10
+        errors.append('Param \'event\' must be * if present.')
     if not errors:
-        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split())
-        if not loc:
+        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split(), event=event)
+        if location and not loc:
             result_code = 10
             errors.append('Location \'%s\' not found.' % location)
         
@@ -148,7 +157,7 @@ def resource_search(request):
     else:
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
-            'location': loc, 'boostlocation': boost_location,
+            'location': loc, 'event': event, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
@@ -171,6 +180,7 @@ def publish_data(request):
                 'lat_lon': l.lat_lon, 
                 
                 } for l in r.locations],
+            # 'event_start': r.event_start,
             'tags': r.all_tags,
             'curations': ['http://aliss.org/depot/curation/%s/' % unicode(c.id) for c in r.curations],
             # 'accounts': r.get('accounts', ''),

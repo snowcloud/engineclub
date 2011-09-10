@@ -80,6 +80,9 @@
 <tr><td>service_area</td>
 <td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
 </tr>
+<tr><td>calendar_event</td>
+<td><a class="reference internal" href="#calendarevent"><em>CalendarEvent</em></a></td>
+</tr>
 <tr><td>moderations</td>
 <td>list of <a class="reference internal" href="#moderation"><em>Moderation</em></a></td>
 </tr>
@@ -91,6 +94,9 @@
 </tr>
 <tr><td>related_resources</td>
 <td>list of <a class="reference internal" href="#relatedresource"><em>RelatedResource</em></a></td>
+</tr>
+<tr><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
 </tr>
 <tr><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
@@ -166,8 +172,42 @@ event scheduling</p>
 </table>
 <p>ref source + URI</p>
 </div>
+<div class="section" id="calendarevent">
+<span id="id4"></span><h2>CalendarEvent<a class="headerlink" href="#calendarevent" title="Permalink to this headline">¶</a></h2>
+<p>Adds event data to Resource. Subset of W3C Calendar API: <a class="reference external" href="http://www.w3.org/TR/calendar-api/">http://www.w3.org/TR/calendar-api/</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>start</td>
+<td>datetime (day required, time optional) *</td>
+</tr>
+<tr><td>end</td>
+<td>datetime (optional day and time) *</td>
+</tr>
+<tr><td>status</td>
+<td>string [&#8216;provisional&#8217;, &#8216;confirmed&#8217;, &#8216;cancelled&#8217;]</td>
+</tr>
+<tr><td>recurrence</td>
+<td>not used- will be <a class="reference internal" href="#calendarrepeatrule"><em>CalendarRepeatRule</em></a></td>
+</tr>
+</tbody>
+</table>
+<p>* a CalendarEvent must have a start date, but an end date is optional. Times are optional for both. Where no time is set, the datetime will be for midnight of the date, for example if start is set to 24 Sep 2011, the Engine will store &#8220;2011-09-24T00:00:00Z&#8221;</p>
+</div>
+<div class="section" id="calendarrepeatrule">
+<span id="id5"></span><h2>CalendarRepeatRule<a class="headerlink" href="#calendarrepeatrule" title="Permalink to this headline">¶</a></h2>
+<p>Not implemented. Will be subset of W3C Calendar API: <a class="reference external" href="http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface">http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface</a></p>
+</div>
 <div class="section" id="moderation">
-<span id="id4"></span><h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -192,7 +232,7 @@ event scheduling</p>
 </table>
 </div>
 <div class="section" id="curation">
-<span id="id5"></span><h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
+<span id="id7"></span><h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -224,13 +264,11 @@ event scheduling</p>
 </tr>
 </tbody>
 </table>
-<ul class="simple">
-<li>This will be used to allow trusted accounts to add their own metadata using their own schema.</li>
-</ul>
-<p>Data will be converted to required formats on client access (may be cached for performance)</p>
+<p>* This will be used to allow trusted accounts to add their own metadata using their own schema.
+Data will be converted to required formats on client access (may be cached for performance)</p>
 </div>
 <div class="section" id="itemmetadata">
-<span id="id6"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
+<span id="id8"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
 <p><em>To be updated with Dublin core.</em></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -262,7 +300,7 @@ event scheduling</p>
 </table>
 </div>
 <div class="section" id="account">
-<span id="id7"></span><h2>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h2>
+<span id="id9"></span><h2>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h2>
 <p>See code in <a class="reference external" href="http://github.com/snowcloud/engine-groups">engine-groups app</a></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -288,7 +326,7 @@ event scheduling</p>
 </table>
 </div>
 <div class="section" id="membership">
-<span id="id8"></span><h2>Membership<a class="headerlink" href="#membership" title="Permalink to this headline">¶</a></h2>
+<span id="id10"></span><h2>Membership<a class="headerlink" href="#membership" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -323,6 +361,8 @@ event scheduling</p>
 <li><a class="reference internal" href="#resource">Resource</a></li>
 <li><a class="reference internal" href="#relatedresource">RelatedResource</a></li>
 <li><a class="reference internal" href="#location">Location</a></li>
+<li><a class="reference internal" href="#calendarevent">CalendarEvent</a></li>
+<li><a class="reference internal" href="#calendarrepeatrule">CalendarRepeatRule</a></li>
 <li><a class="reference internal" href="#moderation">Moderation</a></li>
 <li><a class="reference internal" href="#curation">Curation</a></li>
 <li><a class="reference internal" href="#itemmetadata">ItemMetadata</a></li>

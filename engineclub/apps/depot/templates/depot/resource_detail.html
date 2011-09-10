@@ -1,26 +1,23 @@
 {% extends "base.html" %}
-{% load markup utils engine_groups_tags %}
+{% load markup utils engine_groups_tags depot_tags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 {% block head-extra %}
 {% comment %}{% endcomment %}
 
-<!-- script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.8&appid={{ yahoo_appid }}"></script -->  
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
-<!-- script type="text/javascript" src="/static/js/mxn.core.js"></script -->  
-<!-- script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google)"></script -->
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
-
-<!-- script type="text/javascript" src="/static/js/jquery.gmap-1.1.0-min.js"></script -->
-
-
+<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
+ -->
 {% endblock %}
 
 {% block document-ready %}
 {% if object.locations %}
     mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
     mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}})));
     {% for loc in object.locations %}
         mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
@@ -37,7 +34,6 @@
     //mapstraction.autoCenterAndZoom();
     mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 9);
 
-//$("#map").gMap({ markers: [{ latitude: 57.584806,  longitude: -1.875630 }] });
 {% endif %}
 {% endblock %}
 ​
@@ -69,15 +65,18 @@
 <div id="results">
 
 <table class="metadata">
-<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
-<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
-<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+
+{% if object.calendar_event %}
+    <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
+{% endif %}
 {% for loc in object.locations %}
     <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc.label }}, {{ loc.place_name }}</td></tr>
 {% empty %}
     <tr><th>location</th><td>-</td></tr>
 {% endfor %}
-{% for curation in object.curations %}
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
     <tr>
         <th>{% ifchanged %}curation{% endifchanged %}</th>
         <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
@@ -91,36 +90,6 @@
 </div>
 
 <div id="map"></div>
-{% comment %}
-{% if object.locations %}
-
-
-
-
-<script type="text/javascript">  
-    // Create a Map that will be placed in the "map" div.  
-    var map = new YMap(document.getElementById('map'));   
-    function startMap(){  
-        // Add the ability to change between Sat, Hybrid, and Regular Maps  
-        map.addTypeControl();     
-        // Add the zoom control. Long specifies a Slider versus a "+" and "-" zoom control  
-        map.addZoomLong();            
-        // Add the Pan control to have North, South, East and West directional control  
-        map.addPanControl();    
-        // Specifying the Map starting location and zoom level  
-        var currentGeoPoint = new YGeoPoint( "{{object.locations.0.lat_lon.0}}" , "{{object.locations.0.lat_lon.1}}"  );  
-        map.drawZoomAndCenter(currentGeoPoint, 7);
-        // map.drawZoomAndCenter("{{locations.0.label}}", 7);
- 		{% for loc in object.locations %}
-            currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
-            map.addMarker(currentGeoPoint);  
- 		{% endfor %}
-    }
-window.onload = startMap;
-</script>
-
-{% endif %}
-{% endcomment %}
 
 
 {% endblock %}

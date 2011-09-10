@@ -1,4 +1,4 @@
-{% load markup utils %}
+{% load markup utils depot_tags %}
 
 <h2>Latest curations for {{ object.name }}</h2>
 
@@ -9,6 +9,10 @@
     <ol class="resource-listing">
     {% for resource in latest_curations %}
         <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+
+            {% if resource.calendar_event.start %}
+                <p class="event">{{ resource.calendar_event|event_date }}</p>
+            {% endif %}
 
             {% if resource.locations %}
                 <ol>

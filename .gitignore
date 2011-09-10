@@ -21,3 +21,5 @@ ecengine/engineclub
 /engineclub/dump/
 /sql_data/dump.sql
 /mongo_data/dump/
+/mongo_data/aliss_dump.tgz
+.DS_Store

@@ -23,19 +23,7 @@
         {% block document-ready %}{% endblock %}
       });
     </script>
-    <script type="text/javascript">
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-563964-9']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-
-    </script>
 </head>
 <body class="{% block body_class %}single{% endblock %}">
 
@@ -65,6 +53,7 @@
         <li>logged in as {{ user.username }}</li>
         <li><a href="/accounts/password_change/">change password</a></li>
         <li><a href="/logout/">log out</a></li>
+        <li><a href="/depot/resource/add/">add new resource</a></li>
       {% else %}
         <li><a href="/accounts/login/" id="login">log in</a></li>
         <li><a href="/password_reset/">forgotten password</a></li>
@@ -97,6 +86,20 @@
 <script type="text/javascript" src="http://static.wehearvoices.net/widget.js"></script>
 <script type="text/javascript" src="http://widget.wehearvoices.net/node/init.js?user_id=9cac9f62-69cd-11e0-bf5e-fefdb24f91c5"></script>
 {% endcomment %}
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-563964-9']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 
 </body>
 </html>

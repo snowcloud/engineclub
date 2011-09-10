@@ -352,7 +352,12 @@ li.location-listing-item {
 	padding: 0.4em;
 }
 #id_new_location {
-	width: 50%
+	width: 50%;
+}
+.event { 
+	background: url(../media/img/clock.png) no-repeat left top;
+	padding-left: 25px;
+	vertical-align: middle;
 }
 .del-link, .add-link {
 	margin-left: 2em;

@@ -24,6 +24,7 @@ TEST_DB_NAME = 'test_db2'
 DB_NAME = 'aliss'
 SOLR_URL = 'http://127.0.0.1:8983/solr'
 # SOLR_URL = settings.SOLR_URL
+SOLR_ROWS = 5 # settings.SOLR_ROWS
 
 TEST_LOCS = {
     'ellon': '57.365287, -2.070642',
@@ -250,7 +251,7 @@ class SearchTest(TransactionTestCase):
         
         kwords = 'citizens advice'
         kw = {
-            'rows': settings.SOLR_ROWS,
+            'rows': SOLR_ROWS,
             'fl': '*,score',
             'qt': 'resources',
         }
@@ -260,6 +261,28 @@ class SearchTest(TransactionTestCase):
         print '\n--\nsearch on [%s] : ' % (kwords)
         for result in results:
             print '-', result['score'], result['title'] #, result['pt_location']
+
+    def test_dismax_events(self):
+        """docstring for test_dismax"""
+
+        conn = Solr(SOLR_URL)
+        
+        kwords = 'dance, music'
+        kw = {
+            'rows': SOLR_ROWS,
+            'fl': '*,score',
+            'qt': 'resources',
+            # 'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *]) AND accounts:4d9b99d889cb16665c000000'
+            'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *])'
+        }
+        # a_type:2 AND a_begin_date:[1990-01-01T00:00:00.000Z TO 1999-12-31T24:59:99.999Z]
+        # regex to check date formats
+        # and check 1 < 2
+        results = conn.search(kwords, **kw)
+
+        print '\n--\nsearch on [%s] : ' % (kwords)
+        for result in results:
+            print '-', result['score'], result['title'], ', ', result.get('event_start', '-'), result.get('event_end', '-')
         
     def test_dismax_loc(self):
         """docstring for test_dismax"""
@@ -272,7 +295,7 @@ class SearchTest(TransactionTestCase):
     
         kwords = 'heart'
         kw = {
-            'rows': settings.SOLR_ROWS,
+            'rows': SOLR_ROWS,
             'fl': '*,score',
             'qt': 'resources',
             'sfield': 'pt_location',

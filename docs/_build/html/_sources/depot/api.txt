@@ -40,8 +40,10 @@ uri                     string [web URI format]
 locations               list of `location`
 service_area            not implemented
 tags                    list of string
+event_start             date time as string, "2011-09-24T19:30:00Z"
+event_end               date time as string, "2011-09-24T19:30:00Z"
 relatedresources        not implemented
-lastmodified            date time as string, eg "2011-04-06 15:58:23"
+lastmodified            date time as string, "2011-09-24T19:30:00Z"
 ==================      =====================================
 
 url: /api/resources/[resource id]/
@@ -89,6 +91,7 @@ start                   no            This is the zero based index of the first 
 max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
 boostlocation           no            An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
 accounts                no            A list of ALISS.org account IDs, separated a '+'.
+event                   no            Only '*' is implemented- return only events, and only those that start and/or end today or in the future.
 output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
 callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
 ==================      ==========    ==========================
@@ -110,6 +113,8 @@ examples:
 
 * `<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=10&start=0&boostlocation=50>`_
 * `<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=10&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
+* `<http://www.aliss.org/api/resources/search/?location=gorgie&query=dance&event=*>`_
+* AJAX form example: `<http://demo.aliss.org/ajax/>`_
 
 method: GET
 
