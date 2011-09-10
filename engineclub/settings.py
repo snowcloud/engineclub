@@ -106,7 +106,7 @@ TEMPLATE_DIRS = (
 )
 
 USE_I18N = True
-ADMIN_MEDIA_PREFIX = '/admin/media/'
+# ADMIN_MEDIA_PREFIX = '/admin/media/'
 SECRET_KEY = 'ep1n==cyo=%%p#+aie!ixnuky&tnpwz8_7!i8ot^a()#--0ls3'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -127,7 +127,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    "sitedown.middleware.SitedownMiddleware",
+    # "sitedown.middleware.SitedownMiddleware",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
