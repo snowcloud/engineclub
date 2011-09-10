@@ -95,13 +95,17 @@ PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 # sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
-MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
+MEDIA_URL = '/media/'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
+
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, 'sitetemplates')
 )
 
 USE_I18N = True
-MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/admin/media/'
 SECRET_KEY = 'ep1n==cyo=%%p#+aie!ixnuky&tnpwz8_7!i8ot^a()#--0ls3'
 TEMPLATE_LOADERS = (
@@ -123,7 +127,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    # "sitedown.middleware.SitedownMiddleware",
+    "sitedown.middleware.SitedownMiddleware",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
