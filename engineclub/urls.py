@@ -43,8 +43,8 @@ urlpatterns += patterns('django.contrib.auth.views',
 
 if settings.DEBUG:
   urlpatterns += patterns('',
-    (r'^static/(?P<path>.*)$',
+    (r'^media/(?P<path>.*)$',
       'django.views.static.serve',
-      {'document_root': settings.STATIC_ROOT}
+      {'document_root': settings.MEDIA_ROOT}
     ),
   )
