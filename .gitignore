@@ -23,3 +23,9 @@ ecengine/engineclub
 /mongo_data/dump/
 /mongo_data/aliss_dump.tgz
 .DS_Store
+/engineclub/static/admin
+/engineclub/static/css
+/engineclub/static/js
+/engineclub/static/media
+/engineclub/static/verticaltabs
+/engineclub/static/favicon.ico
