@@ -131,9 +131,9 @@ def resource_search(request):
     result_code = 200
     
     errors = []
-    if not query:
-        result_code = 10
-        errors.append('Param \'query\' must be valid search query')
+    # if not query:
+    #     result_code = 10
+    #     errors.append('Param \'query\' must be valid search query')
     if not _check_int(max) or int(max) > settings.SOLR_ROWS:
         result_code = 10
         errors.append('Param \'max\' must be positive integer maximum value of %s. You sent %s' % (settings.SOLR_ROWS, max))

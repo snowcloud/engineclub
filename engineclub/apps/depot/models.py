@@ -347,7 +347,7 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
         if fq:
             kw['fq'] = fq        
 
-        return loc['lat_lon'], conn.search(kwords.strip() or '*:*', **kw)
+        return loc['lat_lon'], conn.search(kwords.strip(), **kw)
     else:
         return None, None
 

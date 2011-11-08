@@ -249,7 +249,7 @@ class SearchTest(TransactionTestCase):
 
         conn = Solr(SOLR_URL)
         
-        kwords = 'citizens advice'
+        kwords = 'dance'
         kw = {
             'rows': SOLR_ROWS,
             'fl': '*,score',
@@ -267,7 +267,9 @@ class SearchTest(TransactionTestCase):
 
         conn = Solr(SOLR_URL)
         
-        kwords = 'dance, music'
+        # kwords = 'dance, music'
+        kwords = ''
+
         kw = {
             'rows': SOLR_ROWS,
             'fl': '*,score',
@@ -323,7 +325,7 @@ class SearchTest(TransactionTestCase):
         curations = Curation.objects(owner=acct).order_by('-item_metadata__last_modified')
         
         for c in curations:
-            print c.owner, c.item_metadata.last_modified,  c.resource
+            print c.owner, c.item_metadata.last_modified,  c.resource.title
         
         # for c in Curation.objects.all():
         #     if c.resource is None:
