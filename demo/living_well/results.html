@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+    <meta charset="utf-8">
+    <title>Living Well @ the Library</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="stylesheets/base.css">
+    <link rel="stylesheet" href="stylesheets/skeleton.css">
+    <link rel="stylesheet" href="stylesheets/layout.css">
+
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="sixteen columns">
+
+            <h1>Living Well @ the Library</h1>
+            <h5><a href="./">Start Again</a> | <a href="add.html">Add something</a> | <a href="talk.html">Talk to someone now</a></h5>
+
+            <div id="aliss_results" class="column two-thirds alpha">
+
+            </div>
+
+            <div class="column one-third omega">
+
+                <div id="aliss_events">
+                </div>
+
+                <div id="aliss_books">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="javascripts/jquery-1.7.js"></script>
+    <script src="javascripts/jquery.queryobject.js"></script>
+    <script src="javascripts/tabs.js"></script>
+    <script src="javascripts/aliss.js"></script>
+    <script>
+
+        $(function(){
+
+            var location = $.query.get('location');
+            var query = $.query.get('topic');
+            var query2 = $.query.get('topic2');
+
+            if(query === '' || query === true){
+                query = query2;
+            }
+
+            aliss_search({
+                'location' : location,
+                'query' : query
+            }, '#aliss_results', true);
+
+            aliss_search({
+                'location' : location,
+                'query' : query,
+                'event' : '*'
+            }, '#aliss_events');
+
+            aliss_search({
+                'location' : location,
+                'query' : query + ",books",
+                'max': 1
+            }, '#aliss_books');
+
+        });
+
+    </script>
+
+</body>
+</html>
