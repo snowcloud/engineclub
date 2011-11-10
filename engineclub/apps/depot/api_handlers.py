@@ -95,7 +95,11 @@ def _check_int(i):
     except ValueError:
         print i
         return None
-        
+
+def _loc_to_str(loc):
+    print loc
+    return ["%.16f, %.16f" % (loc[0], loc[1])]
+
 def resource_search(request):
     def _resource_result(r):
         result = {
@@ -157,7 +161,7 @@ def resource_search(request):
     else:
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
-            'location': loc, 'event': event, 'boostlocation': boost_location,
+            'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
