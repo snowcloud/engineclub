@@ -39,7 +39,9 @@ function aliss_search(data, div_id, paginate){
                 return;
             }
 
-            google_map.setCenter(new google.maps.LatLng(response.data[0].location[0], response.data[0].location[1]));
+            var latlng = response.data[0].location[0].split(', ');
+
+            google_map.setCenter(new google.maps.LatLng(latlng[0], latlng[1]));
 
             var items = [];
             var markers = [];
