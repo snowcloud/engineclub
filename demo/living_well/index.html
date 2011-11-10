@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<meta charset="utf-8">
+	<title>Living Well @ the Library</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" href="stylesheets/base.css">
+	<link rel="stylesheet" href="stylesheets/skeleton.css">
+	<link rel="stylesheet" href="stylesheets/layout.css">
+
+    <style type="text/css">
+
+        #livingwellform input {
+            border: none;
+            border-bottom: 1px solid;
+            display: inline;
+        }
+
+    </style>
+
+</head>
+<body>
+
+	<div class="container">
+
+        <h1>Living Well @ the Library</h1>
+
+        <p>
+            <strong>living well @ the library</strong> can help you find a local
+            services and organisations. It can also tell you about interesting
+            things happening nearby.
+        </p>
+
+        <p>Start by telling us a little about what you're after.</p>
+
+        <form id="livingwellform" method="get" action="results.html">
+
+            <p>I live in
+            <input type="text" name="location" maxlength="100" />
+            and I'd like to know more about
+            <input type="text" name="topic" maxlength="100" /></p>
+
+            <br/>
+
+            <p>I would really like some help with <input type="text" name="topic2" maxlength="100" /></p>
+
+            <input type="submit" value="Go!" />
+
+        </form>
+
+	</div>
+
+</body>
+</html>
