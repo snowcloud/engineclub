@@ -368,4 +368,4 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
     if fq:
         kw['fq'] = fq
 
-    return None, conn.search(kwords.strip() or '*:*', **kw)
+    return None, conn.search(kwords.strip() if kwords else '', **kw)

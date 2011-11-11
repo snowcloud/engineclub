@@ -97,8 +97,10 @@ def _check_int(i):
         return None
 
 def _loc_to_str(loc):
-    print loc
-    return ["%.16f, %.16f" % (loc[0], loc[1])]
+    if loc:
+        return ["%.16f, %.16f" % (loc[0], loc[1])]
+    else:
+        return []
 
 def resource_search(request):
     def _resource_result(r):
