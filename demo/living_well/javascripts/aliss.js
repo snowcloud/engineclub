@@ -117,12 +117,19 @@ function aliss_search(data, div_id, paginate){
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);
-                        markers.push(new google.maps.Marker({
+                        var marker = new google.maps.Marker({
                             map:google_map,
                             draggable:true,
                             animation: google.maps.Animation.DROP,
                             position: glatlng
-                        }));
+                        });
+                        markers.push(marker);
+                        var infowindow = new google.maps.InfoWindow({
+                            content: "<p>" + value.title + "</p>"
+                        });
+                        google.maps.event.addListener(marker, 'click', function() {
+                          infowindow.open(google_map,marker);
+                        });
                     }
                 });
 
