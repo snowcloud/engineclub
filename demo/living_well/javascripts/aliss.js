@@ -126,7 +126,7 @@ function aliss_search(data, div_id, paginate){
                     }
                 });
 
-                $(div_id).html("<h3>Support for " + defaults.query + " near to " + defaults.location + "</h3>");
+                $(div_id).html("");
 
                 // Add pagination buttons to the top and bottom
                 if (paginate){

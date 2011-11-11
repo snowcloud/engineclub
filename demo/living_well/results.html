@@ -42,9 +42,11 @@
 
             <div class="column one-third omega">
 
+                <h3>Things to go to</h3>
                 <div id="aliss_events">
                 </div>
 
+                <h3>There's more..</h3>
                 <div id="aliss_books">
                 </div>
 
@@ -64,7 +66,7 @@
 
         $(function(){
 
-            var location = $.query.get('location');
+            var loc = $.query.get('location');
             var query = $.query.get('topic');
             var query2 = $.query.get('topic2');
 
@@ -72,19 +74,26 @@
                 query = query2;
             }
 
+            var title = "<h3>Support for &ldquo;" + query + "&rdquo;";
+
+            if (loc && loc !== true){
+                title = title + " near to &ldquo;" + loc + "&rdquo;</h3>";
+            }
+            $('#aliss_results').before(title);
+
             aliss_search({
-                'location' : location,
+                'location' : loc,
                 'query' : query
             }, '#aliss_results', true);
 
             aliss_search({
-                'location' : location,
+                'location' : loc,
                 'query' : query,
                 'event' : '*'
             }, '#aliss_events');
 
             aliss_search({
-                'location' : location,
+                'location' : loc,
                 'query' : query + ",books",
                 'max': 1
             }, '#aliss_books');
