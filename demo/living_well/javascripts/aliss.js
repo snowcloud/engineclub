@@ -1,4 +1,38 @@
 
+
+function validate_location(location_name){
+
+    $.ajax({
+        data: {location: location_name, max: 1},
+        dataType: 'jsonp',
+        url: 'http://aliss.org/api/resources/search/',
+        success: function(response){
+
+            if(!response.errors.length && response.data.length > 0){
+                $('.error.location').hide();
+                $('#livingwellform').attr('v', true);
+                $('#livingwellform').submit();
+                return;
+            } else {
+                $('#livingwellform').attr('v', '');
+            }
+
+            $('.error.location').show();
+
+        }
+    });
+
+}
+
+function aliss_query(defaults, handler){
+    $.ajax({
+        data: defaults,
+        dataType: 'jsonp',
+        url: 'http://aliss.org/api/resources/search/',
+        success: handler
+    });
+}
+
 function aliss_search(data, div_id, paginate){
 
     $(div_id).html("<h3>Loading...</h3>");
@@ -48,14 +82,16 @@ function aliss_search(data, div_id, paginate){
 
             $.each(response.data[0].results, function(index, value){
                 items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p></li>');
-                var latlng = value.locations[0].split(', ');
-                var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);
-                markers.push(new google.maps.Marker({
-                    map:google_map,
-                    draggable:true,
-                    animation: google.maps.Animation.DROP,
-                    position: glatlng
-                }));
+                if (value.locations[0]){
+                    var latlng = value.locations[0].split(', ');
+                    var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);
+                    markers.push(new google.maps.Marker({
+                        map:google_map,
+                        draggable:true,
+                        animation: google.maps.Animation.DROP,
+                        position: glatlng
+                    }));
+                }
             });
 
             $(div_id).html("<h3>Support for " + defaults.query + " near to " + defaults.location + "</h3>\n<ul></ul>");
