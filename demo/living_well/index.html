@@ -17,7 +17,8 @@
 
 	<link rel="stylesheet" href="stylesheets/base.css">
 	<link rel="stylesheet" href="stylesheets/skeleton.css">
-	<link rel="stylesheet" href="stylesheets/layout.css">
+    <link rel="stylesheet" href="stylesheets/layout.css">
+    <link rel="stylesheet" href="stylesheets/living_well.css">
 
     <style type="text/css">
 
@@ -36,6 +37,12 @@
 
         <h1>Living Well @ the Library</h1>
 
+        <noscript>
+            <p class="error general">
+                JavaScript must be enabled in your web browser for you to use
+            </p>
+        </noscript>
+
         <p>
             <strong>living well @ the library</strong> can help you find a local
             services and organisations. It can also tell you about interesting
@@ -43,6 +50,15 @@
         </p>
 
         <p>Start by telling us a little about what you're after.</p>
+
+        <p class="error general" style="display:none">
+            Please enter a location and topic in the first line or just a topic
+            in the second.
+        </p>
+
+        <p class="error location" style="display:none">
+            The location you entered could not be found.
+        </p>
 
         <form id="livingwellform" method="get" action="results.html">
 
@@ -60,6 +76,44 @@
         </form>
 
 	</div>
+
+    <script src="javascripts/jquery-1.7.js"></script>
+    <script src="javascripts/jquery.queryobject.js"></script>
+    <script src="javascripts/tabs.js"></script>
+    <script src="javascripts/aliss.js"></script>
+    <script>
+
+        $(function(){
+            "use strict";
+
+            $('#livingwellform').submit(function(e){
+
+                var inputs = $('#livingwellform');
+                var location = inputs.find('[name="location"]').val(),
+                    topic = inputs.find('[name="topic"]').val(),
+                    topic2 = inputs.find('[name="topic2"]').val();
+
+                if((!location || !topic) && !topic2){
+                    $('.error.general').show();
+                    e.preventDefault();
+                    return false;
+                } else {
+                    $('.error.general').hide();
+                }
+
+                if(!$('#livingwellform').attr('v') && location && !topic2){
+                    validate_location(inputs.find('[name="location"]').val());
+                    e.preventDefault();
+                    return false;
+                }
+
+                return true;
+
+            });
+
+        });
+
+    </script>
 
 </body>
 </html>
