@@ -1,4 +1,32 @@
 {% extends "base.html" %}
+
+
+{% block content %}
+    <div class="twelve columns">
+        <h1 class="site-logo">aliss</h1>
+        <p class="blurb">access to local information to support self-management for people with long&nbsp;term health conditions.</p>
+
+        <hr />
+        <p><a href="/info/" class="nice fixed radius purple button">Find out more</a></p>
+        <p><a href="/depot/resource/find/" class="nice fixed radius purple button">Search</a></p>
+        <p><a href="/cab/" class="nice fixed radius purple button">My ALISS</a></p>
+
+        <hr />
+        <p><a href="/contact/" class="action email">Contact us</a></p>
+        <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
+        <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
+        <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
+
+
+    </div>
+{% endblock %}        
+
+
+
+{% comment %}
+    
+
+{% extends "base.html" %}
 {% load rss_tags %}
 {% block title %}Home{% endblock %}
 {% block head-extra %}
@@ -64,11 +92,6 @@
     <div class="call-btn" id="opener2"><a href="/info/how-will-it-work/">How will it work?</a> <span class="sub-info">(10 min video)</span></div>
     
 </div>
-{% comment %}
-<p>About 40% of the Scottish population live with a long term health condition, such as heart disease, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="/about/">Learn&nbsp;more&nbsp;»</a></p>
-<div class="call-btn grid_6 alpha" id="opener"><a href="/info/what-is-aliss/">What is ALISS?</a> <span class="sub-info">(7 min screencast)</span></div>
-<div class="call-btn grid_6 omega" id="opener2"><a href="/info/how-will-it-work/">How will it work?</a> <span class="sub-info">(10 min screencast)</span></div>
-{% endcomment %}
 </div>
 {%endblock%}
 
@@ -87,9 +110,6 @@
         <ul class="verticalslider_contents">
             <li style="display: list-item;">
             <h2>What's the problem?</h2>
-            {% comment %}
-            <div class="media"><a href="http://vimeo.com/11986849">Watch the ALISS Engine screencast.</a></div>
-            {% endcomment %}
             <p>About 40% of the Scottish population live with a long term health condition. That’s around 2 million people and the numbers are rising. Conditions such as heart disease, epilepsy, arthritis and chronic pain have an impact on just about every aspect of daily life – looking after a family, studying, holding down a job or keeping up with friends.</p>
             <p>An important part of helping people to live well with their condition is enabling them to manage their own health. Self Management is a person-centred approach to better health and wellbeing, providing the tools, activities and information they need to manage their condition effectively and live a full life. To be confident and successful self managers, people require support and advice. Self Management support is usually provided close to home, sometimes by people who have been through similar experiences. You’ll often find good examples of support on your community centre or library notice board.</p>
             <p>But it’s difficult to find on the web...</p>
@@ -132,19 +152,6 @@
 <h3>Blog</h3>
 <p>The <a href="http://www.aliss.scot.nhs.uk/index.php/blog">ALISS project blog</a> is your first stop to get background on the project, news of current work, and find out about upcoming events.</p>
 
-{% comment %}    
-<p><strong>* Blog not available for now. *</strong></p>
-
-{% get_feed_items as items %}
-
-<ul>
-{% for item in items  %}
-    <li><a href="{{ item.link }}">{{ item.title }}</a></li>
-{% endfor %}
-</ul>
-
-<div class="more-btn"><a href="http://www.aliss.scot.nhs.uk/">more...</a></div>
-{% endcomment %}    
 
 </div>
 
@@ -201,3 +208,4 @@
 </div>
 
 {%endblock%}
+{% endcomment %}
