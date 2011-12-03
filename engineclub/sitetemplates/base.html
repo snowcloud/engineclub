@@ -11,7 +11,7 @@
     <!-- Set the viewport width to device width for mobile -->
     <meta name="viewport" content="width=device-width" />
     
-    <title>ALISS</title>
+    <title>ALISS: {% block title %}{% endblock %}</title>
   
     <script type="text/javascript" src="http://use.typekit.com/amh5xxh.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -33,15 +33,27 @@
     <!-- container -->
     <div class="container">
         <div class="row">
+            {% if messages %}
+              <div class="usermessage">
+                <ul> 
+                    {% for message in messages %} 
+                        <li class="{{ message.tags }}">{{ message|safe }}</li>
+                    {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
         {% block content %}&nbsp;{% endblock %}
         </div>
     <div class="site-footer">
         <div class="row">
             <hr />
 
+            {% comment %}
             {% if user.is_staff %}
                 <p><a href="/admin/" class="">Admin</a></p>
             {% endif %}
+            {% endcomment %}
 
             <p><a href="http://www.ltcas.org.uk" class="">LTCAS</a></p>
             <p>CreativeCommons</p>

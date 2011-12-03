@@ -1,21 +1,26 @@
-// Title:       Screen styles
+// Title:   Screen styles
 // Author:  derek@snowcloud.co.uk
 
 @import "foundation"
 @import "app"
 
+body
+    color: #444
+    font-family: chaparral-pro, Times New Roman, serif
+
 h1.site-logo
-    font-family: alwyn-new-rounded-web,sans-serif
+    font-family: alwyn-new-rounded-web, sans-serif
+    padding-top: 1em
 
 h1, h2, h3
-    font-family: cronos-pro,sans-serif
+    font-weight: 600 // semi-bold
 
 p
     font-size: 140%
     line-height: 1.2em
 
 p.blurb
-    font-family: cronos-pro,sans-serif
+    //font-family: cronos-pro,sans-serif
     font-size: 240%
 
 .button.fixed
@@ -29,13 +34,17 @@ p.blurb
     border: 1px solid #8a3391
 
 .pres .row
-    border-top: 1px solid #c3c2c3
+    //border-top: 1px solid #d6e6d6
+    padding-bottom: 2em
+
+.pres h2
+    border-top: 1px solid #d6e6d6
 
 a.action
     //font-size: 0.875em
     //font-size: 0.8em
-    padding-left: 36px
-    padding-top: 1.8em
+    padding-left: 50px
+    padding-top: 12px
     line-height: 1.5em
     //background-color: red
 
@@ -57,5 +66,9 @@ a.github
     font-size: 0.8em
     margin-top: 2em
 
+form label
+    margin-bottom: 0
+label + textarea, form.nice small.error
+    margin-top: 0
 
 
