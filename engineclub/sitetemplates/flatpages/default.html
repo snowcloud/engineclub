@@ -10,19 +10,4 @@
 
 {{ flatpage.content|textile }}
 
-
-
-
 {% endblock %}
-
-{% block secondary-content-default %}
-{% if not "%sside-info/"|flatpage:flatpage.url %}
-<h2>Can't find something?</h2>
-<p>Take a look at our <a href="/info/">information pages</a>.</p>
-{% endif %}
-{% endblock %}
-
-{% block secondary-content %}
-	{{ "%sside-info/"|flatpage:flatpage.url|textile }}
-{% endblock %}
-
