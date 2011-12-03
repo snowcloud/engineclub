@@ -7,7 +7,8 @@
 <!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
 <head>
     <meta charset="utf-8" />
-    
+    <meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+
     <!-- Set the viewport width to device width for mobile -->
     <meta name="viewport" content="width=device-width" />
     
@@ -28,7 +29,7 @@
     <![endif]-->
 
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     <!-- container -->
     <div class="container">
@@ -68,7 +69,13 @@
     <!-- Included JS Files -->
     <script src="/static/scripts/foundation.js"></script>
     <script src="/static/scripts/app.js"></script>
-    
+    {% block script-extra %}{% endblock %}
+    <script type="text/javascript">
+      $('document').ready(function(){
+        {% block document-ready %}{% endblock %}
+      });
+    </script>
+
 </body>
 </html>
 

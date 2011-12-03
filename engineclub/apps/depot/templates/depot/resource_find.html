@@ -1,75 +1,6 @@
 {% extends "base.html" %}
 {% load utils depot_tags %}
 {% block title %}find resources{% endblock %}
-{% block head-extra %}
-<script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
-<link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
-<!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
-
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
-<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
- -->
-<style>
-    #slider { width: 50%; }
-</style>
-
-{% endblock %}
-
-{% block document-ready %}
-var loc = $( "#slider_label" );
-var select = $( "#id_boost_location" );
-var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
-	min: 10,
-	max: 100,
-	range: "min",
-	value: select.val(),
-	slide: function( event, ui ) {
-		select.val(ui.value);
-		//$("#submit_button").click()
-		
-	}
-});
-{% if results and centre %}
-
-    var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
-    mapstraction = new mxn.Mapstraction('map','google');
-    //mapstraction = new mxn.Mapstraction('map','openlayers');
-    mapstraction.addMarker( new mxn.Marker(centre_pt));
-    {% for loc in object.locations %}
-        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
-	{% endfor %}
-
-
-    {% for resource in results %}{% for loc in resource.pt_location %}
-        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>')
-    {% endfor %}{% endfor %}
-
-    function advancedMarker(lat, lon, info) {
-        mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
-            infoBubble : info,
-            label : "tooltip",
-            marker : 3,
-            icon : "/static/media/img/ymarker_or.png",
-            iconSize : [25,25],
-            draggable : false,
-            hover : true
-        });
-    };
-
-    mapstraction.addControls({
-        pan: true, 
-        zoom: 'small',
-        map_type: true 
-    });
-    
-    mapstraction.setCenterAndZoom(centre_pt, 9);
-
-{% endif %}
-{% endblock %}
 
 
 {% block main-content-class %}onecol{% endblock %}
@@ -85,11 +16,20 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 
 <div id="slider"></div>
 
-<form class="form" action="." method="GET" id="search_form">{% csrf_token %}
+<form class="nice" action="." method="GET" id="search_form">{% csrf_token %}
     <fieldset>
         <legend><span>Resource details:</span></legend>
         {# <div class="ui-widget"> #}
         
+        {% for field in form %}
+            {{ field.label_tag }} {{ field }}
+            {% if field.errors %}<small class="error">{{ field.errors|join:", " }}</small>{% endif %}
+        {% endfor %}
+
+        <label for="slider" id="slider_label">Make results more local:</label>
+        <span class="helptext">drag slider to the right to make location more important than search text.</span>
+
+{% comment %}
         <ol>
              {{ form.as_ul }}
             <li><label for="slider" id="slider_label">Make results more local:</label>
@@ -100,12 +40,16 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
     </fieldset>
 
      <fieldset class="submit">
-        <input type="submit" name="result" value="Find items" id="submit_button">
+{% endcomment %}
+
+        <p><input type="submit" name="result" value="Find items" id="submit_button"></p>
         <!-- input type="submit" name="result" value="Cancel" -->
     </fieldset>
 </form>
 
-<div id="results">
+<div class="row">
+
+<div class="six columns" id="results">
     
   {% if centre %}
     <h2>Closest results for {{ centre.name }}:</h2>
@@ -140,7 +84,77 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
     </ol>
 
 </div>
-<div id="map"></div>
+<div class="six columns" id="map"></div>
+
+</div>
+{% endblock %}
+
+{% block script-extra %}
+<script src="/static/js/jquery-ui.custom.min.js" type="text/javascript"></script>
+<link type="text/css" href="/static/js/css/themes/base/jquery.ui.all.css" rel="stylesheet" />
+<!-- link type="text/css" href="/static/js/css/demosx.css" rel="stylesheet" / -->
+
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
+<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
+ -->
+<style>
+    #slider { width: 50%; }
+</style>
 
 {% endblock %}
 
+{% block document-ready %}
+var loc = $( "#slider_label" );
+var select = $( "#id_boost_location" );
+var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
+    min: 10,
+    max: 100,
+    range: "min",
+    value: select.val(),
+    slide: function( event, ui ) {
+        select.val(ui.value);
+        //$("#submit_button").click()
+        
+    }
+});
+{% if results and centre %}
+
+    var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
+    mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
+    mapstraction.addMarker( new mxn.Marker(centre_pt));
+    {% for loc in object.locations %}
+        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
+    {% endfor %}
+
+
+    {% for resource in results %}{% for loc in resource.pt_location %}
+        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>')
+    {% endfor %}{% endfor %}
+
+    function advancedMarker(lat, lon, info) {
+        mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
+            infoBubble : info,
+            label : "tooltip",
+            marker : 3,
+            icon : "/static/media/img/ymarker_or.png",
+            iconSize : [25,25],
+            draggable : false,
+            hover : true
+        });
+    };
+
+    mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true 
+    });
+    
+    mapstraction.setCenterAndZoom(centre_pt, 9);
+
+{% endif %}
+{% endblock %}
