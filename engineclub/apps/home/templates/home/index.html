@@ -2,15 +2,17 @@
 
 {% block title %}home{% endblock %}
 
+{% block body_class %}{{block.super}} home{% endblock %}
+
 {% block content %}
     <div class="twelve columns">
         <h1 class="site-logo">aliss</h1>
         <p class="blurb">access to local information to support self-management for people with long&nbsp;term health conditions.</p>
 
         <hr />
-        <p><a href="/info/" class="nice fixed radius purple button">Find out more</a></p>
-        <p><a href="/depot/resource/find/" class="nice fixed radius purple button">Search</a></p>
-        <p><a href="/cab/" class="nice fixed radius purple button">My ALISS</a></p>
+        <p><a href="/info/" class="nice fixed round blue button">Find out more</a></p>
+        <p><a href="/depot/resource/find/" class="nice fixed round blue button">Search</a></p>
+        <p><a href="/cab/" class="nice fixed round blue button">My ALISS</a></p>
 
         <hr />
         <p><a href="/contact/" class="action email">Contact us</a></p>

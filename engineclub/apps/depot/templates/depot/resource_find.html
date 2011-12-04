@@ -4,6 +4,7 @@
 
 
 {% block main-content-class %}onecol{% endblock %}
+{% block breadcrumbs %}<a href="{% url home %}">home</a>{% endblock %}
 {% block content %}
 
 <h1>Find Resources</h1>
@@ -28,19 +29,6 @@
 
         <label for="slider" id="slider_label">Make results more local:</label>
         <span class="helptext">drag slider to the right to make location more important than search text.</span>
-
-{% comment %}
-        <ol>
-             {{ form.as_ul }}
-            <li><label for="slider" id="slider_label">Make results more local:</label>
-            <span class="helptext">drag slider to the right to make location more important than search text.</span>
-            </li>
-        </ol>
-        {# </div> #}
-    </fieldset>
-
-     <fieldset class="submit">
-{% endcomment %}
 
         <p><input type="submit" name="result" value="Find items" id="submit_button"></p>
         <!-- input type="submit" name="result" value="Cancel" -->

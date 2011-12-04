@@ -20,7 +20,7 @@
 <p class="notice">Please note, this site is currently in closed beta testing</p>
 {% endcomment %}
 
-<form class="form" method="post" action="">{% csrf_token %}
+<form class="form" method="post">{% csrf_token %}
     <fieldset>
 
         <label for="id_username">Username:</label> {{ form.username }}

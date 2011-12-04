@@ -33,16 +33,22 @@
 
     <!-- container -->
     <div class="container">
+        <div class="row breadcrumbs">
+            {% block breadcrumbs %}{% endblock %}
+        </div>
+
+        {#% if messages %#}
+          <div class="row usermessage">
+            <ul> 
+                <li class="{{ warn }}">Message here!</li>
+                {% for message in messages %} 
+                    <li class="{{ message.tags }}">{{ message|safe }}</li>
+                {% endfor %}
+            </ul>
+          </div>
+        {#% endif %#}
+
         <div class="row">
-            {% if messages %}
-              <div class="usermessage">
-                <ul> 
-                    {% for message in messages %} 
-                        <li class="{{ message.tags }}">{{ message|safe }}</li>
-                    {% endfor %}
-                </ul>
-              </div>
-            {% endif %}
 
         {% block content %}&nbsp;{% endblock %}
         </div>
