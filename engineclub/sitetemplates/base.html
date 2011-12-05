@@ -37,16 +37,15 @@
             {% block breadcrumbs %}{% endblock %}
         </div>
 
-        {#% if messages %#}
-          <div class="row usermessage">
+        {% if messages %}
+          <div class="row usermessage alert-box {{ message.0.tags }}">
             <ul> 
-                <li class="{{ warn }}">Message here!</li>
                 {% for message in messages %} 
                     <li class="{{ message.tags }}">{{ message|safe }}</li>
                 {% endfor %}
             </ul>
           </div>
-        {#% endif %#}
+        {% endif %}
 
         <div class="row">
 

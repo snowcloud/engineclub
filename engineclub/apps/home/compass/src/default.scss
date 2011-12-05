@@ -4,6 +4,7 @@
 body {
     color: #222;
     font-family: chaparral-pro, Times New Roman, serif;
+    // 'lucida grande', tahoma, verdana, arial, sans-serif;
     font-size: 16px;
 }
 h1.site-logo {
@@ -89,6 +90,16 @@ form label {
 label + textarea, form.nice small.error {
     margin-top: 0;
 }
+div.usermessage {
+	padding: 1em;
+	font-size: 120%;
+	background-color: #fefa7f;
+    @media screen and (min-width: 768px) {
+		margin-top: 10px;
+        width: 95%;
+    }
+}
+
 #results {
     //float: left;
     //width: 45%;
