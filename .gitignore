@@ -27,3 +27,5 @@ ecengine/engineclub
 /engineclub/static/media
 /engineclub/static/verticaltabs
 /engineclub/static/favicon.ico
+
+sql_data/dump.tgz
