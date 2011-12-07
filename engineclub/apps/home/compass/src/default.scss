@@ -1,17 +1,59 @@
 @import "foundation";
 @import "app";
 
+// generates rem sizes after px: https://github.com/bitmanic/rem
+// set baseline size in _rem.scss to body size, eg 16px
+@import "rem";
+
+//@import "320-up";
+//@import "480-up";
+//@import "780-up";
+//@import "960-up";
+
+// using:
+// 480px for tablet
+// 780px for desktop
+
+// in foundation.css
+// html { font-size: 62.5%; }
+// 	body { background: #fff; font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif; font-size: 13px; line-height: 18px; color: #555; position: relative; -webkit-font-smoothing: antialiased; }
+
+// from Richard Rutter, body 16px but 100% for IE (in ie.css)
+// http://www.alistapart.com/articles/howtosizetextincss
+
+// using html cos foundation.css sets it
+
+html {
+    font-size: 16px;
+}
+
 body {
     color: #222;
     font-family: chaparral-pro, Times New Roman, serif;
     // 'lucida grande', tahoma, verdana, arial, sans-serif;
-    font-size: 16px;
+    // font: 16px/24px "ff-meta-web-pro-1","ff-meta-web-pro-2", Arial, "Helvetica Neue", sans-serif
+    font-size: 100%;
+    line-height: 1.125em;
 }
+
+// foundation.css
+// mobile
+@media handheld, only screen and (max-width: 767px) {
+	//body, p {  font-size: 15px; font-size: 1.5rem; line-height: 1.4; }
+	body, p {  font-size: 110%; line-height: 1.125em; }
+}
+
+
 h1.site-logo {
     font-family: alwyn-new-rounded-web, sans-serif;
-    font-size: 8.6rem;
-    @media screen and (min-width: 768px) {
+    @include rem('font-size', 55px);
+    @media screen and (min-width: 480px) {
         padding-top: 0.4em;
+        //font-size: 8.6rem;
+    }
+    @media screen and (min-width: 780px) {
+        //padding-top: 0.4em;
+        @include rem('font-size', 90px);
     }
 }
 h1, h2, h3 {
@@ -23,14 +65,16 @@ p {
 }
 p.blurb {
     //font-family: cronos-pro,sans-serif;
-    font-size: 140%;
-    @media screen and (min-width: 768px) {
-        font-size: 240%;
+    //font-size: 140%;
+    @include rem('font-size', 26px);
+    @media screen and (min-width: 780px) {
+        //font-size: 240%;
+	    @include rem('font-size', 40px);
     }
 }
 .button.fixed {
-    width: 10em;
-    text-align: center;
+    //width: 10em;
+    //text-align: center;
 }
 .purple.button {
     background-color: #a33daa;
