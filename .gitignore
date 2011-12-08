@@ -13,10 +13,8 @@ ecengine/engineclub
 /engineclub/apps/firebox/sources
 /engineclub/test_db
 /engineclub/blah.json
-/engineclub/compass/.sass-cache
 /engineclub/compass/css
 .sass-cache
-/engineclub/compass/src/.sass-cache
 /engineclub/compass/src/_forms.old.scss
 /engineclub/dump/
 /sql_data/dump.sql
@@ -29,3 +27,5 @@ ecengine/engineclub
 /engineclub/static/media
 /engineclub/static/verticaltabs
 /engineclub/static/favicon.ico
+
+sql_data/dump.tgz

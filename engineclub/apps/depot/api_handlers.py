@@ -4,7 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 
-from depot.models import Resource, find_by_place_or_kwords
+from depot.models import Resource, Curation, find_by_place_or_kwords
 
 from mongoengine import ValidationError
 from mongoengine.connection import _get_db as get_db
@@ -95,7 +95,13 @@ def _check_int(i):
     except ValueError:
         print i
         return None
-        
+
+def _loc_to_str(loc):
+    if loc:
+        return ["%.16f, %.16f" % (loc[0], loc[1])]
+    else:
+        return []
+
 def resource_search(request):
     def _resource_result(r):
         result = {
@@ -131,9 +137,9 @@ def resource_search(request):
     result_code = 200
     
     errors = []
-    if not query:
-        result_code = 10
-        errors.append('Param \'query\' must be valid search query')
+    # if not query:
+    #     result_code = 10
+    #     errors.append('Param \'query\' must be valid search query')
     if not _check_int(max) or int(max) > settings.SOLR_ROWS:
         result_code = 10
         errors.append('Param \'max\' must be positive integer maximum value of %s. You sent %s' % (settings.SOLR_ROWS, max))
@@ -157,7 +163,7 @@ def resource_search(request):
     else:
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
-            'location': loc, 'event': event, 'boostlocation': boost_location,
+            'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
@@ -210,28 +216,30 @@ def publish_data(request):
         return JsonResponse(data=data, callback=callback)
 
 def tags(request):
-    """docstring for tags"""
+    """
+        API call with optional params for callback and match
+        callback: for jsonp callback function name
+        match: if present, results will be alpha sorted list of all tags used starting with match
+            (case insensitive, so "men" might return "mental health, Mental Health, mentoring")
+            if match is not passed, all tags in use will be returned.
+        returns alpha sorted list of strings
+    """
     error = ''
     data = None
     
-    # /api/api/tags/?callback=jsonp1268179474512&match=exe
+    # /api/tags/?callback=jsonp1268179474512&match=exe
     
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
     
     if match:
-        db = get_db()
-        update_keyword_index()
-        results = db.keyword.find( { "_id" : re.compile('^%s*' % match, re.IGNORECASE)} ) #.count()
-        data = [i['_id'] for i in results]
-        # print data
+        results = [t for t in Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") if t.lower().startswith(match.lower())]
     else:
-        error = 'no match parameter received'
-        
+        results = Curation.objects.ensure_index("tags").distinct("tags")
     if error:
-        return JsonResponse(error=error)
+        return JsonResponse(errors= {'code': '1', 'message': error })
     
-    return JsonResponse(data=data, callback=callback)
+    return JsonResponse(data=sorted(results), callback=callback)
         
     
     

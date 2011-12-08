@@ -40,7 +40,7 @@ class DocumentForm(forms.Form):
 class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(label='Location', help_text='enter a post code or a place name', required=False)
-    tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=True)
+    tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=False)
     events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
     

@@ -120,27 +120,35 @@ method: GET
 
 access: public
 
-example of successful result::
+**Example of successful result**::
     
-    {   
-        "errors": [{}], 
-        "data": [
-            {   
-                "max": "1", 
-                "results": [
+    {
+        "errors": {},
+        "data":
+        [
+            {
+                "boostlocation": 30.0, 
+                "start": 0, 
+                "location": [ "55.935160000000003, -3.2425099999999998" ], 
+                "max": "100", 
+                "query": "dance", 
+                "results": 
+                [
                     {
-                        "description": "Details: Office hours 9.30am-12.30pm (Monday-Friday)...", 
-                        "title": "Ralston Golf Club.", 
-                        "source_uri": "http://www.ralstongolfclub.co.uk", 
-                        "tags": ["Sport and fitness", "Golf"], 
-                        "uri": "http://aliss.org/depot/resource/4da043dd89cb164d1500008e/", 
-                        "locations": [{"os_type": "POSTCODE", "os_id": "PA13DT", "place_name": "Paisley East and Ralston, Renfrewshire", "lat_lon": [55.845313580276802, -4.3843151677009597], "label": "PA1 3DT"}], 
-                        "curations": ["http://aliss.org/depot/curation/4dab5a6a89cb1625e9000247/"], 
-                        "id": "4da043dd89cb164d1500008e", 
-                        "resource_type": null
+                        "score": 9.6231939999999998, 
+                        "accounts": [ "4d9b99d889cb16665c000000" ], 
+                        "description": "8p.m., Sat 17 December 2011\nDoors open 7.30pm, dancing from 8pm to midnight.\nTickets ordered online will be on the door for collection. \nAs these are fundraising ceilidhs for Scots Music Group we do not offer a member price. \nFull-price tickets on the night are \u00a310/\u00a38 conc.\nLicensed bar. \nPlease note \u2013 only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.", 
+                        "title": "Scots Music Group- Ceilidh with Da Hooley", 
+                        "locations": [ "55.9428121047, -3.22066131243" ], 
+                        "locationnames": [ "EH11 2DZ, Sighthill/Gorgie, of Edinburgh" ], 
+                        "tags": [ "dance" ], 
+                        "id": "4eb95d2b3de074399b000000", 
+                        "event_start": "2011-12-17T20:00:00Z", 
+                        "uri": "http://www.scotsmusic.org/events/507/"
                     }
                 ], 
-                "start": "1800"
+                "event": "*",
+                "output": "json"
             }
         ]
     }
@@ -235,5 +243,50 @@ field name              type
 ==================      =====================================
 ==================      =====================================
 
+.. Retrieve tags in use
+
+Retrieve tags in use
+===========================
+
+Parameters
+----------
+
+==================      ==========    ==========================
+parameter name          required      value
+==================      ==========    ==========================
+match                   no            Text to match, case-insensitive, will match any tags in use which begin with string, eg 'men' will match 'mental health, Mental Health, mentoring'). If parameter not present, all tags in use will be returned.
+output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ==========    ==========================
+
+Response
+--------
+
+==================      =====================================
+item name               type
+==================      =====================================
+data                    List of strings, alphabetically sorted.
+==================      =====================================
+
+json response is dict::
+
+    { "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }
+
+url: /api/tags/
+
+examples:
+
+* `<http://www.aliss.org/api/tags/?match=dan>`_
+
+method: GET
+
+access: public
+
+**Example of successful result**::
+    
+    {
+        "errors": {},
+        "data": ["Dance", "Dance Classes", "Dance classes", "dance"]
+    }
 
 

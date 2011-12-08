@@ -223,26 +223,34 @@
 </ul>
 <p>method: GET</p>
 <p>access: public</p>
-<p>example of successful result:</p>
+<p><strong>Example of successful result</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[{}],</span>
-    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span>
+    <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
-            <span class="s">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s">&quot;boostlocation&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span>
+            <span class="s">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;55.935160000000003, -3.2425099999999998&quot;</span> <span class="p">],</span>
+            <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="s">&quot;100&quot;</span><span class="p">,</span>
+            <span class="s">&quot;query&quot;</span><span class="p">:</span> <span class="s">&quot;dance&quot;</span><span class="p">,</span>
+            <span class="s">&quot;results&quot;</span><span class="p">:</span>
+            <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;Details: Office hours 9.30am-12.30pm (Monday-Friday)...&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Ralston Golf Club.&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;source_uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.ralstongolfclub.co.uk&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Sport and fitness&quot;</span><span class="p">,</span> <span class="s">&quot;Golf&quot;</span><span class="p">],</span>
-                    <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://aliss.org/depot/resource/4da043dd89cb164d1500008e/&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;locations&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;os_type&quot;</span><span class="p">:</span> <span class="s">&quot;POSTCODE&quot;</span><span class="p">,</span> <span class="s">&quot;os_id&quot;</span><span class="p">:</span> <span class="s">&quot;PA13DT&quot;</span><span class="p">,</span> <span class="s">&quot;place_name&quot;</span><span class="p">:</span> <span class="s">&quot;Paisley East and Ralston, Renfrewshire&quot;</span><span class="p">,</span> <span class="s">&quot;lat_lon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">55.845313580276802</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.3843151677009597</span><span class="p">],</span> <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;PA1 3DT&quot;</span><span class="p">}],</span>
-                    <span class="s">&quot;curations&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;http://aliss.org/depot/curation/4dab5a6a89cb1625e9000247/&quot;</span><span class="p">],</span>
-                    <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;4da043dd89cb164d1500008e&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;resource_type&quot;</span><span class="p">:</span> <span class="n">null</span>
+                    <span class="s">&quot;score&quot;</span><span class="p">:</span> <span class="mf">9.6231939999999998</span><span class="p">,</span>
+                    <span class="s">&quot;accounts&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;4d9b99d889cb16665c000000&quot;</span> <span class="p">],</span>
+                    <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;8p.m., Sat 17 December 2011</span><span class="se">\n</span><span class="s">Doors open 7.30pm, dancing from 8pm to midnight.</span><span class="se">\n</span><span class="s">Tickets ordered online will be on the door for collection. </span><span class="se">\n</span><span class="s">As these are fundraising ceilidhs for Scots Music Group we do not offer a member price. </span><span class="se">\n</span><span class="s">Full-price tickets on the night are </span><span class="se">\u00a3</span><span class="s">10/</span><span class="se">\u00a3</span><span class="s">8 conc.</span><span class="se">\n</span><span class="s">Licensed bar. </span><span class="se">\n</span><span class="s">Please note </span><span class="se">\u2013</span><span class="s"> only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Scots Music Group- Ceilidh with Da Hooley&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;locations&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;55.9428121047, -3.22066131243&quot;</span> <span class="p">],</span>
+                    <span class="s">&quot;locationnames&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;EH11 2DZ, Sighthill/Gorgie, of Edinburgh&quot;</span> <span class="p">],</span>
+                    <span class="s">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;dance&quot;</span> <span class="p">],</span>
+                    <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;4eb95d2b3de074399b000000&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;event_start&quot;</span><span class="p">:</span> <span class="s">&quot;2011-12-17T20:00:00Z&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.scotsmusic.org/events/507/&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s">&quot;start&quot;</span><span class="p">:</span> <span class="s">&quot;1800&quot;</span>
+            <span class="s">&quot;event&quot;</span><span class="p">:</span> <span class="s">&quot;*&quot;</span><span class="p">,</span>
+            <span class="s">&quot;output&quot;</span><span class="p">:</span> <span class="s">&quot;json&quot;</span>
         <span class="p">}</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -399,6 +407,75 @@ could be done as an update, but also have as an alert as shortcut</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="retrieve-tags-in-use">
+<h2>Retrieve tags in use<a class="headerlink" href="#retrieve-tags-in-use" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="4%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>match</td>
+<td>no</td>
+<td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). If parameter not present, all tags in use will be returned.</td>
+</tr>
+<tr><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id6">
+<h3>Response<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>data</td>
+<td>List of strings, alphabetically sorted.</td>
+</tr>
+</tbody>
+</table>
+<p>json response is dict:</p>
+<div class="highlight-python"><pre>{ "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }</pre>
+</div>
+<p>url: /api/tags/</p>
+<p>examples:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/tags/?match=dan">http://www.aliss.org/api/tags/?match=dan</a></li>
+</ul>
+<p>method: GET</p>
+<p>access: public</p>
+<p><strong>Example of successful result</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Dance&quot;</span><span class="p">,</span> <span class="s">&quot;Dance Classes&quot;</span><span class="p">,</span> <span class="s">&quot;Dance classes&quot;</span><span class="p">,</span> <span class="s">&quot;dance&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -430,6 +507,11 @@ could be done as an update, but also have as an alert as shortcut</p>
 <li><a class="reference internal" href="#update-an-item">Update an item</a></li>
 <li><a class="reference internal" href="#submit-a-moderation">Submit a moderation</a></li>
 <li><a class="reference internal" href="#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li><a class="reference internal" href="#retrieve-tags-in-use">Retrieve tags in use</a><ul>
+<li><a class="reference internal" href="#id5">Parameters</a></li>
+<li><a class="reference internal" href="#id6">Response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
