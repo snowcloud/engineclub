@@ -413,9 +413,9 @@ could be done as an update, but also have as an alert as shortcut</p>
 <h3>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
-<col width="8%" />
+<col width="7%" />
 <col width="4%" />
-<col width="88%" />
+<col width="89%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">parameter name</th>
@@ -426,7 +426,7 @@ could be done as an update, but also have as an alert as shortcut</p>
 <tbody valign="top">
 <tr><td>match</td>
 <td>no</td>
-<td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). If parameter not present, all tags in use will be returned.</td>
+<td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). Must be 3 characters or more if used. If not used, all tags will be returned.</td>
 </tr>
 <tr><td>output</td>
 <td>no</td>
@@ -463,6 +463,7 @@ could be done as an update, but also have as an alert as shortcut</p>
 <p>url: /api/tags/</p>
 <p>examples:</p>
 <ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/tags/">http://www.aliss.org/api/tags/</a></li>
 <li><a class="reference external" href="http://www.aliss.org/api/tags/?match=dan">http://www.aliss.org/api/tags/?match=dan</a></li>
 </ul>
 <p>method: GET</p>

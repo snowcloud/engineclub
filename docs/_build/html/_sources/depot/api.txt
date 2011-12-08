@@ -254,7 +254,7 @@ Parameters
 ==================      ==========    ==========================
 parameter name          required      value
 ==================      ==========    ==========================
-match                   no            Text to match, case-insensitive, will match any tags in use which begin with string, eg 'men' will match 'mental health, Mental Health, mentoring'). If parameter not present, all tags in use will be returned.
+match                   no            Text to match, case-insensitive, will match any tags in use which begin with string, eg 'men' will match 'mental health, Mental Health, mentoring'). Must be 3 characters or more if used. If not used, all tags will be returned.
 output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
 callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
 ==================      ==========    ==========================
@@ -276,6 +276,7 @@ url: /api/tags/
 
 examples:
 
+* `<http://www.aliss.org/api/tags/>`_
 * `<http://www.aliss.org/api/tags/?match=dan>`_
 
 method: GET

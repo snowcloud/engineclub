@@ -224,20 +224,28 @@ def tags(request):
             if match is not passed, all tags in use will be returned.
         returns alpha sorted list of strings
     """
-    error = ''
+    errors = []
     data = None
+    result_code = 200
     
     # /api/tags/?callback=jsonp1268179474512&match=exe
     
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
-    
-    if match:
-        results = [t for t in Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") if t.lower().startswith(match.lower())]
+
+    if not match is None:
+        if len(match) > 2:
+            results = [t for t in 
+                Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") \
+                    if t.lower().startswith(match.lower())]
+        else:
+            result_code = 10
+            errors.append('Param \'start\' must be greater than 2 characters. You sent \'%s\'' % match)
     else:
         results = Curation.objects.ensure_index("tags").distinct("tags")
-    if error:
-        return JsonResponse(errors= {'code': '1', 'message': error })
+
+    if errors:
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
     
     return JsonResponse(data=sorted(results), callback=callback)
         
