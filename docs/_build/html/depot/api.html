@@ -407,6 +407,75 @@ could be done as an update, but also have as an alert as shortcut</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="retrieve-tags-in-use">
+<h2>Retrieve tags in use<a class="headerlink" href="#retrieve-tags-in-use" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="4%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>match</td>
+<td>no</td>
+<td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). If parameter not present, all tags in use will be returned.</td>
+</tr>
+<tr><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id6">
+<h3>Response<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>data</td>
+<td>List of strings, alphabetically sorted.</td>
+</tr>
+</tbody>
+</table>
+<p>json response is dict:</p>
+<div class="highlight-python"><pre>{ "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }</pre>
+</div>
+<p>url: /api/tags/</p>
+<p>examples:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/tags/?match=dan">http://www.aliss.org/api/tags/?match=dan</a></li>
+</ul>
+<p>method: GET</p>
+<p>access: public</p>
+<p><strong>Example of successful result</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Dance&quot;</span><span class="p">,</span> <span class="s">&quot;Dance Classes&quot;</span><span class="p">,</span> <span class="s">&quot;Dance classes&quot;</span><span class="p">,</span> <span class="s">&quot;dance&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -438,6 +507,11 @@ could be done as an update, but also have as an alert as shortcut</p>
 <li><a class="reference internal" href="#update-an-item">Update an item</a></li>
 <li><a class="reference internal" href="#submit-a-moderation">Submit a moderation</a></li>
 <li><a class="reference internal" href="#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li><a class="reference internal" href="#retrieve-tags-in-use">Retrieve tags in use</a><ul>
+<li><a class="reference internal" href="#id5">Parameters</a></li>
+<li><a class="reference internal" href="#id6">Response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

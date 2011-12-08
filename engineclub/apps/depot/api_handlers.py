@@ -4,7 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 
-from depot.models import Resource, find_by_place_or_kwords
+from depot.models import Resource, Curation, find_by_place_or_kwords
 
 from mongoengine import ValidationError
 from mongoengine.connection import _get_db as get_db
@@ -216,28 +216,30 @@ def publish_data(request):
         return JsonResponse(data=data, callback=callback)
 
 def tags(request):
-    """docstring for tags"""
+    """
+        API call with optional params for callback and match
+        callback: for jsonp callback function name
+        match: if present, results will be alpha sorted list of all tags used starting with match
+            (case insensitive, so "men" might return "mental health, Mental Health, mentoring")
+            if match is not passed, all tags in use will be returned.
+        returns alpha sorted list of strings
+    """
     error = ''
     data = None
     
-    # /api/api/tags/?callback=jsonp1268179474512&match=exe
+    # /api/tags/?callback=jsonp1268179474512&match=exe
     
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
     
     if match:
-        db = get_db()
-        update_keyword_index()
-        results = db.keyword.find( { "_id" : re.compile('^%s*' % match, re.IGNORECASE)} ) #.count()
-        data = [i['_id'] for i in results]
-        # print data
+        results = [t for t in Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") if t.lower().startswith(match.lower())]
     else:
-        error = 'no match parameter received'
-        
+        results = Curation.objects.ensure_index("tags").distinct("tags")
     if error:
-        return JsonResponse(error=error)
+        return JsonResponse(errors= {'code': '1', 'message': error })
     
-    return JsonResponse(data=data, callback=callback)
+    return JsonResponse(data=sorted(results), callback=callback)
         
     
     
