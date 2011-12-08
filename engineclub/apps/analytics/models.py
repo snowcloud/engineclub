@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime, date
 from itertools import izip
 from operator import itemgetter
+from collections import defaultdict
 
 from redis import Redis
 
@@ -142,7 +143,7 @@ class OverallAnalytics(BaseAnalytics):
     def account_usage(self, account):
         return Curation.objects.filter(owner=account).count()
 
-    def account_report(self, key=None, reverse=False):
+    def curations_report(self, key=None, reverse=False):
 
         activity = [(Account.objects.get(id=account.id), value, )
             for account, value in Curation.objects.item_frequencies("owner").items()]
@@ -156,4 +157,29 @@ class OverallAnalytics(BaseAnalytics):
 
     def top_accounts(self, count=10):
 
-        return self.account_report(key=itemgetter(1), reverse=True)[:count]
+        return self.curations_report(key=itemgetter(1), reverse=True)[:count]
+
+    def curations_betweet(self, start_date, end_date, granularity):
+        """
+        Get all of the curations between the start and the end dates, then
+        iterate through them, splitting the results into chunks that represent
+        the granularity.
+        """
+
+        curations = Curation.objects.filter(
+            item_metadata__last_modified__gt=start_date,
+            item_metadata__last_modified__lte=end_date)
+
+        results = defaultdict(0)
+
+        working_date = start_date
+
+        while working_date < end_date:
+
+            curation = curations.next()
+
+            if (working_date + granularity) < curation.item_meta.last_modified:
+
+                working_date = curations + granularity
+
+            results[start_date] += 1
