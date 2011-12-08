@@ -134,6 +134,11 @@ class OverallStatsTestCase(unittest.TestCase):
 
         self.assertEqual(self.analytics.top_tags(), expected)
 
+        from engine_groups.models import Account
+        account = Account.objects[2]
+
+        self.analytics.tag_report(account=account)
+
     def test_account_activity(self):
 
         from engine_groups.models import Account
