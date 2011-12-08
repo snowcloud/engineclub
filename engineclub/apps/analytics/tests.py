@@ -125,11 +125,12 @@ class OverallStatsTestCase(unittest.TestCase):
 
     def test_tags(self):
 
-        self.assertEqual(self.analytics.tag_usage("advice"), 29)
+        self.assertEqual(self.analytics.tag_usage("advice"), 14)
 
-        expected = [('517', 1214), ('114', 133), ('115', 89), ('116', 86),
-            ('Sport and fitness', 64), ('117', 55), ('support', 54),
-            ('Health', 40), ('Advice and counselling', 34), ('advice', 29)]
+        expected = [('Sport and fitness', 32), ('support', 28), ('Health', 20),
+            ('Advice and counselling', 17), ('advice', 16), ('contact', 15),
+            ('mental health', 13), ('Hobbies, arts and crafts', 13),
+            ('homelessness', 13), ('counselling', 12)]
 
         self.assertEqual(self.analytics.top_tags(), expected)
 
@@ -138,7 +139,10 @@ class OverallStatsTestCase(unittest.TestCase):
         from engine_groups.models import Account
         account = Account.objects[0]
 
-        self.assertEqual(self.analytics.activity_for_account(account), 21)
+        self.assertEqual(self.analytics.account_usage(account), 21)
 
-        self.analytics.account_report()[0]
         self.analytics.top_accounts()
+
+    def test_report_by_date(self):
+
+        pass

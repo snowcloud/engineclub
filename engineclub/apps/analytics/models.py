@@ -1,10 +1,10 @@
 from datetime import timedelta, datetime, date
-from itertools import izip, imap
+from itertools import izip
 from operator import itemgetter
 
 from redis import Redis
 
-from depot.models import Curation, Resource
+from depot.models import Curation
 from engine_groups.models import Account
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -88,7 +88,8 @@ class BaseAnalytics(object):
         Returns the sum of a set of fetched results.
         """
 
-        return sum(self.fetch(self.generate_keys(stat_name, start_date, end_date, account, meta)))
+        keys = self.generate_keys(stat_name, start_date, end_date, account, meta)
+        return sum(self.fetch(keys))
 
     def flat_list(self, stat_name, start_date, end_date, account=None, meta=None):
         """
@@ -118,6 +119,9 @@ class BaseAnalytics(object):
 
 class OverallAnalytics(BaseAnalytics):
 
+    def tag_usage(self, tag):
+        return Curation.objects.filter(tags=tag).count()
+
     def tag_report(self, key=None, reverse=False):
 
         report = Curation.objects.item_frequencies('tags').items()
@@ -132,15 +136,13 @@ class OverallAnalytics(BaseAnalytics):
     def top_tags(self, count=10):
         return self.tag_report(key=itemgetter(1), reverse=True)[:count]
 
-    def activity_for_account(self, account):
+    def account_usage(self, account):
         return Curation.objects.filter(owner=account).count()
 
     def account_report(self, key=None, reverse=False):
 
-        activity = [(Account.objects.get(id=account.id), value, ) for account, value in
-            Curation.objects.item_frequencies("owner").items()]
-
-        print activity
+        activity = [(Account.objects.get(id=account.id), value, )
+            for account, value in Curation.objects.item_frequencies("owner").items()]
 
         if not key:
             key = itemgetter(0)
