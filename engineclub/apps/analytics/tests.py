@@ -150,4 +150,10 @@ class OverallStatsTestCase(unittest.TestCase):
 
     def test_report_by_date(self):
 
-        pass
+        from datetime import datetime, timedelta
+
+        start_date = datetime(2011, 11, 01)
+        end_date = datetime(2011, 11, 28)
+        granularity = timedelta(days=7)
+
+        self.analytics.curations_between(start_date, end_date, granularity)
