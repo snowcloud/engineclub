@@ -153,8 +153,8 @@ INSTALLED_APPS = (
     'engine_groups',
     'ecutils',
     'contact_form',
-    'sitedown'
-    
+    'sitedown',
+    'analytics',
 )
 # override any of the above in your own settings_local.py
 # put your secret keys in there
