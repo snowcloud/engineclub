@@ -1,0 +1,154 @@
+from datetime import timedelta, datetime, date
+from itertools import izip, imap
+from operator import itemgetter
+
+from redis import Redis
+
+from depot.models import Curation, Resource
+from engine_groups.models import Account
+
+DATE_FORMAT = "%Y-%m-%d"
+
+
+class BaseAnalytics(object):
+
+    def __init__(self, redis_db):
+
+        self.conn = Redis(db=redis_db)
+
+    def increment(self, stat_name, account=None, meta=None, date_instance=None, count=1):
+        """
+        Increment the stat for the given name. Date can be passed, otherwise
+        it defauls to today. If account is given it will be stored for that
+        account, otherwise it will be stored for the global stats.
+        """
+
+        if not date_instance:
+            date_instance = date.today()
+
+        key = self.generate_key(stat_name, account, meta, date_instance)
+
+        self.conn.incr(key)
+
+        if account:
+            account = None
+            self.conn.incr(self.generate_key(stat_name, account, meta, date_instance))
+
+    def generate_key(self, stat_name, account=None, meta=None, date_instance=None):
+        """
+        Create a unique key for an individual stat. This is is defined by;
+
+        <stat_name>:<account>:<meta>:<date>
+
+        stat name could be "tags", account would be for that user, meta would
+        break the stat don further, the name of the individual stat and the
+        date would then be used to split it down to daily figures. The actual
+        value stored against this key is the number of occurances.
+        """
+
+        if not date_instance:
+            date_string = ''
+        else:
+            date_string = date_instance.strftime(DATE_FORMAT)
+
+        if not account:
+            account = ''
+
+        if not meta:
+            meta = ''
+
+        return "%s:%s:%s:%s" % (stat_name, account, meta, date_string)
+
+    def generate_keys(self, stat_name, start_date, end_date, account=None, meta=None):
+        """
+        Generate the keys to fetch data from Redis. This could alternatively
+        have been done with the KEYS command and a pattern match, but this
+        should be much faster and simpler.
+        """
+
+        delta = end_date - start_date
+
+        for i in range(delta.days + 1):
+
+            date_instance = start_date + timedelta(days=i)
+
+            yield self.generate_key(stat_name, account, meta, date_instance)
+
+    def fetch(self, keys):
+        """
+        Given a list of keys, fetch them all from Redis. This converts all the
+        results to integers and replaced None results (for keys with no data)
+        with 0.
+        """
+
+        return [0 if k == None else int(k) for k in self.conn.mget(keys)]
+
+    def sum(self, stat_name, start_date, end_date, account=None, meta=None):
+        """
+        Returns the sum of a set of fetched results.
+        """
+
+        return sum(self.fetch(self.generate_keys(stat_name, start_date, end_date, account, meta)))
+
+    def flat_list(self, stat_name, start_date, end_date, account=None, meta=None):
+        """
+        Return a list of 2-tuples that contains the key and numberic values.
+        The key is left as a flat string.
+        """
+
+        # Convert to a list as we want to use it twice.
+        keys = list(self.generate_keys(stat_name, start_date, end_date, account, meta))
+        return izip(keys, self.fetch(keys))
+
+    def list(self, stat_name, start_date, end_date, account=None):
+        """
+        Similar to flat_list, but the key is broken up and a list of 2-tuples
+        containing a datetime.date instance and a numeric value is returned.
+        """
+
+        for key, value in self.flat_list(stat_name, start_date, end_date, account):
+
+            if account:
+                _, _, date = key.split(':')
+            else:
+                _, date = key.split(':')
+
+            yield (datetime.strptime(date, DATE_FORMAT).date(), value)
+
+
+class OverallAnalytics(BaseAnalytics):
+
+    def tag_report(self, key=None, reverse=False):
+
+        report = Curation.objects.item_frequencies('tags').items()
+
+        if not key:
+            key = itemgetter(1)
+
+        report = sorted(report, key=key, reverse=reverse)
+
+        return report
+
+    def top_tags(self, count=10):
+        return self.tag_report(key=itemgetter(1), reverse=True)[:count]
+
+    def activity_for_account(self, account):
+        return Curation.objects.filter(owner=account).count()
+
+    def account_report(self, key=None, reverse=False):
+
+        activity = [(Account.objects.get(id=account.id), value, ) for account, value in
+            Curation.objects.item_frequencies("owner").items()]
+
+        print activity
+
+        if not key:
+            key = itemgetter(0)
+
+        activity = sorted(activity, key=key, reverse=reverse)
+
+        return activity
+
+    def top_accounts(self, count=10):
+
+        return self.account_report(key=itemgetter(1), reverse=True)[:count]
