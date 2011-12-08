@@ -122,9 +122,12 @@ class OverallAnalytics(BaseAnalytics):
     def tag_usage(self, tag):
         return Curation.objects.filter(tags=tag).count()
 
-    def tag_report(self, key=None, reverse=False):
+    def tag_report(self, key=None, reverse=False, account=None):
 
-        report = Curation.objects.item_frequencies('tags').items()
+        curations = Curation.objects
+        if account:
+            curations = curations.filter(owner=account)
+        report = curations.item_frequencies('tags').items()
 
         if not key:
             key = itemgetter(1)
