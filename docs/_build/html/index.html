@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Engineclub &mdash; Engineclub 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Engineclub 0.2 documentation" href="#" />
+    <link rel="next" title="Engineclub API" href="depot/api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="depot/api.html" title="Engineclub API"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Engineclub 0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="engineclub">
+<h1>Engineclub<a class="headerlink" href="#engineclub" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">All about Engineclub, home of the ALISS Engine.</p>
+<p>Engineclub was started in January 2010 as part of the ALISS project for the National Health Service in Scotland.</p>
+<p>See the:</p>
+<ul class="simple">
+<li>Home for <a class="reference external" href="http://www.aliss.org/">ALISS.org</a></li>
+<li>Blog for <a class="reference external" href="http://www.aliss.scot.nhs.uk/">ALISS Project</a></li>
+<li>Twitter <a class="reference external" href="http://twitter.com/alissproject">&#64;ALISSproject</a></li>
+<li><a class="reference external" href="http://github.com/snowcloud/engineclub/">Github</a></li>
+</ul>
+<p>There are five applications:</p>
+<div class="section" id="home">
+<h2>home<a class="headerlink" href="#home" title="Permalink to this headline">¶</a></h2>
+<p>the home page for engineclub.org which will host information, demos etc</p>
+<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home">Code for home app</a></p>
+</div>
+<div class="section" id="depot">
+<h2>depot<a class="headerlink" href="#depot" title="Permalink to this headline">¶</a></h2>
+<p>storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="depot/api.html">Engineclub API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-a-resource-by-id">Retrieve a resource by id</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-resources-by-batch">Retrieve resources by batch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-item">Submit an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#update-an-item">Update an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-a-moderation">Submit a moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-tags-in-use">Retrieve tags in use</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="depot/data-model.html">Data model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#resource">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#relatedresource">RelatedResource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#location">Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#calendarevent">CalendarEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#calendarrepeatrule">CalendarRepeatRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#moderation">Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#curation">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#itemmetadata">ItemMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#account">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#membership">Membership</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot">Code for depot app</a></p>
+</div>
+<div class="section" id="enginecab">
+<h2>enginecab<a class="headerlink" href="#enginecab" title="Permalink to this headline">¶</a></h2>
+<p>admin app for the engineclub</p>
+<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab">Code for enginecab app</a></p>
+</div>
+<div class="section" id="firebox">
+<h2>firebox<a class="headerlink" href="#firebox" title="Permalink to this headline">¶</a></h2>
+<p>for data collection code</p>
+<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox">Code for firebox app</a></p>
+</div>
+<div class="section" id="ecutils">
+<h2>ecutils<a class="headerlink" href="#ecutils" title="Permalink to this headline">¶</a></h2>
+<p>for utility code</p>
+<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils">Code for ecutils app</a></p>
+</div>
+</div>
+<div class="section" id="installation-instructions">
+<span id="index-0"></span><h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p>Engineclub is a <a class="reference external" href="http://djangoproject.com/">Django</a> project, and uses <a class="reference external" href="http://mongodb.org/">MongoDB</a> for the main resource data.</p>
+<p>You will need a <a class="reference external" href="http://mongodb.org/">Mongodb</a> database server, installed and running. The Django admin uses a relational database, such as PostgreSQL or MySQL, or you can just use SQLite, which is part of Python from v2.5 and needs no installation or setup. The default settings.py file will default to SQLite.</p>
+<p>Currently, installation involves downloading the code from <a class="reference external" href="http://github.com/snowcloud/engineclub/">Github</a>,
+or better is to use Git to create a local repository so you can keep up to date with development:</p>
+<div class="highlight-python"><pre>git clone http://github.com/snowcloud/engineclub.git</pre>
+</div>
+<p>The requirements.txt file lists requirements for a working installation. You can use <a class="reference external" href="http://pip.openplans.org/">Pip</a> to install these with:</p>
+<div class="highlight-python"><pre>pip install -r requirements.txt</pre>
+</div>
+<p>To customise settings, add your own file called settings_local.py. It will be imported at the end of settings.py on system startup.</p>
+<p>Following installation, make sure you are in the installation directory, then you can do:</p>
+<div class="highlight-python"><pre>cd ecengine
+./manage.py syncdb --noinput</pre>
+</div>
+<p>This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
+You can then log in with username: admin and password: admin</p>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+<p>Theme: <a class="reference external" href="http://github.com/bartTC/sphinx-schemes">Nature</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Engineclub</a><ul>
+<li><a class="reference internal" href="#home">home</a></li>
+<li><a class="reference internal" href="#depot">depot</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#enginecab">enginecab</a></li>
+<li><a class="reference internal" href="#firebox">firebox</a></li>
+<li><a class="reference internal" href="#ecutils">ecutils</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-instructions">Installation instructions</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="depot/api.html"
+                        title="next chapter">Engineclub API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="depot/api.html" title="Engineclub API"
+             >next</a> |</li>
+        <li><a href="#">Engineclub 0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
