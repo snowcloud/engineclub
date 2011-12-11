@@ -4,7 +4,8 @@ Markdown
 docutils
 python-dateutil==1.5
 PIL
-# psycopg2
+psycopg2
+flup
 
 -e git+git://github.com/snowcloud/engine-groups.git#egg=engine-groups
 -e git+git://github.com/snowcloud/django-sitedown.git#egg=django-sitedown

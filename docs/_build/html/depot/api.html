@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Engineclub API &mdash; Engineclub v0.2 documentation</title>
+    <title>Engineclub API &mdash; Engineclub 0.2 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Engineclub v0.2 documentation" href="../index.html" />
+    <link rel="top" title="Engineclub 0.2 documentation" href="../index.html" />
     <link rel="next" title="Data model" href="data-model.html" />
     <link rel="prev" title="Engineclub" href="../index.html" /> 
   </head>
@@ -39,7 +42,7 @@
         <li class="right" >
           <a href="../index.html" title="Engineclub"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Engineclub v0.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Engineclub 0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,45 +75,45 @@
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">item name</th>
+<tr class="row-odd"><th class="head">item name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>id</td>
+<tr class="row-even"><td>id</td>
 <td>ObjectID *</td>
 </tr>
-<tr><td>title</td>
+<tr class="row-odd"><td>title</td>
 <td>string</td>
 </tr>
-<tr><td>description</td>
+<tr class="row-even"><td>description</td>
 <td>string</td>
 </tr>
-<tr><td>resourcetype</td>
+<tr class="row-odd"><td>resourcetype</td>
 <td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
 </tr>
-<tr><td>uri</td>
+<tr class="row-even"><td>uri</td>
 <td>string [web URI format]</td>
 </tr>
-<tr><td>locations</td>
+<tr class="row-odd"><td>locations</td>
 <td>list of <cite>location</cite></td>
 </tr>
-<tr><td>service_area</td>
+<tr class="row-even"><td>service_area</td>
 <td>not implemented</td>
 </tr>
-<tr><td>tags</td>
+<tr class="row-odd"><td>tags</td>
 <td>list of string</td>
 </tr>
-<tr><td>event_start</td>
+<tr class="row-even"><td>event_start</td>
 <td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
 </tr>
-<tr><td>event_end</td>
+<tr class="row-odd"><td>event_end</td>
 <td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
 </tr>
-<tr><td>relatedresources</td>
+<tr class="row-even"><td>relatedresources</td>
 <td>not implemented</td>
 </tr>
-<tr><td>lastmodified</td>
+<tr class="row-odd"><td>lastmodified</td>
 <td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
 </tr>
 </tbody>
@@ -151,45 +154,45 @@
 <col width="87%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">parameter name</th>
+<tr class="row-odd"><th class="head">parameter name</th>
 <th class="head">required</th>
 <th class="head">value</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>location</td>
+<tr class="row-even"><td>location</td>
 <td>no</td>
 <td>A post code or place name.</td>
 </tr>
-<tr><td>query</td>
+<tr class="row-odd"><td>query</td>
 <td>yes</td>
 <td>Keywords, can be comma-separated.</td>
 </tr>
-<tr><td>start</td>
+<tr class="row-even"><td>start</td>
 <td>no</td>
 <td>This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.</td>
 </tr>
-<tr><td>max</td>
+<tr class="row-odd"><td>max</td>
 <td>no</td>
 <td>This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.</td>
 </tr>
-<tr><td>boostlocation</td>
+<tr class="row-even"><td>boostlocation</td>
 <td>no</td>
 <td>An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.</td>
 </tr>
-<tr><td>accounts</td>
+<tr class="row-odd"><td>accounts</td>
 <td>no</td>
 <td>A list of ALISS.org account IDs, separated a &#8216;+&#8217;.</td>
 </tr>
-<tr><td>event</td>
+<tr class="row-even"><td>event</td>
 <td>no</td>
 <td>Only &#8216;*&#8217; is implemented- return only events, and only those that start and/or end today or in the future.</td>
 </tr>
-<tr><td>output</td>
+<tr class="row-odd"><td>output</td>
 <td>no</td>
 <td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
 </tr>
-<tr><td>callback</td>
+<tr class="row-even"><td>callback</td>
 <td>no</td>
 <td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
 </tr>
@@ -204,12 +207,12 @@
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">item name</th>
+<tr class="row-odd"><th class="head">item name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>to do</td>
+<tr class="row-even"><td>to do</td>
 <td>to do</td>
 </tr>
 </tbody>
@@ -270,29 +273,29 @@
 <col width="87%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">parameter name</th>
+<tr class="row-odd"><th class="head">parameter name</th>
 <th class="head">required</th>
 <th class="head">value</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>start</td>
+<tr class="row-even"><td>start</td>
 <td>no</td>
 <td>This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results. Default is 0.</td>
 </tr>
-<tr><td>max</td>
+<tr class="row-odd"><td>max</td>
 <td>no</td>
 <td>This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.</td>
 </tr>
-<tr><td>since</td>
+<tr class="row-even"><td>since</td>
 <td>no</td>
 <td>Return resources modified since this date/time [not implemented]</td>
 </tr>
-<tr><td>output</td>
+<tr class="row-odd"><td>output</td>
 <td>no</td>
 <td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
 </tr>
-<tr><td>callback</td>
+<tr class="row-even"><td>callback</td>
 <td>no</td>
 <td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
 </tr>
@@ -307,12 +310,12 @@
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">item name</th>
+<tr class="row-odd"><th class="head">item name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>to do</td>
+<tr class="row-even"><td>to do</td>
 <td>to do</td>
 </tr>
 </tbody>
@@ -335,12 +338,12 @@
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>&nbsp;</td>
+<tr class="row-even"><td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
@@ -354,12 +357,12 @@
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>&nbsp;</td>
+<tr class="row-even"><td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
@@ -373,12 +376,12 @@
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>&nbsp;</td>
+<tr class="row-even"><td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
@@ -397,12 +400,12 @@ could be done as an update, but also have as an alert as shortcut</p>
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>&nbsp;</td>
+<tr class="row-even"><td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
@@ -419,21 +422,21 @@ could be done as an update, but also have as an alert as shortcut</p>
 <col width="89%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">parameter name</th>
+<tr class="row-odd"><th class="head">parameter name</th>
 <th class="head">required</th>
 <th class="head">value</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>match</td>
+<tr class="row-even"><td>match</td>
 <td>no</td>
 <td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). Must be 3 characters or more if used. If not used, all tags will be returned.</td>
 </tr>
-<tr><td>output</td>
+<tr class="row-odd"><td>output</td>
 <td>no</td>
 <td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
 </tr>
-<tr><td>callback</td>
+<tr class="row-even"><td>callback</td>
 <td>no</td>
 <td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
 </tr>
@@ -448,12 +451,12 @@ could be done as an update, but also have as an alert as shortcut</p>
 <col width="68%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">item name</th>
+<tr class="row-odd"><th class="head">item name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>data</td>
+<tr class="row-even"><td>data</td>
 <td>List of strings, alphabetically sorted.</td>
 </tr>
 </tbody>
@@ -532,7 +535,7 @@ could be done as an update, but also have as an alert as shortcut</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -558,12 +561,12 @@ could be done as an update, but also have as an alert as shortcut</p>
         <li class="right" >
           <a href="../index.html" title="Engineclub"
              >previous</a> |</li>
-        <li><a href="../index.html">Engineclub v0.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Engineclub 0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Derek Hoy, SnowCloud.co.uk.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
