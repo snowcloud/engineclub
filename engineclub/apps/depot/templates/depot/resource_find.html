@@ -33,6 +33,19 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 		
 	}
 });
+
+$('.resource-listing li').each(function () {
+	var $self = $(this);
+	var $disclosureButton = $self.find('.resource-listing-meta a.curation-add');
+	var $disclosureContent = $self.find('form.curation-add');
+
+	$disclosureContent.hide();
+	$disclosureButton.click(function (event) {
+		event.preventDefault();
+		$disclosureContent.toggle();
+		$disclosureButton.toggleClass('selected', $disclosureContent.is(':visible'));
+	});
+});
 {% if results and centre %}
 
     var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
@@ -112,8 +125,9 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
   {% endif %}
     
     <ol class="resource-listing">
-    {% for resource in results %}
-        <li><p class="resource-listing-title"><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>
+    {% for resource, curation_form in results %}
+        <li>
+            <p class="resource-listing-title"><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>
             {% if resource.event_start %}
                 <p class="event">{{ resource|idx_event_date }}</p>
             {% endif %}
@@ -122,17 +136,30 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
                     {% for loc_label in resource.loc_labels %}
                         <li class="resource-listing-locs">{{ loc_label }}</li>
                     {% endfor %}
-
                 </ol>
             {% endif %}
 
             <p>{{ resource.short_description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">
                 <a class="resource-url" href="{% url resource resource.res_id %}">more details...</a>
-                {% if resource.uri %} |
-                    <a href="{{ resource.uri }}">external site...</a>
+                {% if resource.uri %}
+                    | <a href="{{ resource.uri }}">external site...</a>
                 {% endif %}
+				| <a class="curation-add" href="{% url curation-add resource.res_id %}">{% if curation_form.instance %}edit{% else %}create{% endif %} curation...</a>
             </p>
+
+            <form action="{% url curation-add resource.res_id %}" class="curation-add" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <legend><span>Curation details:</span></legend>
+                    <ol>
+                         {{ curation_form.as_ul }}
+                    </ol>
+                </fieldset>
+                 <fieldset class="submit">
+                    <input type="submit" name="result" value="Save item">
+                </fieldset>
+            </form>
         </li>
     {% empty %}
         <li>no results found</li>

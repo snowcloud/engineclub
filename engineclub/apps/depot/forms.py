@@ -154,7 +154,7 @@ class ShelflifeForm(DocumentForm):
     
 class CurationForm(DocumentForm):
     
-    outcome = forms.CharField()
+    outcome = forms.CharField(widget=forms.HiddenInput)
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
     note = forms.CharField(widget=forms.Textarea, required=False)
     # data = forms.CharField(widget=forms.Textarea, required=False)
