@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime, date
-from itertools import izip
+from itertools import izip, groupby
 from operator import itemgetter
 
 from django.utils.datastructures import SortedDict
@@ -162,34 +162,50 @@ class OverallAnalytics(BaseAnalytics):
     def curations_between(self, start_date, end_date, granularity):
         """
         Get all of the curations between the start and the end dates, then
-        iterate through them, splitting the results into chunks that represent
-        the granularity.
+        iterate through them, splitting the results into chunks by the given
+        granularity (timedelta).
+
+        #TODO: There may be a more efficient way to do this that makes use of
+            more of the MongoDB features.
         """
 
         curations = Curation.objects.filter(
             item_metadata__last_modified__gte=start_date,
-            item_metadata__last_modified__lte=end_date).order_by('item_metadata__last_modified')
+            item_metadata__last_modified__lte=end_date)\
+            .order_by('item_metadata__last_modified')
 
-        results = SortedDict({start_date: 0})
+        working_start, working_end = start_date, start_date + granularity
 
-        working_start, working_end = start_date, end_date
+        date_ranges = []
 
-        process_curations = True
+        # Create a list of 2-tuples that contain the date ranges. This is used
+        # by the key_func when grouping.
+        while working_start < end_date:
+            date_ranges.append((working_start, working_end))
+            working_start = working_start + granularity
+            working_end = working_end + granularity
 
-        while process_curations:
+        def key_func(curation):
+            for start, end in date_ranges:
+                last_modified = curation.item_metadata.last_modified
+                if last_modified > start and last_modified < end:
+                    return start
+            raise KeyError("Curation not found in given date ranges")
 
-            try:
-                curation = curations.next()
-            except StopIteration:
-                # Rather than a break here, wait until the end of this look to
-                # store the final result.
-                process_curations = False
+        results = SortedDict()
 
-            while curation.item_metadata.last_modified > (working_start + granularity):
-                working_start += granularity
-                results[working_start] = 0
+        # Taking the group by, get the length of each group. Curations needs
+        # to be a list, otherwise the iterator from mongoengine resets and we
+        # enter an infinate loop.
+        for k, v in groupby(list(curations), key_func):
+            results[k] = len(list(v))
 
-            if process_curations:
-                results[working_start] += 1
+        # Look through the date rangers one last time, and fill in any dates
+        # that don't have results with 0.
+        for s, e in date_ranges:
+            if s not in results:
+                results[s] = 0
+
+        results.keyOrder = sorted(results.keyOrder)
 
         return list(results.items())

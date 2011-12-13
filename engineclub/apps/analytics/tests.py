@@ -159,10 +159,25 @@ class OverallStatsTestCase(unittest.TestCase):
         result = self.analytics.curations_between(start_date, end_date, granularity)
 
         expected = [
-           (datetime(2011, 5,  1),  42),
-           (datetime(2011, 5,  29), 62),
-           (datetime(2011, 6,  26), 0),
+           (datetime(2011, 5, 1),  42),
+           (datetime(2011, 5, 29), 62),
+           (datetime(2011, 6, 26), 0),
            (datetime(2011, 7, 24), 1),
+        ]
+
+        self.assertEqual(result, expected)
+
+        start_date = datetime(2015, 5, 1)
+        end_date = datetime(2015, 8, 21)
+        granularity = timedelta(weeks=4)
+
+        result = self.analytics.curations_between(start_date, end_date, granularity)
+
+        expected = [
+           (datetime(2015, 5, 1),  0),
+           (datetime(2015, 5, 29), 0),
+           (datetime(2015, 6, 26), 0),
+           (datetime(2015, 7, 24), 0),
         ]
 
         self.assertEqual(result, expected)
