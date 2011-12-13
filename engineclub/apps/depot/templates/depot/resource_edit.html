@@ -5,7 +5,9 @@
 
 {% block head-extra %}
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<link href="/static/css/token-input-aliss.css" type="text/css" rel="stylesheet">
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/static/js/jquery.tokeninput.js" type="text/javascript"></script>
 {% endblock %}
 {% block document-ready %}
 $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_location_link">add location</a>');
@@ -13,6 +15,34 @@ $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_loca
 $('#new_location_link').click(function() {$('#main-form').submit();});
 $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 
+$('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
+    minChars: 3,
+    onResult: function (results) {
+        var r = [];
+        $.each(results.data, function (i, item) {
+            r.push({id: item, name: item});
+        });
+        return r;
+    },
+    prePopulate: [{% for t in object.tags %}{id: "{{ t }}", name: "{{ t }}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    queryParam: 'match',
+    theme: 'aliss'
+});
+    {% if locationform %}
+        $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
+            minChars: 3,
+            onResult: function (results) {
+                var r = [];
+                $.each(results.data, function (i, item) {
+                    r.push({id: item.id, name: item.place_name + ', ' + item.postcode});
+                });
+                return r;
+            },
+            prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.place_name }}, {{ l.label }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
+            queryParam: 'match',
+            theme: 'aliss'
+        });
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -39,26 +69,7 @@ $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 	    <fieldset>
 	        <legend><span>Locations:</span></legend>
 
-	        <ol>
-        <!-- 
-			<p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
-	     -->
-	            {% for loc in object.locations %}
-	            	<li class="location-listing-item"><span class="location-label">{{ loc.label }}, {{ loc.place_name }}</span>
-	            	    <a class="del-link" href="{% url location-remove object.id forloop.counter0 %}">remove location</a>
-	            	
-	            	<!-- input type="submit" name="del_loc:{{loc.id}}" value="remove location" --></li>
-				{% empty %}
-				    <li>no locations found</li>
-	            {% endfor %}
-	            
-        <p>Enter post code or place name in the box below to add it to the location list above.</p>
-	             <li><label for="id_new_location">New location:</label>
-	                 <input type="text" name="new_location" id="id_new_location">&nbsp;&nbsp;
-	                 <input type="submit" id="new_location_submit" name="result" value="{{ UPDATE_LOCS }}">
-	            </li>
-	        </ol>
-	        
+            {{ locationform.as_ul }}
 	    </fieldset>
 	{% endif %}
 	{% if eventform %}

@@ -4,9 +4,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 
-from depot.models import Resource, Curation, find_by_place_or_kwords
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 
-from mongoengine import ValidationError
+from mongoengine import ValidationError, Q
 from mongoengine.connection import _get_db as get_db
 
 import re
@@ -166,7 +166,6 @@ def resource_search(request):
             'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
-        
 
 def publish_data(request):
     """docstring for publish_data"""
@@ -240,7 +239,7 @@ def tags(request):
                     if t.lower().startswith(match.lower())]
         else:
             result_code = 10
-            errors.append('Param \'start\' must be greater than 2 characters. You sent \'%s\'' % match)
+            errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
     else:
         results = Curation.objects.ensure_index("tags").distinct("tags")
 
@@ -248,7 +247,30 @@ def tags(request):
         return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
     
     return JsonResponse(data=sorted(results), callback=callback)
-        
-    
-    
-    
+
+def locations(request):
+    def _location_context(location):
+        return {'id': str(location._id), 'place_name': l.place_name, 'postcode': l.label}
+    errors = []
+    data = []
+    response_code = 200
+
+    match = request.REQUEST.get('match')
+    callback = request.REQUEST.get('callback')
+
+    if match is not None:
+        if len(match) > 2:
+            data = [_location_context(l)
+                for l in Location.objects(Q(place_name__icontains=match) | Q(label__icontains=match))]
+        else:
+            response_code = 10
+            errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
+    else:
+        data = [_location_context(l)
+            for l in Location.objects()]
+
+    return JsonResponse(
+        errors=errors and {'code': response_code, 'message': '. '.join(errors)} or {},
+        data=data,
+        callback=callback,
+    )
