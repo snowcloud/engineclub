@@ -1,7 +1,6 @@
 from datetime import timedelta, datetime, date
 from itertools import izip
 from operator import itemgetter
-from collections import defaultdict
 
 from django.utils.datastructures import SortedDict
 from redis import Redis
