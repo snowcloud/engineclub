@@ -2,7 +2,6 @@ from datetime import timedelta, datetime, date
 from itertools import izip, groupby
 from operator import itemgetter
 
-from django.utils.datastructures import SortedDict
 from redis import Redis
 
 from depot.models import Curation
@@ -194,7 +193,7 @@ class OverallAnalytics(BaseAnalytics):
                     return start
             raise KeyError("Curation not found in given date ranges")
 
-        results = SortedDict()
+        results = {}
 
         # Taking the group by, get the length of each group. Curations needs
         # to be a list, otherwise the iterator from mongoengine resets and we
@@ -208,6 +207,4 @@ class OverallAnalytics(BaseAnalytics):
             if s not in results:
                 results[s] = 0
 
-        results.keyOrder = sorted(results.keyOrder)
-
-        return list(results.items())
+        return sorted(results.items(), key=itemgetter(0))
