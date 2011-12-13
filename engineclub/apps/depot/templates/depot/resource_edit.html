@@ -5,7 +5,9 @@
 
 {% block head-extra %}
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<link href="/static/css/token-input-facebook.css" type="text/css" rel="stylesheet">
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/static/js/jquery.tokeninput.js" type="text/javascript"></script>
 {% endblock %}
 {% block document-ready %}
 $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_location_link">add location</a>');
@@ -13,6 +15,20 @@ $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_loca
 $('#new_location_link').click(function() {$('#main-form').submit();});
 $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 
+$('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
+    minChars: 3,
+    onResult: function (results) {
+        var r = [];
+        $.each(results.data, function (i, item) {
+            r.push({id: item, name: item});
+        });
+        console.log(r);
+        return r;
+    },
+    prePopulate: [{% for t in object.tags %}{id: "{{ t }}", name: "{{ t }}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    queryParam: 'match',
+    theme: 'facebook'
+});
 {% endblock %}
 
 {% block content %}
