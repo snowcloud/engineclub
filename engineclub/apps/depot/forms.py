@@ -128,9 +128,8 @@ class EventForm(DocumentForm):
         return self.cleaned_data
 
 class LocationUpdateForm(DocumentForm):
-    
-    new_location = forms.CharField(required=False)
-    
+    new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
+
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
         

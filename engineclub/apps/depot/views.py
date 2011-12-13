@@ -131,25 +131,29 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
-            new_loc = locationform.cleaned_data['new_location']
-            if new_loc: 
-                resource.add_location_from_name(locationform.cleaned_data['new_location'])
-                resource.save(author=acct, reindex=True)
+
+            # Location
+            new_loc = locationform.cleaned_data['new_location'].split(',')
+            print new_loc
+            resource.locations = Location.objects(id__in=new_loc)
+            #resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            #resource.save(author=acct, reindex=True)
+
+            # Dates
+            event_start = eventform.cleaned_data['start']
+            if event_start:
+                resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+                # print 'event_start', event_start
+                # print 'event_finish', eventform.cleaned_data['end']
             else:
-                event_start = eventform.cleaned_data['start']
-                if event_start:
-                    resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-                    # print 'event_start', event_start
-                    # print 'event_finish', eventform.cleaned_data['end']
-                else:
-                    resource.calendar_event = None
-                resource = resourceform.save()
-                
-                try:
-                    resource.save(author=acct, reindex=True)
-                    return resource_edit_complete(request, resource, template_info)
-                except OperationError:
-                    pass
+                resource.calendar_event = None
+            resource = resourceform.save()
+            
+            try:
+                resource.save(author=acct, reindex=True)
+                return resource_edit_complete(request, resource, template_info)
+            except OperationError:
+                pass
 
     else:
         resourceform = ShortResourceForm(instance=resource)
