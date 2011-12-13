@@ -3,6 +3,7 @@ from itertools import izip
 from operator import itemgetter
 from collections import defaultdict
 
+from django.utils.datastructures import SortedDict
 from redis import Redis
 
 from depot.models import Curation
@@ -159,7 +160,7 @@ class OverallAnalytics(BaseAnalytics):
 
         return self.curations_report(key=itemgetter(1), reverse=True)[:count]
 
-    def curations_betweet(self, start_date, end_date, granularity):
+    def curations_between(self, start_date, end_date, granularity):
         """
         Get all of the curations between the start and the end dates, then
         iterate through them, splitting the results into chunks that represent
@@ -167,19 +168,29 @@ class OverallAnalytics(BaseAnalytics):
         """
 
         curations = Curation.objects.filter(
-            item_metadata__last_modified__gt=start_date,
-            item_metadata__last_modified__lte=end_date)
+            item_metadata__last_modified__gte=start_date,
+            item_metadata__last_modified__lte=end_date).order_by('item_metadata__last_modified')
 
-        results = defaultdict(0)
+        results = SortedDict({start_date: 0})
 
-        working_date = start_date
+        working_start, working_end = start_date, end_date
 
-        while working_date < end_date:
+        process_curations = True
 
-            curation = curations.next()
+        while process_curations:
 
-            if (working_date + granularity) < curation.item_meta.last_modified:
+            try:
+                curation = curations.next()
+            except StopIteration:
+                # Rather than a break here, wait until the end of this look to
+                # store the final result.
+                process_curations = False
 
-                working_date = curations + granularity
+            while curation.item_metadata.last_modified > (working_start + granularity):
+                working_start += granularity
+                results[working_start] = 0
 
-            results[start_date] += 1
+            if process_curations:
+                results[working_start] += 1
+
+        return list(results.items())
