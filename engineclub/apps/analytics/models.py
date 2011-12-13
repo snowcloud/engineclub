@@ -7,6 +7,7 @@ from redis import Redis
 
 from depot.models import Curation
 from engine_groups.models import Account
+from analytics import pool
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -15,7 +16,8 @@ class BaseAnalytics(object):
 
     def __init__(self, redis_db):
 
-        self.conn = Redis(db=redis_db)
+        connection_pool = pool.get_connection_pool()
+        self.conn = Redis(connection_pool=connection_pool)
 
     def increment(self, stat_name, account=None, meta=None, date_instance=None, count=1):
         """
