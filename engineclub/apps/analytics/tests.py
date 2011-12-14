@@ -181,3 +181,12 @@ class OverallStatsTestCase(unittest.TestCase):
         ]
 
         self.assertEqual(result, expected)
+
+    def test_report_by_previous(self):
+
+        from datetime import timedelta
+
+        result = self.analytics.curations_in_last(timedelta(weeks=12),
+            granularity=timedelta(weeks=4))
+
+        self.assertEqual(len(result), 3)
