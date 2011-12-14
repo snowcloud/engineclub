@@ -15,7 +15,7 @@ class BaseAnalytics(object):
 
     def __init__(self, redis_db):
 
-        connection_pool = pool.get_connection_pool()
+        connection_pool = pool.get_connection_pool(db=redis_db)
         self.conn = Redis(connection_pool=connection_pool)
 
     def increment(self, stat_name, account=None, meta=None, date_instance=None, count=1):
