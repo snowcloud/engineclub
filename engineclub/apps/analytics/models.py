@@ -215,3 +215,7 @@ class OverallAnalytics(BaseAnalytics):
         start = end - timedelta_range
 
         return self.curations_between(start, end, granularity)
+
+    def curations_by_postcode(self):
+
+        pass
