@@ -146,6 +146,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+
+    'celery',
+    'djcelery',
+
     'home',
     'enginecab',
     'depot',
@@ -157,10 +161,23 @@ INSTALLED_APPS = (
     'notifications',
     'analytics',
 )
+
+
+import djcelery
+djcelery.setup_loader()
+
+BROKER_TRANSPORT = "redis"
+BROKER_URL = "redis://localhost:6379/2"
+
+CELERY_RESULT_BACKEND = "redis"
+CELERY_REDIS_HOST = "localhost"
+CELERY_REDIS_PORT = 6379
+CELERY_REDIS_DB = 3
+
+
 # override any of the above in your own settings_local.py
 # put your secret keys in there
 try:
     from settings_local import *
 except ImportError:
     pass
-
