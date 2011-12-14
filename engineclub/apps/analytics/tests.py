@@ -190,3 +190,7 @@ class OverallStatsTestCase(unittest.TestCase):
             granularity=timedelta(weeks=4))
 
         self.assertEqual(len(result), 3)
+
+    def test_curations_by_postcode(self):
+
+        self.analytics.curations_by_postcode()

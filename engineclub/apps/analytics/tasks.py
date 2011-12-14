@@ -3,14 +3,15 @@ from celery import task
 from analytics.models import OverallAnalytics
 
 
-@task
+@task.task()
 def overall_stats():
 
     from datetime import timedelta
 
-    analytics_processor = OverallAnalytics()
+    analytics = OverallAnalytics()
 
-    tags = analytics_processor.tag_report()
-    curations = analytics_processor.curation_report()
-    months_12 = analytics_processor.curations_in_last(timedelta(weeks=52),
+    tags = analytics.tag_report()
+    curations = analytics.curation_report()
+    months_12 = analytics.curations_in_last(timedelta(weeks=52),
         granularity=timedelta(weeks=4))
+    by_postcode = analytics.curations_by_postcode()
