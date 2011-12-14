@@ -193,4 +193,10 @@ class OverallStatsTestCase(unittest.TestCase):
 
     def test_curations_by_postcode(self):
 
-        self.analytics.curations_by_postcode()
+        result = self.analytics.curations_by_postcode()[:10]
+
+        expected = [('AB10', 170), ('IV30', 110), ('AB11', 103),
+            ('AB25', 98), ('PA1', 81), ('AB51', 78), ('AB24', 71),
+            ('AB15', 55), ('PA2', 47), ('AB42', 45)]
+
+        self.assertEqual(result, expected)

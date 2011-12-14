@@ -3,6 +3,7 @@ from itertools import izip, groupby
 from operator import itemgetter
 
 from redis import Redis
+from mongoengine.connection import _get_db as get_db
 
 from depot.models import Curation
 from engine_groups.models import Account
@@ -218,4 +219,22 @@ class OverallAnalytics(BaseAnalytics):
 
     def curations_by_postcode(self):
 
-        pass
+        db = get_db()
+
+        reduce_func = """
+        function(doc, out){
+            var locations = doc.resource.fetch().locations
+            for (var i=0;i<locations.length;i++){
+                var part = locations[i].fetch().label.split(' ')[0];
+                if (!out[part]){
+                    out[part] = 0;
+                }
+                out[part] += 1;
+            }
+        }
+        """
+        result = db.curation.group(None, None, {}, reduce_func)
+
+        result_list = ((post_code, int(count))
+            for post_code, count in result[0].items())
+        return sorted(result_list, key=itemgetter(1), reverse=True)
