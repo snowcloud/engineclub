@@ -144,7 +144,7 @@ class OverallAnalytics(BaseAnalytics):
     def account_usage(self, account):
         return Curation.objects.filter(owner=account).count()
 
-    def curations_report(self, key=None, reverse=False):
+    def curation_report(self, key=None, reverse=False):
 
         activity = [(Account.objects.get(id=account.id), value, )
             for account, value in Curation.objects.item_frequencies("owner").items()]
@@ -158,7 +158,7 @@ class OverallAnalytics(BaseAnalytics):
 
     def top_accounts(self, count=10):
 
-        return self.curations_report(key=itemgetter(1), reverse=True)[:count]
+        return self.curation_report(key=itemgetter(1), reverse=True)[:count]
 
     def curations_between(self, start_date, end_date, granularity):
         """
@@ -208,3 +208,10 @@ class OverallAnalytics(BaseAnalytics):
                 results[s] = 0
 
         return sorted(results.items(), key=itemgetter(0))
+
+    def curations_in_last(self, timedelta_range, granularity):
+
+        end = datetime.now()
+        start = end - timedelta_range
+
+        return self.curations_between(start, end, granularity)
