@@ -8,6 +8,7 @@ from datetime import datetime
     
 from pymongo import Connection, GEO2D
 from pysolr import Solr
+import re
 
 from ecutils.utils import minmax
 from engine_groups.models import Account, get_account
@@ -224,7 +225,7 @@ class Resource(Document):
         place = get_place_for_postcode(placestr) or get_place_for_placename(placestr)
         if place:
             # if it's a postcode already, fine, otherwise use the lat_lon to get a postcode
-            postcode = place.get('postcode', None) or get_postcode_for_lat_lon(place['lat_lon'])['postcode']
+            postcode = place.get('postcode', None) or _get_postcode_for_lat_lon(place['lat_lon'])['postcode']
             location, created = get_location_for_postcode(postcode)
             if location not in self.locations:
                 self.locations.append(location)
@@ -256,6 +257,34 @@ def load_resource_data(document, resource_data):
     db[document].insert(new_data)
     return db
 
+###############################################################
+# LOCATION STUFF - PUBLIC
+
+def get_place_for_postcode(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+    return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
+    
+def get_place_for_placename(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+    return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
+
+def get_location_for_postcode(postcode):
+    result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
+    if not result and len(postcode.split()) > 1:
+        print 'trying ', postcode.split()[0]
+        result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
+    return _get_or_create_location(result)
+
+def lat_lon_to_str(loc):
+    """docstring for lat_lon_to_str"""
+    if loc:
+        if type(loc) == Location:
+            return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
+        return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
+    else:
+        return ''
+
+###############################################################
+# LOCATION STUFF - PRIVATE
+
 def _get_or_create_location(result):
     """return Location, created (bool) if successful"""
     if result:
@@ -268,14 +297,7 @@ def _get_or_create_location(result):
         return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
     raise Location.DoesNotExist
     
-def get_location_for_postcode(postcode):
-    result = get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
-    if not result and len(postcode.split()) > 1:
-        print 'trying ', postcode.split()[0]
-        result = get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
-    return _get_or_create_location(result)
-
-def get_place_for_name(namestr, collname, field, dbname):
+def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_with=False):
     """return place from geonames data- either postcode or named place depending on collname
     
     {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
@@ -283,21 +305,18 @@ def get_place_for_name(namestr, collname, field, dbname):
     
     """
     name = namestr.upper().replace(' ', '').strip()
+    if starts_with:
+        name = re.compile('%s' % name, re.IGNORECASE)
     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
     coll = db[collname]
-    result = coll.find_one({field: name})
-    if result:
+    result = coll.find_one({field: name}) if just_one else coll.find({field: name})
+    if result and result.count() > 0:
         return result
-    return None
+    else:
+        return None
 
-def get_place_for_postcode(name, dbname=settings.MONGO_DB):
-    return get_place_for_name(name, 'postcode_locations', 'postcode', dbname)
-    
-def get_place_for_placename(name, dbname=settings.MONGO_DB):
-    return get_place_for_name(name, 'placename_locations','name_upper',  dbname)
-
-def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
+def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
     """looks up nearest postcode for lat_lon in geonames data"""
     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
@@ -328,7 +347,6 @@ def _make_fq(event, accounts):
     return None
 
 def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
-    conn = Solr(settings.SOLR_URL)
     loc = get_place_for_postcode(name) or get_place_for_placename(name)
         
     if loc:
@@ -347,13 +365,13 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
         if fq:
             kw['fq'] = fq        
         
+        conn = Solr(settings.SOLR_URL)
         return loc['lat_lon'], conn.search(kwords.strip() if kwords else '', **kw)
     else:
         return None, None
 
 def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
     """docstring for find_by_place_or_kwords"""
-    conn = Solr(settings.SOLR_URL)
     if name:
         return find_by_place(name, kwords, loc_boost, start, max, accounts, event)
     # keywords only
@@ -368,4 +386,5 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
     if fq:
         kw['fq'] = fq
 
+    conn = Solr(settings.SOLR_URL)
     return None, conn.search(kwords.strip() if kwords else '', **kw)
