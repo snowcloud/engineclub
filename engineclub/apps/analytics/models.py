@@ -29,21 +29,29 @@ class BaseAnalytics(object):
         if not date_instance:
             date_instance = date.today()
 
-        key = self.generate_key(stat_name, account, meta, date_instance)
+        key = self.generate_key(stat_name, date_instance)
 
-        self.conn.incr(key)
+        # If we have a meta value, that will be the hash key.
+        if meta:
+            self.conn.hincrby(key, meta, 1)
+        else:
+            self.conn.incr(key)
 
         if account:
-            account = None
-            self.conn.incr(self.generate_key(stat_name, account, meta, date_instance))
+            account_key = self.generate_key(stat_name, account, date_instance)
 
-    def generate_key(self, stat_name, account=None, meta=None, date_instance=None):
+            if meta:
+                self.conn.hincrby(account_key, meta, 1)
+            else:
+                self.conn.incr(account_key)
+
+    def generate_key(self, stat_name, account=None, date_instance=None):
         """
         Create a unique key for an individual stat. This is is defined by;
 
-        <stat_name>:<account>:<meta>:<date>
+        <stat_name>:<account>:<date>
 
-        stat name could be "tags", account would be for that user, meta would
+        stat name could be "tags", account would be for that user, would
         break the stat don further, the name of the individual stat and the
         date would then be used to split it down to daily figures. The actual
         value stored against this key is the number of occurances.
@@ -57,12 +65,9 @@ class BaseAnalytics(object):
         if not account:
             account = ''
 
-        if not meta:
-            meta = ''
+        return "%s:%s:%s" % (stat_name, account, date_string)
 
-        return "%s:%s:%s:%s" % (stat_name, account, meta, date_string)
-
-    def generate_keys(self, stat_name, start_date, end_date, account=None, meta=None):
+    def generate_keys(self, stat_name, start_date, end_date, account=None):
         """
         Generate the keys to fetch data from Redis. This could alternatively
         have been done with the KEYS command and a pattern match, but this
@@ -75,24 +80,41 @@ class BaseAnalytics(object):
 
             date_instance = start_date + timedelta(days=i)
 
-            yield self.generate_key(stat_name, account, meta, date_instance)
+            yield self.generate_key(stat_name, account, date_instance)
 
-    def fetch(self, keys):
+    def fetch_values(self, keys, meta=None):
         """
         Given a list of keys, fetch them all from Redis. This converts all the
         results to integers and replaced None results (for keys with no data)
         with 0.
         """
 
-        return [0 if k == None else int(k) for k in self.conn.mget(keys)]
+        def int_convert(l):
+            for value in l:
+                if value is None:
+                    yield 0
+                else:
+                    yield int(value)
+
+        data = []
+        for key in keys:
+            if meta or self.conn.type(key) == "hash":
+                if meta:
+                    data.append(self.conn.hget(key, meta))
+                else:
+                    data.append(sum(int_convert(self.conn.hvals(key))))
+            else:
+                data.append(self.conn.get(key))
+
+        return int_convert(data)
 
     def sum(self, stat_name, start_date, end_date, account=None, meta=None):
         """
         Returns the sum of a set of fetched results.
         """
 
-        keys = self.generate_keys(stat_name, start_date, end_date, account, meta)
-        return sum(self.fetch(keys))
+        keys = self.generate_keys(stat_name, start_date, end_date, account)
+        return sum(self.fetch_values(keys, meta))
 
     def flat_list(self, stat_name, start_date, end_date, account=None, meta=None):
         """
@@ -101,8 +123,8 @@ class BaseAnalytics(object):
         """
 
         # Convert to a list as we want to use it twice.
-        keys = list(self.generate_keys(stat_name, start_date, end_date, account, meta))
-        return izip(keys, self.fetch(keys))
+        keys = list(self.generate_keys(stat_name, start_date, end_date, account))
+        return izip(keys, self.fetch_values(keys, meta))
 
     def list(self, stat_name, start_date, end_date, account=None):
         """
@@ -173,8 +195,9 @@ class OverallAnalytics(BaseAnalytics):
 
         curations = Curation.objects.filter(
             item_metadata__last_modified__gte=start_date,
-            item_metadata__last_modified__lte=end_date)\
-            .order_by('item_metadata__last_modified')
+            item_metadata__last_modified__lte=end_date)
+
+        curations = sorted(curations, key=lambda c: c.item_metadata.last_modified)
 
         working_start, working_end = start_date, start_date + granularity
 
@@ -199,7 +222,7 @@ class OverallAnalytics(BaseAnalytics):
         # Taking the group by, get the length of each group. Curations needs
         # to be a list, otherwise the iterator from mongoengine resets and we
         # enter an infinate loop.
-        for k, v in groupby(list(curations), key_func):
+        for k, v in groupby(curations, key_func):
             results[k] = len(list(v))
 
         # Look through the date rangers one last time, and fill in any dates
@@ -238,3 +261,25 @@ class OverallAnalytics(BaseAnalytics):
         result_list = ((post_code, int(count))
             for post_code, count in result[0].items())
         return sorted(result_list, key=itemgetter(1), reverse=True)
+
+
+class AccountAnalytics(BaseAnalytics):
+
+    def __init__(self, redis_db, account):
+
+        connection_pool = pool.get_connection_pool(db=redis_db)
+        self.conn = Redis(connection_pool=connection_pool)
+
+    def increment_tag(self, tag_name, **kwargs):
+
+        return super(AccountAnalytics, self).increment('search_tags',
+            account=self.account, meta=tag_name, **kwargs)
+
+    def incremet_search(self, query, **kwargs):
+
+        return super(AccountAnalytics, self).increment('search_queries',
+            account=self.account, meta=query, **kwargs)
+
+    def most_searched_tags(self):
+
+        pass
