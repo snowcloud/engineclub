@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
+from django.utils import simplejson as json
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
@@ -213,14 +214,21 @@ def resource_find(request, template='depot/resource_find.html'):
             user = get_account(request.user.id)
             for result in form.results:
                 resource = get_one_or_404(id=ObjectId(result['res_id']))
-                curation = get_curation_for_user_resource(user, resource)
-                if curation:
-                    __, curation = curation
+
+                try:
+                    curation_index, curation = get_curation_for_user_resource(user, resource)
+                except TypeError:
+                    curation_index = curation = None
 
                 curation_form = CurationForm(
                         initial={'outcome': STATUS_OK},
                         instance=curation)
-                results.append((result, curation_form, ))
+                results.append({
+                    'resource_result': result,
+                    'curation': curation,
+                    'curation_form': curation_form,
+                    'curation_index': curation_index
+                })
             locations = form.locations
             centre = form.centre
             # pins = [loc['obj'] for loc in locations]
@@ -241,16 +249,33 @@ def resource_find(request, template='depot/resource_find.html'):
     return render_to_response(template, RequestContext(request, context))
 
 def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
-    """docstring for curation_detail"""
     if index:
-        object = get_one_or_404(id=ObjectId(object_id))
-        curation = object.curations[int(index)]
+        resource = get_one_or_404(id=ObjectId(object_id))
+        curation = resource.curations[int(index)]
     else:
         curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
-        object = curation.resource
-        
-    return render_to_response(template,
-        RequestContext( request, { 'resource': object, 'object': curation, 'index': index }))
+        resource = curation.resource
+
+    if request.is_ajax():
+        context = {
+            'curation': {
+                'note': curation.note,
+                'tags': curation.tags,
+            },
+            'resource': {
+                'title': resource.title,
+                'description': resource.description,
+            },
+            'url': reverse('curation-add', args=(resource.id, )),
+        }
+        return HttpResponse(json.dumps(context), mimetype='application/json')
+
+    context = {
+        'index': index,
+        'object': curation,
+        'resource': resource,
+    }
+    return render_to_response(template, RequestContext(request, context))
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
@@ -278,6 +303,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
+
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
         initial = { 'outcome': STATUS_OK}

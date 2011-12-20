@@ -18,7 +18,8 @@ $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     minChars: 3,
     onResult: function (results) {
-        var r = [];
+        var typedValue = $('#token-input-id_tags').val();
+        var r = [{id: typedValue, name: typedValue + ' (new)'}];
         $.each(results.data, function (i, item) {
             r.push({id: item, name: item});
         });
@@ -28,21 +29,21 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     queryParam: 'match',
     theme: 'aliss'
 });
-    {% if locationform %}
-        $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
-            minChars: 3,
-            onResult: function (results) {
-                var r = [];
-                $.each(results.data, function (i, item) {
-                    r.push({id: item.id, name: item.place_name + ', ' + item.postcode});
-                });
-                return r;
-            },
-            prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.place_name }}, {{ l.label }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
-            queryParam: 'match',
-            theme: 'aliss'
-        });
-    {% endif %}
+{% if locationform %}
+    $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
+        minChars: 3,
+        onResult: function (results) {
+            var r = [];
+            $.each(results.data, function (i, item) {
+                r.push({id: item.id, name: item.place_name + ', ' + item.postcode});
+            });
+            return r;
+        },
+        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.place_name }}, {{ l.label }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
+        queryParam: 'match',
+        theme: 'aliss'
+    });
+{% endif %}
 {% endblock %}
 
 {% block content %}
