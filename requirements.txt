@@ -30,3 +30,11 @@ multiprocessing
 
 pysolr
 # lxml
+
+
+#redis
+redis>=2.4,<2.5
+
+#celery
+celery>=2.4,<2.5
+django-celery>=2.4,<2.5
