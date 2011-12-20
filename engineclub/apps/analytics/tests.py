@@ -6,7 +6,7 @@ class RedisAnalyticsTestCase(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import BaseAnalytics
-        self.analytics = BaseAnalytics(15)
+        self.analytics = BaseAnalytics(redis_db=15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -114,12 +114,12 @@ class RedisAnalyticsTestCase(unittest.TestCase):
         self.assertEqual(list(self.analytics.flat_list(stat, start, end, user)), expected)
 
 
-class OverallStatsTestCase(unittest.TestCase):
+class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        from analytics.models import OverallAnalytics
-        self.analytics = OverallAnalytics(15)
+        from analytics.models import OverallMongoAnalytics
+        self.analytics = OverallMongoAnalytics(redis_db=15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -206,11 +206,14 @@ class AccountStatsTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        from analytics.models import AccountAnalytics
+        from analytics.models import AccountAnalytics, OverallAnalytics
         from engine_groups.models import Account
 
         account = Account.objects[2]
-        self.analytics = AccountAnalytics(15, account)
+        account2 = Account.objects[3]
+        self.analytics = AccountAnalytics(account, redis_db=15)
+        self.analytics2 = AccountAnalytics(account2, redis_db=15)
+        self.overall_analytics = OverallAnalytics(redis_db=15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -219,16 +222,122 @@ class AccountStatsTestCase(unittest.TestCase):
 
         from datetime import datetime
 
+        # Add 30
         for i in range(1, 31):
             dt = datetime(2011, 11, i)
-            self.analytics.increment("Sport and fitness", dt, count=i)
+            self.analytics.increment_tag("Sport and fitness",
+                date_instance=dt, count=i)
 
-        self.analytics.most_searched_tags()
+        # Add 25
+        for i in range(1, 26):
+            dt = datetime(2011, 11, i)
+            self.analytics.increment_tag("Mental Health",
+                date_instance=dt, count=i)
 
-    def test_location(self):
+        # Add 15
+        for i in range(11, 26):
+            dt = datetime(2011, 11, i)
+            self.analytics.increment_tag("Hobbies, arts and crafts",
+                date_instance=dt, count=i)
+
+        start_date = datetime(2011, 11, 1)
+        end_date = datetime(2011, 11, 30)
+
+        result = self.analytics.top_tags(start_date, end_date)
+
+        # Create a report for the full month, should contain everything we
+        # added
+        expected_result = [
+            ('Sport and fitness', 30),
+            ('Mental Health', 25),
+            ('Hobbies, arts and crafts', 15),
+        ]
+
+        self.assertEqual(result, expected_result)
+
+        # Create another report, but only for one day - should only contain
+        # the expected result below.
+        start_date = datetime(2011, 11, 1)
+        end_date = datetime(2011, 11, 1)
+
+        result = self.analytics.top_tags(start_date, end_date)
+
+        expected_result = [
+            ('Mental Health', 1),
+            ('Sport and fitness', 1),
+        ]
+
+        self.assertEqual(result, expected_result)
+
+    def test_overall_analytics(self):
+        """
+        Incremement the tag stat counter for two different accounts. Check the
+        values are right in the summary for those accounts and then check that
+        the overall stats are correctly the sum of the accounts.
+        """
+
+        from string import uppercase
+        from datetime import datetime
+
+        dt = datetime(2011, 11, 20)
+
+        # Increment A-K for both
+        for i in range(0, 11):
+            self.analytics.increment_tag(uppercase[i], date_instance=dt, count=i)
+            self.analytics2.increment_tag(uppercase[i], date_instance=dt, count=i)
+
+        # Increment A-F again for account 1
+        for i in range(0, 6):
+            self.analytics.increment_tag(uppercase[i], date_instance=dt, count=i)
+
+        # Increment G-K again for account 2
+        for i in range(6, 11):
+            self.analytics2.increment_tag(uppercase[i], date_instance=dt, count=i)
+
+        account1_result = self.analytics.top_tags(dt, dt)
+        account2_result = self.analytics2.top_tags(dt, dt)
+        overall_result = self.overall_analytics.top_tags(dt, dt)
+
+        account1_expected = [('A', 2), ('C', 2), ('B', 2), ('E', 2), ('D', 2),
+            ('F', 2), ('G', 1), ('I', 1), ('H', 1), ('K', 1), ('J', 1), ]
+        account2_expected = [('G', 2), ('I', 2), ('H', 2), ('K', 2), ('J', 2),
+            ('A', 1), ('C', 1), ('B', 1), ('E', 1), ('D', 1), ('F', 1), ]
+        overall_expected = [('A', 3), ('C', 3), ('B', 3), ('E', 3), ('D', 3),
+            ('G', 3), ('F', 3), ('I', 3), ('H', 3), ('K', 3), ('J', 3), ]
+
+        self.assertEqual(account1_result, account1_expected)
+        self.assertEqual(account2_result, account2_expected)
+        self.assertEqual(overall_expected, overall_result)
+
+    def test_search_query(self):
         # what locations are being searched for
         pass
 
     def test_date(self):
         # When are the searches happening
         pass
+
+
+class ShortcutsTestCase(unittest.TestCase):
+
+    def setUp(self):
+
+        from analytics.models import AccountAnalytics, OverallAnalytics
+        from engine_groups.models import Account
+
+        self.account = Account.objects[2]
+
+        self.account_analytics = AccountAnalytics(self.account, redis_db=15)
+        self.overall_analytics = OverallAnalytics(redis_db=15)
+        self.redis = self.account_analytics.conn
+        self.redis.flushdb()
+
+    def test_increment_tag(self):
+
+        from analytics.shortcuts import increment_tag
+        increment_tag(self.account, "Sport and fitness")
+
+    def test_increment_search(self):
+
+        from analytics.shortcuts import increment_search
+        increment_search(self.account, "Search Query")

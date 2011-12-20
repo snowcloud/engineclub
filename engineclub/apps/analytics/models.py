@@ -1,9 +1,44 @@
+"""
+Analytics
+----------------------------------------
+
+The analytics module allows for recording various stats over time and
+calculating stats from data store in MongoDB.
+
+Example usage, for incrementing the value of a tag. For a specific account.
+
+    from engine_groups.models import Account
+    from analytics.shortcuts import increment_tag
+    account = Account.objects[2]
+    increment_tag(account, "Sport and fitness")
+
+You can then get the stat for that tag, for a specific account or overall for
+all accounts for a date range. The following example will output the top
+tags, sorted by most searched, for the the year 2011. First it will be
+displayed for the given account, then it will be displayed for all accounts.
+
+    from datetime import datetime
+    from analytics.models import AccountAnalytics, OverallAnalytics
+
+    start_date = datetime(2011, 01, 01)
+    end_date = datetime(2011, 12, 31)
+
+    account = AccountAnalytics(account)
+    print account.top_tags(start_date, end_date)
+
+    overall = OverallAnalytics()
+    print overall.top_tags(start_date, end_date)
+
+
+"""
 from datetime import timedelta, datetime, date
+from collections import defaultdict
 from itertools import izip, groupby
 from operator import itemgetter
 
 from redis import Redis
 from mongoengine.connection import _get_db as get_db
+from django.conf import settings
 
 from depot.models import Curation
 from engine_groups.models import Account
@@ -14,7 +49,10 @@ DATE_FORMAT = "%Y-%m-%d"
 
 class BaseAnalytics(object):
 
-    def __init__(self, redis_db):
+    def __init__(self, redis_db=None):
+
+        if not redis_db:
+            redis_db = settings.REDIS_ANALYTICS_DATABASE
 
         connection_pool = pool.get_connection_pool(db=redis_db)
         self.conn = Redis(connection_pool=connection_pool)
@@ -29,7 +67,7 @@ class BaseAnalytics(object):
         if not date_instance:
             date_instance = date.today()
 
-        key = self.generate_key(stat_name, date_instance)
+        key = self.generate_key(stat_name, None, date_instance)
 
         # If we have a meta value, that will be the hash key.
         if meta:
@@ -108,6 +146,10 @@ class BaseAnalytics(object):
 
         return int_convert(data)
 
+    def fetch_hash(self, keys):
+        for key in keys:
+            yield self.conn.hgetall(key)
+
     def sum(self, stat_name, start_date, end_date, account=None, meta=None):
         """
         Returns the sum of a set of fetched results.
@@ -142,46 +184,46 @@ class BaseAnalytics(object):
             yield (datetime.strptime(date, DATE_FORMAT).date(), value)
 
 
-class OverallAnalytics(BaseAnalytics):
+class OverallMongoAnalytics(BaseAnalytics):
 
     def tag_usage(self, tag):
         return Curation.objects.filter(tags=tag).count()
 
-    def tag_report(self, key=None, reverse=False, account=None):
+    def tag_report(self, key_sort=None, reverse=False, account=None):
 
         curations = Curation.objects
         if account:
             curations = curations.filter(owner=account)
         report = curations.item_frequencies('tags').items()
 
-        if not key:
-            key = itemgetter(1)
+        if not key_sort:
+            key_sort = itemgetter(1)
 
-        report = sorted(report, key=key, reverse=reverse)
+        report = sorted(report, key=key_sort, reverse=reverse)
 
         return report
 
     def top_tags(self, count=10):
-        return self.tag_report(key=itemgetter(1), reverse=True)[:count]
+        return self.tag_report(key_sort=itemgetter(1), reverse=True)[:count]
 
     def account_usage(self, account):
         return Curation.objects.filter(owner=account).count()
 
-    def curation_report(self, key=None, reverse=False):
+    def curation_report(self, key_sort=None, reverse=False):
 
         activity = [(Account.objects.get(id=account.id), value, )
             for account, value in Curation.objects.item_frequencies("owner").items()]
 
-        if not key:
-            key = itemgetter(0)
+        if not key_sort:
+            key_sort = itemgetter(0)
 
-        activity = sorted(activity, key=key, reverse=reverse)
+        activity = sorted(activity, key=key_sort, reverse=reverse)
 
         return activity
 
     def top_accounts(self, count=10):
 
-        return self.curation_report(key=itemgetter(1), reverse=True)[:count]
+        return self.curation_report(key_sort=itemgetter(1), reverse=True)[:count]
 
     def curations_between(self, start_date, end_date, granularity):
         """
@@ -263,23 +305,55 @@ class OverallAnalytics(BaseAnalytics):
         return sorted(result_list, key=itemgetter(1), reverse=True)
 
 
-class AccountAnalytics(BaseAnalytics):
+class OverallAnalytics(BaseAnalytics):
 
-    def __init__(self, redis_db, account):
+    def __init__(self, redis_db=None):
 
         connection_pool = pool.get_connection_pool(db=redis_db)
         self.conn = Redis(connection_pool=connection_pool)
+        self.account = None
+
+    def top_tags(self, start_date, end_date, key_sort=None, reverse=True):
+        return self.sum_hash('search_tags', start_date, end_date, key_sort, reverse)
+
+    def most_searched_queries(self, start_date, end_date, key_sort=None, reverse=True):
+        return self.sum_hash('search_queries', start_date, end_date, key_sort, reverse)
+
+    def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
+
+        keys = list(self.generate_keys(stat_name, start_date, end_date, self.account))
+
+        totals = defaultdict(int)
+
+        for result in self.fetch_hash(keys):
+            for k, v in result.items():
+                totals[k] += int(v)
+
+        if not key_sort:
+            key_sort = itemgetter(1)
+
+        return sorted(totals.items(), key=key_sort, reverse=reverse)
+
+
+class AccountAnalytics(OverallAnalytics):
+
+    def __init__(self, account, redis_db=None):
+
+        connection_pool = pool.get_connection_pool(db=redis_db)
+        self.conn = Redis(connection_pool=connection_pool)
+        self.account = account
 
     def increment_tag(self, tag_name, **kwargs):
 
         return super(AccountAnalytics, self).increment('search_tags',
             account=self.account, meta=tag_name, **kwargs)
 
-    def incremet_search(self, query, **kwargs):
+    def increment_search(self, query, **kwargs):
 
         return super(AccountAnalytics, self).increment('search_queries',
             account=self.account, meta=query, **kwargs)
 
-    def most_searched_tags(self):
 
-        pass
+def increment_tag(account, tag_name):
+
+    print AccountAnalytics(account).increment_tag(tag_name)
