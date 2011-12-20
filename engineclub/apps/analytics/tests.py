@@ -298,24 +298,16 @@ class AccountStatsTestCase(unittest.TestCase):
         account2_result = self.analytics2.top_tags(dt, dt)
         overall_result = self.overall_analytics.top_tags(dt, dt)
 
-        account1_expected = [('A', 2), ('C', 2), ('B', 2), ('E', 2), ('D', 2),
-            ('F', 2), ('G', 1), ('I', 1), ('H', 1), ('K', 1), ('J', 1), ]
-        account2_expected = [('G', 2), ('I', 2), ('H', 2), ('K', 2), ('J', 2),
-            ('A', 1), ('C', 1), ('B', 1), ('E', 1), ('D', 1), ('F', 1), ]
-        overall_expected = [('A', 3), ('C', 3), ('B', 3), ('E', 3), ('D', 3),
-            ('G', 3), ('F', 3), ('I', 3), ('H', 3), ('K', 3), ('J', 3), ]
+        account1_expected = [('A', 2), ('B', 2), ('C', 2), ('D', 2), ('E', 2),
+            ('F', 2), ('G', 1), ('H', 1), ('I', 1), ('J', 1), ('K', 1), ]
+        account2_expected = [('G', 2), ('H', 2), ('I', 2), ('J', 2), ('K', 2),
+            ('A', 1), ('B', 1), ('C', 1), ('D', 1), ('E', 1), ('F', 1), ]
+        overall_expected = [('A', 3), ('B', 3), ('C', 3), ('D', 3), ('E', 3),
+            ('F', 3), ('G', 3), ('H', 3), ('I', 3), ('J', 3), ('K', 3), ]
 
         self.assertEqual(account1_result, account1_expected)
         self.assertEqual(account2_result, account2_expected)
         self.assertEqual(overall_expected, overall_result)
-
-    def test_search_query(self):
-        # what locations are being searched for
-        pass
-
-    def test_date(self):
-        # When are the searches happening
-        pass
 
 
 class ShortcutsTestCase(unittest.TestCase):
@@ -334,10 +326,16 @@ class ShortcutsTestCase(unittest.TestCase):
 
     def test_increment_tag(self):
 
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
         from analytics.shortcuts import increment_tag
         increment_tag(self.account, "Sport and fitness")
 
     def test_increment_search(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
 
         from analytics.shortcuts import increment_search
         increment_search(self.account, "Search Query")
