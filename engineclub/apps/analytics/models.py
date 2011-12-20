@@ -61,9 +61,11 @@ class BaseAnalytics(object):
         """
         Increment the stat for the given name. Date can be passed, otherwise
         it defauls to today. If account is given it will be stored for that
-        account, otherwise it will be stored for the global stats.
+        account, otherwise it will be stored for the global stats. Even if
+        account is given, the global stat is incremented also.
 
-        If field is given, this is used for the
+        If field is given, the data is stored in a redis hash, with stat name
+        being the hash name and field being the key (in python terms)
         """
 
         if not date_instance:
@@ -91,16 +93,17 @@ class BaseAnalytics(object):
 
         <stat_name>:<account>:<date>
 
-        stat name could be "tags", account would be for that user, would
-        break the stat don further, the name of the individual stat and the
-        date would then be used to split it down to daily figures. The actual
-        value stored against this key is the number of occurances.
+        Stat name could be "tags", account is the username, and date is the
+        date that it was recorded for. This essentially then stores the count
+        for each day and each account.
+
+        date_instance is defaulted to today if not provided.
         """
 
         if not date_instance:
-            date_string = ''
-        else:
-            date_string = date_instance.strftime(DATE_FORMAT)
+            date_instance = datetime.now()
+
+        date_string = date_instance.strftime(DATE_FORMAT)
 
         if not account:
             account = ''
@@ -111,7 +114,8 @@ class BaseAnalytics(object):
         """
         Generate the keys to fetch data from Redis. This could alternatively
         have been done with the KEYS command and a pattern match, but this
-        should be much faster and simpler.
+        is much faster as it doesn't attempt pattern matching across the full
+        Redis database
         """
 
         delta = end_date - start_date
@@ -127,6 +131,10 @@ class BaseAnalytics(object):
         Given a list of keys, fetch them all from Redis. This converts all the
         results to integers and replaced None results (for keys with no data)
         with 0.
+
+        This is a helper method, to squash down the keys into values that can
+        be summed and calculated in a few places. Therefore, it handles
+        working with based keys and hashes.
         """
 
         def int_convert(l):
@@ -149,6 +157,9 @@ class BaseAnalytics(object):
         return int_convert(data)
 
     def fetch_hash(self, keys):
+        """
+        Return a dictionary for each hash found.
+        """
         for key in keys:
             yield self.conn.hgetall(key)
 
@@ -170,23 +181,73 @@ class BaseAnalytics(object):
         keys = list(self.generate_keys(stat_name, start_date, end_date, account))
         return izip(keys, self.fetch_values(keys, field))
 
-    def list(self, stat_name, start_date, end_date, account=None):
+
+class OverallAnalytics(BaseAnalytics):
+    """
+    A class to access the overall analytics for all accounts. This is
+    essentially a read only class, its not enforced but its unlikely that a
+    stat should be stored that isn't against a user account.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(OverallAnalytics, self).__init__(*args, **kwargs)
+        self.account = None
+
+    def top_tags(self, start_date, end_date, key_sort=None, reverse=True):
+        return self.sum_hash('search_tags', start_date, end_date, key_sort, reverse)
+
+    def most_searched_queries(self, start_date, end_date, key_sort=None, reverse=True):
+        return self.sum_hash('search_queries', start_date, end_date, key_sort, reverse)
+
+    def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
         """
-        Similar to flat_list, but the key is broken up and a list of 2-tuples
-        containing a datetime.date instance and a numeric value is returned.
+        Sum up the total of a number of different hashes in Redis.
         """
 
-        for key, value in self.flat_list(stat_name, start_date, end_date, account):
+        keys = self.generate_keys(stat_name, start_date, end_date, self.account)
 
-            if account:
-                _, _, date = key.split(':')
-            else:
-                _, date = key.split(':')
+        totals = defaultdict(int)
 
-            yield (datetime.strptime(date, DATE_FORMAT).date(), value)
+        for result in self.fetch_hash(keys):
+            for k, v in result.items():
+                totals[k] += int(v)
+
+        if not key_sort:
+            # Sort by count, then by name
+            key_sort = itemgetter(1, 0)
+            totals_items = sorted(totals.items(), key=itemgetter(0))
+            return sorted(totals_items, key=itemgetter(1), reverse=reverse)
+
+        return sorted(totals.items(), key=key_sort, reverse=reverse)
+
+
+class AccountAnalytics(OverallAnalytics):
+    """
+    Extending the overall stats and adding the methods needed to increment
+    the tag and query stats.
+    """
+
+    def __init__(self, account, *args, **kwargs):
+        super(OverallAnalytics, self).__init__(*args, **kwargs)
+        self.account = account
+
+    def increment_tag(self, tag_name, **kwargs):
+
+        return super(AccountAnalytics, self).increment('search_tags',
+            account=self.account, field=tag_name, **kwargs)
+
+    def increment_search(self, query, **kwargs):
+
+        return super(AccountAnalytics, self).increment('search_queries',
+            account=self.account, field=query, **kwargs)
 
 
 class OverallMongoAnalytics(BaseAnalytics):
+    """
+    This class is the most different, as rather than store live stats in
+    Redis and provide summaries and reports, it creates all the required
+    information based on the data stored in the Mongo database.
+    """
 
     def tag_usage(self, tag):
         return Curation.objects.filter(tags=tag).count()
@@ -304,58 +365,4 @@ class OverallMongoAnalytics(BaseAnalytics):
 
         result_list = ((post_code, int(count))
             for post_code, count in result[0].items())
-        return sorted(result_list, key=itemgetter(1), reverse=True)
-
-
-class OverallAnalytics(BaseAnalytics):
-
-    def __init__(self, redis_db=None):
-
-        connection_pool = pool.get_connection_pool(db=redis_db)
-        self.conn = Redis(connection_pool=connection_pool)
-        self.account = None
-
-    def top_tags(self, start_date, end_date, key_sort=None, reverse=True):
-        return self.sum_hash('search_tags', start_date, end_date, key_sort, reverse)
-
-    def most_searched_queries(self, start_date, end_date, key_sort=None, reverse=True):
-        return self.sum_hash('search_queries', start_date, end_date, key_sort, reverse)
-
-    def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
-
-        keys = list(self.generate_keys(stat_name, start_date, end_date, self.account))
-
-        totals = defaultdict(int)
-
-        for result in self.fetch_hash(keys):
-            for k, v in result.items():
-                totals[k] += int(v)
-
-        if not key_sort:
-            key_sort = itemgetter(1)
-
-        return sorted(totals.items(), key=key_sort, reverse=reverse)
-
-
-class AccountAnalytics(OverallAnalytics):
-
-    def __init__(self, account, redis_db=None):
-
-        connection_pool = pool.get_connection_pool(db=redis_db)
-        self.conn = Redis(connection_pool=connection_pool)
-        self.account = account
-
-    def increment_tag(self, tag_name, **kwargs):
-
-        return super(AccountAnalytics, self).increment('search_tags',
-            account=self.account, field=tag_name, **kwargs)
-
-    def increment_search(self, query, **kwargs):
-
-        return super(AccountAnalytics, self).increment('search_queries',
-            account=self.account, field=query, **kwargs)
-
-
-def increment_tag(account, tag_name):
-
-    print AccountAnalytics(account).increment_tag(tag_name)
+        return sorted(result_list, key=itemgetter(1, 0), reverse=True)
