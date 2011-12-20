@@ -6,7 +6,7 @@ class RedisAnalyticsTestCase(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import BaseAnalytics
-        self.analytics = BaseAnalytics(redis_db=15)
+        self.analytics = BaseAnalytics(15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -20,15 +20,15 @@ class RedisAnalyticsTestCase(unittest.TestCase):
         user = 'jb'
 
         # Test with a user
-        expected = ['tag_views:jb::2011-12-01', 'tag_views:jb::2011-12-02',
-            'tag_views:jb::2011-12-03', 'tag_views:jb::2011-12-04',
-            'tag_views:jb::2011-12-05', ]
+        expected = ['tag_views:jb:2011-12-01', 'tag_views:jb:2011-12-02',
+            'tag_views:jb:2011-12-03', 'tag_views:jb:2011-12-04',
+            'tag_views:jb:2011-12-05', ]
         self.assertEqual(list(self.analytics.generate_keys(stat, start, end, user)), expected)
 
         # Test without a user
-        expected = ['tag_views:::2011-12-01', 'tag_views:::2011-12-02',
-            'tag_views:::2011-12-03', 'tag_views:::2011-12-04',
-            'tag_views:::2011-12-05', ]
+        expected = ['tag_views::2011-12-01', 'tag_views::2011-12-02',
+            'tag_views::2011-12-03', 'tag_views::2011-12-04',
+            'tag_views::2011-12-05', ]
         self.assertEqual(list(self.analytics.generate_keys(stat, start, end)), expected)
 
     def test_sum(self):
@@ -42,12 +42,12 @@ class RedisAnalyticsTestCase(unittest.TestCase):
 
         self.assertEqual(self.analytics.sum(stat, start, end, user), 0)
 
-        self.redis.incr('tag_views:jb::2011-11-15', 10)
+        self.redis.incr('tag_views:jb:2011-11-15', 10)
 
         self.assertEqual(self.analytics.sum(stat, start, end, user), 10)
 
         for i in range(1, 31):
-            self.redis.incr('tag_views:jb::2011-11-%02d' % i, 1)
+            self.redis.incr('tag_views:jb:2011-11-%02d' % i, 1)
 
         self.assertEqual(self.analytics.sum(stat, start, end, user), 40)
 
@@ -68,14 +68,14 @@ class RedisAnalyticsTestCase(unittest.TestCase):
 
         self.assertEqual(self.analytics.sum(stat_name, start, end, user, meta), 10)
 
-        self.assertEqual(self.redis.get('tag_views:jb:advice:2011-11-15'), '10')
+        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', meta), '10')
 
         for i in range(0, 30):
             s = date(2011, 11, 1) + timedelta(days=i)
 
             self.analytics.increment(stat_name, user, "advice", s)
 
-        self.assertEqual(self.redis.get('tag_views:jb:advice:2011-11-15'), '11')
+        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', meta), '11')
 
         self.assertEqual(self.analytics.sum(stat_name, start, end, user, meta), 40)
 
@@ -89,26 +89,26 @@ class RedisAnalyticsTestCase(unittest.TestCase):
         user = 'jb'
 
         expected = [
-            ('tag_views:jb::2011-11-01', 0,),
-            ('tag_views:jb::2011-11-02', 0,),
-            ('tag_views:jb::2011-11-03', 0,),
-            ('tag_views:jb::2011-11-04', 0,),
-            ('tag_views:jb::2011-11-05', 0,),
+            ('tag_views:jb:2011-11-01', 0,),
+            ('tag_views:jb:2011-11-02', 0,),
+            ('tag_views:jb:2011-11-03', 0,),
+            ('tag_views:jb:2011-11-04', 0,),
+            ('tag_views:jb:2011-11-05', 0,),
         ]
 
         self.assertEqual(list(self.analytics.flat_list(stat, start, end, user)), expected)
 
-        self.redis.incr('tag_views:jb::2011-11-03', 3)
+        self.redis.incr('tag_views:jb:2011-11-03', 3)
 
         for i in range(1, 6):
-            self.redis.incr('tag_views:jb::2011-11-%02d' % i, 1)
+            self.redis.incr('tag_views:jb:2011-11-%02d' % i, 1)
 
         expected = [
-            ('tag_views:jb::2011-11-01', 1,),
-            ('tag_views:jb::2011-11-02', 1,),
-            ('tag_views:jb::2011-11-03', 4,),
-            ('tag_views:jb::2011-11-04', 1,),
-            ('tag_views:jb::2011-11-05', 1,),
+            ('tag_views:jb:2011-11-01', 1,),
+            ('tag_views:jb:2011-11-02', 1,),
+            ('tag_views:jb:2011-11-03', 4,),
+            ('tag_views:jb:2011-11-04', 1,),
+            ('tag_views:jb:2011-11-05', 1,),
         ]
 
         self.assertEqual(list(self.analytics.flat_list(stat, start, end, user)), expected)
@@ -119,7 +119,7 @@ class OverallStatsTestCase(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import OverallAnalytics
-        self.analytics = OverallAnalytics(redis_db=15)
+        self.analytics = OverallAnalytics(15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -186,10 +186,10 @@ class OverallStatsTestCase(unittest.TestCase):
 
         from datetime import timedelta
 
-        result = self.analytics.curations_in_last(timedelta(weeks=12),
+        result = self.analytics.curations_in_last(timedelta(weeks=52),
             granularity=timedelta(weeks=4))
 
-        self.assertEqual(len(result), 3)
+        self.assertEqual(len(result), 13)
 
     def test_curations_by_postcode(self):
 
@@ -200,3 +200,35 @@ class OverallStatsTestCase(unittest.TestCase):
             ('AB15', 55), ('PA2', 47), ('AB42', 45)]
 
         self.assertEqual(result, expected)
+
+
+class AccountStatsTestCase(unittest.TestCase):
+
+    def setUp(self):
+
+        from analytics.models import AccountAnalytics
+        from engine_groups.models import Account
+
+        account = Account.objects[2]
+        self.analytics = AccountAnalytics(15, account)
+        self.redis = self.analytics.conn
+        self.redis.flushdb()
+
+    def test_tag(self):
+        # what tags are being searched for
+
+        from datetime import datetime
+
+        for i in range(1, 31):
+            dt = datetime(2011, 11, i)
+            self.analytics.increment("Sport and fitness", dt, count=i)
+
+        self.analytics.most_searched_tags()
+
+    def test_location(self):
+        # what locations are being searched for
+        pass
+
+    def test_date(self):
+        # When are the searches happening
+        pass
