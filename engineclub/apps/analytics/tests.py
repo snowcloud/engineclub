@@ -59,25 +59,25 @@ class RedisAnalyticsTestCase(unittest.TestCase):
         start = datetime(2011, 11, 1)
         end = datetime(2011, 11, 30)
         user = 'jb'
-        meta = "advice"
+        field = "advice"
 
-        self.assertEqual(self.analytics.sum(stat_name, start, end, user, meta), 0)
+        self.assertEqual(self.analytics.sum(stat_name, start, end, user, field), 0)
 
         for i in range(10):
-            self.analytics.increment(stat_name, user, meta, date(2011, 11, 15))
+            self.analytics.increment(stat_name, user, field, date(2011, 11, 15))
 
-        self.assertEqual(self.analytics.sum(stat_name, start, end, user, meta), 10)
+        self.assertEqual(self.analytics.sum(stat_name, start, end, user, field), 10)
 
-        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', meta), '10')
+        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', field), '10')
 
         for i in range(0, 30):
             s = date(2011, 11, 1) + timedelta(days=i)
 
             self.analytics.increment(stat_name, user, "advice", s)
 
-        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', meta), '11')
+        self.assertEqual(self.redis.hget('tag_views:jb:2011-11-15', field), '11')
 
-        self.assertEqual(self.analytics.sum(stat_name, start, end, user, meta), 40)
+        self.assertEqual(self.analytics.sum(stat_name, start, end, user, field), 40)
 
     def test_results(self):
 

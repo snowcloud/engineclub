@@ -57,11 +57,13 @@ class BaseAnalytics(object):
         connection_pool = pool.get_connection_pool(db=redis_db)
         self.conn = Redis(connection_pool=connection_pool)
 
-    def increment(self, stat_name, account=None, meta=None, date_instance=None, count=1):
+    def increment(self, stat_name, account=None, field=None, date_instance=None, count=1):
         """
         Increment the stat for the given name. Date can be passed, otherwise
         it defauls to today. If account is given it will be stored for that
         account, otherwise it will be stored for the global stats.
+
+        If field is given, this is used for the
         """
 
         if not date_instance:
@@ -69,17 +71,17 @@ class BaseAnalytics(object):
 
         key = self.generate_key(stat_name, None, date_instance)
 
-        # If we have a meta value, that will be the hash key.
-        if meta:
-            self.conn.hincrby(key, meta, 1)
+        # If we have a field value, that will be the hash key.
+        if field:
+            self.conn.hincrby(key, field, 1)
         else:
             self.conn.incr(key)
 
         if account:
             account_key = self.generate_key(stat_name, account, date_instance)
 
-            if meta:
-                self.conn.hincrby(account_key, meta, 1)
+            if field:
+                self.conn.hincrby(account_key, field, 1)
             else:
                 self.conn.incr(account_key)
 
@@ -120,7 +122,7 @@ class BaseAnalytics(object):
 
             yield self.generate_key(stat_name, account, date_instance)
 
-    def fetch_values(self, keys, meta=None):
+    def fetch_values(self, keys, field=None):
         """
         Given a list of keys, fetch them all from Redis. This converts all the
         results to integers and replaced None results (for keys with no data)
@@ -136,9 +138,9 @@ class BaseAnalytics(object):
 
         data = []
         for key in keys:
-            if meta or self.conn.type(key) == "hash":
-                if meta:
-                    data.append(self.conn.hget(key, meta))
+            if field or self.conn.type(key) == "hash":
+                if field:
+                    data.append(self.conn.hget(key, field))
                 else:
                     data.append(sum(int_convert(self.conn.hvals(key))))
             else:
@@ -150,15 +152,15 @@ class BaseAnalytics(object):
         for key in keys:
             yield self.conn.hgetall(key)
 
-    def sum(self, stat_name, start_date, end_date, account=None, meta=None):
+    def sum(self, stat_name, start_date, end_date, account=None, field=None):
         """
         Returns the sum of a set of fetched results.
         """
 
         keys = self.generate_keys(stat_name, start_date, end_date, account)
-        return sum(self.fetch_values(keys, meta))
+        return sum(self.fetch_values(keys, field))
 
-    def flat_list(self, stat_name, start_date, end_date, account=None, meta=None):
+    def flat_list(self, stat_name, start_date, end_date, account=None, field=None):
         """
         Return a list of 2-tuples that contains the key and numberic values.
         The key is left as a flat string.
@@ -166,7 +168,7 @@ class BaseAnalytics(object):
 
         # Convert to a list as we want to use it twice.
         keys = list(self.generate_keys(stat_name, start_date, end_date, account))
-        return izip(keys, self.fetch_values(keys, meta))
+        return izip(keys, self.fetch_values(keys, field))
 
     def list(self, stat_name, start_date, end_date, account=None):
         """
@@ -346,12 +348,12 @@ class AccountAnalytics(OverallAnalytics):
     def increment_tag(self, tag_name, **kwargs):
 
         return super(AccountAnalytics, self).increment('search_tags',
-            account=self.account, meta=tag_name, **kwargs)
+            account=self.account, field=tag_name, **kwargs)
 
     def increment_search(self, query, **kwargs):
 
         return super(AccountAnalytics, self).increment('search_queries',
-            account=self.account, meta=query, **kwargs)
+            account=self.account, field=query, **kwargs)
 
 
 def increment_tag(account, tag_name):
