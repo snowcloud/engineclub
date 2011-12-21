@@ -29,4 +29,5 @@ multiprocessing
 # git://github.com/toastdriven/django-tastypie.git
 
 pysolr
-# lxml
+lxml
+python-googlegeocoder

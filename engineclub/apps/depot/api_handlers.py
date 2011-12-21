@@ -258,6 +258,10 @@ def locations(request):
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
 
+    # check match for digit
+    # search pc_search (not case insens- will use index) or place_name + SCT
+    # use /^Match/  no i, no *
+
     if match is not None:
         if len(match) > 2:
             data = [_location_context(l)

@@ -59,6 +59,25 @@ class Location(Document):
     
     def __unicode__(self):
         return ', '.join([self.label, self.place_name])
+
+class NewLocation(Document):
+    """NewLocation document, based on combined data sources, geonames + OSM
+    """
+    _id = StringField(primary_key=True)
+    postcode = StringField()
+    place_name = StringField(required=True)
+    lat_lon = GeoPointField(required=True)
+    accuracy = IntField()
+    district = StringField()
+    country_code = StringField()
+
+    meta = {
+        'indexes': [('place_name', 'country_code', '-accuracy')],
+        'allow_inheritance': False,
+        'collection': 'newlocation'
+    }    
+    def __unicode__(self):
+        return ', '.join([self.postcode, self.place_name])
         
 class Moderation(EmbeddedDocument):
     outcome = StringField()

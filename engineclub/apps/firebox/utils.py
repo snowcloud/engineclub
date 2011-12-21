@@ -8,7 +8,8 @@ from django.core.management import setup_environ
 
 setup_environ(settings)
 
-from firebox.views import load_postcodes, load_placenames, reindex_resources
+# from firebox.views import load_postcodes, load_placenames, reindex_resources
+from firebox.views import load_locations, reindex_resources
 
 def temp():
     """docstring for temp"""
@@ -28,6 +29,8 @@ if __name__ == "__main__":
                     help="command", metavar="COMMAND")
     parser.add_option("-f", "--file", dest="filename",
                     help="source file", metavar="FILE")
+    parser.add_option("-p", "--path", dest="pathname",
+                    help="source path", metavar="FILE")
     parser.add_option("-d", "--db", dest="dbname",
                     help="database name", metavar="DBNAME")
     # parser.add_option("-q", "--quiet",
@@ -37,12 +40,15 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     
     # print options.dbname or settings.MONGO_DB
-    if options.command == 'loadpostcodes' and options.filename:
-        print("\nreloading postcodes...")
-        load_postcodes(options.filename, options.dbname or settings.MONGO_DB)
-    elif options.command == 'loadplacenames' and options.filename:
-        print("\nreloading placenames...")
-        load_placenames(options.filename, options.dbname or settings.MONGO_DB)
+    if options.command == 'loadlocations' and options.pathname:
+        print("\nreloading locations...")
+        load_locations(options.pathname, options.dbname or settings.MONGO_DB)
+    # if options.command == 'loadpostcodes' and options.filename:
+    #     print("\nreloading postcodes...")
+    #     load_postcodes(options.filename, options.dbname or settings.MONGO_DB)
+    # elif options.command == 'loadplacenames' and options.filename:
+    #     print("\nreloading placenames...")
+    #     load_placenames(options.filename, options.dbname or settings.MONGO_DB)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
         reindex_resources(options.dbname or settings.MONGO_DB, printit=True)
