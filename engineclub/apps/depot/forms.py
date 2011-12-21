@@ -128,7 +128,9 @@ class EventForm(DocumentForm):
         return self.cleaned_data
 
 class LocationUpdateForm(DocumentForm):
-    new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
+    # REPLACE
+    new_location = forms.CharField(required=False)
+    # new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
 
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
@@ -153,11 +155,13 @@ class ShelflifeForm(DocumentForm):
     
 class CurationForm(DocumentForm):
     
-    outcome = forms.CharField(widget=forms.HiddenInput)
+    # REPLACE
+    outcome = forms.CharField()
+    # outcome = forms.CharField(widget=forms.HiddenInput)
+
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
     note = forms.CharField(widget=forms.Textarea, required=False)
     # data = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
-
