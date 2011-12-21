@@ -56,7 +56,7 @@ def test_google():
 
     """
 v2 with key
-http://maps.google.com/maps/geo?key=ABQIAAAAgxUcMtRwEemIFgqZT7lquxQYFKcbCjCxVNWZqloVDczHO3k4yRTyXtnBKCDFglW7cFz2BKwLsYGT2w&output=xml&q=Abernethy
+http://maps.google.com/maps/geo?key=<key>&output=xml&q=Abernethy
 out=csv
 200,4,56.3320140,-3.3137140
 
