@@ -1,14 +1,18 @@
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Data model &mdash; Engineclub v0.2 documentation</title>
-    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <title>Data model &mdash; Engineclub 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -21,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Engineclub v0.2 documentation" href="../index.html" />
+    <link rel="top" title="Engineclub 0.2 documentation" href="../index.html" />
     <link rel="prev" title="Engineclub API" href="api.html" /> 
   </head>
   <body>
@@ -34,7 +38,7 @@
         <li class="right" >
           <a href="api.html" title="Engineclub API"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Engineclub v0.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Engineclub 0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,51 +58,51 @@
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>id</td>
+<tr class="row-even"><td>id</td>
 <td>ObjectID *</td>
 </tr>
-<tr><td>title</td>
+<tr class="row-odd"><td>title</td>
 <td>string</td>
 </tr>
-<tr><td>description</td>
+<tr class="row-even"><td>description</td>
 <td>string</td>
 </tr>
-<tr><td>resource_type</td>
+<tr class="row-odd"><td>resource_type</td>
 <td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
 </tr>
-<tr><td>uri</td>
+<tr class="row-even"><td>uri</td>
 <td>string [web URI format]</td>
 </tr>
-<tr><td>locations</td>
+<tr class="row-odd"><td>locations</td>
 <td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
 </tr>
-<tr><td>service_area</td>
+<tr class="row-even"><td>service_area</td>
 <td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
 </tr>
-<tr><td>calendar_event</td>
+<tr class="row-odd"><td>calendar_event</td>
 <td><a class="reference internal" href="#calendarevent"><em>CalendarEvent</em></a></td>
 </tr>
-<tr><td>moderations</td>
+<tr class="row-even"><td>moderations</td>
 <td>list of <a class="reference internal" href="#moderation"><em>Moderation</em></a></td>
 </tr>
-<tr><td>curations</td>
+<tr class="row-odd"><td>curations</td>
 <td>list of <a class="reference internal" href="#curation"><em>Curation</em></a></td>
 </tr>
-<tr><td>tags</td>
+<tr class="row-even"><td>tags</td>
 <td>list of string</td>
 </tr>
-<tr><td>related_resources</td>
+<tr class="row-odd"><td>related_resources</td>
 <td>list of <a class="reference internal" href="#relatedresource"><em>RelatedResource</em></a></td>
 </tr>
-<tr><td>owner</td>
+<tr class="row-even"><td>owner</td>
 <td><a class="reference internal" href="#account"><em>Account</em></a></td>
 </tr>
-<tr><td>item_metadata</td>
+<tr class="row-odd"><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
@@ -115,21 +119,21 @@ event scheduling</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>source</td>
+<tr class="row-even"><td>source</td>
 <td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
 </tr>
-<tr><td>target</td>
+<tr class="row-odd"><td>target</td>
 <td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
 </tr>
-<tr><td>rel_type</td>
+<tr class="row-even"><td>rel_type</td>
 <td>string [&#8216;provider&#8217;, &#8216;about&#8217;]</td>
 </tr>
-<tr><td>item_metadata</td>
+<tr class="row-odd"><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
@@ -145,27 +149,27 @@ event scheduling</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>os_id</td>
+<tr class="row-even"><td>os_id</td>
 <td>string</td>
 </tr>
-<tr><td>label</td>
+<tr class="row-odd"><td>label</td>
 <td>string</td>
 </tr>
-<tr><td>place_name</td>
+<tr class="row-even"><td>place_name</td>
 <td>string</td>
 </tr>
-<tr><td>lat_lon</td>
+<tr class="row-odd"><td>lat_lon</td>
 <td>list of float [float, float]</td>
 </tr>
-<tr><td>os_type</td>
+<tr class="row-even"><td>os_type</td>
 <td>string [postcode, ward, district, country]</td>
 </tr>
-<tr><td>parents</td>
+<tr class="row-odd"><td>parents</td>
 <td>list of Location</td>
 </tr>
 </tbody>
@@ -181,21 +185,21 @@ event scheduling</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>start</td>
+<tr class="row-even"><td>start</td>
 <td>datetime (day required, time optional) *</td>
 </tr>
-<tr><td>end</td>
+<tr class="row-odd"><td>end</td>
 <td>datetime (optional day and time) *</td>
 </tr>
-<tr><td>status</td>
+<tr class="row-even"><td>status</td>
 <td>string [&#8216;provisional&#8217;, &#8216;confirmed&#8217;, &#8216;cancelled&#8217;]</td>
 </tr>
-<tr><td>recurrence</td>
+<tr class="row-odd"><td>recurrence</td>
 <td>not used- will be <a class="reference internal" href="#calendarrepeatrule"><em>CalendarRepeatRule</em></a></td>
 </tr>
 </tbody>
@@ -214,18 +218,18 @@ event scheduling</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>outcome</td>
+<tr class="row-even"><td>outcome</td>
 <td>string [&#8216;OK&#8217;, &#8216;block&#8217;, &#8216;refer&#8217;]</td>
 </tr>
-<tr><td>note</td>
+<tr class="row-odd"><td>note</td>
 <td>string</td>
 </tr>
-<tr><td>item_metadata</td>
+<tr class="row-even"><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
@@ -239,27 +243,27 @@ event scheduling</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>outcome</td>
+<tr class="row-even"><td>outcome</td>
 <td>string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]</td>
 </tr>
-<tr><td>tags</td>
+<tr class="row-odd"><td>tags</td>
 <td>list of string</td>
 </tr>
-<tr><td>rating</td>
+<tr class="row-even"><td>rating</td>
 <td>[not used]</td>
 </tr>
-<tr><td>note</td>
+<tr class="row-odd"><td>note</td>
 <td>string</td>
 </tr>
-<tr><td>data</td>
+<tr class="row-even"><td>data</td>
 <td>dict (dictionary with field names as keys) *</td>
 </tr>
-<tr><td>item_metadata</td>
+<tr class="row-odd"><td>item_metadata</td>
 <td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
@@ -276,24 +280,24 @@ Data will be converted to required formats on client access (may be cached for p
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>last_modified</td>
+<tr class="row-even"><td>last_modified</td>
 <td>datetime</td>
 </tr>
-<tr><td>author</td>
+<tr class="row-odd"><td>author</td>
 <td>ObjectID</td>
 </tr>
-<tr><td>shelflife</td>
+<tr class="row-even"><td>shelflife</td>
 <td>datetime</td>
 </tr>
-<tr><td>status</td>
+<tr class="row-odd"><td>status</td>
 <td>string</td>
 </tr>
-<tr><td>note</td>
+<tr class="row-even"><td>note</td>
 <td>string</td>
 </tr>
 </tbody>
@@ -308,18 +312,18 @@ Data will be converted to required formats on client access (may be cached for p
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>title</td>
+<tr class="row-even"><td>title</td>
 <td>string</td>
 </tr>
-<tr><td>slug</td>
+<tr class="row-odd"><td>slug</td>
 <td>string</td>
 </tr>
-<tr><td>members</td>
+<tr class="row-even"><td>members</td>
 <td>list of <a class="reference internal" href="#membership"><em>Membership</em></a></td>
 </tr>
 </tbody>
@@ -333,15 +337,15 @@ Data will be converted to required formats on client access (may be cached for p
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">field name</th>
+<tr class="row-odd"><th class="head">field name</th>
 <th class="head">type</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>account</td>
+<tr class="row-even"><td>account</td>
 <td><a class="reference internal" href="#account"><em>Account</em></a></td>
 </tr>
-<tr><td>role</td>
+<tr class="row-odd"><td>role</td>
 <td>string</td>
 </tr>
 </tbody>
@@ -383,7 +387,7 @@ Data will be converted to required formats on client access (may be cached for p
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -406,12 +410,12 @@ Data will be converted to required formats on client access (may be cached for p
         <li class="right" >
           <a href="api.html" title="Engineclub API"
              >previous</a> |</li>
-        <li><a href="../index.html">Engineclub v0.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Engineclub 0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2010, Derek Hoy, SnowCloud.co.uk.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2012, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

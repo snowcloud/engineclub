@@ -107,7 +107,9 @@ TEMPLATE_DIRS = (
 
 USE_I18N = True
 # ADMIN_MEDIA_PREFIX = '/admin/media/'
-SECRET_KEY = 'ep1n==cyo=%%p#+aie!ixnuky&tnpwz8_7!i8ot^a()#--0ls3'
+
+SECRET_KEY = 'your_django_secret_key_here...'
+
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -155,6 +157,7 @@ INSTALLED_APPS = (
     
 )
 # override any of the above in your own settings_local.py
+# put your secret keys in there
 try:
     from settings_local import *
 except ImportError:

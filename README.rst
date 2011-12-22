@@ -16,6 +16,10 @@ All documentation is in the "docs" directory- see docs/_build/html/index.html
 
 ChangeLog
 ---------
+0.4.0
+^^^^^
+major refactor to begin implementation.
+
 0.3.0
 ^^^^^
 major refactor to complete current phase of ALISS development.

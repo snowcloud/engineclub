@@ -243,5 +243,51 @@ field name              type
 ==================      =====================================
 ==================      =====================================
 
+.. Retrieve tags in use
+
+Retrieve tags in use
+===========================
+
+Parameters
+----------
+
+==================      ==========    ==========================
+parameter name          required      value
+==================      ==========    ==========================
+match                   no            Text to match, case-insensitive, will match any tags in use which begin with string, eg 'men' will match 'mental health, Mental Health, mentoring'). Must be 3 characters or more if used. If not used, all tags will be returned.
+output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ==========    ==========================
+
+Response
+--------
+
+==================      =====================================
+item name               type
+==================      =====================================
+data                    List of strings, alphabetically sorted.
+==================      =====================================
+
+json response is dict::
+
+    { "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }
+
+url: /api/tags/
+
+examples:
+
+* `<http://www.aliss.org/api/tags/>`_
+* `<http://www.aliss.org/api/tags/?match=dan>`_
+
+method: GET
+
+access: public
+
+**Example of successful result**::
+    
+    {
+        "errors": {},
+        "data": ["Dance", "Dance Classes", "Dance classes", "dance"]
+    }
 
 

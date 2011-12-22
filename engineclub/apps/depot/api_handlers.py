@@ -4,7 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 
-from depot.models import Resource, find_by_place_or_kwords
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 
 from mongoengine import ValidationError
 from mongoengine.connection import _get_db as get_db
@@ -216,29 +216,62 @@ def publish_data(request):
         return JsonResponse(data=data, callback=callback)
 
 def tags(request):
-    """docstring for tags"""
-    error = ''
+    """
+        API call with optional params for callback and match
+        callback: for jsonp callback function name
+        match: if present, results will be alpha sorted list of all tags used starting with match
+            (case insensitive, so "men" might return "mental health, Mental Health, mentoring")
+            if match is not passed, all tags in use will be returned.
+        returns alpha sorted list of strings
+    """
+    errors = []
     data = None
+    result_code = 200
     
-    # /api/api/tags/?callback=jsonp1268179474512&match=exe
+    # /api/tags/?callback=jsonp1268179474512&match=exe
     
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
-    
-    if match:
-        db = get_db()
-        update_keyword_index()
-        results = db.keyword.find( { "_id" : re.compile('^%s*' % match, re.IGNORECASE)} ) #.count()
-        data = [i['_id'] for i in results]
-        # print data
+
+    if not match is None:
+        if len(match) > 2:
+            results = [t for t in 
+                Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") \
+                    if t.lower().startswith(match.lower())]
+        else:
+            result_code = 10
+            errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
     else:
-        error = 'no match parameter received'
-        
-    if error:
-        return JsonResponse(error=error)
+        results = Curation.objects.ensure_index("tags").distinct("tags")
+
+    if errors:
+        return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
     
-    return JsonResponse(data=data, callback=callback)
-        
-    
-    
-    
+    return JsonResponse(data=sorted(results), callback=callback)
+
+def locations(request):
+    def _location_context(location):
+        return {'id': str(location._id), 'place_name': l.place_name, 'postcode': l.label}
+    errors = []
+    data = []
+    response_code = 200
+
+    match = request.REQUEST.get('match')
+    callback = request.REQUEST.get('callback')
+
+    if match is not None:
+        if len(match) > 2:
+            data = [_location_context(l)
+                for l in Location.objects(Q(place_name__icontains=match) | Q(label__icontains=match))]
+        else:
+            response_code = 10
+            errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
+    else:
+        data = [_location_context(l)
+            for l in Location.objects()]
+
+    return JsonResponse(
+        errors=errors and {'code': response_code, 'message': '. '.join(errors)} or {},
+        data=data,
+        callback=callback,
+    )

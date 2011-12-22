@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
+from django.utils import simplejson as json
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
@@ -34,7 +35,7 @@ def get_one_or_404(obj_class=Resource, **kwargs):
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
-    
+
 def resource_index(request):
 
     objects = Resource.objects
@@ -124,6 +125,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
+
+            # REPLACE FROM HERE
             new_loc = locationform.cleaned_data['new_location']
             if new_loc: 
                 resource.add_location_from_name(locationform.cleaned_data['new_location'])
@@ -143,6 +146,32 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                     return resource_edit_complete(request, resource, template_info)
                 except OperationError:
                     pass
+
+            # NEW SNEEU
+            # # Location
+            # new_loc = locationform.cleaned_data['new_location'].split(',')
+            # print new_loc
+            # resource.locations = Location.objects(id__in=new_loc)
+            # #resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            # #resource.save(author=acct, reindex=True)
+
+            # # Dates
+            # event_start = eventform.cleaned_data['start']
+            # if event_start:
+            #     resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+            #     # print 'event_start', event_start
+            #     # print 'event_finish', eventform.cleaned_data['end']
+            # else:
+            #     resource.calendar_event = None
+            # resource = resourceform.save()
+            
+            # try:
+            #     resource.save(author=acct, reindex=True)
+            #     return resource_edit_complete(request, resource, template_info)
+            # except OperationError:
+            #     pass
+
+
 
     else:
         resourceform = ShortResourceForm(instance=resource)
@@ -199,7 +228,25 @@ def resource_find(request, template='depot/resource_find.html'):
         form = FindResourceForm(request.REQUEST)
     
         if form.is_valid():
-            results = form.results
+            user = get_account(request.user.id)
+            for result in form.results:
+                resource = get_one_or_404(id=ObjectId(result['res_id']))
+
+                try:
+                    curation_index, curation = get_curation_for_user_resource(user, resource)
+                except TypeError:
+                    curation_index = curation = None
+
+                curation_form = CurationForm(
+                        initial={'outcome': STATUS_OK},
+                        instance=curation)
+                results.append({
+                    'resource_result': result,
+                    'curation': curation,
+                    'curation_form': curation_form,
+                    'curation_index': curation_index
+                })
+                
             locations = form.locations
             centre = form.centre
             # pins = [loc['obj'] for loc in locations]
@@ -207,33 +254,60 @@ def resource_find(request, template='depot/resource_find.html'):
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
-    # print places
-    return render_to_response(template,
-        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
+    context = {
+        'form': form,
+        'results': results,
+        'locations': locations,
+        'centre': centre,
+        'pins': pins,
+        'yahoo_appid': settings.YAHOO_KEY,
+        'google_key': settings.GOOGLE_KEY,
+    }
+    return render_to_response(template, RequestContext(request, context))
+
 
 def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:
-        object = get_one_or_404(id=ObjectId(object_id))
-        curation = object.curations[int(index)]
+        resource = get_one_or_404(id=ObjectId(object_id))
+        curation = resource.curations[int(index)]
     else:
-        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
-        object = curation.resource
-        
-    return render_to_response(template,
-        RequestContext( request, { 'resource': object, 'object': curation, 'index': index }))
+        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))        
+        resource = curation.resource
+
+    if request.is_ajax():
+        context = {
+            'curation': {
+                'note': curation.note,
+                'tags': curation.tags,
+            },
+            'resource': {
+                'title': resource.title,
+                'description': resource.description,
+            },
+            'url': reverse('curation-add', args=(resource.id, )),
+        }
+        return HttpResponse(json.dumps(context), mimetype='application/json')
+
+    context = {
+        'index': index,
+        'object': curation,
+        'resource': resource,
+    }
+    return render_to_response(template, RequestContext(request, context))
+
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
     resource = get_one_or_404(id=ObjectId(object_id))
     user = get_account(request.user.id)
     
-    # check if user already has a curation for this resource
-    for index, cur in enumerate(resource.curations):
-        if cur.owner.id == user.id:
-            messages.success(request, 'You already have a curation for this resource.')
-            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
-    
+    curation = get_curation_for_user_resource(user, resource)
+    if curation:
+        index, cur = curation
+        messages.success(request, 'You already have a curation for this resource.')
+        return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -248,6 +322,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
+            
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
         initial = { 'outcome': STATUS_OK}
@@ -314,9 +389,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
 
-    # curations = list(Resource.objects(curations__owner=object)[:10])
-    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
-    
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]  
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -350,5 +423,12 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
     t = loader.get_template(template_name)
     response.write(t.render(template_context))
     return response
+    
+def get_curation_for_user_resource(user, resource):
+    # check if user already has a curation for this resource
+    for index, cur in enumerate(resource.curations):
+        if cur.owner.id == user.id:
+            return index, cur
+    return None
     
     

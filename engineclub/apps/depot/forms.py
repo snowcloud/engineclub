@@ -40,7 +40,7 @@ class DocumentForm(forms.Form):
 class FindResourceForm(forms.Form):
     
     post_code = forms.CharField(label='Location', help_text='enter a post code or a place name', required=False)
-    tags = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=False)
+    kwords = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=False)
     events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
     
@@ -62,7 +62,7 @@ class FindResourceForm(forms.Form):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('post_code', '').strip()
-        kwords = cleaned_data.get('tags', '').strip()
+        kwords = cleaned_data.get('kwords', '').strip()
         boost_location = cleaned_data.get('boost_location', '') or settings.SOLR_LOC_BOOST_DEFAULT
         event = cleaned_data.get('events_only')
 
@@ -128,9 +128,10 @@ class EventForm(DocumentForm):
         return self.cleaned_data
 
 class LocationUpdateForm(DocumentForm):
-    
+    # REPLACE
     new_location = forms.CharField(required=False)
-    
+    # new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
+
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
         
@@ -154,11 +155,11 @@ class ShelflifeForm(DocumentForm):
     
 class CurationForm(DocumentForm):
     
-    outcome = forms.CharField()
+    outcome = forms.CharField(widget=forms.HiddenInput)
+
     tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
     note = forms.CharField(widget=forms.Textarea, required=False)
     # data = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
-
