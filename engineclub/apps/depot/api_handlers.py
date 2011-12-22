@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 
-from mongoengine import ValidationError, Q
+from mongoengine import ValidationError
 from mongoengine.connection import _get_db as get_db
 
 import re
@@ -166,6 +166,7 @@ def resource_search(request):
             'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
+        
 
 def publish_data(request):
     """docstring for publish_data"""
