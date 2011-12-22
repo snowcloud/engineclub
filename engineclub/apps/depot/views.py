@@ -228,30 +228,25 @@ def resource_find(request, template='depot/resource_find.html'):
         form = FindResourceForm(request.REQUEST)
     
         if form.is_valid():
+            user = get_account(request.user.id)
+            for result in form.results:
+                resource = get_one_or_404(id=ObjectId(result['res_id']))
 
-            # REMOVE THIS
-            results = form.results
+                try:
+                    curation_index, curation = get_curation_for_user_resource(user, resource)
+                except TypeError:
+                    curation_index = curation = None
 
-            # NEW SNEEU
-            # user = get_account(request.user.id)
-            # for result in form.results:
-            #     resource = get_one_or_404(id=ObjectId(result['res_id']))
-
-            #     try:
-            #         curation_index, curation = get_curation_for_user_resource(user, resource)
-            #     except TypeError:
-            #         curation_index = curation = None
-
-            #     curation_form = CurationForm(
-            #             initial={'outcome': STATUS_OK},
-            #             instance=curation)
-            #     results.append({
-            #         'resource_result': result,
-            #         'curation': curation,
-            #         'curation_form': curation_form,
-            #         'curation_index': curation_index
-            #     })
-
+                curation_form = CurationForm(
+                        initial={'outcome': STATUS_OK},
+                        instance=curation)
+                results.append({
+                    'resource_result': result,
+                    'curation': curation,
+                    'curation_form': curation_form,
+                    'curation_index': curation_index
+                })
+                
             locations = form.locations
             centre = form.centre
             # pins = [loc['obj'] for loc in locations]
@@ -259,70 +254,47 @@ def resource_find(request, template='depot/resource_find.html'):
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
-    # print places
-
-    # REPLACE
-    return render_to_response(template,
-        RequestContext( request, { 'form': form, 'results': results, 'locations': locations, 'centre': centre, 'pins': pins, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
-    
-    # WITH
-    # context = {
-    #     'form': form,
-    #     'results': results,
-    #     'locations': locations,
-    #     'centre': centre,
-    #     'pins': pins,
-    #     'yahoo_appid': settings.YAHOO_KEY,
-    #     'google_key': settings.GOOGLE_KEY,
-    # }
-    # return render_to_response(template, RequestContext(request, context))
-
+    context = {
+        'form': form,
+        'results': results,
+        'locations': locations,
+        'centre': centre,
+        'pins': pins,
+        'yahoo_appid': settings.YAHOO_KEY,
+        'google_key': settings.GOOGLE_KEY,
+    }
+    return render_to_response(template, RequestContext(request, context))
 
 
 def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:
-
-        # REPLACE
-        object = get_one_or_404(id=ObjectId(object_id))
-        curation = object.curations[int(index)]
-
-        # WITH
-        # resource = get_one_or_404(id=ObjectId(object_id))
-        # curation = resource.curations[int(index)]
-
+        resource = get_one_or_404(id=ObjectId(object_id))
+        curation = resource.curations[int(index)]
     else:
-        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
-        
-    # REPLACE
-        object = curation.resource
-        
-    return render_to_response(template,
-        RequestContext( request, { 'resource': object, 'object': curation, 'index': index }))
+        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))        
+        resource = curation.resource
 
-    # WITH
-    #     resource = curation.resource
+    if request.is_ajax():
+        context = {
+            'curation': {
+                'note': curation.note,
+                'tags': curation.tags,
+            },
+            'resource': {
+                'title': resource.title,
+                'description': resource.description,
+            },
+            'url': reverse('curation-add', args=(resource.id, )),
+        }
+        return HttpResponse(json.dumps(context), mimetype='application/json')
 
-    # if request.is_ajax():
-    #     context = {
-    #         'curation': {
-    #             'note': curation.note,
-    #             'tags': curation.tags,
-    #         },
-    #         'resource': {
-    #             'title': resource.title,
-    #             'description': resource.description,
-    #         },
-    #         'url': reverse('curation-add', args=(resource.id, )),
-    #     }
-    #     return HttpResponse(json.dumps(context), mimetype='application/json')
-
-    # context = {
-    #     'index': index,
-    #     'object': curation,
-    #     'resource': resource,
-    # }
-    # return render_to_response(template, RequestContext(request, context))
+    context = {
+        'index': index,
+        'object': curation,
+        'resource': resource,
+    }
+    return render_to_response(template, RequestContext(request, context))
 
 
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
@@ -330,21 +302,11 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     resource = get_one_or_404(id=ObjectId(object_id))
     user = get_account(request.user.id)
     
-    # check if user already has a curation for this resource
-
-    # REPLACE
-    for index, cur in enumerate(resource.curations):
-        if cur.owner.id == user.id:
-            messages.success(request, 'You already have a curation for this resource.')
-            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
-    
-    # WITH
-    # curation = get_curation_for_user_resource(user, resource)
-    # if curation:
-    #     index, cur = curation
-    #     messages.success(request, 'You already have a curation for this resource.')
-    #     return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
-
+    curation = get_curation_for_user_resource(user, resource)
+    if curation:
+        index, cur = curation
+        messages.success(request, 'You already have a curation for this resource.')
+        return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
 
     if request.method == 'POST':
         result = request.POST.get('result', '')
@@ -427,9 +389,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
 
-    # curations = list(Resource.objects(curations__owner=object)[:10])
-    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
-    
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]  
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
