@@ -20,7 +20,7 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm
     
-from firebox.views import get_terms
+# from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):

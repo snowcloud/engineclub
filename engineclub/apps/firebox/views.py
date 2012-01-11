@@ -23,9 +23,9 @@ logger = logging.getLogger('aliss')
 
 def load_locations(path, dbname):
 
-    test_google()
+    # test_google()
 
-    return
+    # return
 
 
 
