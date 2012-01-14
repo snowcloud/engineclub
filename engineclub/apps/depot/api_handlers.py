@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core import serializers 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet, Q
 from django.http import HttpResponse
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
