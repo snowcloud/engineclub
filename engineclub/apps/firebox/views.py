@@ -1,22 +1,21 @@
 # Create your views here.
-from django.conf import settings
+import codecs
+import csv
 import urllib
 import urllib2
 from BaseHTTPServer import BaseHTTPRequestHandler # import responses
 from BeautifulSoup import BeautifulSoup
-from firebox.yahoo_term_extractor import termextractor
-from firebox.yahoo_place_types import PLACE_TYPES
+# from firebox.yahoo_term_extractor import termextractor
+# from firebox.yahoo_place_types import PLACE_TYPES
 
+from django.conf import settings
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
 from pysolr import Solr
-
 from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from bson.dbref import DBRef
-import codecs
-import csv
 
-# from depot.models import Resource, Location, NewLocation
+from depot.models import Resource, Location, NewLocation
 
 import logging
 logger = logging.getLogger('aliss')
@@ -24,8 +23,12 @@ logger = logging.getLogger('aliss')
 def load_locations(path, dbname):
 
     # test_google()
+    # test_unlock()
 
-    # return
+    print lookup_postcode('227-229 Niddrie Mains Road')
+    print lookup_postcode('SG8')
+
+    return
 
 
 
@@ -52,6 +55,33 @@ def load_locations(path, dbname):
     print coll.find_one({'_id': 'AB565UB'})
     print coll.find_one({'place_name': 'Pollok', 'country_code': 'SCT'})
 
+def lookup_postcode(pc):
+    from googlegeocoder import GoogleGeocoder
+    geocoder = GoogleGeocoder()
+
+    search = geocoder.get(pc, region='UK')
+    res, addr = _make_addr(search)
+    return addr
+
+def _make_addr(results):
+    
+    for res in results:
+        addr = {}
+        for c in res.address_components:
+            try:
+                addr[c.__dict__['types'][0]] = c.__dict__['short_name']
+            except IndexError:
+                pass
+            pc = (addr.get('postal_code') or addr.get('postal_code_prefix', '')).split()
+        if len(pc) > 1 and len(pc[1]) == 3: # full pc
+            addr['postal_code'] = ' '.join(pc)
+            break
+    print results
+    print addr
+    print 'postcode:', addr.get('postal_code', '-')
+    print res.geometry.location
+    return res, addr
+
 def test_google():
 
     """
@@ -68,30 +98,15 @@ lat,lon to pc
 {u'country': u'GB', u'postal_code': u'EH15 2QR', u'administrative_area_level_2': u'City of Edinburgh', u'locality': u'Edinburgh'}
 
     """
-    def _make_addr(results):
-        
-        for res in results:
-            addr = {}
-            for c in res.address_components:
-                try:
-                    addr[c.__dict__['types'][0]] = c.__dict__['short_name']
-                except IndexError:
-                    pass
-                pc = (addr.get('postal_code') or addr.get('postal_code_prefix', '')).split()
-            if len(pc) > 1 and len(pc[1]) == 3: # full pc
-                addr['postal_code'] = ' '.join(pc)
-                break
-        print results
-        print addr
-        print 'postcode:', addr.get('postal_code', '-')
-        print res.geometry.location
-        return res, addr
 
     from googlegeocoder import GoogleGeocoder
     geocoder = GoogleGeocoder()
 
     print '\npostcode to lat,lon'
     search = geocoder.get('PO19', region='UK')
+    res, addr = _make_addr(search)
+    print '\npostcode to lat,lon'
+    search = geocoder.get('PO123BY', region='UK')
     res, addr = _make_addr(search)
 
 
@@ -105,10 +120,51 @@ lat,lon to pc
     res, addr = _make_addr(search)
 
     print '\nlat_lon to address'
-    print 'Pollock (from osm)'
-    Pollock = (55.827068699999998, -4.3456574999999997)
-    search = geocoder.get(Pollock)
+    print 'Pollok (from osm)'
+    Pollok = (55.827068699999998, -4.3456574999999997)
+    search = geocoder.get(Pollok)
     res, addr = _make_addr(search)
+
+    Gosport = (50.802154926519805, -1.1592288410260432)
+    search = geocoder.get(Gosport)
+    res, addr = _make_addr(search)
+
+def test_unlock():
+
+    """
+    looks like Unlock is more accurate using 'os' gazetteer, but that needs an api key.
+
+    or just use http://unlock.edina.ac.uk/ws/search?format=json&count=no&name=Pollok, GB
+
+    format: 'json', // Retrieve the results in JSON format
+    maxRows: 10, // Limit the number of results to 10
+    count: 'no', // Prevent Unlock from counting the total possible results (faster)
+    name:
+
+    Gosport PO12 3BY
+    """
+
+    from unlock import Places
+    import requests
+
+    def _postCodeSearch(place,postCode=None,format='txt'):
+        """postCodeSearch?postCode=EH91PR&gazetteer=unlock&format=txt"""
+
+        params = {'postCode':postCode,'format':format, 'gazetteer':place.pick_gazetteer()}   
+        results = place.ask_service('postCodeSearch',params)
+        return results
+
+    p = Places()
+
+    # xml = p.nameSearch('Pollok, GB')
+    # print xml
+
+    # r = requests.get('http://unlock.edina.ac.uk/ws/search?format=json&maxRows=50&count=no&name=Pollok,%20GB')
+    # print r.status_code
+    # print r.content
+
+    txt = _postCodeSearch(p, 'PO123BY')
+    print txt
 
 
 def recreate_indexes(coll):
@@ -372,9 +428,39 @@ def move_to_newlocation(db):
             db.resource.update({"_id": res['_id']}, {"$set": {"locations": newlocs}})
 
 
-def update_location_collection():
+def convert_to_newlocations(dbname):
 
-    print 'update_location_collection using %s' % settings.MONGO_DB
+
+    print 'convert_to_newlocations using %s' % settings.MONGO_DB
+
+    connect(dbname, host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+
+
+    print 'Resources:', Resource.objects.count()
+    print 'Locations:', Location.objects.count()
+    print 'NewLocations:', NewLocation.objects.count()
+
+    for res in Resource.objects:
+        # print res.title
+        try:
+            res.new_locations = [NewLocation.objects.get(pk=loc.os_id).id for loc in res.locations]
+            res.save()
+        except NewLocation.DoesNotExist, e:
+            print '*** not found:', loc.os_id, res.title, res.id
+            print lookup_postcode(loc.os_id)
+            print
+            # raise e
+        # print res.new_locations or '-'
+        # for loc in res.locations:
+        #     print '- ', loc
+        #     # print '->', NewLocation.objects.get(pk=loc.os_id)
+        
+
+
+
+    # connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+    # db = connection[dbname]
+    # coll = db.newlocation
 
     # now got unique _id on newlocation
     #   => compressed postcode or osm node id

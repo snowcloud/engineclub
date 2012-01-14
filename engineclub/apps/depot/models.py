@@ -58,7 +58,7 @@ class Location(Document):
     lat_lon = GeoPointField()
     
     def __unicode__(self):
-        return ', '.join([self.label, self.place_name])
+        return ', '.join([self.label, self.place_name or '-'])
 
 class NewLocation(Document):
     """NewLocation document, based on combined data sources, geonames + OSM
@@ -138,6 +138,7 @@ class Resource(Document):
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
+    new_locations = ListField(StringField(max_length=16), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
@@ -302,6 +303,12 @@ def lat_lon_to_str(loc):
         return ''
 
 ###############################################################
+# NEWLOCATION STUFF - PRIVATE
+
+
+
+
+###############################################################
 # LOCATION STUFF - PRIVATE
 
 def _get_or_create_location(result):
@@ -330,7 +337,7 @@ def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_
     db = connection[dbname]
     coll = db[collname]
     result = coll.find_one({field: name}) if just_one else coll.find({field: name})
-    if result and result.count() > 0:
+    if result and (type(result) == dict or result.count() > 0):
         return result
     else:
         return None
