@@ -426,9 +426,10 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
     
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
-    for index, cur in enumerate(resource.curations):
-        if cur.owner.id == user.id:
-            return index, cur
+    if user:
+        for index, cur in enumerate(resource.curations):
+            if cur.owner.id == user.id:
+                return index, cur
     return None
     
     

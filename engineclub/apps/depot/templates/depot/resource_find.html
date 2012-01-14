@@ -201,10 +201,12 @@ $('.resource-listing > li').each(function () {
                             | <a href="{{ resource.uri }}">external site...</a>
                         {% endif %}
 
-                        {% if result.curation %}
-                            | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
-                        {% else %}
-                            | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
+                        {% if user.is_authenticated %}
+                            {% if result.curation %}
+                                | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
+                            {% else %}
+                                | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
+                            {% endif %}
                         {% endif %}
                     </p>
 
