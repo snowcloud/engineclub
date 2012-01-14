@@ -145,7 +145,9 @@ $('.resource-listing li').each(function () {
                 {% if resource.uri %}
                     | <a href="{{ resource.uri }}">external site...</a>
                 {% endif %}
-				| <a class="curation-add" href="{% url curation-add resource.res_id %}">{% if curation_form.instance %}edit{% else %}create{% endif %} curation...</a>
+                {% if user.is_authenticated %}
+    				| <a class="curation-add" href="{% url curation-add resource.res_id %}">{% if curation_form.instance %}edit{% else %}create{% endif %} curation...</a>
+                {% endif %}
             </p>
 
             <form action="{% url curation-add resource.res_id %}" class="curation-add" method="post">

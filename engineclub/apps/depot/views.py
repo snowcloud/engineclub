@@ -37,9 +37,10 @@ def get_one_or_404(obj_class=Resource, **kwargs):
 
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
-    for index, cur in enumerate(resource.curations):
-        if cur.owner.id == user.id:
-            return index, cur
+    if user:
+        for index, cur in enumerate(resource.curations):
+            if cur.owner.id == user.id:
+                return index, cur
     return None
 
 def resource_index(request):
