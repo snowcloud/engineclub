@@ -15,27 +15,52 @@ from pysolr import Solr
 from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from bson.dbref import DBRef
 
-from depot.models import Resource, Location, NewLocation
+from depot.models import Resource, Location, \
+    POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME
+
 
 import logging
 logger = logging.getLogger('aliss')
 
 def load_locations(path, dbname):
 
-    # test_google()
-    # test_unlock()
-
-    print lookup_postcode('227-229 Niddrie Mains Road')
-    print lookup_postcode('SG8')
-
-    return
-
-
-
     print '... from %s:%s' % (dbname, path)
     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
-    coll = db.newlocation
+
+    # test_google()
+    # test_unlock()
+
+    # print lookup_postcode('227-229 Niddrie Mains Road')
+    # print lookup_postcode('AB10')
+
+
+    # coll = db.location
+    # print 'location:', coll.find_one({'os_id': 'AB101SB'})
+
+    # print
+
+    # coll = db.newlocation
+    # loc = coll.find_one({'_id': 'AB101SB'})
+    # print 'newlocation:', loc
+
+    # print
+
+    # coll = db.newlocation
+    # loc = coll.find_one({'_id': 'AB10'})
+    # print 'newlocation:', loc
+
+    # print
+
+    # loc = coll.find_one({'_id': 'EH152QR'})
+    # print 'newlocation:', loc
+
+
+    # return
+
+
+
+    coll = db.location
 
     coll.drop()
 
@@ -52,8 +77,70 @@ def load_locations(path, dbname):
 
     recreate_indexes(coll)
     print 'wee test...'
-    print coll.find_one({'_id': 'AB565UB'})
     print coll.find_one({'place_name': 'Pollok', 'country_code': 'SCT'})
+
+def convert_to_newlocations(dbname):
+
+    def _get_loc(pc, coll):
+        _new_loc = None
+        _loc = coll.find_one({'postal code': pc})
+        if _loc:
+            district = ', %s' % loc['admin name3'] if loc['admin name3'] else ''
+            place_name = '%s%s' % ((loc['place name'], district))
+            place_name = place_name.replace(' Ward', '') #.replace(' City', '')
+            loc_type = POSTCODE if len(pc) > 4 else POSTCODEDISTRICT
+
+            _new_loc = Location(
+                _id= _loc['postal code'].replace(' ', ''),
+                postcode= _loc['postal code'],
+                place_name= place_name,
+                lat_lon= [float(_loc['latitude']), float(_loc['longitude'])],
+                loc_type= loc_type,
+                accuracy= _loc['accuracy'],
+                district= _loc['admin name3'],
+                country_code= _loc['admin code1'])
+            _new_loc.save()
+
+        print _new_loc, _new_loc.loc_type
+        return _new_loc
+
+    print 'convert_to_newlocations using %s' % settings.MONGO_DB
+
+    connect(dbname, host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+    db = connection[dbname]
+    coll = db.fullpc
+
+    print 'Resources:', Resource.objects.count()
+    print 'Locations:', Location.objects.count()
+    # print 'NewLocations:', NewLocation.objects.count()
+
+    # DO THIS FIRST TO GET LOC IDS
+    for res in Resource.objects[2000:2200]:
+        res.tmp_locations = [loc.label for loc in res.locations]
+        # print res.tmp_locations
+        res.save()
+        print res.id, res.locations, res.tmp_locations
+    # Location.drop_collection()
+    print 'Locations:', Location.objects.count()
+    return
+    
+    for res in Resource.objects[:100]:
+
+        locs = []
+        print res.tmp_locations
+        for loc_id in res.tmp_locations:
+            try:
+                loc = Location.objects.get(postcode=loc_id)
+                print loc
+            except Location.DoesNotExist, e:
+                print '*** not found:', loc_id #, loc.label, res.title, res.id
+                loc = _get_loc(loc_id, coll)
+            locs.append(loc)
+        res.locations = locs
+        res.save()
+
 
 def lookup_postcode(pc):
     from googlegeocoder import GoogleGeocoder
@@ -226,6 +313,7 @@ def load_os_gb(path, coll):
                             'postcode': r[1],
                             'place_name': r[2],
                             'lat_lon': [float(r[9]), float(r[10])],
+                            'loc_type': POSTCODEDISTRICT,
                             'accuracy': r[11],
                             'district': r[5],
                             'country_code': r[4],
@@ -282,13 +370,14 @@ def load_os_gb_full(path, coll, sct=False):
                 # remove 'Ward' from place_name and add r[7] with City removed if nec
                 if (not sct or r[4] == 'SCT') and r[2] and (r[9] or r[10]):
                     place_name = ', '.join((r[2], r[7]))
-                    place_name = place_name.replace(' Ward', '').replace(' City', '')
+                    place_name = place_name.replace(' Ward', '') #.replace(' City', '')
                     # print r[1], '|', r[2], '|', r[9], r[10]
                     coll.insert(
                         {   '_id': r[1].replace(' ', ''),
                             'postcode': r[1],
                             'place_name': place_name,
                             'lat_lon': [float(r[9]), float(r[10])],
+                            'loc_type': POSTCODE,
                             'accuracy': r[11],
                             'district': r[7],
                             'country_code': r[4],
@@ -370,6 +459,7 @@ def load_osm_places(path, coll):
                 #'postcode': r[1],
                 'place_name': place.name,
                 'lat_lon': [float(place.lat), float(place.lon)],
+                'loc_type': OSM_PLACENAME,
                 'accuracy': '6',
                 # 'district': ,
                 'country_code': 'SCT',
@@ -415,85 +505,18 @@ def make_corrections(coll):
     for key in keys:
         coll.remove(key)
     
-def move_to_newlocation(db):
-    print 'move_to_newlocation using %s' % settings.MONGO_DB
+# def move_to_newlocation(db):
+#     print 'move_to_newlocation using %s' % settings.MONGO_DB
     
-    print 'doing %s resources' % db.resource.count()
+#     print 'doing %s resources' % db.resource.count()
 
-    for res in db.resource.find():
-        locs = [db.dereference(loc) for loc in res.get('locations', [])]
+#     for res in db.resource.find():
+#         locs = [db.dereference(loc) for loc in res.get('locations', [])]
 
-        if locs:
-            newlocs = [DBRef('newlocation', loc['os_id']) for loc in locs]
-            db.resource.update({"_id": res['_id']}, {"$set": {"locations": newlocs}})
+#         if locs:
+#             newlocs = [DBRef('newlocation', loc['os_id']) for loc in locs]
+#             db.resource.update({"_id": res['_id']}, {"$set": {"locations": newlocs}})
 
-
-def convert_to_newlocations(dbname):
-
-
-    print 'convert_to_newlocations using %s' % settings.MONGO_DB
-
-    connect(dbname, host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-
-
-    print 'Resources:', Resource.objects.count()
-    print 'Locations:', Location.objects.count()
-    print 'NewLocations:', NewLocation.objects.count()
-
-    for res in Resource.objects:
-        # print res.title
-        try:
-            res.new_locations = [NewLocation.objects.get(pk=loc.os_id).id for loc in res.locations]
-            res.save()
-        except NewLocation.DoesNotExist, e:
-            print '*** not found:', loc.os_id, res.title, res.id
-            print lookup_postcode(loc.os_id)
-            print
-            # raise e
-        # print res.new_locations or '-'
-        # for loc in res.locations:
-        #     print '- ', loc
-        #     # print '->', NewLocation.objects.get(pk=loc.os_id)
-        
-
-
-
-    # connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    # db = connection[dbname]
-    # coll = db.newlocation
-
-    # now got unique _id on newlocation
-    #   => compressed postcode or osm node id
-
-    
-        
-    # print Location.objects(os_id__exists=False).count()
-
-    # for newloc in NewLocation.objects[:800]:
-    #     try:
-    #         # Location.objects(Q(place_name__icontains=match) | Q(label__icontains=match))]
-    #         loc = Location.objects.get(os_id=newloc.pc_search)
-    #         print 'found'
-    #     except Location.DoesNotExist:
-    #         pass
-    #         # print 'DoesNotExist'
-    #     # MultipleObjectsReturned    
-
-    # first time, do other way round- if loc exists, copy over id.
-    # drop location coll, replace with newloc.
-
-    # coll.ensure_index([
-    #     ('pc_search', ASCENDING),
-    #     ('place_name', ASCENDING),
-    #     ('district', ASCENDING)
-    #     ], unique=True)
-
-    # location should be unique on pc_search, place_name, district
-    # for newloc in newlocations:
-    #      created, loc = get_or_create(...)
-    #      if not created:
-    #           loc.xxx = newloc.xxx
-    #           loc.save()
 
 
 

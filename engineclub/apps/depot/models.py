@@ -24,6 +24,10 @@ COLL_STATUS_COMPLETE = 'complete'
 STATUS_OK = 'OK'
 STATUS_BAD = 'BAD'
 
+POSTCODE = 'POSTCODE'
+POSTCODEDISTRICT = 'POSTCODEDISTRICT'
+OSM_PLACENAME = 'OSM_PLACENAME'
+
 import logging
 logger = logging.getLogger('aliss')
 
@@ -61,12 +65,14 @@ class Location(Document):
         return ', '.join([self.label, self.place_name or '-'])
 
 class NewLocation(Document):
-    """NewLocation document, based on combined data sources, geonames + OSM
+    """Location document, based on combined data sources, geonames + OSM
+    loc_type = POSTCODE | POSTCODEDISTRICT | PLACENAME
     """
     _id = StringField(primary_key=True)
     postcode = StringField()
     place_name = StringField(required=True)
     lat_lon = GeoPointField(required=True)
+    loc_type = StringField(required=True)
     accuracy = IntField()
     district = StringField()
     country_code = StringField()
@@ -74,7 +80,7 @@ class NewLocation(Document):
     meta = {
         'indexes': [('place_name', 'country_code', '-accuracy')],
         'allow_inheritance': False,
-        'collection': 'newlocation'
+        'collection': 'location'
     }    
     def __unicode__(self):
         return ', '.join([self.postcode, self.place_name])
@@ -138,7 +144,7 @@ class Resource(Document):
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
-    new_locations = ListField(StringField(max_length=16), default=list)
+    tmp_locations = ListField(StringField(max_length=16), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
