@@ -6,8 +6,12 @@ def reload_locations():
     local('python engineclub/apps/firebox/utils.py -c loadlocations -d aliss -p engineclub/apps/firebox/sources', capture=False)
 
 def convert_to_newlocations():
-    # local('python engineclub/apps/firebox/utils.py -c convert-to-newlocations -d test_db', capture=False)
-    local('python engineclub/apps/firebox/utils.py -c convert-to-newlocations -d aliss', capture=False)
+    # local('python engineclub/apps/firebox/utils.py -c convert_to_newlocations -d test_db', capture=False)
+    local('python engineclub/apps/firebox/utils.py -c convert_to_newlocations -d aliss', capture=False)
+
+def bak_locations():
+    # local('python engineclub/apps/firebox/utils.py -c bak_locations -d test_db', capture=False)
+    local('python engineclub/apps/firebox/utils.py -c bak_locations -d aliss', capture=False)
 
 # def reload_postcodes():
 #     local('python engineclub/apps/firebox/utils.py -c loadpostcodes -f engineclub/apps/firebox/sources/geonames/GB-postcodes/GB_full.csv', capture=False)

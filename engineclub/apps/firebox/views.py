@@ -79,14 +79,28 @@ def load_locations(path, dbname):
     print 'wee test...'
     print coll.find_one({'place_name': 'Pollok', 'country_code': 'SCT'})
 
+def bak_locations(dbname):
+    print 'backing up location ids to tmp_locations using %s' % settings.MONGO_DB
+    print 'Locations (before):', Location.objects.count()
+    # DO THIS FIRST TO GET LOC IDS
+
+    # for res in Resource.objects[2000:2200]:
+    for res in Resource.objects:
+        res.tmp_locations = [loc.label for loc in res.locations]
+        # print res.tmp_locations
+        res.save()
+        # print res.id, res.locations, res.tmp_locations
+    Location.drop_collection()
+    print 'Locations (after):', Location.objects.count()
+
 def convert_to_newlocations(dbname):
 
     def _get_loc(pc, coll):
         _new_loc = None
         _loc = coll.find_one({'postal code': pc})
         if _loc:
-            district = ', %s' % loc['admin name3'] if loc['admin name3'] else ''
-            place_name = '%s%s' % ((loc['place name'], district))
+            district = ', %s' % _loc['admin name3'] if _loc['admin name3'] else ''
+            place_name = '%s%s' % ((_loc['place name'], district))
             place_name = place_name.replace(' Ward', '') #.replace(' City', '')
             loc_type = POSTCODE if len(pc) > 4 else POSTCODEDISTRICT
 
@@ -115,25 +129,15 @@ def convert_to_newlocations(dbname):
     print 'Resources:', Resource.objects.count()
     print 'Locations:', Location.objects.count()
     # print 'NewLocations:', NewLocation.objects.count()
-
-    # DO THIS FIRST TO GET LOC IDS
-    for res in Resource.objects[2000:2200]:
-        res.tmp_locations = [loc.label for loc in res.locations]
-        # print res.tmp_locations
-        res.save()
-        print res.id, res.locations, res.tmp_locations
-    # Location.drop_collection()
-    print 'Locations:', Location.objects.count()
-    return
     
-    for res in Resource.objects[:100]:
+    for res in Resource.objects:
 
         locs = []
-        print res.tmp_locations
+        # print res.tmp_locations
         for loc_id in res.tmp_locations:
             try:
                 loc = Location.objects.get(postcode=loc_id)
-                print loc
+                # print loc
             except Location.DoesNotExist, e:
                 print '*** not found:', loc_id #, loc.label, res.title, res.id
                 loc = _get_loc(loc_id, coll)

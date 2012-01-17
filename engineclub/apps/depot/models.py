@@ -50,7 +50,7 @@ class CalendarEvent(EmbeddedDocument):
     status = StringField(default='confirmed') # 'provisional', 'confirmed', 'cancelled'.
     # recurrence = EmbeddedDocumentField(CalendarRepeatRule)
            
-class Location(Document):
+class oldLocation(Document):
     """Location document, based on Ordnance Survey data
     ALISS only uses 4 types: postcode, ward, district, country
     """
@@ -64,7 +64,7 @@ class Location(Document):
     def __unicode__(self):
         return ', '.join([self.label, self.place_name or '-'])
 
-class NewLocation(Document):
+class Location(Document):
     """Location document, based on combined data sources, geonames + OSM
     loc_type = POSTCODE | POSTCODEDISTRICT | PLACENAME
     """
