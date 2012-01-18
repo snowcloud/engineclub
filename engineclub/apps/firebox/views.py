@@ -145,6 +145,24 @@ def convert_to_newlocations(dbname):
         res.locations = locs
         res.save()
 
+def fix_pcdistricts(dbname):
+    """Postcode districts, eg PA1, don't have good lat/lons cos geonames file has multiple entries.
+
+    """
+    # connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+    # db = connection[dbname]
+    # coll = db.location
+
+    print 'location:', Location.objects(loc_type="POSTCODEDISTRICT").count()
+
+    for pcdistrict in Location.objects(loc_type="POSTCODEDISTRICT")[28:38]:
+        res, addr = lookup_postcode(pcdistrict.postcode)
+        # print pcdistrict.lat_lon
+        # print res.geometry.location
+        pcdistrict.lat_lon = (res.geometry.location.lat, res.geometry.location.lng)
+        print pcdistrict.lat_lon
+        pcdistrict.save()
+
 
 def lookup_postcode(pc):
     from googlegeocoder import GoogleGeocoder
@@ -152,7 +170,7 @@ def lookup_postcode(pc):
 
     search = geocoder.get(pc, region='UK')
     res, addr = _make_addr(search)
-    return addr
+    return res, addr
 
 def _make_addr(results):
     
@@ -167,10 +185,10 @@ def _make_addr(results):
         if len(pc) > 1 and len(pc[1]) == 3: # full pc
             addr['postal_code'] = ' '.join(pc)
             break
-    print results
-    print addr
-    print 'postcode:', addr.get('postal_code', '-')
-    print res.geometry.location
+    # print results
+    # print addr
+    # print 'postcode:', addr.get('postal_code', '-')
+    # print res.geometry.location
     return res, addr
 
 def test_google():

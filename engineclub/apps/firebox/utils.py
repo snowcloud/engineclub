@@ -9,7 +9,8 @@ from django.core.management import setup_environ
 setup_environ(settings)
 
 # from firebox.views import load_postcodes, load_placenames, reindex_resources
-from firebox.views import bak_locations, load_locations, convert_to_newlocations, reindex_resources
+from firebox.views import bak_locations, load_locations, \
+    convert_to_newlocations, reindex_resources, fix_pcdistricts
 
 def temp():
     """docstring for temp"""
@@ -52,6 +53,9 @@ if __name__ == "__main__":
     elif options.command == 'bak_locations':
         print("\nconverting locations...")
         bak_locations(options.dbname or settings.MONGO_DB)
+    elif options.command == 'fix_pcdistricts':
+        print("\nfixing postcodedistricts...")
+        fix_pcdistricts(options.dbname or settings.MONGO_DB)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
         reindex_resources(options.dbname or settings.MONGO_DB, printit=True)

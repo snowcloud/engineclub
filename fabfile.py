@@ -13,6 +13,9 @@ def bak_locations():
     # local('python engineclub/apps/firebox/utils.py -c bak_locations -d test_db', capture=False)
     local('python engineclub/apps/firebox/utils.py -c bak_locations -d aliss', capture=False)
 
+def fix_pcdistricts():
+    local('python engineclub/apps/firebox/utils.py -c fix_pcdistricts', capture=False)
+
 # def reload_postcodes():
 #     local('python engineclub/apps/firebox/utils.py -c loadpostcodes -f engineclub/apps/firebox/sources/geonames/GB-postcodes/GB_full.csv', capture=False)
 
