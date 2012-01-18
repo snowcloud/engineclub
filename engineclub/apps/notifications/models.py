@@ -37,7 +37,7 @@ class NotificationQuerySet(QuerySet):
         later to retrieve notifications for sub or parent accounts based on
         the membership.
         """
-        return Notification.objects(account=account)
+        return self._user(account=account)
 
     def _user(self, account=None):
         if account:
