@@ -1,6 +1,7 @@
 # Create your views here.
 import codecs
 import csv
+import time
 import urllib
 import urllib2
 from BaseHTTPServer import BaseHTTPRequestHandler # import responses
@@ -146,22 +147,24 @@ def convert_to_newlocations(dbname):
         res.save()
 
 def fix_pcdistricts(dbname):
-    """Postcode districts, eg PA1, don't have good lat/lons cos geonames file has multiple entries.
-
     """
-    # connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    # db = connection[dbname]
-    # coll = db.location
+    Postcode districts, eg PA1, don't have good lat/lons cos geonames file has multiple entries.
+    Use google lookup to sort them.
+    """
 
-    print 'location:', Location.objects(loc_type="POSTCODEDISTRICT").count()
+    count = Location.objects(loc_type="POSTCODEDISTRICT").count()
+    print 'location:', count
 
-    for pcdistrict in Location.objects(loc_type="POSTCODEDISTRICT")[28:38]:
-        res, addr = lookup_postcode(pcdistrict.postcode)
-        # print pcdistrict.lat_lon
-        # print res.geometry.location
-        pcdistrict.lat_lon = (res.geometry.location.lat, res.geometry.location.lng)
-        print pcdistrict.lat_lon
-        pcdistrict.save()
+    for i in range(0, count, 5):
+
+        print i, i+5
+        for pcdistrict in Location.objects(loc_type="POSTCODEDISTRICT")[i:i+5]:
+            res, addr = lookup_postcode(pcdistrict.postcode)
+            pcdistrict.lat_lon = (res.geometry.location.lat, res.geometry.location.lng)
+            print pcdistrict.lat_lon
+            pcdistrict.save()
+        # needs a delay or google complains
+        time.sleep(5) # seconds
 
 
 def lookup_postcode(pc):
