@@ -211,18 +211,14 @@ def resource_remove(request, object_id):
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
-# @login_required
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
 
-    results = locations = []
+    results = []
     centre = None
-    pins = []
-    # places = []
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
-        # result = request.REQUEST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource-list'))
         form = FindResourceForm(request.REQUEST)
@@ -245,22 +241,15 @@ def resource_find(request, template='depot/resource_find.html'):
                     'curation': curation,
                     'curation_form': curation_form,
                     'curation_index': curation_index
-                })
-                
-            locations = form.locations
+                })                
             centre = form.centre
-            # pins = [loc['obj'] for loc in locations]
-            
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
     context = {
         'form': form,
         'results': results,
-        'locations': locations,
         'centre': centre,
-        'pins': pins,
-        'yahoo_appid': settings.YAHOO_KEY,
         'google_key': settings.GOOGLE_KEY,
     }
     return render_to_response(template, RequestContext(request, context))
@@ -336,7 +325,6 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         RequestContext(request)
     )
     
-# @user_passes_test(lambda u: u.is_staff)
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
@@ -366,8 +354,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         template_context,
         RequestContext(request)
     )
-
-    
+ 
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
