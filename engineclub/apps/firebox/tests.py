@@ -9,7 +9,7 @@ from django.test import TestCase, TransactionTestCase
 from firebox.views import *
 
 from depot.models import Resource, Location, load_resource_data, \
-    get_place_for_postcode, lat_lon_to_str, get_location_for_postcode
+    lat_lon_to_str, get_location_for_postcode
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db

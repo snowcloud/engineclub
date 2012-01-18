@@ -35,11 +35,11 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
         onResult: function (results) {
             var r = [];
             $.each(results.data, function (i, item) {
-                r.push({id: item.id, name: item.place_name + ', ' + item.postcode});
+                r.push({id: item.id, name: item.postcode + ', ' + item.place_name});
             });
             return r;
         },
-        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.place_name }}, {{ l.label }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
+        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.postcode }}, {{ l.place_name }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
         queryParam: 'match',
         theme: 'aliss'
     });

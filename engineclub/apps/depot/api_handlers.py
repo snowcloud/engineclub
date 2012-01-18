@@ -1,16 +1,17 @@
+import re
+
 from django.conf import settings
 from django.core import serializers 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models.query import QuerySet, Q
+from django.db.models.query import QuerySet
 from django.http import HttpResponse
+from django.utils import simplejson as json
 
-from depot.models import Resource, Curation, Location, find_by_place_or_kwords
-
-from mongoengine import ValidationError
+from mongoengine import ValidationError #, Q
 from mongoengine.connection import _get_db as get_db
 
-import re
-from django.utils import simplejson as json
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_location
+
 
 class JsonResponse(HttpResponse):
     """from http://www.djangosnippets.org/snippets/1639/"""
@@ -179,8 +180,8 @@ def publish_data(request):
             'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
             'source_uri': r.uri,
             'locations': [{
-                'os_id': l.os_id, 
-                'label': l.label, 
+                'os_id': l._id, 
+                'label': l.postcode, 
                 'place_name': l.place_name, 
                 'os_type': l.os_type, 
                 'lat_lon': l.lat_lon, 
@@ -251,7 +252,7 @@ def tags(request):
 
 def locations(request):
     def _location_context(location):
-        return {'id': str(location._id), 'place_name': l.place_name, 'postcode': l.label}
+        return {'id': str(location['_id']), 'place_name': l['place_name'], 'postcode': l.get('postcode', '')}
     errors = []
     data = []
     response_code = 200
@@ -265,8 +266,11 @@ def locations(request):
 
     if match is not None:
         if len(match) > 2:
+            # SLOW- REPLACE WITH CALL TO get_location(namestr, just_one=False, starts_with=True)
             data = [_location_context(l)
-                for l in Location.objects(Q(place_name__icontains=match) | Q(label__icontains=match))]
+                for l in get_location(match, just_one=False, starts_with=True)]
+            # data = [_location_context(l)
+            #     for l in Location.objects.filter(Q(place_name__icontains=match) | Q(postcode__startswith=match))]
         else:
             response_code = 10
             errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)

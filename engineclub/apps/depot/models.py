@@ -6,7 +6,7 @@ from mongoengine import *
 from mongoengine.connection import _get_db as get_db
 from datetime import datetime
     
-from pymongo import Connection, GEO2D
+from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from pysolr import Solr
 import re
 
@@ -68,7 +68,7 @@ class Location(Document):
     """Location document, based on combined data sources, geonames + OSM
     loc_type = POSTCODE | POSTCODEDISTRICT | PLACENAME
     """
-    _id = StringField(primary_key=True)
+    id = StringField(primary_key=True)
     postcode = StringField()
     place_name = StringField(required=True)
     lat_lon = GeoPointField(required=True)
@@ -113,29 +113,29 @@ class Curation(Document):
         # print self.owner, acct
         return self.owner == acct
 
-def place_as_cb_value(place):
-    """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
-    if place:
-        return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
-    return ''
+# def place_as_cb_value(place):
+#     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
+#     if place:
+#         return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
+#     return ''
 
-def location_from_cb_value(cb_value):
-    """takes cb_string and returns Location"""
-    values = cb_value.split('|')
-    if not len(values) == 5:
-        raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-    lat = float(values[3])
-    lon = float(values[4])
-    print lat, lon
-    loc_values = {
-        'lat_lon': [lat, lon],
-        # 'woeid': values[0],
-        'name': values[1],
-        'placetype': values[2],
-        'latitude': lat,
-        'longitude': lon
-        }
-    return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
+# def location_from_cb_value(cb_value):
+#     """takes cb_string and returns Location"""
+#     values = cb_value.split('|')
+#     if not len(values) == 5:
+#         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
+#     lat = float(values[3])
+#     lon = float(values[4])
+#     print lat, lon
+#     loc_values = {
+#         'lat_lon': [lat, lon],
+#         # 'woeid': values[0],
+#         'name': values[1],
+#         'placetype': values[2],
+#         'latitude': lat,
+#         'longitude': lon
+#         }
+#     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
 
 class Resource(Document):
     """ Main model for ALISS resource """
@@ -236,7 +236,7 @@ class Resource(Document):
                 loc_doc = deepcopy(doc)
                 loc_doc['id'] = u'%s_%s' % (unicode(self.id), i)
                 loc_doc['pt_location'] = [lat_lon_to_str(loc)]
-                loc_doc['loc_labels'] = [', '.join([loc.label, loc.place_name])]
+                loc_doc['loc_labels'] = [', '.join([loc.postcode, loc.place_name])]
                 result.append(loc_doc)
         else:
             result = [doc]    
@@ -245,17 +245,17 @@ class Resource(Document):
             conn.add(result)
         return result
 
-    def add_location_from_name(self, placestr):
-        """place_str can be anything"""
-        # first get a geonames postcode or place
-        place = get_place_for_postcode(placestr) or get_place_for_placename(placestr)
-        if place:
-            # if it's a postcode already, fine, otherwise use the lat_lon to get a postcode
-            postcode = place.get('postcode', None) or _get_postcode_for_lat_lon(place['lat_lon'])['postcode']
-            location, created = get_location_for_postcode(postcode)
-            if location not in self.locations:
-                self.locations.append(location)
-                self.save()
+    # def add_location_from_name(self, placestr):
+    #     """place_str can be anything"""
+    #     # first get a geonames postcode or place
+    #     place = get_place_for_postcode(placestr) or get_place_for_placename(placestr)
+    #     if place:
+    #         # if it's a postcode already, fine, otherwise use the lat_lon to get a postcode
+    #         postcode = place.get('postcode', None) or _get_postcode_for_lat_lon(place['lat_lon'])['postcode']
+    #         location, created = get_location_for_postcode(postcode)
+    #         if location not in self.locations:
+    #             self.locations.append(location)
+    #             self.save()
 
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
@@ -286,18 +286,42 @@ def load_resource_data(document, resource_data):
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
-def get_place_for_postcode(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
-    return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
+# def get_place_for_postcode(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+#     return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
     
-def get_place_for_placename(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
-    return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
+# def get_place_for_placename(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+#     return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
 
-def get_location_for_postcode(postcode):
-    result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
-    if not result and len(postcode.split()) > 1:
-        print 'trying ', postcode.split()[0]
-        result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
-    return _get_or_create_location(result)
+# def get_location_for_postcode(postcode):
+#     result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
+#     if not result and len(postcode.split()) > 1:
+#         print 'trying ', postcode.split()[0]
+#         result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
+#     return _get_or_create_location(result)
+
+def get_location(namestr, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+
+    db = get_db()
+    coll = db.location
+    if len(namestr) > 2 and namestr[2].isdigit():
+        name = namestr.upper().replace(' ', '').strip()
+        field = '_id'
+    else:
+        name = namestr.capitalize().strip()
+        field = 'place_name'
+        coll.ensure_index([
+            ('place_name', ASCENDING),
+            ('country_code', ASCENDING),
+            ('accuracy', DESCENDING)
+            ])
+
+    if starts_with:
+        name = re.compile('^%s' % name, re.IGNORECASE)
+    result = coll.find_one({field: name}) if just_one else coll.find({field: name}).limit(20)
+    if result and (type(result) == dict or result.count() > 0):
+        return result
+    else:
+        return []
 
 def lat_lon_to_str(loc):
     """docstring for lat_lon_to_str"""
@@ -317,56 +341,60 @@ def lat_lon_to_str(loc):
 ###############################################################
 # LOCATION STUFF - PRIVATE
 
-def _get_or_create_location(result):
-    """return Location, created (bool) if successful"""
-    if result:
-        loc_values = {
-            'label': result['label'],
-            'place_name': result['place_name'],
-            'os_type': 'POSTCODE',
-            'lat_lon': result['lat_lon'],
-            }
-        return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
-    raise Location.DoesNotExist
+# def _get_or_create_location(result):
+#     """return Location, created (bool) if successful"""
+#     if result:
+#         loc_values = {
+#             'label': result['label'],
+#             'place_name': result['place_name'],
+#             'os_type': 'POSTCODE',
+#             'lat_lon': result['lat_lon'],
+#             }
+#         return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
+#     raise Location.DoesNotExist
     
-def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_with=False):
-    """return place from geonames data- either postcode or named place depending on collname
+# def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_with=False):
+#     """return place from geonames data- either postcode or named place depending on collname
     
-    {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
-    {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
+#     {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
+#     {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
     
-    """
-    name = namestr.upper().replace(' ', '').strip()
-    if starts_with:
-        name = re.compile('%s' % name, re.IGNORECASE)
-    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    db = connection[dbname]
-    coll = db[collname]
-    result = coll.find_one({field: name}) if just_one else coll.find({field: name})
-    if result and (type(result) == dict or result.count() > 0):
-        return result
-    else:
-        return None
+#     """
+#     name = namestr.upper().replace(' ', '').strip()
+#     if starts_with:
+#         name = re.compile('%s' % name, re.IGNORECASE)
+#     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+#     db = connection[dbname]
+#     coll = db[collname]
+#     result = coll.find_one({field: name}) if just_one else coll.find({field: name})
+#     if result and (type(result) == dict or result.count() > 0):
+#         return result
+#     else:
+#         return None
 
-def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
-    """looks up nearest postcode for lat_lon in geonames data"""
-    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    db = connection[dbname]
-    coll = db['postcode_locations']
-    coll.create_index([("lat_lon", GEO2D)])
-    result = coll.find_one({"lat_lon": {"$near": lat_lon}})
-    if result:
-        return result
-    return None
+# def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
+#     """looks up nearest postcode for lat_lon in geonames data"""
+#     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+#     db = connection[dbname]
+#     coll = db['postcode_locations']
+#     coll.create_index([("lat_lon", GEO2D)])
+#     result = coll.find_one({"lat_lon": {"$near": lat_lon}})
+#     if result:
+#         return result
+#     return None
 
-def lat_lon_to_str(loc):
-    """docstring for lat_lon_to_str"""
-    if loc:
-        if type(loc) == Location:
-            return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
-        return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
-    else:
-        return ''
+# def lat_lon_to_str(loc):
+#     """docstring for lat_lon_to_str"""
+#     if loc:
+#         if type(loc) == Location:
+#             return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
+#         return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
+#     else:
+#         return ''
+
+
+###############################################################
+# SEARCH STUFF
 
 def _make_fq(event, accounts):
     fq = []
@@ -378,9 +406,9 @@ def _make_fq(event, accounts):
         return ' AND '.join(fq)
     return None
 
+
 def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
-    loc = get_place_for_postcode(name) or get_place_for_placename(name)
-        
+    loc = get_location(name)
     if loc:
         kw = {
             'start': start,

@@ -147,8 +147,9 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
 
             # Location
             new_loc = locationform.cleaned_data['new_location'].split(',')
-            # print new_loc
+            print new_loc
             resource.locations = Location.objects(id__in=new_loc)
+            resource.save()
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
 
