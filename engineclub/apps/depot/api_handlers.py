@@ -107,7 +107,7 @@ def resource_search(request):
         result = {
             'id': r['res_id'],
             'title': r['title'], 
-            'description': r['short_description'],
+            'description': r.get('short_description', ''),
             # 'resource_type': r[''] resource_type or '',
             'uri': r.get('uri', ''),
             'locations': r.get('pt_location', []),
