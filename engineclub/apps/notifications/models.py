@@ -1,7 +1,9 @@
 from datetime import datetime
 
+from django.http import Http404
 from mongoengine import *
 from mongoengine.queryset import QuerySet
+from mongoengine.base import ValidationError
 
 from engine_groups.models import Account
 
@@ -25,11 +27,14 @@ class NotificationQuerySet(QuerySet):
 
         ng = NotificationGroup.objects.create()
 
+        notifications = []
         for account in accounts:
-            Notification.objects.create(account=account, group=ng, **kwargs)
+            notifications.append(Notification.objects.create(account=account,
+                group=ng, **kwargs))
+        return notifications
 
     def create_for_account(self, account, **kwargs):
-        return self.create_for_accounts([account, ], **kwargs)
+        return self.create_for_accounts([account, ], **kwargs)[0]
 
     def for_account(self, account):
         """
@@ -56,6 +61,12 @@ class NotificationQuerySet(QuerySet):
 
     def critical(self, user=None):
         return self._user(user)(severity=SEVERITY_CRITICAL)
+
+    def get_or_404(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except (Notification.DoesNotExist, ValidationError):
+            raise Http404("Notification not found for %s" % kwargs)
 
 
 SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL = (0, 1, 2, 3)

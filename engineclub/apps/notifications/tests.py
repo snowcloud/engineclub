@@ -155,3 +155,22 @@ class ViewsTestCase(NotificationsTestCase):
         response = self.client.get(reverse('notifications-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Curation X has expired")
+
+    def test_detail_view(self):
+
+        from django.core.urlresolvers import reverse
+        from notifications.models import Notification, NotificationType
+
+        expired, _ = NotificationType.objects.get_or_create(name="expired")
+
+        n = Notification.objects.create_for_account(self.bob, type=expired,
+            severity=1, message='Curation X has expired')
+
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(reverse('notifications-detail', args=["NOTREAL", ]))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get(reverse('notifications-detail', args=[str(n.id), ]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Curation X has expired")

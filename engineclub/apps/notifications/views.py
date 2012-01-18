@@ -17,3 +17,15 @@ def notifications_list(request):
         'account': account,
         'notifications': notifications,
     }, RequestContext(request))
+
+
+def notification_detail(request, notification_id):
+
+    account = get_account(request.user.id)
+
+    notification = Notification.objects.get_or_404(id=notification_id, account=account)
+
+    return render_to_response('notifications/notification_detail.html', {
+        'account': account,
+        'notification': notification,
+    }, RequestContext(request))
