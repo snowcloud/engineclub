@@ -33,7 +33,9 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
         minChars: 3,
         onResult: function (results) {
-            var r = [];
+            var typedValue = $('#token-input-id_new_location').val();
+            var r = [{id: typedValue, name: typedValue + ' (new)'}];
+            //var r = [];
             $.each(results.data, function (i, item) {
                 r.push({id: item.id, name: item.postcode + ', ' + item.place_name});
             });
