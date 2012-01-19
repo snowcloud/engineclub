@@ -36,16 +36,16 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     
-    # print options.dbname or settings.MONGO_DB
+    # print options.dbname or settings.MONGO_DATABASE_NAME
     if options.command == 'loadpostcodes' and options.filename:
         print("\nreloading postcodes...")
-        load_postcodes(options.filename, options.dbname or settings.MONGO_DB)
+        load_postcodes(options.filename, options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'loadplacenames' and options.filename:
         print("\nreloading placenames...")
-        load_placenames(options.filename, options.dbname or settings.MONGO_DB)
+        load_placenames(options.filename, options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
-        reindex_resources(options.dbname or settings.MONGO_DB, printit=True)
+        reindex_resources(options.dbname or settings.MONGO_DATABASE_NAME, printit=True)
     elif options.command == 'temp':
         print("\ntemp...")
         temp()

@@ -269,10 +269,10 @@ def _get_or_create_location(result):
     raise Location.DoesNotExist
     
 def get_location_for_postcode(postcode):
-    result = get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
+    result = get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
     if not result and len(postcode.split()) > 1:
         print 'trying ', postcode.split()[0]
-        result = get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
+        result = get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
     return _get_or_create_location(result)
 
 def get_place_for_name(namestr, collname, field, dbname):
@@ -291,13 +291,13 @@ def get_place_for_name(namestr, collname, field, dbname):
         return result
     return None
 
-def get_place_for_postcode(name, dbname=settings.MONGO_DB):
+def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME):
     return get_place_for_name(name, 'postcode_locations', 'postcode', dbname)
     
-def get_place_for_placename(name, dbname=settings.MONGO_DB):
+def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME):
     return get_place_for_name(name, 'placename_locations','name_upper',  dbname)
 
-def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
+def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DATABASE_NAME):
     """looks up nearest postcode for lat_lon in geonames data"""
     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
     db = connection[dbname]
