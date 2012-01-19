@@ -115,6 +115,18 @@ class ApiTestCase(NotificationsTestCase):
         self.assertEqual(Notification.objects.high(self.alice).count(), 3)
         self.assertEqual(Notification.objects.critical(self.alice).count(), 4)
 
+    def test_related_document(self):
+
+        from notifications.models import Notification, NotificationType
+
+        account, _ = NotificationType.objects.get_or_create(name="account")
+
+        notification = Notification.objects.create_for_account(self.alice,
+            type=account, severity=1, message="Password about to expire",
+            related_document=self.alice)
+
+        self.assertEqual(notification.related_document, self.alice)
+
 
 class ViewsTestCase(NotificationsTestCase):
 
@@ -145,16 +157,21 @@ class ViewsTestCase(NotificationsTestCase):
         from notifications.models import Notification, NotificationType
 
         expired, _ = NotificationType.objects.get_or_create(name="expired")
+        account, _ = NotificationType.objects.get_or_create(name="account")
 
         Notification.objects.create_for_account(self.bob, type=expired,
-            severity=1, message='Curation X has expired'
-        )
+            severity=1, message='Curation X has expired')
+
+        Notification.objects.create_for_account(self.bob,
+            type=account, severity=1, message="Password about to expire",
+            related_document=self.bob)
 
         self.client.login(username='bob', password='password')
 
         response = self.client.get(reverse('notifications-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Curation X has expired")
+        self.assertContains(response, "Bob")
 
     def test_detail_view(self):
 

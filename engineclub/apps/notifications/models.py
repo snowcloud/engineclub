@@ -92,6 +92,7 @@ class Notification(Document):
     message = StringField()
     opened = BooleanField(default=False)
     resolved = BooleanField(default=False)
+    related_document = GenericReferenceField()
 
     def __unicode__(self):
         return self.message
