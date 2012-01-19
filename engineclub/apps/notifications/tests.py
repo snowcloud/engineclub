@@ -31,7 +31,7 @@ class ApiTestCase(NotificationsTestCase):
 
     def test_types(self):
 
-        from Notifications.models import NotificationType
+        from notifications.models import NotificationType
 
         nt, _ = NotificationType.objects.get_or_create(name="expired")
 
