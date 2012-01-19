@@ -252,7 +252,11 @@ def tags(request):
 
 def locations(request):
     def _location_context(location):
-        return {'id': str(location['_id']), 'place_name': l['place_name'], 'postcode': l.get('postcode', '')}
+        return {
+            'id': str(location['_id']), 
+            'place_name': l['place_name'], 
+            'postcode': l.get('postcode', ''),
+            'district': l.get('district', '')}
     errors = []
     data = []
     response_code = 200
