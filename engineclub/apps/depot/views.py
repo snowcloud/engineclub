@@ -15,7 +15,7 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD
+    STATUS_OK, STATUS_BAD, lookup_postcode
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm
@@ -146,9 +146,11 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             #         pass
 
             # Location
-            new_loc = locationform.cleaned_data['new_location'].split(',')
-            print new_loc
-            resource.locations = Location.objects(id__in=new_loc)
+            # new_loc = locationform.cleaned_data['new_location'].split(',')
+            # print new_loc
+            # resource.locations = Location.objects(id__in=new_loc)
+            # print locationform.locations
+            resource.locations = locationform.locations
             resource.save()
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
@@ -166,8 +168,6 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 return resource_edit_complete(request, resource, template_info)
             except OperationError:
                 pass
-
-
 
     else:
         resourceform = ShortResourceForm(instance=resource)
