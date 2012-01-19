@@ -167,79 +167,53 @@ def fix_pcdistricts(dbname):
         time.sleep(5) # seconds
 
 
-def lookup_postcode(pc):
-    from googlegeocoder import GoogleGeocoder
-    geocoder = GoogleGeocoder()
 
-    search = geocoder.get(pc, region='UK')
-    res, addr = _make_addr(search)
-    return res, addr
+# def test_google():
 
-def _make_addr(results):
-    
-    for res in results:
-        addr = {}
-        for c in res.address_components:
-            try:
-                addr[c.__dict__['types'][0]] = c.__dict__['short_name']
-            except IndexError:
-                pass
-            pc = (addr.get('postal_code') or addr.get('postal_code_prefix', '')).split()
-        if len(pc) > 1 and len(pc[1]) == 3: # full pc
-            addr['postal_code'] = ' '.join(pc)
-            break
-    # print results
-    # print addr
-    # print 'postcode:', addr.get('postal_code', '-')
-    # print res.geometry.location
-    return res, addr
+#     """
+# v2 with key
+# http://maps.google.com/maps/geo?key=<key>&output=xml&q=Abernethy
+# out=csv
+# 200,4,56.3320140,-3.3137140
 
-def test_google():
-
-    """
-v2 with key
-http://maps.google.com/maps/geo?key=<key>&output=xml&q=Abernethy
-out=csv
-200,4,56.3320140,-3.3137140
-
-see below:
+# see below:
 
 
-lat,lon to pc
-(55.9453585, -3.1018994)
-{u'country': u'GB', u'postal_code': u'EH15 2QR', u'administrative_area_level_2': u'City of Edinburgh', u'locality': u'Edinburgh'}
+# lat,lon to pc
+# (55.9453585, -3.1018994)
+# {u'country': u'GB', u'postal_code': u'EH15 2QR', u'administrative_area_level_2': u'City of Edinburgh', u'locality': u'Edinburgh'}
 
-    """
+#     """
 
-    from googlegeocoder import GoogleGeocoder
-    geocoder = GoogleGeocoder()
+#     from googlegeocoder import GoogleGeocoder
+#     geocoder = GoogleGeocoder()
 
-    print '\npostcode to lat,lon'
-    search = geocoder.get('PO19', region='UK')
-    res, addr = _make_addr(search)
-    print '\npostcode to lat,lon'
-    search = geocoder.get('PO123BY', region='UK')
-    res, addr = _make_addr(search)
+#     print '\npostcode to lat,lon'
+#     search = geocoder.get('PO19', region='UK')
+#     res, addr = _make_addr(search)
+#     print '\npostcode to lat,lon'
+#     search = geocoder.get('PO123BY', region='UK')
+#     res, addr = _make_addr(search)
 
 
-    print '\nplace to lat_lon'    
-    search = geocoder.get("Chichester", region='UK')
-    res, addr = _make_addr(search)
+#     print '\nplace to lat_lon'    
+#     search = geocoder.get("Chichester", region='UK')
+#     res, addr = _make_addr(search)
     
 
-    print '\nreverse lat_lon to address'
-    search = geocoder.get((search[0].geometry.location.lat, search[0].geometry.location.lng))
-    res, addr = _make_addr(search)
+#     print '\nreverse lat_lon to address'
+#     search = geocoder.get((search[0].geometry.location.lat, search[0].geometry.location.lng))
+#     res, addr = _make_addr(search)
 
-    print '\nlat_lon to address'
-    print 'Pollok (from osm)'
-    Pollok = (55.827068699999998, -4.3456574999999997)
-    search = geocoder.get(Pollok)
-    res, addr = _make_addr(search)
+#     print '\nlat_lon to address'
+#     print 'Pollok (from osm)'
+#     Pollok = (55.827068699999998, -4.3456574999999997)
+#     search = geocoder.get(Pollok)
+#     res, addr = _make_addr(search)
 
-    Gosport = (50.802154926519805, -1.1592288410260432)
-    search = geocoder.get(Gosport)
-    res, addr = _make_addr(search)
+#     Gosport = (50.802154926519805, -1.1592288410260432)
+#     search = geocoder.get(Gosport)
+#     res, addr = _make_addr(search)
 
 def test_unlock():
 
