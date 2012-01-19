@@ -111,7 +111,7 @@ class Location(Document):
                 attrs['id'] = '%s_%s' % (attrs['place_name'], attrs['district'])
             attrs['country_code'] = C.get(addr.get('administrative_area_level_1', 'other')) or addr.get('country')
 
-            print attrs
+            # print attrs
             result = Location(**attrs)
             result.save()
         return result
@@ -134,7 +134,7 @@ def _make_addr(results):
         for c in res.address_components:
             # print c, c.types, c.short_name, c.long_name
             try:
-                addr[c.__dict__['types'][0]] = c.short_name
+                addr[c.__dict__['types'][0]] = c.long_name
             except IndexError:
                 pass
             pc = (addr.get('postal_code') or addr.get('postal_code_prefix', '')).split()
