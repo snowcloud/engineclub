@@ -22,7 +22,7 @@ class NotificationsTestCase(MongoTestCase):
         self.user_alice = User.objects.create_user('alice', email="alice@example.com",
             password='password')
 
-        self.company = Account.objects.create(name="company", email="org@example.com")
+        self.company = Account.objects.create(name="company", email="org@example.com", local_id="4")
 
         Membership.objects.create(parent_account=self.company, member=self.alice)
 
