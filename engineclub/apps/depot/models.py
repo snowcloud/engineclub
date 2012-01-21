@@ -114,7 +114,7 @@ def location_from_cb_value(cb_value):
 class Resource(Document):
     """ Main model for ALISS resource """
     title = StringField(required=True)
-    description = StringField()
+    description = StringField(default='')
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
@@ -124,16 +124,20 @@ class Resource(Document):
     curations = ListField(ReferenceField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
-    owner = ReferenceField(Account)
+    owner = ReferenceField(Account, required=True)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+    @classmethod
+    def reindex_for(cls, acct):
+        for c in Curation.objects(owner=acct):
+            c.resource.reindex()
 
     def save(self, *args, **kwargs):
         reindex = kwargs.pop('reindex', False)
         author = kwargs.pop('author', None)
-        if author:
-            self.item_metadata.update(author)
         created = self.id is None
         super(Resource, self).save(*args, **kwargs)
+        self.item_metadata.update(author or self.owner)
         if created:
             if not self.moderations:
                 obj = Moderation(outcome=STATUS_OK, owner=self.owner)
@@ -176,12 +180,14 @@ class Resource(Document):
         """conn is Solr connection"""
         tags = list(self.tags)
         accounts = []
+        collections = []
         description = [self.description]
         
         try:
             for obj in self.curations:
                 tags.extend(obj.tags)
                 accounts.append(unicode(obj.owner.id))
+                collections.extend(obj.owner.collections)
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
             logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
@@ -192,9 +198,10 @@ class Resource(Document):
             'res_id': unicode(self.id),
             'title': self.title,
             'short_description': self.description,
-            'description': '\n'.join(description),
-            'keywords': ', '.join(list(set(tags))),
-            'accounts': ', '.join(accounts),
+            'description': u'\n'.join(description),
+            'keywords': u', '.join(list(set(tags))),
+            'accounts': u', '.join(accounts),
+            'collections': u', '.join(set([str(c.id) for c in collections])),
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
