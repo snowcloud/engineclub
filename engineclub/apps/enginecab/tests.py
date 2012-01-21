@@ -92,7 +92,7 @@ class CollectionsTest(TestBase):
         # self.assertEqual(self.humph.collections[0].name, 'Test Collection')
 
         # MAKE SOME RESOURCES
-        res1 = _make_resource('blah', ['blue', 'red'] ,self.humph)
+        res1 = _make_resource('blah 1', ['blue', 'red'] ,self.humph)
         res2 = _make_resource('blah 2', ['green', 'red'] ,self.humph)
         res3 = _make_resource('blah 3', ['green', 'blue', 'red'] ,self.jorph)
         res4 = _make_resource('blah 4', ['green', 'red'] ,self.jorph)
@@ -134,4 +134,9 @@ class CollectionsTest(TestBase):
 
         results = conn.search(kwords, **kw)
         self.assertEqual(4, len(results))
+
+        res9 = _make_resource('blah 9', ['yellow', 'red'] ,self.bob)
+        res9.save(reindex=True)
+        results = conn.search(kwords, **kw)
+        self.assertEqual(5, len(results))
 
