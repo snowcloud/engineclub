@@ -454,7 +454,7 @@ def load_osm_places(path, coll):
 
     for place in places:
         coll.insert(
-            {   'id': place.id,
+            {   '_id': place.id,
                 #'postcode': r[1],
                 'place_name': place.name,
                 'lat_lon': [float(place.lat), float(place.lon)],
