@@ -193,7 +193,7 @@ def resource_edit_complete(request, resource, template_info):
     
     if resource:
         # resource.collection_status = COLL_STATUS_COMPLETE
-        resource.save(str(request.user.id))
+        resource.save(author=str(request.user.id))
         popup_url = reverse('resource-popup-close')
         url = reverse('resource', args=[resource.id])
     else: # resource-add cancelled
