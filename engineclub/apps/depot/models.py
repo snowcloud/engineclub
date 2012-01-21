@@ -248,23 +248,23 @@ class Resource(Document):
         """docstring for delete"""
         for c in self.curations:
             c.delete()
-        conn = Solr(settings.SOLR_URL)
-        conn.delete(q='id:%s' % self.id)        
+        self.reindex(remove=True)
         super(Resource, self).delete(*args, **kwargs)
         
     def _all_tags(self):
         tags = self.tags
         for c in self.curations:
             tags.extend(c.tags)
-        print tags, set(tags)
         return list(set(tags))
     all_tags = property(_all_tags)
     
-    def reindex(self):
+    def reindex(self, remove=False):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
-        conn.delete(q='id:%s' % self.id)
-        self.index(conn)
+        # needs wildcard to remove indexing for multiple locations: <id>_<n>
+        conn.delete(q='id:%s*' % self.id)
+        if not remove:
+            self.index(conn)
     
     def index(self, conn=None):
         """conn is Solr connection"""
