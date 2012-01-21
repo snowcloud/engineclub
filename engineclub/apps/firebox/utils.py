@@ -40,32 +40,22 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     
-<<<<<<< HEAD
     # print options.dbname or settings.MONGO_DB
     if options.command == 'loadlocations' and options.pathname:
         print("\nreloading locations...")
-        load_locations(options.pathname, options.dbname or settings.MONGO_DB)
+        load_locations(options.pathname, options.dbname or settings.MONGO_DATABASE_NAME)
     # if options.command == 'loadpostcodes' and options.filename:
     #     print("\nreloading postcodes...")
     #     load_postcodes(options.filename, options.dbname or settings.MONGO_DB)
     elif options.command == 'convert_to_newlocations':
         print("\nconverting locations...")
-        convert_to_newlocations(options.dbname or settings.MONGO_DB)
+        convert_to_newlocations(options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'bak_locations':
         print("\nconverting locations...")
-        bak_locations(options.dbname or settings.MONGO_DB)
+        bak_locations(options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'fix_pcdistricts':
         print("\nfixing postcodedistricts...")
-        fix_pcdistricts(options.dbname or settings.MONGO_DB)
-=======
-    # print options.dbname or settings.MONGO_DATABASE_NAME
-    if options.command == 'loadpostcodes' and options.filename:
-        print("\nreloading postcodes...")
-        load_postcodes(options.filename, options.dbname or settings.MONGO_DATABASE_NAME)
-    elif options.command == 'loadplacenames' and options.filename:
-        print("\nreloading placenames...")
-        load_placenames(options.filename, options.dbname or settings.MONGO_DATABASE_NAME)
->>>>>>> refs/heads/dev
+        fix_pcdistricts(options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
         reindex_resources(options.dbname or settings.MONGO_DATABASE_NAME, printit=True)

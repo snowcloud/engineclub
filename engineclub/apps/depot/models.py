@@ -353,7 +353,6 @@ def load_resource_data(document, resource_data):
     db[document].insert(new_data)
     return db
 
-<<<<<<< HEAD
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
@@ -390,57 +389,7 @@ def get_location(namestr, dbname=settings.MONGO_DB, just_one=True, starts_with=F
         name = re.compile('^%s' % name, re.IGNORECASE)
     result = coll.find_one({field: name}) if just_one else coll.find({field: name}).limit(20)
     if result and (type(result) == dict or result.count() > 0):
-=======
-def _get_or_create_location(result):
-    """return Location, created (bool) if successful"""
-    if result:
-        loc_values = {
-            'label': result['label'],
-            'place_name': result['place_name'],
-            'os_type': 'POSTCODE',
-            'lat_lon': result['lat_lon'],
-            }
-        return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
-    raise Location.DoesNotExist
-    
-def get_location_for_postcode(postcode):
-    result = get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
-    if not result and len(postcode.split()) > 1:
-        print 'trying ', postcode.split()[0]
-        result = get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
-    return _get_or_create_location(result)
 
-def get_place_for_name(namestr, collname, field, dbname):
-    """return place from geonames data- either postcode or named place depending on collname
-    
-    {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
-    {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
-    
-    """
-    name = namestr.upper().replace(' ', '').strip()
-    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    db = connection[dbname]
-    coll = db[collname]
-    result = coll.find_one({field: name})
-    if result:
-        return result
-    return None
-
-def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME):
-    return get_place_for_name(name, 'postcode_locations', 'postcode', dbname)
-    
-def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME):
-    return get_place_for_name(name, 'placename_locations','name_upper',  dbname)
-
-def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DATABASE_NAME):
-    """looks up nearest postcode for lat_lon in geonames data"""
-    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-    db = connection[dbname]
-    coll = db['postcode_locations']
-    coll.create_index([("lat_lon", GEO2D)])
-    result = coll.find_one({"lat_lon": {"$near": lat_lon}})
-    if result:
->>>>>>> refs/heads/dev
         return result
     else:
         return []
