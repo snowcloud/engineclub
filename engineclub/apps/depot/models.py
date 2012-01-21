@@ -203,7 +203,7 @@ class Curation(Document):
 class Resource(Document):
     """ Main model for ALISS resource """
     title = StringField(required=True)
-    description = StringField()
+    description = StringField(default='')
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
@@ -214,16 +214,20 @@ class Resource(Document):
     curations = ListField(ReferenceField(Curation), default=list)
     tags = ListField(StringField(max_length=96), default=list)
     related_resources = ListField(ReferenceField('RelatedResource'))
-    owner = ReferenceField(Account)
+    owner = ReferenceField(Account, required=True)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+    @classmethod
+    def reindex_for(cls, acct):
+        for c in Curation.objects(owner=acct):
+            c.resource.reindex()
 
     def save(self, *args, **kwargs):
         reindex = kwargs.pop('reindex', False)
         author = kwargs.pop('author', None)
-        if author:
-            self.item_metadata.update(author)
         created = self.id is None
         super(Resource, self).save(*args, **kwargs)
+        self.item_metadata.update(author or self.owner)
         if created:
             if not self.moderations:
                 obj = Moderation(outcome=STATUS_OK, owner=self.owner)
@@ -266,12 +270,14 @@ class Resource(Document):
         """conn is Solr connection"""
         tags = list(self.tags)
         accounts = []
+        collections = []
         description = [self.description]
         
         try:
             for obj in self.curations:
                 tags.extend(obj.tags)
                 accounts.append(unicode(obj.owner.id))
+                collections.extend(obj.owner.collections)
                 description.extend([obj.note or u'', unicode(obj.data) or u''])
         except AttributeError:
             logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
@@ -282,9 +288,10 @@ class Resource(Document):
             'res_id': unicode(self.id),
             'title': self.title,
             'short_description': self.description,
-            'description': '\n'.join(description),
-            'keywords': ', '.join(list(set(tags))),
-            'accounts': ', '.join(accounts),
+            'description': u'\n'.join(description),
+            'keywords': u', '.join(list(set(tags))),
+            'accounts': u', '.join(accounts),
+            'collections': u', '.join(set([str(c.id) for c in collections])),
             'uri': self.uri,
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
@@ -346,6 +353,7 @@ def load_resource_data(document, resource_data):
     db[document].insert(new_data)
     return db
 
+<<<<<<< HEAD
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
@@ -382,6 +390,57 @@ def get_location(namestr, dbname=settings.MONGO_DB, just_one=True, starts_with=F
         name = re.compile('^%s' % name, re.IGNORECASE)
     result = coll.find_one({field: name}) if just_one else coll.find({field: name}).limit(20)
     if result and (type(result) == dict or result.count() > 0):
+=======
+def _get_or_create_location(result):
+    """return Location, created (bool) if successful"""
+    if result:
+        loc_values = {
+            'label': result['label'],
+            'place_name': result['place_name'],
+            'os_type': 'POSTCODE',
+            'lat_lon': result['lat_lon'],
+            }
+        return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
+    raise Location.DoesNotExist
+    
+def get_location_for_postcode(postcode):
+    result = get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
+    if not result and len(postcode.split()) > 1:
+        print 'trying ', postcode.split()[0]
+        result = get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
+    return _get_or_create_location(result)
+
+def get_place_for_name(namestr, collname, field, dbname):
+    """return place from geonames data- either postcode or named place depending on collname
+    
+    {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
+    {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
+    
+    """
+    name = namestr.upper().replace(' ', '').strip()
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+    db = connection[dbname]
+    coll = db[collname]
+    result = coll.find_one({field: name})
+    if result:
+        return result
+    return None
+
+def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME):
+    return get_place_for_name(name, 'postcode_locations', 'postcode', dbname)
+    
+def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME):
+    return get_place_for_name(name, 'placename_locations','name_upper',  dbname)
+
+def get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DATABASE_NAME):
+    """looks up nearest postcode for lat_lon in geonames data"""
+    connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+    db = connection[dbname]
+    coll = db['postcode_locations']
+    coll.create_index([("lat_lon", GEO2D)])
+    result = coll.find_one({"lat_lon": {"$near": lat_lon}})
+    if result:
+>>>>>>> refs/heads/dev
         return result
     else:
         return []
