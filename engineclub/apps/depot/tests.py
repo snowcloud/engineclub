@@ -7,7 +7,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from depot.models import Resource, Curation, Location, load_resource_data, \
-    get_place_for_postcode, lat_lon_to_str
+    lat_lon_to_str
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db

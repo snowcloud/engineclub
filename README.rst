@@ -16,6 +16,10 @@ All documentation is in the "docs" directory- see docs/_build/html/index.html
 
 ChangeLog
 ---------
+0.5.0
+^^^^^
+major change to Location model, backwards incompatible. Contact us if you need help migrating data.
+
 0.4.0
 ^^^^^
 major refactor to begin implementation.
