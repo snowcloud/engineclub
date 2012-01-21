@@ -356,20 +356,20 @@ def load_resource_data(document, resource_data):
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
-# def get_place_for_postcode(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+# def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 #     return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
     
-# def get_place_for_placename(name, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+# def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 #     return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
 
 # def get_location_for_postcode(postcode):
-#     result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DB)
+#     result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
 #     if not result and len(postcode.split()) > 1:
 #         print 'trying ', postcode.split()[0]
-#         result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DB)
+#         result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
 #     return _get_or_create_location(result)
 
-def get_location(namestr, dbname=settings.MONGO_DB, just_one=True, starts_with=False):
+def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 
     db = get_db()
     coll = db.location
@@ -443,7 +443,7 @@ def lat_lon_to_str(loc):
 #     else:
 #         return None
 
-# def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DB):
+# def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DATABASE_NAME):
 #     """looks up nearest postcode for lat_lon in geonames data"""
 #     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
 #     db = connection[dbname]

@@ -40,13 +40,13 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     
-    # print options.dbname or settings.MONGO_DB
+    # print options.dbname or settings.MONGO_DATABASE_NAME
     if options.command == 'loadlocations' and options.pathname:
         print("\nreloading locations...")
         load_locations(options.pathname, options.dbname or settings.MONGO_DATABASE_NAME)
     # if options.command == 'loadpostcodes' and options.filename:
     #     print("\nreloading postcodes...")
-    #     load_postcodes(options.filename, options.dbname or settings.MONGO_DB)
+    #     load_postcodes(options.filename, options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'convert_to_newlocations':
         print("\nconverting locations...")
         convert_to_newlocations(options.dbname or settings.MONGO_DATABASE_NAME)

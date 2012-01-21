@@ -81,7 +81,7 @@ def load_locations(path, dbname):
     print coll.find_one({'place_name': 'Pollok', 'country_code': 'SCT'})
 
 def bak_locations(dbname):
-    print 'backing up location ids to tmp_locations using %s' % settings.MONGO_DB
+    print 'backing up location ids to tmp_locations using %s' % settings.MONGO_DATABASE_NAME
     print 'Locations (before):', Location.objects.count()
     # DO THIS FIRST TO GET LOC IDS
 
@@ -106,7 +106,7 @@ def convert_to_newlocations(dbname):
             loc_type = POSTCODE if len(pc) > 4 else POSTCODEDISTRICT
 
             _new_loc = Location(
-                _id= _loc['postal code'].replace(' ', ''),
+                id= _loc['postal code'].replace(' ', ''),
                 postcode= _loc['postal code'],
                 place_name= place_name,
                 lat_lon= [float(_loc['latitude']), float(_loc['longitude'])],
@@ -119,7 +119,7 @@ def convert_to_newlocations(dbname):
         print _new_loc, _new_loc.loc_type
         return _new_loc
 
-    print 'convert_to_newlocations using %s' % settings.MONGO_DB
+    print 'convert_to_newlocations using %s' % settings.MONGO_DATABASE_NAME
 
     connect(dbname, host=settings.MONGO_HOST, port=settings.MONGO_PORT)
 
@@ -454,7 +454,7 @@ def load_osm_places(path, coll):
 
     for place in places:
         coll.insert(
-            {   '_id': place.id,
+            {   'id': place.id,
                 #'postcode': r[1],
                 'place_name': place.name,
                 'lat_lon': [float(place.lat), float(place.lon)],
@@ -505,7 +505,7 @@ def make_corrections(coll):
         coll.remove(key)
     
 # def move_to_newlocation(db):
-#     print 'move_to_newlocation using %s' % settings.MONGO_DB
+#     print 'move_to_newlocation using %s' % settings.MONGO_DATABASE_NAME
     
 #     print 'doing %s resources' % db.resource.count()
 
