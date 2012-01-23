@@ -10,14 +10,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-<<<<<<< HEAD
-    
-    url(r'^$', 'home.views.index', name='home'),
-=======
 
-    (r'^$', 'home.views.index'),
->>>>>>> refs/heads/dev
+    url(r'^$', 'home.views.index', name='home'),
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
