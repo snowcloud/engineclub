@@ -11,19 +11,25 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
+<<<<<<< HEAD
     
     url(r'^$', 'home.views.index', name='home'),
+=======
+
+    (r'^$', 'home.views.index'),
+>>>>>>> refs/heads/dev
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('engine_groups.urls')),
+    (r'^notifications/', include('notifications.urls')),
 
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact_form'),
     url(r'^contact/sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' },
         name='contact_form_sent'),
 
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

@@ -15,12 +15,11 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD
+    STATUS_OK, STATUS_BAD, lookup_postcode
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm
     
-from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
@@ -126,59 +125,54 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
-            # REPLACE FROM HERE
-            new_loc = locationform.cleaned_data['new_location']
-            if new_loc: 
-                resource.add_location_from_name(locationform.cleaned_data['new_location'])
-                resource.save(author=acct, reindex=True)
-            else:
-                event_start = eventform.cleaned_data['start']
-                if event_start:
-                    resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-                    # print 'event_start', event_start
-                    # print 'event_finish', eventform.cleaned_data['end']
-                else:
-                    resource.calendar_event = None
-                resource = resourceform.save()
+            # new_loc = locationform.cleaned_data['new_location']
+            # if new_loc: 
+            #     resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            #     resource.save(author=acct, reindex=True)
+            # else:
+            #     event_start = eventform.cleaned_data['start']
+            #     if event_start:
+            #         resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+            #         # print 'event_start', event_start
+            #         # print 'event_finish', eventform.cleaned_data['end']
+            #     else:
+            #         resource.calendar_event = None
+            #     resource = resourceform.save()
                 
-                try:
-                    resource.save(author=acct, reindex=True)
-                    return resource_edit_complete(request, resource, template_info)
-                except OperationError:
-                    pass
+            #     try:
+            #         resource.save(author=acct, reindex=True)
+            #         return resource_edit_complete(request, resource, template_info)
+            #     except OperationError:
+            #         pass
 
-            # NEW SNEEU
-            # # Location
+            # Location
             # new_loc = locationform.cleaned_data['new_location'].split(',')
             # print new_loc
             # resource.locations = Location.objects(id__in=new_loc)
-            # #resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            # #resource.save(author=acct, reindex=True)
+            # print locationform.locations
+            resource.locations = locationform.locations
+            resource.save()
+            #resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            #resource.save(author=acct, reindex=True)
 
-            # # Dates
-            # event_start = eventform.cleaned_data['start']
-            # if event_start:
-            #     resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-            #     # print 'event_start', event_start
-            #     # print 'event_finish', eventform.cleaned_data['end']
-            # else:
-            #     resource.calendar_event = None
-            # resource = resourceform.save()
+            # Event dates
+            event_start = eventform.cleaned_data['start']
+            if event_start:
+                resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+            else:
+                resource.calendar_event = None
+            resource = resourceform.save()
             
-            # try:
-            #     resource.save(author=acct, reindex=True)
-            #     return resource_edit_complete(request, resource, template_info)
-            # except OperationError:
-            #     pass
-
-
+            try:
+                resource.save(author=acct, reindex=True)
+                return resource_edit_complete(request, resource, template_info)
+            except OperationError:
+                pass
 
     else:
         resourceform = ShortResourceForm(instance=resource)
         locationform = LocationUpdateForm(instance=resource)
         eventform = EventForm(instance=resource.calendar_event)
-        # if not resource.locations:
-        #     doc = resource.uri
         # shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response(template,
@@ -193,7 +187,7 @@ def resource_edit_complete(request, resource, template_info):
     
     if resource:
         # resource.collection_status = COLL_STATUS_COMPLETE
-        resource.save(str(request.user.id))
+        resource.save(author=str(request.user.id))
         popup_url = reverse('resource-popup-close')
         url = reverse('resource', args=[resource.id])
     else: # resource-add cancelled
@@ -211,18 +205,14 @@ def resource_remove(request, object_id):
     object.delete()
     return HttpResponseRedirect(reverse('resource-list'))
 
-# @login_required
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
 
-    results = locations = []
+    results = []
     centre = None
-    pins = []
-    # places = []
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
-        # result = request.REQUEST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource-list'))
         form = FindResourceForm(request.REQUEST)
@@ -245,22 +235,15 @@ def resource_find(request, template='depot/resource_find.html'):
                     'curation': curation,
                     'curation_form': curation_form,
                     'curation_index': curation_index
-                })
-                
-            locations = form.locations
+                })                
             centre = form.centre
-            # pins = [loc['obj'] for loc in locations]
-            
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
     context = {
         'form': form,
         'results': results,
-        'locations': locations,
         'centre': centre,
-        'pins': pins,
-        'yahoo_appid': settings.YAHOO_KEY,
         'google_key': settings.GOOGLE_KEY,
     }
     return render_to_response(template, RequestContext(request, context))
@@ -336,7 +319,6 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         RequestContext(request)
     )
     
-# @user_passes_test(lambda u: u.is_staff)
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
@@ -366,8 +348,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         template_context,
         RequestContext(request)
     )
-
-    
+ 
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
@@ -426,9 +407,10 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
     
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
-    for index, cur in enumerate(resource.curations):
-        if cur.owner.id == user.id:
-            return index, cur
+    if user:
+        for index, cur in enumerate(resource.curations):
+            if cur.owner.id == user.id:
+                return index, cur
     return None
     
     

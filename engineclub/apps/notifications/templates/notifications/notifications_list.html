@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+
+    {% if notifications %}
+        <ul>
+        {% for notification in notifications %}
+            <li>{{ notification.message }} - {{ notification.related_document }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+
+        <p>You don't have any notifications</p>
+
+    {% endif %}
+
+
+{% endblock %}

@@ -36,7 +36,7 @@
     <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
 {% endif %}
 {% for loc in object.locations %}
-    <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc.label }}, {{ loc.place_name }}</td></tr>
+    <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc }}</td></tr>
 {% empty %}
     <tr><th>location</th><td>-</td></tr>
 {% endfor %}

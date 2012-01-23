@@ -15,7 +15,6 @@ $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_loca
 $('#new_location_link').click(function() {$('#main-form').submit();});
 $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 
-{% comment %}
 $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     minChars: 3,
     onResult: function (results) {
@@ -34,18 +33,21 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
         minChars: 3,
         onResult: function (results) {
-            var r = [];
+            var typedValue = $('#token-input-id_new_location').val();
+            var r = [{id: typedValue, name: typedValue + ' (new)'}];
+            //var r = [];
             $.each(results.data, function (i, item) {
-                r.push({id: item.id, name: item.place_name + ', ' + item.postcode});
+                r.push({id: item.id, name: (item.postcode) ? 
+                    (item.postcode + ', ' + item.place_name) : 
+                    (item.place_name + ', ' + item.district)});
             });
             return r;
         },
-        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l.place_name }}, {{ l.label }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
+        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
         queryParam: 'match',
         theme: 'aliss'
     });
 {% endif %}
-{% endcomment %}
 
 {% endblock %}
 
@@ -73,7 +75,7 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
         <fieldset>
             <legend><span>Locations:</span></legend>
 
-{% comment %} remove from here to next comment {% endcomment %}
+{% comment %} remove from here to next comment 
             <ol>
         <!-- 
             <p>If a service is not based in one location, but offered across an area, enter the name of the area below, click 'update' and select it from the list above.</p>
@@ -94,11 +96,10 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
                 </li>
             </ol>
 
-{% comment %}   add this  line instead of above
-
-{{ locationform.as_ul }}
-
 {% endcomment %}
+
+            {{ locationform.as_ul }}
+
             
         </fieldset>
     {% endif %}
