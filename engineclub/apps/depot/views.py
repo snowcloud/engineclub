@@ -15,14 +15,14 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD
+    STATUS_OK, STATUS_BAD, lookup_postcode
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
 from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
-from firebox.views import get_terms
+# from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
@@ -175,59 +175,54 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
-            # REPLACE FROM HERE
-            new_loc = locationform.cleaned_data['new_location']
-            if new_loc: 
-                resource.add_location_from_name(locationform.cleaned_data['new_location'])
-                resource.save(author=acct, reindex=True)
-            else:
-                event_start = eventform.cleaned_data['start']
-                if event_start:
-                    resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-                    # print 'event_start', event_start
-                    # print 'event_finish', eventform.cleaned_data['end']
-                else:
-                    resource.calendar_event = None
-                resource = resourceform.save()
+            # new_loc = locationform.cleaned_data['new_location']
+            # if new_loc: 
+            #     resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            #     resource.save(author=acct, reindex=True)
+            # else:
+            #     event_start = eventform.cleaned_data['start']
+            #     if event_start:
+            #         resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+            #         # print 'event_start', event_start
+            #         # print 'event_finish', eventform.cleaned_data['end']
+            #     else:
+            #         resource.calendar_event = None
+            #     resource = resourceform.save()
                 
-                try:
-                    resource.save(author=acct, reindex=True)
-                    return resource_edit_complete(request, resource, template_info)
-                except OperationError:
-                    pass
+            #     try:
+            #         resource.save(author=acct, reindex=True)
+            #         return resource_edit_complete(request, resource, template_info)
+            #     except OperationError:
+            #         pass
 
-            # NEW SNEEU
-            # # Location
+            # Location
             # new_loc = locationform.cleaned_data['new_location'].split(',')
             # print new_loc
             # resource.locations = Location.objects(id__in=new_loc)
-            # #resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            # #resource.save(author=acct, reindex=True)
+            # print locationform.locations
+            resource.locations = locationform.locations
+            resource.save()
+            #resource.add_location_from_name(locationform.cleaned_data['new_location'])
+            #resource.save(author=acct, reindex=True)
 
-            # # Dates
-            # event_start = eventform.cleaned_data['start']
-            # if event_start:
-            #     resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-            #     # print 'event_start', event_start
-            #     # print 'event_finish', eventform.cleaned_data['end']
-            # else:
-            #     resource.calendar_event = None
-            # resource = resourceform.save()
+            # Event dates
+            event_start = eventform.cleaned_data['start']
+            if event_start:
+                resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+            else:
+                resource.calendar_event = None
+            resource = resourceform.save()
             
-            # try:
-            #     resource.save(author=acct, reindex=True)
-            #     return resource_edit_complete(request, resource, template_info)
-            # except OperationError:
-            #     pass
-
-
+            try:
+                resource.save(author=acct, reindex=True)
+                return resource_edit_complete(request, resource, template_info)
+            except OperationError:
+                pass
 
     else:
         resourceform = ShortResourceForm(instance=resource)
         locationform = LocationUpdateForm(instance=resource)
         eventform = EventForm(instance=resource.calendar_event)
-        # if not resource.locations:
-        #     doc = resource.uri
         # shelflifeform = ShelflifeForm(instance=resource)
     
     return render_to_response(template,
@@ -242,7 +237,7 @@ def resource_edit_complete(request, resource, template_info):
     
     if resource:
         # resource.collection_status = COLL_STATUS_COMPLETE
-        resource.save(str(request.user.id))
+        resource.save(author=str(request.user.id))
         popup_url = reverse('resource-popup-close')
         url = reverse('resource', args=[resource.id])
     else: # resource-add cancelled

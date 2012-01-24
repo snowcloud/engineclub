@@ -1,7 +1,7 @@
 
 from django import forms
 
-from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_place_for_placename
+from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
@@ -74,8 +74,6 @@ class FindResourceForm(forms.Form):
             self.centre = {'name': data, 'location': loc }
         elif data:
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
-        # else:
-        #     self.centre['location'] = get_place_for_placename('perth')['lat_lon'] #.split(settings.LATLON_SEP)
             
         return cleaned_data
 
@@ -93,8 +91,12 @@ class ShortResourceForm(DocumentForm):
         data = self.cleaned_data['uri']
         if data:
             try:
-                item =Resource.objects.get(uri=data)
-                if not (self.instance and (self.instance.uri == data)):
+                if self.instance:
+                    # id__not=instance.id throws an error, this works
+                    check = Resource.objects(id__not__in=[self.instance.id], uri=data)
+                else:
+                    check = Resource.objects(uri=data)
+                if check.count() > 0:
                     raise forms.ValidationError("There is already an item with this uri")
             except DoesNotExist:
                 pass
@@ -131,6 +133,24 @@ class LocationUpdateForm(DocumentForm):
     # REPLACE
     new_location = forms.CharField(required=False)
     # new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
+    locations = None
+
+    def clean_new_location(self):
+        data = self.cleaned_data['new_location']
+        loc_ids = data.split(',')
+        locs = list(Location.objects(id__in=loc_ids))
+        new_locs = [l for l in loc_ids if l not in [loc.id for loc in locs]]
+        new_locs_errors = []
+        for new_loc in new_locs:
+            loc = Location.create_from(new_loc)
+            if loc:
+                locs.append(loc)
+            else:
+                new_locs_errors.append(new_loc)
+        self.locations = locs
+        if new_locs_errors:
+            raise forms.ValidationError('Could not find these locations: %s' % ', '.join(new_locs_errors))
+        return data
 
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""

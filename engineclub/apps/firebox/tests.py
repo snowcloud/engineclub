@@ -9,7 +9,7 @@ from django.test import TestCase, TransactionTestCase
 from firebox.views import *
 
 from depot.models import Resource, Location, load_resource_data, \
-    get_place_for_postcode, lat_lon_to_str, get_location_for_postcode
+    lat_lon_to_str, get_location_for_postcode
 from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
@@ -31,30 +31,30 @@ def _print_db_info():
     print 'Location: ', Location.objects.count()
     print SEP
     
-class PlacemakerTest(TransactionTestCase):
-    def test_url(self):
-        """
-        Tests that 3 places are found in page at TEST_URL.
-        """
-        g = geomaker(TEST_URL)
-        p = g.find_places()
-        print 'testing geomaker...'
-        if p.places:
-            print  p.geographic_scope
-            print  p.administrative_scope
-            for place in p.places:
-                print '%s: %s, %s/%s - %s (%s)' % (place.placetype, place.name, place.centroid.latitude, place.centroid.longitude, place.woeid, place.confidence)
-        else:
-            print 'no places found'
+# class PlacemakerTest(TransactionTestCase):
+#     def test_url(self):
+#         """
+#         Tests that 3 places are found in page at TEST_URL.
+#         """
+#         g = geomaker(TEST_URL)
+#         p = g.find_places()
+#         print 'testing geomaker...'
+#         if p.places:
+#             print  p.geographic_scope
+#             print  p.administrative_scope
+#             for place in p.places:
+#                 print '%s: %s, %s/%s - %s (%s)' % (place.placetype, place.name, place.centroid.latitude, place.centroid.longitude, place.woeid, place.confidence)
+#         else:
+#             print 'no places found'
         
-        self.assertEqual(len(p.places), TEST_URL_RESULT)
+#         self.assertEqual(len(p.places), TEST_URL_RESULT)
 
-class TermExtractorTest(TransactionTestCase):
-    """docstring for TermExtractorTest"""
-    def test_url(self):
-        terms = get_terms(TEST_URL2)
-        print terms
-        self.assertEqual(len(terms), TEST_URL2_RESULT)
+# class TermExtractorTest(TransactionTestCase):
+#     """docstring for TermExtractorTest"""
+#     def test_url(self):
+#         terms = get_terms(TEST_URL2)
+#         print terms
+#         self.assertEqual(len(terms), TEST_URL2_RESULT)
 
 
 class OSLocationTest(TransactionTestCase):

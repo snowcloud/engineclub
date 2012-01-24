@@ -180,18 +180,18 @@ def get_lon(value):
         return value.split(settings.LATLON_SEP)[1]
     return ''
 
-@register.filter
-def placetype(pt):
-    if pt == 'Zip':
-        return "Post code"
-    else:
-        return pt
+# @register.filter
+# def placetype(pt):
+#     if pt == 'Zip':
+#         return "Post code"
+#     else:
+#         return pt
 
-from depot.models import place_as_cb_value
+# from depot.models import place_as_cb_value
 
-@register.filter
-def place_values(place):
-    return place_as_cb_value(place)
+# @register.filter
+# def place_values(place):
+#     return place_as_cb_value(place)
 
 """
 from James Bennet blog: http://www.b-list.org/weblog/2006/jun/07/django-tips-write-better-template-tags/
