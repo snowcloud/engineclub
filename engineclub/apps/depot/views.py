@@ -18,8 +18,10 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
-    TagsForm, ShelflifeForm, CurationForm
-    
+    TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
+from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
+    SEVERITY_HIGH)
+
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
@@ -47,6 +49,53 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
+
+def resource_report(request, object_id, template='depot/resource_report.html'):
+    """
+    View for reporting a curation when a user finds it to be malformed or
+    incorrect.
+    """
+
+    resource = get_one_or_404(id=ObjectId(object_id))
+
+    if request.method == 'POST':
+        form = ResourceReportForm(request.POST)
+        if form.is_valid():
+
+            accounts = set(cur.owner for cur in resource.curations)
+            # The owner should always have a curation, however, to be safe
+            # make sure they are added.
+            accounts.add(resource.owner)
+
+            severity = SEVERITY_MEDIUM
+            group = None
+
+            if request.user.is_authenticated():
+                reporter_account = get_account(request.user.id)
+
+                notification = Notification.objects.create_for_account(
+                    reporter_account, group=True, type="report",
+                    severity=SEVERITY_LOW, message="Report submitted",
+                    related_document=resource)
+
+                group = notification.group
+                severity = SEVERITY_HIGH
+
+            Notification.objects.create_for_accounts(accounts, group=group,
+                type="report", severity=severity, related_document=resource,
+                message=form.cleaned_data['message'])
+
+            return HttpResponseRedirect(reverse('resource', args=[resource.id]))
+    else:
+        form = ResourceReportForm()
+
+    return render_to_response(template, {
+        'form': form,
+        'object': resource,
+        'yahoo_appid': settings.YAHOO_KEY,
+        'google_key': settings.GOOGLE_KEY,
+    }, RequestContext(request))
+
 
 def _template_info(popup):
     """docstring for _template_info"""
