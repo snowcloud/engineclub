@@ -163,3 +163,7 @@ class CurationForm(DocumentForm):
     
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
+
+
+class ResourceReportForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea)
