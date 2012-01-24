@@ -15,6 +15,9 @@ class NotificationGroup(Document):
 class NotificationType(Document):
     name = StringField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class NotificationQuerySet(QuerySet):
 

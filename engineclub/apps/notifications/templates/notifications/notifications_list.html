@@ -8,7 +8,10 @@
     {% if notifications %}
         <ul>
         {% for notification in notifications %}
-            <li>{{ notification.message }} - {{ notification.related_document }}</li>
+            <li><a href="{% url notifications-detail notification.id %}">
+                {{ notification.message }}
+                {% if notification.related_document %} - {{ notification.related_document }} {% endif %}
+            </a></li>
         {% endfor %}
         </ul>
     {% else %}

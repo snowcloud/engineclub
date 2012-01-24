@@ -22,7 +22,6 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
 from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
-# from firebox.views import get_terms
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):

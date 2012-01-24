@@ -19,6 +19,7 @@ def notifications_list(request):
     }, RequestContext(request))
 
 
+@login_required
 def notification_detail(request, notification_id):
 
     account = get_account(request.user.id)
