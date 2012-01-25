@@ -15,7 +15,8 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from analytics.shortcuts import increment_search, increment_location
+from analytics.shortcuts import (increment_search, increment_location,
+    increment_resource_access)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
@@ -48,6 +49,8 @@ def resource_index(request):
 def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     object = get_one_or_404(id=ObjectId(object_id))
+
+    increment_resource_access(object_id)
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
@@ -133,14 +136,14 @@ def _template_info(popup):
 def update_resource_metadata(self, resource, request):
     """docstring for update_resource_metadata"""
     resource.metadata.author = str(request.user.id)
-     
+
 @login_required
 def resource_add(request, template='depot/resource_edit.html'):
     """adds a new resource"""
-    
+
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
-    
+
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
@@ -161,7 +164,7 @@ def resource_add(request, template='depot/resource_edit.html'):
                 return HttpResponseRedirect('%s?popup=%s' % (reverse('resource-edit', args=[resource.id]), template_info['popup']))
             except OperationError:
                 pass
-            
+
     else:
         description= request.GET.get('t', '').replace('||', '\n')
         initial = {
@@ -170,7 +173,7 @@ def resource_add(request, template='depot/resource_edit.html'):
             'description': description[:1250]
             }
         form = ShortResourceForm(initial=initial)
-    
+
     return render_to_response(template,
         RequestContext( request, {'resourceform': form, 'template_info': template_info }))
 
@@ -181,7 +184,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     """
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
-    
+
     resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
 
     # doc = ''
@@ -196,12 +199,12 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         eventform = EventForm(request.POST, instance=resource.calendar_event)
         locationform = LocationUpdateForm(request.POST, instance=resource)
         # shelflifeform = ShelflifeForm(request.POST, instance=resource)
-        
+
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
             # new_loc = locationform.cleaned_data['new_location']
-            # if new_loc: 
+            # if new_loc:
             #     resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #     resource.save(author=acct, reindex=True)
             # else:
@@ -213,7 +216,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             #     else:
             #         resource.calendar_event = None
             #     resource = resourceform.save()
-                
+
             #     try:
             #         resource.save(author=acct, reindex=True)
             #         return resource_edit_complete(request, resource, template_info)
@@ -237,7 +240,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             else:
                 resource.calendar_event = None
             resource = resourceform.save()
-            
+
             try:
                 resource.save(author=acct, reindex=True)
                 return resource_edit_complete(request, resource, template_info)
@@ -249,7 +252,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         locationform = LocationUpdateForm(instance=resource)
         eventform = EventForm(instance=resource.calendar_event)
         # shelflifeform = ShelflifeForm(instance=resource)
-    
+
     return render_to_response(template,
         RequestContext( request, { 'template_info': template_info, 'object': resource,
             'resourceform': resourceform, 'locationform': locationform, 'eventform': eventform, #'places': places,
@@ -259,7 +262,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
 @login_required
 def resource_edit_complete(request, resource, template_info):
     """docstring for resource_edit_complete"""
-    
+
     if resource:
         # resource.collection_status = COLL_STATUS_COMPLETE
         resource.save(author=str(request.user.id))
@@ -268,7 +271,7 @@ def resource_edit_complete(request, resource, template_info):
     else: # resource-add cancelled
         popup_url = reverse('resource-popup-cancel')
         url = reverse('resource-list')
-    
+
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)
     else:
@@ -291,7 +294,7 @@ def resource_find(request, template='depot/resource_find.html'):
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource-list'))
         form = FindResourceForm(request.REQUEST)
-    
+
         if form.is_valid():
             user = get_account(request.user.id)
 
@@ -336,7 +339,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
         resource = get_one_or_404(id=ObjectId(object_id))
         curation = resource.curations[int(index)]
     else:
-        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))        
+        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
         resource = curation.resource
 
     if request.is_ajax():
@@ -366,7 +369,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
     resource = get_one_or_404(id=ObjectId(object_id))
     user = get_account(request.user.id)
-    
+
     curation = get_curation_for_user_resource(user, resource)
     if curation:
         index, cur = curation
@@ -387,7 +390,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
-            
+
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
         initial = { 'outcome': STATUS_OK}
@@ -400,14 +403,14 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         template_context,
         RequestContext(request)
     )
-    
+
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
     resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
-    
+
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':
@@ -430,7 +433,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         template_context,
         RequestContext(request)
     )
- 
+
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
@@ -439,7 +442,7 @@ def curation_remove(request, object_id, index):
     del resource.curations[int(index)]
     resource.save(reindex=True)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
-    
+
 @login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
@@ -447,12 +450,12 @@ def location_remove(request, object_id, index):
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
-    
+
 def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
     """docstring for curations_for_group"""
     object = get_one_or_404(obj_class=Account, id=object_id)
 
-    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]  
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
 
     return render_to_response(
@@ -472,9 +475,9 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
         template_context,
         RequestContext(request)
     )
-    
+
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
-    
+
     object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     base_url = Site.objects.get_current().domain
@@ -486,7 +489,7 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
     t = loader.get_template(template_name)
     response.write(t.render(template_context))
     return response
-    
+
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
     if user:
@@ -494,5 +497,5 @@ def get_curation_for_user_resource(user, resource):
             if cur.owner.id == user.id:
                 return index, cur
     return None
-    
-    
+
+

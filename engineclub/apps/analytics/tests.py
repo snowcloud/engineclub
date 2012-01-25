@@ -351,6 +351,19 @@ class ShortcutsTestCase(unittest.TestCase):
         increment_location("Edinburgh", account=self.account)
         increment_location("Edinburgh")
 
+    def test_increment_api(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
+        from analytics.shortcuts import (increment_api_location,
+            increment_api_search)
+
+        increment_api_search("Search Query", account=self.account)
+        increment_api_search("Search Query")
+        increment_api_location("Edinburgh", account=self.account)
+        increment_api_location("Edinburgh")
+
 
 class TestSearchStats(unittest.TestCase):
 
@@ -370,7 +383,7 @@ class TestSearchStats(unittest.TestCase):
 
         self.client = Client()
 
-    def test_search_overall(self):
+    def test_web_search(self):
 
         from datetime import date, timedelta
         from django.core.urlresolvers import reverse
@@ -422,4 +435,65 @@ class TestSearchStats(unittest.TestCase):
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
             ('Glasgow', 2),
             ('aberdeen', 1)
+        ])
+
+    def test_api_search(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        url = reverse('api-resource-search')
+
+        self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [])
+
+        result = self.client.get(url, {
+            'location': 'Glasgow',
+            'query': 'health',
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [
+            ('health', 1),
+        ])
+        self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [
+            ('Glasgow', 1),
+        ])
+
+    def test_resource_access(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        oid = '4f181deabaa2b12978000000'
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [])
+
+        url = reverse('api-resource-by-id', args=[oid, ])
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
+        ])
+
+        url = reverse('resource', args=[oid, ])
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
+        ])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
         ])

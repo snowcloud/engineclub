@@ -193,14 +193,34 @@ class OverallAnalytics(BaseAnalytics):
         super(OverallAnalytics, self).__init__(*args, **kwargs)
         self.account = None
 
-    def top_tags(self, start_date, end_date, key_sort=None, reverse=True):
-        return self.sum_hash('search_tags', start_date, end_date, key_sort, reverse)
+        self.tags_keys = 'search_tags'
+        self.queries_key = 'search_queries'
+        self.locations_key = 'search_locations'
+        self.api_queries_key = 'search_api_queries'
+        self.api_locations_key = 'search_api_locations'
+        self.resource_access_key = 'resource_access'
+        self.api_resource_access_key = 'api_resource_access'
 
-    def top_queries(self, start_date, end_date, key_sort=None, reverse=True):
-        return self.sum_hash('search_queries', start_date, end_date, key_sort, reverse)
+    def top_tags(self, *args, **kwargs):
+        return self.sum_hash(self.tags_keys, *args, **kwargs)
 
-    def top_locations(self, start_date, end_date, key_sort=None, reverse=True):
-        return self.sum_hash('search_locations', start_date, end_date, key_sort, reverse)
+    def top_queries(self, *args, **kwargs):
+        return self.sum_hash(self.queries_key, *args, **kwargs)
+
+    def top_locations(self, *args, **kwargs):
+        return self.sum_hash(self.locations_key, *args, **kwargs)
+
+    def top_api_queries(self, *args, **kwargs):
+        return self.sum_hash(self.api_queries_key, *args, **kwargs)
+
+    def top_api_locations(self, *args, **kwargs):
+        return self.sum_hash(self.api_locations_key, *args, **kwargs)
+
+    def top_resource(self, *args, **kwargs):
+        return self.sum_hash(self.resource_access_key, *args, **kwargs)
+
+    def api_top_resource(self, *args, **kwargs):
+        return self.sum_hash(self.api_resource_access_key, *args, **kwargs)
 
     def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
         """
@@ -231,23 +251,43 @@ class AccountAnalytics(OverallAnalytics):
     """
 
     def __init__(self, account, *args, **kwargs):
-        super(OverallAnalytics, self).__init__(*args, **kwargs)
+        super(AccountAnalytics, self).__init__(*args, **kwargs)
         self.account = account
 
     def increment_tag(self, tag_name, **kwargs):
 
-        return super(AccountAnalytics, self).increment('search_tags',
+        return super(AccountAnalytics, self).increment(self.tags_keys,
             account=self.account, field=tag_name, **kwargs)
 
     def increment_search(self, query, **kwargs):
 
-        return super(AccountAnalytics, self).increment('search_queries',
+        return super(AccountAnalytics, self).increment(self.queries_key,
             account=self.account, field=query, **kwargs)
 
-    def increment_location(self, query, **kwargs):
+    def increment_location(self, location, **kwargs):
 
-        return super(AccountAnalytics, self).increment('search_locations',
+        return super(AccountAnalytics, self).increment(self.locations_key,
+            account=self.account, field=location, **kwargs)
+
+    def increment_api_search(self, query, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.api_queries_key,
             account=self.account, field=query, **kwargs)
+
+    def increment_api_location(self, location, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.api_locations_key,
+            account=self.account, field=location, **kwargs)
+
+    def increment_resource_access(self, object_id, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.resource_access_key,
+            account=self.account, field=object_id, **kwargs)
+
+    def increment_api_resource_access(self, object_id, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.api_resource_access_key,
+            account=self.account, field=object_id, **kwargs)
 
 
 class OverallMongoAnalytics(BaseAnalytics):
