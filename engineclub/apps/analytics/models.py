@@ -196,8 +196,11 @@ class OverallAnalytics(BaseAnalytics):
     def top_tags(self, start_date, end_date, key_sort=None, reverse=True):
         return self.sum_hash('search_tags', start_date, end_date, key_sort, reverse)
 
-    def most_searched_queries(self, start_date, end_date, key_sort=None, reverse=True):
+    def top_queries(self, start_date, end_date, key_sort=None, reverse=True):
         return self.sum_hash('search_queries', start_date, end_date, key_sort, reverse)
+
+    def top_locations(self, start_date, end_date, key_sort=None, reverse=True):
+        return self.sum_hash('search_locations', start_date, end_date, key_sort, reverse)
 
     def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
         """

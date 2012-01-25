@@ -350,3 +350,76 @@ class ShortcutsTestCase(unittest.TestCase):
         from analytics.shortcuts import increment_location
         increment_location("Edinburgh", account=self.account)
         increment_location("Edinburgh")
+
+
+class TestSearchStats(unittest.TestCase):
+
+    def setUp(self):
+
+        from analytics.models import AccountAnalytics, OverallAnalytics
+        from engine_groups.models import Account
+
+        self.account = Account.objects[2]
+
+        self.account_analytics = AccountAnalytics(self.account, redis_db=15)
+        self.overall_analytics = OverallAnalytics(redis_db=15)
+        self.redis = self.account_analytics.conn
+        self.redis.flushdb()
+
+        from django.test.client import Client
+
+        self.client = Client()
+
+    def test_search_overall(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        url = reverse('resource-find')
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
+
+        # An empty query shouldn't do anything.
+        result = self.client.get(url, {
+            'post_code': '',
+            'kwords': '',
+            'result': 1,
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
+
+        result = self.client.get(url, {
+            'post_code': 'aberdeen',
+            'kwords': '',
+            'result': 1,  # any result value being present triggers the search
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
+            ('aberdeen', 1)
+        ])
+
+        # Reapeat a search query twice.
+        for i in range(2):
+            result = self.client.get(url, {
+                'post_code': 'Glasgow',
+                'kwords': 'health',
+                'result': 1,
+            })
+            self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [
+            ('health', 2),
+        ])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
+            ('Glasgow', 2),
+            ('aberdeen', 1)
+        ])
