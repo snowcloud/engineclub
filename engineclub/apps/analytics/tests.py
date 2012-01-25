@@ -125,12 +125,12 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
     def test_tags(self):
 
-        self.assertEqual(self.analytics.tag_usage("advice"), 14)
+        self.assertEqual(self.analytics.tag_usage("advice"), 50)
 
-        expected = [('Sport and fitness', 32), ('support', 28), ('Health', 20),
-            ('Advice and counselling', 17), ('advice', 16), ('contact', 15),
-            ('mental health', 13), ('Hobbies, arts and crafts', 13),
-            ('homelessness', 13), ('counselling', 12)]
+        expected = [('support', 96.0), ('advice', 52.0), ('information', 45.0),
+            ('cafe', 45.0), ('mental health', 39.0), ('exercise', 34.0),
+            ('counselling', 34.0), ('Sport and fitness', 32.0),
+            ('young people', 32.0), ('', 31.0)]
 
         self.assertEqual(self.analytics.top_tags(), expected)
 
@@ -144,7 +144,7 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         from engine_groups.models import Account
         account = Account.objects[0]
 
-        self.assertEqual(self.analytics.account_usage(account), 21)
+        self.assertEqual(self.analytics.account_usage(account), 65)
 
         self.analytics.top_accounts()
 
@@ -161,8 +161,8 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         expected = [
            (datetime(2011, 5, 1),  42),
            (datetime(2011, 5, 29), 62),
-           (datetime(2011, 6, 26), 0),
-           (datetime(2011, 7, 24), 1),
+           (datetime(2011, 6, 26), 33),
+           (datetime(2011, 7, 24), 72),
         ]
 
         self.assertEqual(result, expected)
@@ -195,9 +195,9 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
         result = self.analytics.curations_by_postcode()[:10]
 
-        expected = [('AB10', 170), ('IV30', 110), ('AB11', 103),
-            ('AB25', 98), ('PA1', 81), ('AB51', 78), ('AB24', 71),
-            ('AB15', 55), ('PA2', 47), ('AB42', 45)]
+        expected = - [('AB10', 170), ('IV30', 110), ('AB11', 103),
+            ('PA1', 98), ('AB25', 98), ('AB51', 78), ('AB24', 71),
+            ('PA3', 55), ('G66', 55), ('AB15', 55)]
 
         self.assertEqual(result, expected)
 
@@ -330,7 +330,8 @@ class ShortcutsTestCase(unittest.TestCase):
         settings.REDIS_ANALYTICS_DATABASE = 15
 
         from analytics.shortcuts import increment_tag
-        increment_tag(self.account, "Sport and fitness")
+        increment_tag("Sport and fitness", account=self.account)
+        increment_tag("Sport and fitness")
 
     def test_increment_search(self):
 
@@ -338,4 +339,14 @@ class ShortcutsTestCase(unittest.TestCase):
         settings.REDIS_ANALYTICS_DATABASE = 15
 
         from analytics.shortcuts import increment_search
-        increment_search(self.account, "Search Query")
+        increment_search("Search Query", account=self.account)
+        increment_search("Search Query")
+
+    def test_increment_location(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
+        from analytics.shortcuts import increment_location
+        increment_location("Edinburgh", account=self.account)
+        increment_location("Edinburgh")
