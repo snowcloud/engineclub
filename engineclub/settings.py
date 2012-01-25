@@ -181,3 +181,5 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+REDIS_ANALYTICS_DATABASE = 2
