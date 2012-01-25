@@ -241,6 +241,11 @@ class AccountAnalytics(OverallAnalytics):
         return super(AccountAnalytics, self).increment('search_queries',
             account=self.account, field=query, **kwargs)
 
+    def increment_location(self, query, **kwargs):
+
+        return super(AccountAnalytics, self).increment('search_locations',
+            account=self.account, field=query, **kwargs)
+
 
 class OverallMongoAnalytics(BaseAnalytics):
     """
@@ -352,8 +357,11 @@ class OverallMongoAnalytics(BaseAnalytics):
         reduce_func = """
         function(doc, out){
             var locations = doc.resource.fetch().locations
+            if (!locations){
+                return;
+            }
             for (var i=0;i<locations.length;i++){
-                var part = locations[i].fetch().label.split(' ')[0];
+                var part = locations[i].fetch().postcode.split(' ')[0];
                 if (!out[part]){
                     out[part] = 0;
                 }
