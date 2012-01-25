@@ -15,6 +15,7 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
+from analytics.shortcuts import increment_search, increment_location
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
@@ -293,6 +294,10 @@ def resource_find(request, template='depot/resource_find.html'):
     
         if form.is_valid():
             user = get_account(request.user.id)
+
+            increment_search(form.cleaned_data['kwords'], account=user)
+            increment_location(form.cleaned_data['post_code'], account=user)
+
             for result in form.results:
                 resource = get_one_or_404(id=ObjectId(result['res_id']))
 
