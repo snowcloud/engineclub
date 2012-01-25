@@ -58,12 +58,14 @@ Location
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-os_id                   string
-label                   string
+id                      string
+postcode                string
 place_name              string
 lat_lon                 list of float [float, float]
-os_type                 string [postcode, ward, district, country]
-parents                 list of Location
+loc_type                string [POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME, GOOGLE_PLACENAME]
+accuracy				int [1-6] 1=approximate, 6=accurate 
+district				string
+country_code			string [ SCT, ENG, WLS, NIR, GB ]
 ==================      =========================================================================
 
 ref source + URI

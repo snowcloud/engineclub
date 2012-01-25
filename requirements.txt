@@ -16,6 +16,8 @@ flup
 -e git+git://github.com/jsocol/bleach.git#egg=bleach
 beautifulsoup
 feedparser
+requests
+unlock
 
 # python-placemaker forked to add setup.py
 -e git+git://github.com/snowcloud/python-placemaker.git#egg=placemaker
@@ -30,7 +32,7 @@ multiprocessing
 
 pysolr
 # lxml
-
+python-googlegeocoder
 
 #redis
 redis>=2.4,<2.5

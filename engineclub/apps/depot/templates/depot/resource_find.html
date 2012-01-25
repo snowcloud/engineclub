@@ -106,13 +106,9 @@ $('.resource-listing > li').each(function () {
     mapstraction = new mxn.Mapstraction('map','google');
     //mapstraction = new mxn.Mapstraction('map','openlayers');
     mapstraction.addMarker( new mxn.Marker(centre_pt));
-    {% for loc in object.locations %}
-        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
-	{% endfor %}
 
-
-    {% for resource in results %}{% for loc in resource.pt_location %}
-        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource resource.res_id %}">{{ resource.title }}</a></p>')
+    {% for res in results %}{% for loc in res.resource_result.pt_location %}
+        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url resource res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
     {% endfor %}{% endfor %}
 
     function advancedMarker(lat, lon, info) {
@@ -201,10 +197,12 @@ $('.resource-listing > li').each(function () {
                             | <a href="{{ resource.uri }}">external site...</a>
                         {% endif %}
 
-                        {% if result.curation %}
-                            | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
-                        {% else %}
-                            | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
+                        {% if user.is_authenticated %}
+                            {% if result.curation %}
+                                | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
+                            {% else %}
+                                | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
+                            {% endif %}
                         {% endif %}
                     </p>
 

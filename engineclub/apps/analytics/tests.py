@@ -125,12 +125,12 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
     def test_tags(self):
 
-        self.assertEqual(self.analytics.tag_usage("advice"), 14)
+        self.assertEqual(self.analytics.tag_usage("advice"), 50)
 
-        expected = [('Sport and fitness', 32), ('support', 28), ('Health', 20),
-            ('Advice and counselling', 17), ('advice', 16), ('contact', 15),
-            ('mental health', 13), ('Hobbies, arts and crafts', 13),
-            ('homelessness', 13), ('counselling', 12)]
+        expected = [('support', 96.0), ('advice', 52.0), ('information', 45.0),
+            ('cafe', 45.0), ('mental health', 39.0), ('exercise', 34.0),
+            ('counselling', 34.0), ('Sport and fitness', 32.0),
+            ('young people', 32.0), ('', 31.0)]
 
         self.assertEqual(self.analytics.top_tags(), expected)
 
@@ -144,7 +144,7 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         from engine_groups.models import Account
         account = Account.objects[0]
 
-        self.assertEqual(self.analytics.account_usage(account), 21)
+        self.assertEqual(self.analytics.account_usage(account), 65)
 
         self.analytics.top_accounts()
 
@@ -161,8 +161,8 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         expected = [
            (datetime(2011, 5, 1),  42),
            (datetime(2011, 5, 29), 62),
-           (datetime(2011, 6, 26), 0),
-           (datetime(2011, 7, 24), 1),
+           (datetime(2011, 6, 26), 33),
+           (datetime(2011, 7, 24), 72),
         ]
 
         self.assertEqual(result, expected)
@@ -196,8 +196,8 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         result = self.analytics.curations_by_postcode()[:10]
 
         expected = [('AB10', 170), ('IV30', 110), ('AB11', 103),
-            ('AB25', 98), ('PA1', 81), ('AB51', 78), ('AB24', 71),
-            ('AB15', 55), ('PA2', 47), ('AB42', 45)]
+            ('PA1', 98), ('AB25', 98), ('AB51', 78), ('AB24', 71),
+            ('PA3', 55), ('G66', 55), ('AB15', 55)]
 
         self.assertEqual(result, expected)
 
@@ -330,7 +330,8 @@ class ShortcutsTestCase(unittest.TestCase):
         settings.REDIS_ANALYTICS_DATABASE = 15
 
         from analytics.shortcuts import increment_tag
-        increment_tag(self.account, "Sport and fitness")
+        increment_tag("Sport and fitness", account=self.account)
+        increment_tag("Sport and fitness")
 
     def test_increment_search(self):
 
@@ -338,4 +339,161 @@ class ShortcutsTestCase(unittest.TestCase):
         settings.REDIS_ANALYTICS_DATABASE = 15
 
         from analytics.shortcuts import increment_search
-        increment_search(self.account, "Search Query")
+        increment_search("Search Query", account=self.account)
+        increment_search("Search Query")
+
+    def test_increment_location(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
+        from analytics.shortcuts import increment_location
+        increment_location("Edinburgh", account=self.account)
+        increment_location("Edinburgh")
+
+    def test_increment_api(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
+        from analytics.shortcuts import (increment_api_location,
+            increment_api_search)
+
+        increment_api_search("Search Query", account=self.account)
+        increment_api_search("Search Query")
+        increment_api_location("Edinburgh", account=self.account)
+        increment_api_location("Edinburgh")
+
+
+class TestSearchStats(unittest.TestCase):
+
+    def setUp(self):
+
+        from analytics.models import AccountAnalytics, OverallAnalytics
+        from engine_groups.models import Account
+
+        self.account = Account.objects[2]
+
+        self.account_analytics = AccountAnalytics(self.account, redis_db=15)
+        self.overall_analytics = OverallAnalytics(redis_db=15)
+        self.redis = self.account_analytics.conn
+        self.redis.flushdb()
+
+        from django.test.client import Client
+
+        self.client = Client()
+
+    def test_web_search(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        url = reverse('resource-find')
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
+
+        # An empty query shouldn't do anything.
+        result = self.client.get(url, {
+            'post_code': '',
+            'kwords': '',
+            'result': 1,
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
+
+        result = self.client.get(url, {
+            'post_code': 'aberdeen',
+            'kwords': '',
+            'result': 1,  # any result value being present triggers the search
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
+            ('aberdeen', 1)
+        ])
+
+        # Reapeat a search query twice.
+        for i in range(2):
+            result = self.client.get(url, {
+                'post_code': 'Glasgow',
+                'kwords': 'health',
+                'result': 1,
+            })
+            self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_queries(yesterday, tomorrow), [
+            ('health', 2),
+        ])
+        self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
+            ('Glasgow', 2),
+            ('aberdeen', 1)
+        ])
+
+    def test_api_search(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        url = reverse('api-resource-search')
+
+        self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [])
+
+        result = self.client.get(url, {
+            'location': 'Glasgow',
+            'query': 'health',
+        })
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [
+            ('health', 1),
+        ])
+        self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [
+            ('Glasgow', 1),
+        ])
+
+    def test_resource_access(self):
+
+        from datetime import date, timedelta
+        from django.core.urlresolvers import reverse
+
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        oid = '4f181deabaa2b12978000000'
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [])
+
+        url = reverse('api-resource-by-id', args=[oid, ])
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
+        ])
+
+        url = reverse('resource', args=[oid, ])
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, 200)
+
+        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
+        ])
+        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+            ('4f181deabaa2b12978000000', 1),
+        ])
