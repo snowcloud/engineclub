@@ -195,7 +195,7 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
         result = self.analytics.curations_by_postcode()[:10]
 
-        expected = - [('AB10', 170), ('IV30', 110), ('AB11', 103),
+        expected = [('AB10', 170), ('IV30', 110), ('AB11', 103),
             ('PA1', 98), ('AB25', 98), ('AB51', 78), ('AB24', 71),
             ('PA3', 55), ('G66', 55), ('AB15', 55)]
 
