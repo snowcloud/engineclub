@@ -206,6 +206,7 @@ $('.resource-listing > li').each(function () {
                         {% endif %}
                     </p>
 
+                    {% if user.is_authenticated %}
                     <form action="{% if result.curation %}{% url curation-edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
                         {% csrf_token %}
                         <fieldset>
@@ -218,6 +219,8 @@ $('.resource-listing > li').each(function () {
                             <input type="submit" name="result" value="Save item">
                         </fieldset>
                     </form>
+                    {% endif %}
+
                 </li>
             {% endwith %}
         {% empty %}

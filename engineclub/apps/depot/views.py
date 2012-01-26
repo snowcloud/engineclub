@@ -280,6 +280,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
     return render_to_response(template, RequestContext(request, context))
 
 
+@login_required
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
     resource = get_one_or_404(id=ObjectId(object_id))
