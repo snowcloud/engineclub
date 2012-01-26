@@ -67,7 +67,7 @@ $('.resource-listing > li').each(function () {
     var $noteInput = $disclosureContent.find('[name=note]');
 
     // fixes for browser back button- value not set, so tags/note not showing
-    $noteInput[0].value = $noteInput[0].innerText;
+    $noteInput.value = $noteInput.innerText;
     if ($tagsInput.length)  { $tagsInput[0].value = $tagsInput[0].defaultValue; }
 
     var existingTags = [];
