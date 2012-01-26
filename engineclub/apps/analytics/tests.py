@@ -195,9 +195,17 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
         result = self.analytics.curations_by_postcode()[:10]
 
-        expected = [('AB10', 170), ('IV30', 110), ('AB11', 103),
-            ('PA1', 98), ('AB25', 98), ('AB51', 78), ('AB24', 71),
-            ('PA3', 55), ('G66', 55), ('AB15', 55)]
+        expected = [('AB10', 170),
+            ('IV30', 110),
+            ('AB11', 109),
+            ('PA1', 98),
+            ('AB25', 98),
+            ('AB51', 78),
+            ('AB24', 71),
+            ('G66', 55),
+            ('AB15', 55),
+            ('PA3', 54),
+        ]
 
         self.assertEqual(result, expected)
 
