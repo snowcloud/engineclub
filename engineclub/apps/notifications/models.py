@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django.core.mail import send_mail
 from django.http import Http404
+from django.template.loader import render_to_string
 from mongoengine import *
 from mongoengine.queryset import QuerySet
 from mongoengine.base import ValidationError
@@ -134,3 +136,19 @@ class Notification(Document):
         for notification in Notification.objects(group=self.group):
             notification.resolved = True
             notification.save()
+
+    def should_send_email(self):
+        return True
+
+    def send_email(self, request=None):
+
+        notifications_count = Notification.objects.for_account(self.account
+            ).filter(opened=False, resolved=False).count()
+
+        message = render_to_string('notifications/notification_email.txt', {
+            'account': self,
+            'notifications_count': notifications_count
+        })
+
+        send_mail('ALISS Notifications', message, 'no-reply@aliss.org',
+            [self.account.email], fail_silently=False)

@@ -235,7 +235,7 @@ class ReportingTestCase(NotificationsTestCase):
 
         # Trigger the report, which will add a notification for the user
         # so they know it has been submitted
-        report_url = reverse('resource_report', args=[self.resource.id])
+        report_url = reverse('resource-report', args=[self.resource.id])
         response = self.client.post(report_url, {
             'message': 'The resource contains incorrect information.'
         }, follow=True)
@@ -261,7 +261,7 @@ class ReportingTestCase(NotificationsTestCase):
 
         # Trigger the report, which will add a notification for the user
         # so they know it has been submitted
-        report_url = reverse('resource_report', args=[self.resource.id])
+        report_url = reverse('resource-report', args=[self.resource.id])
         response = self.client.post(report_url, {
             'message': 'The resource contains incorrect information.'
         }, follow=True)
