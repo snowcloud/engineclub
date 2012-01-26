@@ -36,7 +36,7 @@ var slider = $( '<div id="slider"></div>' ).insertAfter( loc ).slider({
 	slide: function( event, ui ) {
 		select.val(ui.value);
 		//$("#submit_button").click()
-		
+
 	}
 });
 
@@ -46,22 +46,26 @@ $('.resource-listing > li').each(function () {
     var $disclosureContent = $self.find('form.curation-add');
 
     $disclosureContent.hide();
-    $disclosureButton.click(function (event) {
+    var $disclosureHandler = function (event) {
         event.preventDefault();
         $disclosureContent.toggle();
         $disclosureButton.toggleClass('selected', $disclosureContent.is(':visible'));
-    });
+    }
+    $self.find('form.curation-add input[name=cancel]').click($disclosureHandler);
+    $disclosureButton.click($disclosureHandler);
 
 
     var $reportButton = $self.find('.resource-listing-meta a.resource-report');
     var $reportContent = $self.find('form.resource-report');
 
     $reportContent.hide();
-    $reportButton.click(function (event) {
+    var $reportContentHandler = function (event) {
         event.preventDefault();
         $reportContent.toggle();
         $reportButton.toggleClass('selected', $reportContent.is(':visible'));
-    });
+    }
+    $self.find('form.resource-report input[name=cancel]').click($reportContentHandler);
+    $reportButton.click($reportContentHandler);
 
     var $tagsInput = $disclosureContent.find('[name=tags]');
     var $noteInput = $disclosureContent.find('[name=note]');
@@ -140,11 +144,11 @@ $('.resource-listing > li').each(function () {
     };
 
     mapstraction.addControls({
-        pan: true, 
+        pan: true,
         zoom: 'small',
-        map_type: true 
+        map_type: true
     });
-    
+
     mapstraction.setCenterAndZoom(centre_pt, 9);
 
 {% endif %}
@@ -168,7 +172,7 @@ $('.resource-listing > li').each(function () {
     <fieldset>
         <legend><span>Resource details:</span></legend>
         {# <div class="ui-widget"> #}
-        
+
         <ol>
              {{ form.as_ul }}
             <li><label for="slider" id="slider_label">Make results more local:</label>
@@ -185,7 +189,7 @@ $('.resource-listing > li').each(function () {
 </form>
 
 <div id="results">
-    
+
   {% if centre %}
     <h2>Closest results for {{ centre.name }}:</h2>
   {% endif %}
@@ -234,6 +238,7 @@ $('.resource-listing > li').each(function () {
                         </fieldset>
                          <fieldset class="submit">
                             <input type="submit" name="result" value="Save item">
+                            <input type="button" name="cancel" value="Cancel">
                         </fieldset>
                     </form>
 
@@ -247,6 +252,7 @@ $('.resource-listing > li').each(function () {
                         </fieldset>
                          <fieldset class="submit">
                             <input type="submit" name="result" value="Save item">
+                            <input type="button" name="cancel" value="Cancel">
                         </fieldset>
                     </form>
                     {% endif %}
