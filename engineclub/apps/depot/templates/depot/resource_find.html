@@ -118,6 +118,23 @@ $('.resource-listing > li').each(function () {
             }, 4000);
         });
     });
+
+    $reportContent.submit(function (event) {
+        $form = $(this);
+        event.preventDefault();
+        var action = $form.attr('action');
+        var data = $form.serializeArray();
+        $.post(action, data, function (data, textStatus, jqXHR) {
+            $reportButton.text('edit curation...');
+            $form.hide();
+
+            var $flash = $('<div class="flash" style="background:#ffc;font-weight:bold">Report submitted.</div>');
+            $form.before($flash);
+            setTimeout(function () {
+                $flash.remove();
+            }, 4000);
+        });
+    });
 });
 
 {% if results and centre %}
