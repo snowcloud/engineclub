@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
 from django.utils import simplejson as json
+from django.utils.http import urlquote_plus
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
@@ -103,11 +104,17 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                 if notification.should_send_email:
                     notification.send_email()
 
-            return HttpResponseRedirect(reverse('resource', args=[resource.id]))
+            if 'next' in request.GET:
+                url = request.GET['next']
+            else:
+                url = reverse('resource', args=[resource.id])
+
+            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
     else:
         form = ResourceReportForm()
 
     return render_to_response(template, {
+        'next': urlquote_plus(request.GET.get('next', '')),
         'form': form,
         'object': resource,
         'yahoo_appid': settings.YAHOO_KEY,
@@ -297,12 +304,14 @@ def resource_find(request, template='depot/resource_find.html'):
                 curation_form = CurationForm(
                         initial={'outcome': STATUS_OK},
                         instance=curation)
+                resource_report_form = ResourceReportForm()
                 results.append({
                     'resource_result': result,
                     'curation': curation,
                     'curation_form': curation_form,
+                    'resource_report_form': resource_report_form,
                     'curation_index': curation_index
-                })                
+                })
             centre = form.centre
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})

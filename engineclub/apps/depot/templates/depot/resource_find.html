@@ -17,6 +17,11 @@
  -->
 <style>
     #slider { width: 50%; }
+
+    form.resource-report, form.curation-add {
+        display: none;
+    }
+
 </style>
 {% endblock %}
 
@@ -45,6 +50,17 @@ $('.resource-listing > li').each(function () {
         event.preventDefault();
         $disclosureContent.toggle();
         $disclosureButton.toggleClass('selected', $disclosureContent.is(':visible'));
+    });
+
+
+    var $reportButton = $self.find('.resource-listing-meta a.resource-report');
+    var $reportContent = $self.find('form.resource-report');
+
+    $reportContent.hide();
+    $reportButton.click(function (event) {
+        event.preventDefault();
+        $reportContent.toggle();
+        $reportButton.toggleClass('selected', $reportContent.is(':visible'));
     });
 
     var $tagsInput = $disclosureContent.find('[name=tags]');
@@ -177,7 +193,7 @@ $('.resource-listing > li').each(function () {
     <ol class="resource-listing">
         {% for result in results %}
             {% with result.resource_result as resource %}
-                <li>
+                <li id="resource{{ resource.id }}">
                     <p class="resource-listing-title"><a href="{% url resource object_id=resource.res_id %}">{{ resource.title }}</a></p>
                     {% if resource.event_start %}
                         <p class="event">{{ resource|idx_event_date }}</p>
@@ -204,6 +220,7 @@ $('.resource-listing > li').each(function () {
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
                         {% endif %}
+                        | <a class="resource-report" href="{% url resource-report resource.res_id %}?next={{ here }}">Report Resource</a>
                     </p>
 
                     {% if user.is_authenticated %}
@@ -213,6 +230,19 @@ $('.resource-listing > li').each(function () {
                             <legend><span>Curation details:</span></legend>
                             <ol>
                                  {{ result.curation_form.as_ul }}
+                            </ol>
+                        </fieldset>
+                         <fieldset class="submit">
+                            <input type="submit" name="result" value="Save item">
+                        </fieldset>
+                    </form>
+
+                    <form action="{% url resource-report resource.res_id %}?next={{ here }}" class="resource-report" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <legend><span>Report details:</span></legend>
+                            <ol>
+                                 {{ result.resource_report_form.as_ul }}
                             </ol>
                         </fieldset>
                          <fieldset class="submit">

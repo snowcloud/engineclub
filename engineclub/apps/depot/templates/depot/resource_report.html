@@ -58,8 +58,7 @@
 <h1>{{ object.title }}</h1>
 {% endif %}
 
-    {{ form.errors }}
-    <form method="POST" action=".">
+    <form method="POST" action=".?next={{ next }}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Report" />
