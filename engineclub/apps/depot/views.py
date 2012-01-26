@@ -317,6 +317,7 @@ def resource_find(request, template='depot/resource_find.html'):
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
     context = {
+        'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
         'centre': centre,
@@ -382,27 +383,36 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
-            
-            return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+
+            if 'next' in request.GET:
+                url = request.GET['next']
+            else:
+                url = reverse('curation', args=[resource.id, index])
+
+            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+
     else:
         initial = { 'outcome': STATUS_OK}
         form = CurationForm(initial=initial)
 
-    template_context = {'form': form}
+    template_context = {
+        'next': urlquote_plus(request.GET.get('next', '')),
+        'form': form,
+    }
 
     return render_to_response(
         template_name,
         template_context,
         RequestContext(request)
     )
-    
+
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
     resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
-    
+
     if request.method == 'POST':
         result = request.POST.get('result', '')
         if result == 'Cancel':

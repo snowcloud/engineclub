@@ -6,7 +6,7 @@
 {% block content %}
 
 
-<form class="form" action="." method="POST">{% csrf_token %}
+<form class="form" action=".?next={{ next }}" method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Curation details:</span></legend>
         <ol>
