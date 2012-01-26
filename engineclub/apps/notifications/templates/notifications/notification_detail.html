@@ -4,6 +4,10 @@
 
 {% block content %}
 
-    {{ notification.message }}
+    {{ notification.get_severity_display }} severity<br/>
+    {{ notification.type }}<br/>
+    {{ notification.message }}<br/>
+
+
 
 {% endblock %}

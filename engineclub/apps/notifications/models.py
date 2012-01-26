@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django.core.mail import send_mail
 from django.http import Http404
+from django.template.loader import render_to_string
 from mongoengine import *
 from mongoengine.queryset import QuerySet
 from mongoengine.base import ValidationError
@@ -15,6 +17,9 @@ class NotificationGroup(Document):
 class NotificationType(Document):
     name = StringField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class NotificationQuerySet(QuerySet):
 
@@ -25,15 +30,31 @@ class NotificationQuerySet(QuerySet):
         deals with it, we can strike it off for all the others.
         """
 
-        ng = NotificationGroup.objects.create()
+        # For convenience allow type to be given as a string, and we will
+        # automaticlally lookup/create the NotificationType.
+        if 'type' in kwargs and isinstance(kwargs['type'], basestring):
+            kwargs['type'], _ = NotificationType.objects.get_or_create(
+                name=kwargs['type'])
+
+        # If a group is provided (and its truthy), use that. Otherwise create
+        # a new group if more than one account is going to be notified.
+        if 'group' not in kwargs or not kwargs['group']:
+            if len(accounts) > 1:
+                kwargs['group'] = NotificationGroup.objects.create()
+            else:
+                kwargs['group'] = None
 
         notifications = []
         for account in accounts:
-            notifications.append(Notification.objects.create(account=account,
-                group=ng, **kwargs))
+            notifications.append(Notification.objects.create(
+                account=account, **kwargs))
         return notifications
 
-    def create_for_account(self, account, **kwargs):
+    def create_for_account(self, account, group=False, **kwargs):
+
+        if group:
+            kwargs['group'] = NotificationGroup.objects.create()
+
         return self.create_for_accounts([account, ], **kwargs)[0]
 
     def for_account(self, account):
@@ -115,3 +136,19 @@ class Notification(Document):
         for notification in Notification.objects(group=self.group):
             notification.resolved = True
             notification.save()
+
+    def should_send_email(self):
+        return True
+
+    def send_email(self, request=None):
+
+        notifications_count = Notification.objects.for_account(self.account
+            ).filter(opened=False, resolved=False).count()
+
+        message = render_to_string('notifications/notification_email.txt', {
+            'account': self,
+            'notifications_count': notifications_count
+        })
+
+        send_mail('ALISS Notifications', message, 'no-reply@aliss.org',
+            [self.account.email], fail_silently=False)
