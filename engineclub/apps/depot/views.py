@@ -16,7 +16,7 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from analytics.shortcuts import (increment_search, increment_location,
-    increment_resource_access)
+    increment_resource_access, increment_resource_curation)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
@@ -158,6 +158,7 @@ def resource_add(request, template='depot/resource_edit.html'):
                 resource.owner = user
                 # save will create default moderation and curation using owner acct
                 resource.save(author=user, reindex=True)
+                increment_resource_curation('resouce_add', account=user)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -230,6 +231,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             # print locationform.locations
             resource.locations = locationform.locations
             resource.save()
+
+            increment_resource_curation('resouce_edit', account=acct)
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
 
@@ -281,6 +284,9 @@ def resource_edit_complete(request, resource, template_info):
 def resource_remove(request, object_id):
     object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
+
+    user = get_account(request.user.id)
+    increment_resource_curation('resouce_remove', account=user)
     return HttpResponseRedirect(reverse('resource-list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
@@ -387,6 +393,8 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation.item_metadata.update(author=user)
             curation.resource = resource
             curation.save()
+
+            increment_resource_curation('curation_add', account=user)
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -420,7 +428,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
-            curation.save()
+            curation.save(
+            increment_resource_curation('curation_edit', account=user))
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -441,6 +450,8 @@ def curation_remove(request, object_id, index):
     resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
+
+    increment_resource_curation('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required

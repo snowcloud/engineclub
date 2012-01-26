@@ -41,3 +41,7 @@ def increment_api_resource_access(object_id, account=None):
     if not object_id:
         return
     AccountAnalytics(account).increment_api_resource_access(object_id)
+
+
+def increment_resource_curation(action_type, account=None):
+    AccountAnalytics(account).increment_resource_curation(action_type)

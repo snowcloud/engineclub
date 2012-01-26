@@ -200,6 +200,7 @@ class OverallAnalytics(BaseAnalytics):
         self.api_locations_key = 'search_api_locations'
         self.resource_access_key = 'resource_access'
         self.api_resource_access_key = 'api_resource_access'
+        self.resource_create_key = 'resource_create'
 
     def top_tags(self, *args, **kwargs):
         return self.sum_hash(self.tags_keys, *args, **kwargs)
@@ -221,6 +222,9 @@ class OverallAnalytics(BaseAnalytics):
 
     def api_top_resource(self, *args, **kwargs):
         return self.sum_hash(self.api_resource_access_key, *args, **kwargs)
+
+    def resource_curation_report(self, *args, **kwargs):
+        return self.sum_hash(self.resource_create_key, *args, **kwargs)
 
     def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
         """
@@ -288,6 +292,11 @@ class AccountAnalytics(OverallAnalytics):
 
         return super(AccountAnalytics, self).increment(self.api_resource_access_key,
             account=self.account, field=object_id, **kwargs)
+
+    def increment_resource_curation(self, action_type, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.resource_create_key,
+            account=self.account, field=action_type, **kwargs)
 
 
 class OverallMongoAnalytics(BaseAnalytics):
