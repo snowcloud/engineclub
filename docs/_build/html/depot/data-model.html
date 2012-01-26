@@ -154,10 +154,10 @@ event scheduling</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>os_id</td>
+<tr class="row-even"><td>id</td>
 <td>string</td>
 </tr>
-<tr class="row-odd"><td>label</td>
+<tr class="row-odd"><td>postcode</td>
 <td>string</td>
 </tr>
 <tr class="row-even"><td>place_name</td>
@@ -166,11 +166,17 @@ event scheduling</p>
 <tr class="row-odd"><td>lat_lon</td>
 <td>list of float [float, float]</td>
 </tr>
-<tr class="row-even"><td>os_type</td>
-<td>string [postcode, ward, district, country]</td>
+<tr class="row-even"><td>loc_type</td>
+<td>string [POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME, GOOGLE_PLACENAME]</td>
 </tr>
-<tr class="row-odd"><td>parents</td>
-<td>list of Location</td>
+<tr class="row-odd"><td>accuracy</td>
+<td>int [1-6] 1=approximate, 6=accurate</td>
+</tr>
+<tr class="row-even"><td>district</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>country_code</td>
+<td>string [ SCT, ENG, WLS, NIR, GB ]</td>
 </tr>
 </tbody>
 </table>
@@ -224,7 +230,7 @@ event scheduling</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>outcome</td>
-<td>string [&#8216;OK&#8217;, &#8216;block&#8217;, &#8216;refer&#8217;]</td>
+<td>string [&#8216;OK&#8217;, &#8216;BAD&#8217;]</td>
 </tr>
 <tr class="row-odd"><td>note</td>
 <td>string</td>
@@ -242,32 +248,30 @@ event scheduling</p>
 <col width="20%" />
 <col width="80%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head">type</th>
-</tr>
-</thead>
 <tbody valign="top">
-<tr class="row-even"><td>outcome</td>
-<td>string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]</td>
-</tr>
-<tr class="row-odd"><td>tags</td>
-<td>list of string</td>
-</tr>
-<tr class="row-even"><td>rating</td>
-<td>[not used]</td>
-</tr>
-<tr class="row-odd"><td>note</td>
-<td>string</td>
-</tr>
-<tr class="row-even"><td>data</td>
-<td>dict (dictionary with field names as keys) *</td>
-</tr>
-<tr class="row-odd"><td>item_metadata</td>
-<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
+<tr class="row-odd"><td>field name</td>
+<td>type</td>
 </tr>
 </tbody>
 </table>
+<blockquote>
+<div>outcome = StringField()
+tags = ListField(StringField(max_length=96), default=list)
+# rating - not used
+note = StringField()
+data = DictField()
+resource = ReferenceField(&#8216;Resource&#8217;)
+owner = ReferenceField(Account)
+item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)</div></blockquote>
+<p>outcome                 string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]
+tags                    list of string
+rating                  [not used]
+note                    string
+data                    dict (dictionary with field names as keys) *
+resource                <a class="reference internal" href="#resource"><em>Resource</em></a>
+owner                   <a class="reference internal" href="#account"><em>Account</em></a>
+item_metadata           <a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a>
+==================      =========================================================================</p>
 <p>* This will be used to allow trusted accounts to add their own metadata using their own schema.
 Data will be converted to required formats on client access (may be cached for performance)</p>
 </div>
@@ -308,8 +312,8 @@ Data will be converted to required formats on client access (may be cached for p
 <p>See code in <a class="reference external" href="http://github.com/snowcloud/engine-groups">engine-groups app</a></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
-<col width="80%" />
+<col width="18%" />
+<col width="82%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -317,14 +321,35 @@ Data will be converted to required formats on client access (may be cached for p
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>title</td>
+<tr class="row-even"><td>name</td>
 <td>string</td>
 </tr>
-<tr class="row-odd"><td>slug</td>
+<tr class="row-odd"><td>email</td>
+<td>string [email address format]</td>
+</tr>
+<tr class="row-even"><td>url</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-odd"><td>description</td>
 <td>string</td>
 </tr>
-<tr class="row-even"><td>members</td>
+<tr class="row-even"><td>permissions</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>api_key</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-even"><td>api_password</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>members</td>
 <td>list of <a class="reference internal" href="#membership"><em>Membership</em></a></td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>string [&#8216;member&#8217;, &#8216;admin&#8217;, &#8216;mentor&#8217;, &#8216;ok&#8217;, &#8216;suspended&#8217;, &#8216;closed&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>collections</td>
+<td><a class="reference internal" href="#collection"><em>Collection</em></a></td>
 </tr>
 </tbody>
 </table>
@@ -351,6 +376,62 @@ Data will be converted to required formats on client access (may be cached for p
 </tbody>
 </table>
 </div>
+<div class="section" id="collectionmember">
+<span id="id11"></span><h2>CollectionMember<a class="headerlink" href="#collectionmember" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>account</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>collection</td>
+<td><a class="reference internal" href="#collection"><em>Collection</em></a></td>
+</tr>
+<tr class="row-even"><td>role</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="collection">
+<span id="id12"></span><h2>Collection<a class="headerlink" href="#collection" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-even"><td>accounts</td>
+<td>list of <a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -372,6 +453,8 @@ Data will be converted to required formats on client access (may be cached for p
 <li><a class="reference internal" href="#itemmetadata">ItemMetadata</a></li>
 <li><a class="reference internal" href="#account">Account</a></li>
 <li><a class="reference internal" href="#membership">Membership</a></li>
+<li><a class="reference internal" href="#collectionmember">CollectionMember</a></li>
+<li><a class="reference internal" href="#collection">Collection</a></li>
 </ul>
 </li>
 </ul>
