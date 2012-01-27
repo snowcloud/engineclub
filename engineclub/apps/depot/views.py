@@ -428,8 +428,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
-            curation.save(
-            increment_resource_crud('curation_edit', account=user))
+            curation.save()
+            increment_resource_crud('curation_edit', account=user)
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:

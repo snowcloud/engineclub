@@ -303,7 +303,10 @@ class AccountAnalytics(OverallAnalytics):
 
     def __init__(self, account, *args, **kwargs):
         super(AccountAnalytics, self).__init__(*args, **kwargs)
-        self.account = account
+        if account:
+            self.account = account.id
+        else:
+            self.account = None
 
     def increment_tags(self, tag_name, **kwargs):
 
