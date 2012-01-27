@@ -58,12 +58,14 @@ Location
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-os_id                   string
-label                   string
+id                      string
+postcode                string
 place_name              string
 lat_lon                 list of float [float, float]
-os_type                 string [postcode, ward, district, country]
-parents                 list of Location
+loc_type                string [POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME, GOOGLE_PLACENAME]
+accuracy				int [1-6] 1=approximate, 6=accurate 
+district				string
+country_code			string [ SCT, ENG, WLS, NIR, GB ]
 ==================      =========================================================================
 
 ref source + URI
@@ -101,7 +103,7 @@ Moderation
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-outcome                 string ['OK', 'block', 'refer']
+outcome                 string ['OK', 'BAD']
 note                    string
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
@@ -114,11 +116,24 @@ Curation
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
+
+    outcome = StringField()
+    tags = ListField(StringField(max_length=96), default=list)
+    # rating - not used
+    note = StringField()
+    data = DictField()
+    resource = ReferenceField('Resource')
+    owner = ReferenceField(Account)
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+
 outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
 note                    string
 data                    dict (dictionary with field names as keys) *
+resource                :ref:`Resource`
+owner                   :ref:`Account`
 item_metadata           :ref:`itemMetadata`
 ==================      =========================================================================
 
@@ -152,9 +167,16 @@ See code in `engine-groups app`_
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-title                   string 
-slug                    string
+name                   	string 
+email                  	string [email address format]
+url                    	string [web URI format]
+description			   	string
+permissions				[not used]
+api_key					[not used]
+api_password			[not used]
 members                 list of :ref:`Membership`
+status					string ['member', 'admin', 'mentor', 'ok', 'suspended', 'closed']
+collections				:ref:`Collection`
 ==================      =========================================================================
 
 .. _Membership:
@@ -165,8 +187,37 @@ Membership
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-account                 :ref:`Account` 
+account                 :ref:`Account`
 role                    string
+==================      =========================================================================
+
+.. _CollectionMember:
+
+CollectionMember
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+account                 :ref:`Account`
+collection 				:ref:`Collection`
+role                    string
+==================      =========================================================================
+
+
+.. _Collection:
+
+Collection
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+name					string
+owner					:ref:`Account`
+tags					list of string
+locations				[not used]
+accounts				list of :ref:`Account`
 ==================      =========================================================================
 
 

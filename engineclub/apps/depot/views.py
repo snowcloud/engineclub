@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
 from django.utils import simplejson as json
+from django.utils.http import urlquote_plus
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
@@ -15,11 +16,13 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD, lookup_postcode
+    STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
-    TagsForm, ShelflifeForm, CurationForm
-    
+    TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
+from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
+    SEVERITY_HIGH)
+
 from engine_groups.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
@@ -47,6 +50,77 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
+
+def resource_report(request, object_id, template='depot/resource_report.html'):
+    """
+    View for reporting a curation when a user finds it to be malformed or
+    incorrect.
+
+    NOTE: Some of this needs to be abstracted out, its gotten a bit complicated.
+    """
+
+    resource = get_one_or_404(id=ObjectId(object_id))
+
+    if request.method == 'POST':
+        form = ResourceReportForm(request.POST)
+        if form.is_valid():
+
+            accounts = set(cur.owner for cur in resource.curations)
+            # The owner should always have a curation, however, to be safe
+            # make sure they are added.
+            accounts.add(resource.owner)
+
+            severity = SEVERITY_MEDIUM
+            group = None
+
+            # If the user is logged in, they get a notification so they
+            # can track the issue. Their compliant is also treated more
+            # seriously and a moderation is created to mark the resource as
+            # bad.
+            if request.user.is_authenticated():
+                reporter_account = get_account(request.user.id)
+
+                notification = Notification.objects.create_for_account(
+                    reporter_account, group=True, type="report",
+                    severity=SEVERITY_LOW, message="Report submitted",
+                    related_document=resource)
+
+                if notification.should_send_email():
+                    notification.send_email()
+
+                group = notification.group
+                severity = SEVERITY_HIGH
+
+                mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+                mod.item_metadata.author = reporter_account
+                resource.moderations.append(mod)
+                resource.save()
+
+            notifications = Notification.objects.create_for_accounts(accounts,
+                group=group, type="report", severity=severity,
+                related_document=resource, message=form.cleaned_data['message'])
+
+            for notification in notifications:
+                if notification.should_send_email:
+                    notification.send_email()
+
+            if 'next' in request.GET:
+                url = request.GET['next']
+            else:
+                url = reverse('resource', args=[resource.id])
+
+            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+    else:
+        form = ResourceReportForm()
+
+    return render_to_response(template, {
+        'next': urlquote_plus(request.GET.get('next', '')),
+        'form': form,
+        'object': resource,
+        'yahoo_appid': settings.YAHOO_KEY,
+        'google_key': settings.GOOGLE_KEY,
+    }, RequestContext(request))
+
 
 def _template_info(popup):
     """docstring for _template_info"""
@@ -230,12 +304,14 @@ def resource_find(request, template='depot/resource_find.html'):
                 curation_form = CurationForm(
                         initial={'outcome': STATUS_OK},
                         instance=curation)
+                resource_report_form = ResourceReportForm()
                 results.append({
                     'resource_result': result,
                     'curation': curation,
                     'curation_form': curation_form,
+                    'resource_report_form': resource_report_form,
                     'curation_index': curation_index
-                })                
+                })
             centre = form.centre
     else:
         form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
@@ -280,6 +356,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
     return render_to_response(template, RequestContext(request, context))
 
 
+@login_required
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
     resource = get_one_or_404(id=ObjectId(object_id))
