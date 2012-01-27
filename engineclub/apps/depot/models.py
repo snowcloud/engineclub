@@ -278,7 +278,8 @@ class Resource(Document):
         for obj in self.curations:
             tags.extend(obj.tags)
             accounts.append(unicode(obj.owner.id))
-            collections.extend(obj.owner.collections)
+            if hasattr(obj.owner, 'collections'):
+                collections.extend(obj.owner.collections)
             description.extend([obj.note or u'', unicode(obj.data) or u''])
 
         # except AttributeError:
