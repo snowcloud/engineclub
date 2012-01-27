@@ -233,19 +233,19 @@ class AccountStatsTestCase(unittest.TestCase):
         # Add 30
         for i in range(1, 31):
             dt = datetime(2011, 11, i)
-            self.analytics.increment_tag("Sport and fitness",
+            self.analytics.increment_tags("Sport and fitness",
                 date_instance=dt, count=i)
 
         # Add 25
         for i in range(1, 26):
             dt = datetime(2011, 11, i)
-            self.analytics.increment_tag("Mental Health",
+            self.analytics.increment_tags("Mental Health",
                 date_instance=dt, count=i)
 
         # Add 15
         for i in range(11, 26):
             dt = datetime(2011, 11, i)
-            self.analytics.increment_tag("Hobbies, arts and crafts",
+            self.analytics.increment_tags("Hobbies, arts and crafts",
                 date_instance=dt, count=i)
 
         start_date = datetime(2011, 11, 1)
@@ -291,16 +291,16 @@ class AccountStatsTestCase(unittest.TestCase):
 
         # Increment A-K for both
         for i in range(0, 11):
-            self.analytics.increment_tag(uppercase[i], date_instance=dt, count=i)
-            self.analytics2.increment_tag(uppercase[i], date_instance=dt, count=i)
+            self.analytics.increment_tags(uppercase[i], date_instance=dt, count=i)
+            self.analytics2.increment_tags(uppercase[i], date_instance=dt, count=i)
 
         # Increment A-F again for account 1
         for i in range(0, 6):
-            self.analytics.increment_tag(uppercase[i], date_instance=dt, count=i)
+            self.analytics.increment_tags(uppercase[i], date_instance=dt, count=i)
 
         # Increment G-K again for account 2
         for i in range(6, 11):
-            self.analytics2.increment_tag(uppercase[i], date_instance=dt, count=i)
+            self.analytics2.increment_tags(uppercase[i], date_instance=dt, count=i)
 
         account1_result = self.analytics.top_tags(dt, dt)
         account2_result = self.analytics2.top_tags(dt, dt)
@@ -332,45 +332,45 @@ class ShortcutsTestCase(unittest.TestCase):
         self.redis = self.account_analytics.conn
         self.redis.flushdb()
 
-    def test_increment_tag(self):
+    def test_increment_tags(self):
 
         from django.conf import settings
         settings.REDIS_ANALYTICS_DATABASE = 15
 
-        from analytics.shortcuts import increment_tag
-        increment_tag("Sport and fitness", account=self.account)
-        increment_tag("Sport and fitness")
+        from analytics.shortcuts import increment_tags
+        increment_tags("Sport and fitness", account=self.account)
+        increment_tags("Sport and fitness")
 
-    def test_increment_search(self):
-
-        from django.conf import settings
-        settings.REDIS_ANALYTICS_DATABASE = 15
-
-        from analytics.shortcuts import increment_search
-        increment_search("Search Query", account=self.account)
-        increment_search("Search Query")
-
-    def test_increment_location(self):
+    def test_increment_queries(self):
 
         from django.conf import settings
         settings.REDIS_ANALYTICS_DATABASE = 15
 
-        from analytics.shortcuts import increment_location
-        increment_location("Edinburgh", account=self.account)
-        increment_location("Edinburgh")
+        from analytics.shortcuts import increment_queries
+        increment_queries("Search Query", account=self.account)
+        increment_queries("Search Query")
+
+    def test_increment_locations(self):
+
+        from django.conf import settings
+        settings.REDIS_ANALYTICS_DATABASE = 15
+
+        from analytics.shortcuts import increment_locations
+        increment_locations("Edinburgh", account=self.account)
+        increment_locations("Edinburgh")
 
     def test_increment_api(self):
 
         from django.conf import settings
         settings.REDIS_ANALYTICS_DATABASE = 15
 
-        from analytics.shortcuts import (increment_api_location,
-            increment_api_search)
+        from analytics.shortcuts import (increment_api_locations,
+            increment_api_queries)
 
-        increment_api_search("Search Query", account=self.account)
-        increment_api_search("Search Query")
-        increment_api_location("Edinburgh", account=self.account)
-        increment_api_location("Edinburgh")
+        increment_api_queries("Search Query", account=self.account)
+        increment_api_queries("Search Query")
+        increment_api_locations("Edinburgh", account=self.account)
+        increment_api_locations("Edinburgh")
 
 
 class TestSearchStats(unittest.TestCase):
@@ -483,15 +483,15 @@ class TestSearchStats(unittest.TestCase):
 
         oid = '4f181deabaa2b12978000000'
 
-        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
-        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_resources(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [])
 
         url = reverse('api-resource-by-id', args=[oid, ])
         result = self.client.get(url)
         self.assertEqual(result.status_code, 200)
 
-        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [])
-        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+        self.assertEqual(analytics.top_resources(yesterday, tomorrow), [])
+        self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [
             ('4f181deabaa2b12978000000', 1),
         ])
 
@@ -499,9 +499,9 @@ class TestSearchStats(unittest.TestCase):
         result = self.client.get(url)
         self.assertEqual(result.status_code, 200)
 
-        self.assertEqual(analytics.top_resource(yesterday, tomorrow), [
+        self.assertEqual(analytics.top_resources(yesterday, tomorrow), [
             ('4f181deabaa2b12978000000', 1),
         ])
-        self.assertEqual(analytics.api_top_resource(yesterday, tomorrow), [
+        self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [
             ('4f181deabaa2b12978000000', 1),
         ])
