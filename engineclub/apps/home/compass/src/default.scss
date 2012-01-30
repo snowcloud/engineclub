@@ -100,7 +100,7 @@ a.github {
 
 form {
 	label {
-		margin: 1em 0 0;
+		margin-bottom: 0;
 	}
 	.helptext {
 		color: #797979;
@@ -108,7 +108,68 @@ form {
 		//font-size: 90%;
 		display: block;
 	}
+	label + input.input-text, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
+		margin-top: 0px;
+	}
 }
+form.nice div.form-field.error small, form.nice small.error {
+	margin-top: 0;
+}
+
+#map {
+    height: 300px;
+    //width: auto;
+    //float: right;
+}
+/* @group My Group */
+#results ul, #results ol {
+    list-style: none;
+    margin: 0;
+}
+
+.resource-listing {
+    //font-size: 0.9em;
+    padding-top: 1em;
+    color: #5e5e5e;
+    p {
+        //font-size: 1.2em;
+        //margin-bottom: 0.5em;
+    }
+    li {
+        border-bottom: 1px solid #e1dbca;
+        //margin-bottom: 0.6em;
+        //padding-bottom: 0.3em;
+    }
+}
+.resource-listing-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+    padding-bottom: 0.5em;
+}
+li.resource-listing-locs {
+    border-bottom-style: none;
+    list-style-type: circle;
+    margin-left: 1.5em;
+}
+.resource-listing-meta, li.resource-listing-locs {
+    font-size: 0.8em;
+    color: #085591;
+}
+.resource-description {
+    //padding: 2em 0em;
+	overflow: hidden;
+}
+li.location-listing-item {
+    xlist-style-type: square;
+    xmargin-left: 1.5em;
+}
+.location-label {
+    background-color: #f0dbc4;
+    padding: 0.4em;
+}
+/* @end */
+
 .site-footer.row {
     border-top: 1px solid #c3c2c3;
     font-size: 0.8em;
@@ -161,50 +222,7 @@ div.usermessage {
     //float: none;
     //margin-top: 2em;
 //}
-#results ul, #results ol {
-    list-style: none;
-    margin: 0;
-}
 
-.resource-listing {
-    //font-size: 0.9em;
-    color: #5e5e5e;
-    p {
-        //font-size: 1.2em;
-        //margin-bottom: 0.5em;
-    }
-    li {
-        border-bottom: 1px solid #e1dbca;
-        //margin-bottom: 0.6em;
-        //padding-bottom: 0.3em;
-    }
-}
-.resource-listing-title {
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-bottom: 0 !important;
-    padding-bottom: 0.5em;
-}
-li.resource-listing-locs {
-    border-bottom-style: none;
-    list-style-type: circle;
-    margin-left: 1.5em;
-}
-.resource-listing-meta, li.resource-listing-locs {
-    font-size: 0.8em;
-    color: #085591;
-}
-.resource-description {
-    padding: 2em 0em;
-}
-li.location-listing-item {
-    xlist-style-type: square;
-    xmargin-left: 1.5em;
-}
-.location-label {
-    background-color: #f0dbc4;
-    padding: 0.4em;
-}
 #map td {
     background-color: #fff;
     border: 0 none;
