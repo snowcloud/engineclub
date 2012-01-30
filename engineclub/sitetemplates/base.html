@@ -33,6 +33,14 @@
 
     <!-- container -->
     <div class="container">
+        <div class="row">
+            <div class="twelve columns">
+                <h1 class="site-logo">aliss</h1>
+            </div>
+        </div>
+        {% block nav-home %}<p><a href="/" class="nice medium radius blue button">home</a></p>{% endblock %}
+        
+
         <div class="row breadcrumbs">
             {% block breadcrumbs %}{% endblock %}
         </div>
@@ -51,19 +59,11 @@
 
         {% block content %}&nbsp;{% endblock %}
         </div>
-    <div class="site-footer">
-        <div class="row">
-            <hr />
-
-            {% comment %}
-            {% if user.is_staff %}
-                <p><a href="/admin/" class="">Admin</a></p>
-            {% endif %}
-            {% endcomment %}
-
-            <p><a href="http://www.ltcas.org.uk" class="">LTCAS</a></p>
-            <p>CreativeCommons</p>
-        </div>
+    <div class="site-footer row">
+        <ul>
+            <li><a href="#">Long Term Conditions Alliance Scotland</a></li>
+            <li><a href="#"><a href="#">Terms &amp; conditions</a></a></li>
+        </ul>
     </div>
     </div>
     <!-- container -->

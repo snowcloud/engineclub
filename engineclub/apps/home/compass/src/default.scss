@@ -5,43 +5,26 @@
 // set baseline size in _rem.scss to body size, eg 16px
 @import "rem";
 
-//@import "320-up";
-//@import "480-up";
-//@import "780-up";
-//@import "960-up";
-
 // using:
 // 480px for tablet
-// 780px for desktop
+// 767px for desktop
 
-// in foundation.css
-// html { font-size: 62.5%; }
-// 	body { background: #fff; font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif; font-size: 13px; line-height: 18px; color: #555; position: relative; -webkit-font-smoothing: antialiased; }
-
-// from Richard Rutter, body 16px but 100% for IE (in ie.css)
-// http://www.alistapart.com/articles/howtosizetextincss
-
-// using html cos foundation.css sets it
-
-html {
-    font-size: 16px;
-}
 
 body {
     color: #222;
-    font-family: chaparral-pro, Times New Roman, serif;
-    // 'lucida grande', tahoma, verdana, arial, sans-serif;
-    // font: 16px/24px "ff-meta-web-pro-1","ff-meta-web-pro-2", Arial, "Helvetica Neue", sans-serif
-    font-size: 100%;
-    line-height: 1.125em;
+    //font-family: chaparral-pro, Times New Roman, serif;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    //font-size: 100%;
+    //line-height: 1.125em;
+	background-color: #fef9f0;
 }
 
 // foundation.css
 // mobile
-@media handheld, only screen and (max-width: 767px) {
+//@media handheld, only screen and (max-width: 767px) {
 	//body, p {  font-size: 15px; font-size: 1.5rem; line-height: 1.4; }
-	body, p {  font-size: 110%; line-height: 1.125em; }
-}
+	//body, p {  font-size: 110%; line-height: 1.125em; }
+//}
 
 
 h1.site-logo {
@@ -52,12 +35,16 @@ h1.site-logo {
         //font-size: 8.6rem;
         color: red;
     }
-    @media screen and (min-width: 780px) {
+    @media screen and (min-width: 767px) {
         //padding-top: 0.4em;
         @include rem('font-size', 90px);
         color: green;
     }
 }
+body.home h1 {
+	@include rem('font-size', 75px);
+}
+
 h1, h2, h3 {
     font-weight: 600 // semi-bold;
 }
@@ -74,26 +61,13 @@ p.blurb {
 	    @include rem('font-size', 40px);
     }
 }
-.button.fixed {
-    //width: 10em;
-    //text-align: center;
-}
-.purple.button {
-    background-color: #a33daa;
-}
-.nice.purple.button {
-    border: 1px solid #8a3391;
-}
-.pres .row {
-    //border-top: 1px solid #d6e6d6;
-    padding-bottom: 2em;
-}
-.pres h2 {
-    border-top: 1px solid #d6e6d6;
-}
+
+/* @group links */
+
 a {
     color: #0b5590;
 }
+
 a, a:hover, a:visited {
     border-bottom: 1px dotted #919191;
 }
@@ -121,11 +95,39 @@ a.blog {
 a.github {
     background: url(../images/icons/github_32.png) no-repeat left bottom;
 }
-.site-footer .row {
-    //border-top: 1px solid #c3c2c3;
+
+/* @end */
+
+form {
+	label {
+		margin: 1em 0 0;
+	}
+	.helptext {
+		color: #797979;
+		@include rem('font-size', 18px);
+		//font-size: 90%;
+		display: block;
+	}
+}
+.site-footer.row {
+    border-top: 1px solid #c3c2c3;
     font-size: 0.8em;
     margin-top: 2em;
+	text-align: center;
 }
+
+
+/* My Comment 
+
+.pres .row {
+    //border-top: 1px solid #d6e6d6;
+    padding-bottom: 2em;
+}
+
+
+.pres h2 {
+    border-top: 1px solid #d6e6d6;
+
 .flatpage ul {
     list-style: disc outside;
     margin-left: 1.4em;
@@ -242,3 +244,4 @@ table.metadata {
 .del-link {
     background: url(../media/img/delete.png) no-repeat right center;
 }
+*/

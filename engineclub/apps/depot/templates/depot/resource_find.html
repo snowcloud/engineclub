@@ -156,29 +156,29 @@ $('.resource-listing > li').each(function () {
 
 <h1>Find Resources</h1>
 
-<div class="usermessage">
+<!-- <div class="usermessage">
     <p>This is a demonstration only, and shows how any web site might access the ALISS engine.</p>
     <p>ALISS demonstration data is mainly from <a href="/groups/4d9b9a4489cb16665c000002/">Grampian</a> and <a href="/groups/4d9fbd5789cb1673fb000000/">Renfrewshire</a>. Searches in other areas may produce strange results!</p>
 
 </div>
-
+ -->
 <div id="slider"></div>
 
-<form class="form" action="." method="GET" id="search_form">{% csrf_token %}
+<form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
     <fieldset>
-        <legend><span>Resource details:</span></legend>
-        {# <div class="ui-widget"> #}
-        
-        <ol>
-             {{ form.as_ul }}
-            <li><label for="slider" id="slider_label">Make results more local:</label>
-            <span class="helptext">drag slider to the right to make location more important than search text.</span>
-            </li>
-        </ol>
-        {# </div> #}
-    </fieldset>
+        <legend><span>Type in a place, post code, or words:</span></legend>
+        {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+        {% endfor %}
+        {% for field in form %}
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            <span class="helptext">{{ field.help_text }}</span>
+        {% endfor %}
 
-     <fieldset class="submit">
+        <label for="slider" id="slider_label">Make results more local:</label>
+        <span class="helptext">drag slider to the right to make location more important than search text.</span>
+            
         <input type="submit" name="result" value="Find items" id="submit_button">
         <!-- input type="submit" name="result" value="Cancel" -->
     </fieldset>

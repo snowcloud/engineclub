@@ -4,23 +4,30 @@
 
 {% block body_class %}{{block.super}} home{% endblock %}
 
+{% block nav-home %}{% endblock %}
+
 {% block content %}
-    <div class="twelve columns">
-        <h1 class="site-logo">aliss</h1>
-        <p class="blurb">access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p>
 
-        <hr />
-        <p><a href="/info/" class="nice fixed round blue button">Find out more</a></p>
-        <p><a href="/depot/resource/find/" class="nice fixed round blue button">Search</a></p>
-        <p><a href="/cab/" class="nice fixed round blue button">My ALISS</a></p>
+    <div class="row"><p>access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p></div>
 
-        <hr />
-        <p><a href="/contact/" class="action email">Contact us</a></p>
-        <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
-        <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
-        <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
 
+    <!-- ############################## PHONES ################################# -->
+    <div class="show-on-phones">
+
+        <div class="row">
+            <div class="twelve columns">
+                <p><a href="/info/" class="nice radius black button">Find out more</a></p>
+                <p><a href="{% url resource-find %}" class="nice radius black button">Search</a></p>
+                <p><a href="{% url contact %}" class="nice radius black button">Contact us</a></p>
+                <p><a href="#" class="nice radius black button">myAliss</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
+            <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
+            <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
+        </div>
     </div>
-    <div class="hide-on-phones">hide-on-phones</div>
+
 {% endblock %}        
 
