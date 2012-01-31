@@ -98,9 +98,9 @@ a.github {
 
 /* @end */
 
-form {
+/*form {
 	label {
-		margin-bottom: 0;
+		//margin-bottom: 0;
 	}
 	.helptext {
 		color: #797979;
@@ -108,14 +108,19 @@ form {
 		//font-size: 90%;
 		display: block;
 	}
-	label + input.input-text, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
-		margin-top: 0px;
+	label + input, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
+		//margin-top: 0px;
+		//font-size: 18px;
+		//padding: 6px 2% 4px;
+		//width:  96%;
 	}
 }
 form.nice div.form-field.error small, form.nice small.error {
-	margin-top: 0;
+	//margin-top: 0;
 }
-
+label + input, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
+//margin-top: -9px;
+}*/
 #map {
     height: 300px;
     //width: auto;

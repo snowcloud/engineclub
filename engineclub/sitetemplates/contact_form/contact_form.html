@@ -9,21 +9,22 @@
 
 <p>To send us a message, just fill out the form below (all fields are required).</p>
 
-<div class="alert-box warning">We do not allow any web links (URLs) in a message- it helps prevent spam.</div>
+<div class="alert-box warning hide-on-phones">We do not allow any web links (URLs) in a message- it helps prevent spam.</div>
 
-
-{% if form.errors %}
-<p class="error">Please correct the errors below:</p>
-{% endif %}
 
 <form class="nice" method="post">{% csrf_token %}
     <fieldset>
-        <legend><span>Your message:</span></legend>
+        <legend>{% if form.errors %}<span class="">Please correct the errors below:
+        {% else%}<span>Your message:{% endif %}</span></legend>
 
-        {% for field in form %}
-            {{ field.label_tag }} {{ field }}
-            {% if field.errors %}<small class="error">{{ field.errors|join:", " }}</small>{% endif %}
-        {% endfor %}
+            <label for="id_name">Your name</label> <input id="id_name" type="text" class="required input-text" name="name" maxlength="100" value="{{form.name.value}}">
+            {% if form.name.errors %}<small class="error">{{ form.name.errors|join:", " }}</small>{% endif %}
+
+            <label for="id_email">Your email address</label> <input id="id_email" type="text" class="required input-text" name="email" maxlength="200" value="{{form.email.value}}">
+            {% if form.email.errors %}<small class="error">{{ form.email.errors|join:", " }}</small>{% endif %}
+
+            <label for="id_body">Your message</label> <textarea id="id_body" rows="10" cols="40" name="body" class="required">{{form.body.value}}</textarea>
+            {% if form.body.errors %}<small class="error">{{ form.body.errors|join:", " }}</small>{% endif %}
 
         <p><input id="id_submit" type="submit" value="Send your messsage" /></p>
     
