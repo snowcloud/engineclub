@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('engine_groups.urls')),
     (r'^notifications/', include('notifications.urls')),
+    (r'^invite/', include('invites.urls')),
 
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact_form'),

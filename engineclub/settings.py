@@ -165,6 +165,7 @@ INSTALLED_APPS = (
     'contact_form',
     'sitedown',
     'notifications',
+    'invites',
 
 )
 # override any of the above in your own settings_local.py
