@@ -127,6 +127,7 @@ def resource_search(request):
         
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
+    collections = request.REQUEST.get('collections', '')
     event = request.REQUEST.get('event', None)
     query = request.REQUEST.get('query')
     max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
@@ -154,7 +155,15 @@ def resource_search(request):
         result_code = 10
         errors.append('Param \'event\' must be * if present.')
     if not errors:
-        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split(), event=event)
+        loc, resources = find_by_place_or_kwords(
+            location, 
+            query, 
+            boost_location, 
+            start=start, 
+            max=int(max), 
+            accounts=accounts.split(), 
+            collections=collections.split(), 
+            event=event)
         if location and not loc:
             result_code = 10
             errors.append('Location \'%s\' not found.' % location)
