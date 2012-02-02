@@ -84,7 +84,7 @@ function aliss_search(data, div_id, paginate, google_map){
         'max':4,
         'start':0,
         'boostlocation': 10,
-        'accounts': '4e1d7e9689cb164b5a000000'
+        'collections': '4f2a74b2baa2b11356000000'
     };
 
     $.extend(defaults, data);
@@ -131,7 +131,7 @@ function aliss_search(data, div_id, paginate, google_map){
                     if (!url){
                         url = 'http://aliss.org';
                     }
-                    items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p></li>');
+                    items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p><a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);

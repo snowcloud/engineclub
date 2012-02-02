@@ -22,3 +22,8 @@ h1{
 img.logo{
     float: left;
 }
+
+a.report{
+    font-size: 0.9em;
+    font-style: italic;
+}
