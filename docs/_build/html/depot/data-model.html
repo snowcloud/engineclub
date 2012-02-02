@@ -248,30 +248,38 @@ event scheduling</p>
 <col width="20%" />
 <col width="80%" />
 </colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
 <tbody valign="top">
-<tr class="row-odd"><td>field name</td>
-<td>type</td>
+<tr class="row-even"><td>outcome</td>
+<td>string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-even"><td>rating</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>note</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>data</td>
+<td>dict (dictionary with field names as keys) *</td>
+</tr>
+<tr class="row-odd"><td>resource</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
+</tr>
+<tr class="row-even"><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>item_metadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<div>outcome = StringField()
-tags = ListField(StringField(max_length=96), default=list)
-# rating - not used
-note = StringField()
-data = DictField()
-resource = ReferenceField(&#8216;Resource&#8217;)
-owner = ReferenceField(Account)
-item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)</div></blockquote>
-<p>outcome                 string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]
-tags                    list of string
-rating                  [not used]
-note                    string
-data                    dict (dictionary with field names as keys) *
-resource                <a class="reference internal" href="#resource"><em>Resource</em></a>
-owner                   <a class="reference internal" href="#account"><em>Account</em></a>
-item_metadata           <a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a>
-==================      =========================================================================</p>
 <p>* This will be used to allow trusted accounts to add their own metadata using their own schema.
 Data will be converted to required formats on client access (may be cached for performance)</p>
 </div>
