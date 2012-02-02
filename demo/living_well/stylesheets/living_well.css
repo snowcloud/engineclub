@@ -13,3 +13,12 @@ h1{
 h5{
 	margin-bottom: 1em;
 }
+
+h1{
+    width: 600px;
+    float: left ;
+}
+
+img.logo{
+    float: left;
+}
