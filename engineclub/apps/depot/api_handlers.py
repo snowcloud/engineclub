@@ -128,6 +128,8 @@ def resource_search(request):
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     collections = request.REQUEST.get('collections', '')
+    if collections:
+        accounts = ''
     event = request.REQUEST.get('event', None)
     query = request.REQUEST.get('query')
     max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
@@ -174,6 +176,7 @@ def resource_search(request):
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
             'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
+            'accounts': accounts, 'collections': collections,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
