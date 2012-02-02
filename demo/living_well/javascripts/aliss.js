@@ -131,7 +131,7 @@ function aliss_search(data, div_id, paginate, google_map){
                     if (!url){
                         url = 'http://aliss.org';
                     }
-                    items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p><a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
+                    items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p></li><hr/>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);
