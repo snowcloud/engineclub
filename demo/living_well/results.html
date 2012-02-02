@@ -28,7 +28,9 @@
         <div class="sixteen columns">
 
             <h1>Living Well @ the Library</h1>
-            <h5><a href="./">Start Again</a> | <a href="add.html">Add something</a> | <a href="talk.html">Talk to someone now</a></h5>
+
+            <span class="clear"></span>
+            <h5><a href="./">Start Again</a> |<!--  <a href="add.html">Add something</a> | --><a href="talk.html">Talk to someone now</a></h5>
 
             <div class="column two-thirds alpha">
 
@@ -81,22 +83,32 @@
             }
             $('#aliss_results').before(title);
 
-            aliss_search({
-                'location' : loc,
-                'query' : query
-            }, '#aliss_results', true);
+            $('#map_canvas').css({height: '20em'});
+
+            var google_map = new google.maps.Map(document.getElementById("map_canvas"), {
+              zoom: 13,
+              mapTypeId: google.maps.MapTypeId.ROADMAP,
+              center: new google.maps.LatLng(55.848125, -4.437196)
+            });
+
+            $(function(){
+                aliss_search({
+                    'location' : loc,
+                    'query' : query
+                }, '#aliss_results', true, google_map);
+            });
 
             aliss_search({
                 'location' : loc,
                 'query' : query,
                 'event' : '*'
-            }, '#aliss_events');
+            }, '#aliss_events', false, google_map);
 
             aliss_search({
                 'location' : loc,
                 'query' : query + ",books",
                 'max': 1
-            }, '#aliss_books');
+            }, '#aliss_books', false, google_map);
 
         });
 
