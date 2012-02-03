@@ -329,7 +329,10 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
     """docstring for curation_detail"""
     if index:
         resource = get_one_or_404(id=ObjectId(object_id))
-        curation = resource.curations[int(index)]
+        try:
+            curation = resource.curations[int(index)]
+        except (IndexError, ValueError):
+            raise Http404, "Curation with index %s not found" % index
     else:
         curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))        
         resource = curation.resource
