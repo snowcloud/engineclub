@@ -19,7 +19,7 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
-    TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
+    TagsForm, ShelflifeForm, CurationForm, ResourceReportForm, dict_form_factory
 from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
@@ -405,23 +405,26 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 
     resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
-    
+
     if request.method == 'POST':
+        meta_form = dict_form_factory(object.data, data=request.POST)
         result = request.POST.get('result', '')
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
         form = CurationForm(request.POST, instance=object)
-        if form.is_valid():
+        if form.is_valid() and meta_form.is_valid():
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
+            curation.data = meta_form.save()
             curation.save()
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
         form = CurationForm(instance=object)
+        meta_form = dict_form_factory(object.data)
 
-    template_context = {'form': form}
+    template_context = {'form': form, 'meta_form': meta_form, }
 
     return render_to_response(
         template_name,

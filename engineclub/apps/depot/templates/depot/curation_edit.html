@@ -5,12 +5,27 @@
 
 {% block content %}
 
+<style type="text/css">
+.metadata li{
+    clear: none;
+    width: 50%;
+}
+.metadata textarea{
+    height: 75px;
+}
+</style>
 
 <form class="form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Curation details:</span></legend>
         <ol>
              {{ form.as_ul }}
+        </ol>
+    </fieldset>
+    <fieldset class="metadata">
+        <legend><span>Curation Metadata:</span></legend>
+        <ol>
+             {{ meta_form.as_ul }}
         </ol>
     </fieldset>
      <fieldset class="submit">

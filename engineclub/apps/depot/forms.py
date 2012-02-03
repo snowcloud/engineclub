@@ -1,5 +1,6 @@
 
 from django import forms
+from django.forms.formsets import formset_factory, BaseFormSet
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import CSVTextInput, clean_csvtextinput
@@ -187,3 +188,60 @@ class CurationForm(DocumentForm):
 
 class ResourceReportForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
+
+
+
+class KeyValueForm(forms.Form):
+
+    key = forms.CharField()
+    value = forms.CharField(widget=forms.Textarea, required=False)
+
+
+class BaseDictFormSet(BaseFormSet):
+
+    def clean(self):
+
+        """Checks that no pairs have the same key."""
+
+        if any(self.errors):
+            # Don't bother validating the formset unless each form is valid
+            # on its own
+            return
+
+        keys = []
+
+        for form in self.forms:
+
+            if len(keys) != 2:
+                continue
+
+            print form.cleaned_data
+            cleaned = form.cleaned_data
+            key = form.cleaned_data['key']
+
+            if key in keys:
+                raise forms.ValidationError("Two keys cannot have the same value.")
+
+            keys.append(key)
+
+        return super(BaseDictFormSet, self).clean()
+
+    def save(self):
+
+        return dict( (form.cleaned_data['key'], form.cleaned_data['value'])
+                for form in self.forms if len(form.cleaned_data.keys()) == 2)
+
+
+
+
+def dict_form_factory(initial, extra=0, **kwargs):
+
+    print initial.keys()
+
+    DictFormSet = formset_factory(KeyValueForm, extra=extra,
+                                    formset=BaseDictFormSet)
+
+    form_initial = [{'key': k, 'value': v} for k, v in initial.items()]
+
+    return DictFormSet(initial=form_initial, **kwargs)
+
