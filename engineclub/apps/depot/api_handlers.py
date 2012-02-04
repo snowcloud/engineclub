@@ -10,11 +10,11 @@ from django.utils import simplejson as json
 from mongoengine import ValidationError #, Q
 from mongoengine.connection import _get_db as get_db
 
-from analytics.shortcuts import (increment_api_search, increment_api_location,
-    increment_api_resource_access)
+from analytics.shortcuts import (increment_api_queries, increment_api_locations,
+    increment_api_resources)
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_location
 
-increment_api_resource_access
+increment_api_resources
 class JsonResponse(HttpResponse):
     """from http://www.djangosnippets.org/snippets/1639/"""
     errors = {}
@@ -78,7 +78,7 @@ def resource_by_id(request, id):
     if errors:
         return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
 
-    increment_api_resource_access(id)
+    increment_api_resources(id)
 
     data=[{
         'id': unicode(item.id),
@@ -139,8 +139,8 @@ def resource_search(request):
     boost_location = request.REQUEST.get('boostlocation', (settings.SOLR_LOC_BOOST_DEFAULT))
     callback = request.REQUEST.get('callback')
 
-    increment_api_search(query)
-    increment_api_location(location)
+    increment_api_queries(query)
+    increment_api_locations(location)
 
     result_code = 200
 

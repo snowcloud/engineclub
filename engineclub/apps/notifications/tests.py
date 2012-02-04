@@ -13,17 +13,24 @@ class NotificationsTestCase(MongoTestCase):
 
         from engine_groups.models import Account, Membership
 
-        # Admin user is 1, bob and alice follow from there.
-        self.bob = Account.objects.create(name="Bob", email="bob@example.com", local_id="2")
-        self.alice = Account.objects.create(name="Alice", email="alice@example.com", local_id="3")
-
+        # Create three normal contrib.auth users
         self.user_bob = User.objects.create_user('bob', email="bob@example.com",
             password='password')
         self.user_alice = User.objects.create_user('alice', email="alice@example.com",
             password='password')
+        self.user_company = User.objects.create_user('company',
+            email="company@example.com", password="password")
 
-        self.company = Account.objects.create(name="company", email="org@example.com")
+        # Create three mongodb accounts and related them to the contrib.auth
+        # user accounts.
+        self.bob = Account.objects.create(name="Bob", email="bob@example.com",
+            local_id=str(self.user_bob.id))
+        self.alice = Account.objects.create(name="Alice",
+            email="alice@example.com", local_id=str(self.user_alice.id))
+        self.company = Account.objects.create(name="company",
+            email="org@example.com", local_id=str(self.user_company.id))
 
+        # Add alice to the company, so she is a "sub account"
         Membership.objects.create(parent_account=self.company, member=self.alice)
 
 
@@ -46,6 +53,17 @@ class ApiTestCase(NotificationsTestCase):
         Notification.objects.create_for_accounts(accounts, type=expired,
             severity=1, message='Curation X has expired'
         )
+
+        Notification.objects.create_for_accounts(accounts, type="expired",
+            severity=1, message='Curation X has expired'
+        )
+
+        Notification.objects.create_for_accounts(accounts, type="test",
+            severity=1, message='Curation X has expired'
+        )
+
+        test, created = NotificationType.objects.get_or_create(name="expired")
+        self.assertFalse(created)
 
     def test_get_notifications(self):
 
@@ -191,3 +209,84 @@ class ViewsTestCase(NotificationsTestCase):
         response = self.client.get(reverse('notifications-detail', args=[str(n.id), ]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Curation X has expired")
+
+
+class ReportingTestCase(NotificationsTestCase):
+
+    def setUp(self):
+        super(ReportingTestCase, self).setUp()
+
+        from depot.models import Resource
+
+        self.resource, _ = Resource.objects.get_or_create(
+            __raw__={'_id': u'4d135708e999fb30d8000007'},
+            defaults={'title': "Testing resource", 'owner': self.bob})
+
+        from django.test.client import Client
+        self.client = Client()
+
+    def test_annon_report(self):
+
+        from django.core.urlresolvers import reverse
+        from notifications.models import Notification, SEVERITY_MEDIUM
+
+        # Check there are no notifications.
+        self.assertEqual(Notification.objects.count(), 0)
+
+        # Trigger the report, which will add a notification for the user
+        # so they know it has been submitted
+        report_url = reverse('resource-report', args=[self.resource.id])
+        response = self.client.post(report_url, {
+            'message': 'The resource contains incorrect information.'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Bob should have one notification, because he is the owner of the
+        # resource.
+        notifications = Notification.objects.for_account(self.bob)
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(notifications[0].related_document, self.resource)
+        self.assertEqual(notifications[0].severity, SEVERITY_MEDIUM)
+        self.assertEqual(notifications[0].group, None)
+
+    def test_user_report(self):
+
+        from django.core.urlresolvers import reverse
+        from notifications.models import Notification, SEVERITY_HIGH
+
+        self.client.login(username='alice', password='password')
+
+        # Check there are no notifications.
+        self.assertEqual(Notification.objects.count(), 0)
+
+        # Trigger the report, which will add a notification for the user
+        # so they know it has been submitted
+        report_url = reverse('resource-report', args=[self.resource.id])
+        response = self.client.post(report_url, {
+            'message': 'The resource contains incorrect information.'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Check the notification is in the list for the user
+        response = self.client.get(reverse('notifications-list',))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Report submitted")
+
+        # Alice should have one notification that is bound to the resource.
+        # This notification shows that she submitted the report and can then
+        # track it later.
+        alice_notifications = Notification.objects.for_account(self.alice)
+        self.assertEqual(len(alice_notifications), 1)
+        alice_notification = alice_notifications[0]
+        self.assertEqual(alice_notification.related_document, self.resource)
+
+        # Bob should have one notification, because he is the owner of the
+        # resource.
+        bob_notifications = Notification.objects.for_account(self.bob)
+        self.assertEqual(len(bob_notifications), 1)
+        bob_notification = bob_notifications[0]
+        self.assertEqual(bob_notification.related_document, self.resource)
+        self.assertEqual(bob_notification.severity, SEVERITY_HIGH)
+
+        # Check the two notifications are in the same group.
+        self.assertEqual(alice_notification.group, bob_notification.group)

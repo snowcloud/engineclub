@@ -8,9 +8,9 @@ calculating stats from data store in MongoDB.
 Example usage, for incrementing the value of a tag. For a specific account.
 
     from engine_groups.models import Account
-    from analytics.shortcuts import increment_tag
+    from analytics.shortcuts import increment_tags
     account = Account.objects[2]
-    increment_tag(account, "Sport and fitness")
+    increment_tags(account, "Sport and fitness")
 
 You can then get the stat for that tag, for a specific account or overall for
 all accounts for a date range. The following example will output the top
@@ -161,7 +161,7 @@ class BaseAnalytics(object):
         Return a dictionary for each hash found.
         """
         for key in keys:
-            yield self.conn.hgetall(key)
+            yield key, self.conn.hgetall(key)
 
     def sum(self, stat_name, start_date, end_date, account=None, field=None):
         """
@@ -193,16 +193,17 @@ class OverallAnalytics(BaseAnalytics):
         super(OverallAnalytics, self).__init__(*args, **kwargs)
         self.account = None
 
-        self.tags_keys = 'search_tags'
+        self.tags_key = 'search_tags'
         self.queries_key = 'search_queries'
         self.locations_key = 'search_locations'
         self.api_queries_key = 'search_api_queries'
         self.api_locations_key = 'search_api_locations'
-        self.resource_access_key = 'resource_access'
-        self.api_resource_access_key = 'api_resource_access'
+        self.resources_key = 'resource_access'
+        self.api_resources_key = 'api_resource_access'
+        self.resource_crud_key = 'resource_create'
 
     def top_tags(self, *args, **kwargs):
-        return self.sum_hash(self.tags_keys, *args, **kwargs)
+        return self.sum_hash(self.tags_key, *args, **kwargs)
 
     def top_queries(self, *args, **kwargs):
         return self.sum_hash(self.queries_key, *args, **kwargs)
@@ -216,11 +217,61 @@ class OverallAnalytics(BaseAnalytics):
     def top_api_locations(self, *args, **kwargs):
         return self.sum_hash(self.api_locations_key, *args, **kwargs)
 
-    def top_resource(self, *args, **kwargs):
-        return self.sum_hash(self.resource_access_key, *args, **kwargs)
+    def top_resources(self, *args, **kwargs):
+        return self.sum_hash(self.resources_key, *args, **kwargs)
 
-    def api_top_resource(self, *args, **kwargs):
-        return self.sum_hash(self.api_resource_access_key, *args, **kwargs)
+    def top_api_resources(self, *args, **kwargs):
+        return self.sum_hash(self.api_resources_key, *args, **kwargs)
+
+    def top_resource_crud(self, *args, **kwargs):
+        return self.flat_data(self.resource_crud_key, *args, **kwargs)
+
+    def tags(self, *args, **kwargs):
+        return self.flat_data(self.tags_key, *args, **kwargs)
+
+    def queries(self, *args, **kwargs):
+        return self.flat_data(self.queries_key, *args, **kwargs)
+
+    def locations(self, *args, **kwargs):
+        return self.flat_data(self.locations_key, *args, **kwargs)
+
+    def api_queries(self, *args, **kwargs):
+        return self.flat_data(self.api_queries_key, *args, **kwargs)
+
+    def api_locations(self, *args, **kwargs):
+        return self.flat_data(self.api_locations_key, *args, **kwargs)
+
+    def resources(self, *args, **kwargs):
+        return self.flat_data(self.resources_key, *args, **kwargs)
+
+    def api_resources(self, *args, **kwargs):
+        return self.flat_data(self.api_resources_key, *args, **kwargs)
+
+    def resource_crud(self, *args, **kwargs):
+        return self.flat_data(self.resource_crud_key, *args, **kwargs)
+
+    def flat_data(self, stat_name, start_date, end_date):
+        """
+        Return a dict with the keys being the query and the values being a
+        list of 2-tuples containing date and count. So for a top_queries
+        lookup, you may get something like this;
+
+        {
+            'search term': [('2012-01-05', 1)],
+            'search term2': [('2012-01-15', 1), ('2012-01-16', 2)]
+        }
+        """
+
+        keys = list(self.generate_keys(stat_name, start_date, end_date, self.account))
+
+        results = defaultdict(list)
+
+        for key, result in self.fetch_hash(keys):
+
+            for k, v in result.items():
+                results[k].append((key.split(':')[2], v))
+
+        return results
 
     def sum_hash(self, stat_name, start_date, end_date, key_sort=None, reverse=True):
         """
@@ -231,7 +282,7 @@ class OverallAnalytics(BaseAnalytics):
 
         totals = defaultdict(int)
 
-        for result in self.fetch_hash(keys):
+        for key, result in self.fetch_hash(keys):
             for k, v in result.items():
                 totals[k] += int(v)
 
@@ -252,42 +303,50 @@ class AccountAnalytics(OverallAnalytics):
 
     def __init__(self, account, *args, **kwargs):
         super(AccountAnalytics, self).__init__(*args, **kwargs)
-        self.account = account
+        if account:
+            self.account = account.id
+        else:
+            self.account = None
 
-    def increment_tag(self, tag_name, **kwargs):
+    def increment_tags(self, tag_name, **kwargs):
 
-        return super(AccountAnalytics, self).increment(self.tags_keys,
+        return super(AccountAnalytics, self).increment(self.tags_key,
             account=self.account, field=tag_name, **kwargs)
 
-    def increment_search(self, query, **kwargs):
+    def increment_queries(self, query, **kwargs):
 
         return super(AccountAnalytics, self).increment(self.queries_key,
             account=self.account, field=query, **kwargs)
 
-    def increment_location(self, location, **kwargs):
+    def increment_locations(self, location, **kwargs):
 
         return super(AccountAnalytics, self).increment(self.locations_key,
             account=self.account, field=location, **kwargs)
 
-    def increment_api_search(self, query, **kwargs):
+    def increment_api_queries(self, query, **kwargs):
 
         return super(AccountAnalytics, self).increment(self.api_queries_key,
             account=self.account, field=query, **kwargs)
 
-    def increment_api_location(self, location, **kwargs):
+    def increment_api_locations(self, location, **kwargs):
 
         return super(AccountAnalytics, self).increment(self.api_locations_key,
             account=self.account, field=location, **kwargs)
 
-    def increment_resource_access(self, object_id, **kwargs):
+    def increment_resources(self, object_id, **kwargs):
 
-        return super(AccountAnalytics, self).increment(self.resource_access_key,
+        return super(AccountAnalytics, self).increment(self.resources_key,
             account=self.account, field=object_id, **kwargs)
 
-    def increment_api_resource_access(self, object_id, **kwargs):
+    def increment_api_resources(self, object_id, **kwargs):
 
-        return super(AccountAnalytics, self).increment(self.api_resource_access_key,
+        return super(AccountAnalytics, self).increment(self.api_resources_key,
             account=self.account, field=object_id, **kwargs)
+
+    def increment_resource_crud(self, action_type, **kwargs):
+
+        return super(AccountAnalytics, self).increment(self.resource_crud_key,
+            account=self.account, field=action_type, **kwargs)
 
 
 class OverallMongoAnalytics(BaseAnalytics):

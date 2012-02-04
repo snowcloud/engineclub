@@ -21,16 +21,16 @@
     mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}})));
     {% for loc in object.locations %}
         mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
-        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
-        //map.addMarker(currentGeoPoint);  
+        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );
+        //map.addMarker(currentGeoPoint);
 	{% endfor %}
-	
+
 	mapstraction.addControls({
-        pan: true, 
+        pan: true,
         zoom: 'small',
-        map_type: true 
+        map_type: true
     });
-    
+
     //mapstraction.autoCenterAndZoom();
     mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 9);
 
@@ -58,35 +58,11 @@
 <h1>{{ object.title }}</h1>
 {% endif %}
 
-<div class="resource-description">
-{{ object.description|textile }}
-</div>
-
-<div id="results">
-
-<table class="metadata">
-
-{% if object.calendar_event %}
-    <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
-{% endif %}
-{% for loc in object.locations %}
-    <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc }}</td></tr>
-{% empty %}
-    <tr><th>location</th><td>-</td></tr>
-{% endfor %}
-<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
-<tr><th>owner</th><td><a href="{% url group object.owner.id %}">{{ object.owner.name }}</a></td></tr>
-<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
-    <tr>
-        <th>{% ifchanged %}curation{% endifchanged %}</th>
-        <td><a href="{% url curation object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
-    </tr>
-{% empty %}
-    <tr><th>curation</th><td>-</td></tr>
-{% endfor %}
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>
-
-</table>
+    <form method="POST" action=".?next={{ next }}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Report" />
+    </form>
 
 </div>
 

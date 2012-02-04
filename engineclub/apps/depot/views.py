@@ -8,19 +8,22 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Context, loader
 from django.utils import simplejson as json
+from django.utils.http import urlquote_plus
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from analytics.shortcuts import (increment_search, increment_location,
-    increment_resource_access)
+from analytics.shortcuts import (increment_queries, increment_locations,
+    increment_resources, increment_resource_crud)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD, lookup_postcode
+    STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
-    TagsForm, ShelflifeForm, CurationForm
+    TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
+from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
+    SEVERITY_HIGH)
 
 from engine_groups.models import Account, get_account
 
@@ -47,10 +50,81 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     object = get_one_or_404(id=ObjectId(object_id))
 
-    increment_resource_access(object_id)
+    increment_resources(object_id)
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
+
+def resource_report(request, object_id, template='depot/resource_report.html'):
+    """
+    View for reporting a curation when a user finds it to be malformed or
+    incorrect.
+
+    NOTE: Some of this needs to be abstracted out, its gotten a bit complicated.
+    """
+
+    resource = get_one_or_404(id=ObjectId(object_id))
+
+    if request.method == 'POST':
+        form = ResourceReportForm(request.POST)
+        if form.is_valid():
+
+            accounts = set(cur.owner for cur in resource.curations)
+            # The owner should always have a curation, however, to be safe
+            # make sure they are added.
+            accounts.add(resource.owner)
+
+            severity = SEVERITY_MEDIUM
+            group = None
+
+            # If the user is logged in, they get a notification so they
+            # can track the issue. Their compliant is also treated more
+            # seriously and a moderation is created to mark the resource as
+            # bad.
+            if request.user.is_authenticated():
+                reporter_account = get_account(request.user.id)
+
+                notification = Notification.objects.create_for_account(
+                    reporter_account, group=True, type="report",
+                    severity=SEVERITY_LOW, message="Report submitted",
+                    related_document=resource)
+
+                if notification.should_send_email():
+                    notification.send_email()
+
+                group = notification.group
+                severity = SEVERITY_HIGH
+
+                mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+                mod.item_metadata.author = reporter_account
+                resource.moderations.append(mod)
+                resource.save()
+
+            notifications = Notification.objects.create_for_accounts(accounts,
+                group=group, type="report", severity=severity,
+                related_document=resource, message=form.cleaned_data['message'])
+
+            for notification in notifications:
+                if notification.should_send_email:
+                    notification.send_email()
+
+            if 'next' in request.GET:
+                url = request.GET['next']
+            else:
+                url = reverse('resource', args=[resource.id])
+
+            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+    else:
+        form = ResourceReportForm()
+
+    return render_to_response(template, {
+        'next': urlquote_plus(request.GET.get('next', '')),
+        'form': form,
+        'object': resource,
+        'yahoo_appid': settings.YAHOO_KEY,
+        'google_key': settings.GOOGLE_KEY,
+    }, RequestContext(request))
+
 
 def _template_info(popup):
     """docstring for _template_info"""
@@ -84,6 +158,7 @@ def resource_add(request, template='depot/resource_edit.html'):
                 resource.owner = user
                 # save will create default moderation and curation using owner acct
                 resource.save(author=user, reindex=True)
+                increment_resource_crud('resouce_add', account=user)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -156,6 +231,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             # print locationform.locations
             resource.locations = locationform.locations
             resource.save()
+
+            increment_resource_crud('resouce_edit', account=acct)
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
 
@@ -207,6 +284,9 @@ def resource_edit_complete(request, resource, template_info):
 def resource_remove(request, object_id):
     object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
+
+    user = get_account(request.user.id)
+    increment_resource_crud('resouce_remove', account=user)
     return HttpResponseRedirect(reverse('resource-list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
@@ -224,8 +304,8 @@ def resource_find(request, template='depot/resource_find.html'):
         if form.is_valid():
             user = get_account(request.user.id)
 
-            increment_search(form.cleaned_data['kwords'], account=user)
-            increment_location(form.cleaned_data['post_code'], account=user)
+            increment_queries(form.cleaned_data['kwords'], account=user)
+            increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
                 resource = get_one_or_404(id=ObjectId(result['res_id']))
@@ -238,10 +318,12 @@ def resource_find(request, template='depot/resource_find.html'):
                 curation_form = CurationForm(
                         initial={'outcome': STATUS_OK},
                         instance=curation)
+                resource_report_form = ResourceReportForm()
                 results.append({
                     'resource_result': result,
                     'curation': curation,
                     'curation_form': curation_form,
+                    'resource_report_form': resource_report_form,
                     'curation_index': curation_index
                 })
             centre = form.centre
@@ -288,6 +370,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
     return render_to_response(template, RequestContext(request, context))
 
 
+@login_required
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
     resource = get_one_or_404(id=ObjectId(object_id))
@@ -310,6 +393,8 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation.item_metadata.update(author=user)
             curation.resource = resource
             curation.save()
+
+            increment_resource_crud('curation_add', account=user)
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -344,6 +429,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
             curation.save()
+            increment_resource_crud('curation_edit', account=user)
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -364,6 +450,8 @@ def curation_remove(request, object_id, index):
     resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
+
+    increment_resource_crud('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required
