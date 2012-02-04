@@ -470,18 +470,20 @@ def lat_lon_to_str(loc):
 ###############################################################
 # SEARCH STUFF
 
-def _make_fq(event, accounts):
+def _make_fq(event, accounts, collections):
     fq = []
     if event:
         fq.append('(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *])')
     if accounts:
         fq.append('accounts:(%s)'% ' OR '.join(accounts))
+    if collections:
+        fq.append('collections:(%s)'% ' OR '.join(collections))
     if fq:
         return ' AND '.join(fq)
     return None
 
 
-def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
+def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None):
     loc = get_location(name)
     if loc:
         kw = {
@@ -495,7 +497,7 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
             'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
-        fq =  _make_fq(event, accounts)
+        fq =  _make_fq(event, accounts, collections)
         if fq:
             kw['fq'] = fq        
         
@@ -504,10 +506,10 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, event=None):
+def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None):
     """docstring for find_by_place_or_kwords"""
     if name:
-        return find_by_place(name, kwords, loc_boost, start, max, accounts, event)
+        return find_by_place(name, kwords, loc_boost, start, max, accounts, collections, event)
     # keywords only
     kw = {
         'start': start,
@@ -515,7 +517,7 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
         'fl': '*,score',
         'qt': 'resources',
     }
-    fq =  _make_fq(event, accounts)
+    fq =  _make_fq(event, accounts, collections)
     # example 'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *]) AND accounts:4d9b99d889cb16665c000000'
     if fq:
         kw['fq'] = fq

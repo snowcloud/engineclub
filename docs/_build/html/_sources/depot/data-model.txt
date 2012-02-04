@@ -116,17 +116,6 @@ Curation
 ==================      =========================================================================
 field name              type
 ==================      =========================================================================
-
-    outcome = StringField()
-    tags = ListField(StringField(max_length=96), default=list)
-    # rating - not used
-    note = StringField()
-    data = DictField()
-    resource = ReferenceField('Resource')
-    owner = ReferenceField(Account)
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
-
-
 outcome                 string ['OK for my group', 'not for my group']
 tags                    list of string
 rating                  [not used]
