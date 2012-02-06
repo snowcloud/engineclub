@@ -82,7 +82,7 @@ def resource_by_id(request, id):
         'description': item.description,
         'resourcetype': item.resource_type or '',
         'uri': item.uri,
-        'locations': [loc.label for loc in item.locations],
+        'locations': [loc.place_name for loc in item.locations],
         # 'event_start': 
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
