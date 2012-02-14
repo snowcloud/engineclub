@@ -74,7 +74,7 @@ function add_pagination_buttons(div_id, defaults, count, events, google_map, mar
 
 
 
-function aliss_search(data, div_id, paginate, google_map){
+function aliss_search(data, div_id, paginate, google_map, result_msg, no_result_msg){
 
     var markers = [];
 
@@ -104,10 +104,9 @@ function aliss_search(data, div_id, paginate, google_map){
 
             if (count < 1){
 
-                $(div_id).html("<h3>oops, we didn't find anything</h3>");
+                $(div_id).html(no_result_msg);
 
             } else {
-
 
                 if (google_map){
                     var latlngbounds = new google.maps.LatLngBounds();
@@ -131,7 +130,7 @@ function aliss_search(data, div_id, paginate, google_map){
                     if (!url){
                         url = 'http://aliss.org';
                     }
-                    items.push('<li><a href="' + value.uri + '">' + value.title + '</a><p>' + value.description + '</p></li><hr/>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
+                    items.push('<dt><a href="' + value.uri + '">' + value.title + '</a></dt><dd>' + value.description + '</dd>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);
@@ -154,16 +153,16 @@ function aliss_search(data, div_id, paginate, google_map){
                     }
                 });
 
-                $(div_id).html("");
+                $(div_id).html(result_msg);
 
                 // Add pagination buttons to the top and bottom
                 if (paginate){
                     add_pagination_buttons(div_id, defaults, count, false, google_map, markers);
                 }
 
-                $(div_id).append('\n<ul></ul>');
+                $(div_id).append('\n<dl></dl>');
 
-                $(div_id + ' ul').append(items.join(''));
+                $(div_id + ' dl').append(items.join(''));
 
             }
 

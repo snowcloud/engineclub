@@ -45,11 +45,11 @@
 
             <div class="column one-third omega">
 
-                <h3>Things to go to</h3>
+                <!-- <h3>Things to go to</h3> -->
                 <div id="aliss_events">
                 </div>
 
-                <h3>There's more..</h3>
+                <!-- <h3>There's more..</h3> -->
                 <div id="aliss_books">
                 </div>
 
@@ -96,20 +96,20 @@
                 aliss_search({
                     'location' : loc,
                     'query' : query
-                }, '#aliss_results', true, google_map);
+                }, '#aliss_results', true, google_map, '', 'no_result_msg');
             });
 
             aliss_search({
                 'location' : loc,
                 'query' : query,
                 'event' : '*'
-            }, '#aliss_events', false, google_map);
+            }, '#aliss_events', false, google_map, '<h3>Things to go to</h3>', '');
 
             aliss_search({
                 'location' : loc,
                 'query' : query + ",books",
                 'max': 1
-            }, '#aliss_books', false, google_map);
+            }, '#aliss_books', false, google_map, '<h3>There\'s more..</h3>', '');
 
         });
 

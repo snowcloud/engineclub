@@ -41,3 +41,15 @@ a.report{
 	border: 2px solid #cedaef;
 	margin-bottom: 2em;
 }
+dt {
+	margin: 1em 0;
+}
+dt a {
+	color: #797c85;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+dd {
+	border-bottom: 1px solid #d4d4d4;
+	padding-bottom: 1em;
+}
