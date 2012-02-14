@@ -1,3 +1,6 @@
+body {
+	font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+}
 .error{
 	color: red;
 }
@@ -5,6 +8,12 @@
 a.pagination{
 	font-weight: bold;
 	padding: 1em 1em 2em 1em;
+}
+h1, h2, h3, h4, h5, h6 {
+	//color: #181818;
+	font-family: Neuton, "Georgia", "Times New Roman", Helvetica, Arial, sans-serif;
+	//font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+	//font-weight: normal; 
 }
 
 h1{
