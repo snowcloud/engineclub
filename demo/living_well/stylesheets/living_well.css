@@ -67,6 +67,9 @@ dd {
 	border-bottom: 1px solid #d4d4d4;
 	padding-bottom: 1em;
 }
+dd p {
+	margin-bottom: 0.6em;
+}
 @media only screen and (max-width: 959px) {
 	h1 { font-size: 2.6em; }
 }
