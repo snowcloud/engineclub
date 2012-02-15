@@ -42,9 +42,8 @@ function add_pagination_buttons(div_id, defaults, count, events, google_map, mar
             markers.length = 0;
         }
     };
-
     if (defaults.start > 0){
-        $(div_id).append(' <a href="#" class="pagination previous">&lt;- Previous</a>');
+        $(div_id).append(' <a href="#" class="button previous">&lt;- See previous results</a>');
         if (events){
             $(div_id + " a.previous").click(function(){
                 remove_markers();
@@ -53,19 +52,19 @@ function add_pagination_buttons(div_id, defaults, count, events, google_map, mar
                 if (previous_params.start < 0){
                     previous_params.start = 0;
                 }
-                aliss_search(previous_params, div_id, true, google_map);
+                aliss_search(previous_params, div_id, true, google_map, '', 'Sorry, we couldn\t find anything. Try again?');
             });
         }
     }
 
     if (count >= defaults.max){
-        $(div_id).append(' <a href="#" class="pagination next">Next -&gt;</a>');
+        $(div_id).append(' <a href="#" class="button next">See more results -&gt;</a>');
         if (events){
             $(div_id + " a.next").click(function(){
                 remove_markers();
                 var next_params = jQuery.extend({}, defaults);
                 next_params.start += next_params.max;
-                aliss_search(next_params, div_id, true, google_map);
+                aliss_search(next_params, div_id, true, google_map, '', 'Sorry, we couldn\t find anything. Try again?');
             });
         }
     }
@@ -127,10 +126,10 @@ function aliss_search(data, div_id, paginate, google_map, result_msg, no_result_
                 $.each(response.data[0].results, function(index, value){
 
                     var url = value.uri;
-                    if (!url){
-                        url = 'http://aliss.org';
+                    if (!url || url === ''){
+                        url = 'http://aliss.org/depot/resource/' + value.id;
                     }
-                    items.push('<dt><a href="' + value.uri + '">' + value.title + '</a></dt><dd>' + value.description + '</dd>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
+                    items.push('<dt><a href="' + url + '">' + value.title + '</a></dt><dd>' + value.description + '</dd>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);

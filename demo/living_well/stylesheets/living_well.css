@@ -6,10 +6,17 @@ body {
 	color: red;
 }
 
-a.pagination{
-	font-weight: bold;
-	padding: 1em 1em 2em 1em;
+a:hover, a:visited:hover, a:focus { 
+	color: #000;
+	background-color: #eeefe7;
 }
+a.button {
+	margin: 1em 0;
+}
+/*a.pagination{
+	font-weight: bold;
+	padding: 1em 1em 1em 0em;
+}*/
 h1, h2, h3, h4, h5, h6 {
 	color: #181818;
 	font-family: Neuton, "Georgia", "Times New Roman", serif;
@@ -41,10 +48,13 @@ a.report{
 	border: 2px solid #cedaef;
 	margin-bottom: 2em;
 }
+dl {
+	padding-bottom: 1em;
+}
 dt {
 	margin: 1em 0;
 }
-dt a {
+dt a, dt a:visited {
 	color: #797c85;
 	font-weight: bold;
 	font-size: 1.2em;
