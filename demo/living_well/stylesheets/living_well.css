@@ -24,8 +24,9 @@ h1, h2, h3, h4, h5, h6 {
 
 h1{
 	margin-top: 1em;
-    width: 600px;
+    width: 60%;
     float: left ;
+    font-size: 3.2em;
 }
 h3 {
 	background-color: #ecece3;
@@ -40,6 +41,7 @@ img.logo{
     float: right;
     margin: 1em 0 2em 0;
 	border: 2px solid #b4b8c7;
+	width:  35%;
 }
 
 a.report{
@@ -65,3 +67,20 @@ dd {
 	border-bottom: 1px solid #d4d4d4;
 	padding-bottom: 1em;
 }
+@media only screen and (max-width: 959px) {
+	h1 { font-size: 2.6em; }
+}
+@media only screen and (max-width: 767px) {
+	h1 { font-size: 2.2em; }
+}
+@media only screen and (max-width: 479px) {
+	h1 { 
+		font-size: 1.8em;
+		width:  auto;
+	}
+	img.logo {
+		position: absolute;
+		left: -9999px;
+}
+}
+
