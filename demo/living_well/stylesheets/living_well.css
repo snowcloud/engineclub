@@ -37,7 +37,9 @@ h5{
 }
 
 img.logo{
-    float: left;
+    float: right;
+    margin: 1em 0 2em 0;
+	border: 2px solid #b4b8c7;
 }
 
 a.report{
