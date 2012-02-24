@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+    <meta charset="utf-8">
+    <title>Edinburgh Community Cafes</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="stylesheets/base.css">
+    <link rel="stylesheet" href="stylesheets/skeleton.css">
+    <link rel="stylesheet" href="stylesheets/layout.css">
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Edinburgh Community Cafes</h1>
+
+        <div id="map_canvas">
+        </div>
+
+        <div id="aliss_results">
+        </div>
+
+    </div>
+
+    <script src="javascripts/jquery-1.7.js"></script>
+    <script src="javascripts/jquery.queryobject.js"></script>
+    <script src="javascripts/tabs.js"></script>
+    <script src="javascripts/aliss.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <style type="text/css">
+        #map_canvas {
+            width: 100%;
+            height: 350px;
+        }
+    </style>
+    <script>
+
+        $(function(){
+
+            var google_map = new google.maps.Map(document.getElementById("map_canvas"), {
+              zoom: 13,
+              mapTypeId: google.maps.MapTypeId.ROADMAP,
+              center: new google.maps.LatLng(55.848125, -4.437196)
+            });
+
+            aliss_search('#aliss_results', google_map);
+
+        });
+
+    </script>
+
+</body>
+</html>
