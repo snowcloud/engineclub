@@ -185,33 +185,37 @@ $('.resource-listing > li').each(function () {
     var $noteInput = $disclosureContent.find('[name=note]');
 
     // fixes for browser back button- value not set, so tags/note not showing
-    $noteInput[0].value = $noteInput[0].innerText;
-    if ($tagsInput.length)  { $tagsInput[0].value = $tagsInput[0].defaultValue; }
-
-    var existingTags = [];
-    if ($tagsInput.val() !== "") {
-        $.each($tagsInput.val().split(', '), function (i, tag) {
-            existingTags.push({id: tag, name: tag});
-        });
+    if ($noteInput.length)  {
+        $noteInput[0].value = $noteInput[0].innerText;
     }
+    if ($tagsInput.length)  { 
+        $tagsInput[0].value = $tagsInput[0].defaultValue;
 
-    $tagsInput.tokenInput('{% url depot.api_handlers.tags %}', {
-        minChars: 3,
-        onResult: function (results) {
-            var typedValue = $disclosureContent.find('.token-input-input-token-aliss input').val();
-            var r = [];
-            if ($.inArray(typedValue, results.data) == -1) {
-                r.push({id: typedValue, name: typedValue});
-            }
-            $.each(results.data, function (i, item) {
-                r.push({id: item, name: item});
+        var existingTags = [];
+        if ($tagsInput.val() !== "") {
+            $.each($tagsInput.val().split(', '), function (i, tag) {
+                existingTags.push({id: tag, name: tag});
             });
-            return r;
-        },
-        prePopulate: existingTags,
-        queryParam: 'match',
-        theme: 'aliss'
-    });
+        }
+
+        $tagsInput.tokenInput('{% url depot.api_handlers.tags %}', {
+            minChars: 3,
+            onResult: function (results) {
+                var typedValue = $disclosureContent.find('.token-input-input-token-aliss input').val();
+                var r = [];
+                if ($.inArray(typedValue, results.data) == -1) {
+                    r.push({id: typedValue, name: typedValue});
+                }
+                $.each(results.data, function (i, item) {
+                    r.push({id: item, name: item});
+                });
+                return r;
+            },
+            prePopulate: existingTags,
+            queryParam: 'match',
+            theme: 'aliss'
+        });
+     }
 
     $disclosureContent.submit(function (event) {
         $form = $(this);
@@ -270,5 +274,116 @@ $('.resource-listing > li').each(function () {
 {% endblock %}
 
 
+{% block main-content-class %}onecol{% endblock %}
+{% block content %}
+
+<h1>Find Resources</h1>
+
+<div class="usermessage">
+    <p>This is a demonstration only, and shows how any web site might access the ALISS engine.</p>
+    <p>ALISS demonstration data is mainly from <a href="/groups/4d9b9a4489cb16665c000002/">Grampian</a> and <a href="/groups/4d9fbd5789cb1673fb000000/">Renfrewshire</a>. Searches in other areas may produce strange results!</p>
+
+</div>
+
+<div id="slider"></div>
+
+<form class="form" action="." method="GET" id="search_form">{% csrf_token %}
+    <fieldset>
+        <legend><span>Resource details:</span></legend>
+        {# <div class="ui-widget"> #}
+        
+        <ol>
+             {{ form.as_ul }}
+            <li><label for="slider" id="slider_label">Make results more local:</label>
+            <span class="helptext">drag slider to the right to make location more important than search text.</span>
+            </li>
+        </ol>
+        {# </div> #}
+    </fieldset>
+
+     <fieldset class="submit">
+        <input type="submit" name="result" value="Find items" id="submit_button">
+        <!-- input type="submit" name="result" value="Cancel" -->
+    </fieldset>
+</form>
+
+<div id="results">
+    
+  {% if centre %}
+    <h2>Closest results for {{ centre.name }}:</h2>
+  {% endif %}
+
+    <ol class="resource-listing">
+        {% for result in results %}
+            {% with result.resource_result as resource %}
+                <li id="resource{{ resource.id }}">
+                    <p class="resource-listing-title"><a href="{% url resource object_id=resource.res_id %}">{{ resource.title }}</a></p>
+                    {% if resource.event_start %}
+                        <p class="event">{{ resource|idx_event_date }}</p>
+                    {% endif %}
+                    {% if resource.loc_labels %}
+                        <ol>
+                            {% for loc_label in resource.loc_labels %}
+                                <li class="resource-listing-locs">{{ loc_label }}</li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+
+                    <p>{{ resource.short_description|truncatewords:30 }}</p>
+                    <p class="resource-listing-meta">
+                        <a class="resource-url" href="{% url resource resource.res_id %}">more details...</a>
+                        {% if resource.uri %}
+                            | <a href="{{ resource.uri }}">external site...</a>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                            {% if result.curation %}
+                                | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
+                            {% else %}
+                                | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
+                            {% endif %}
+                        | <a class="resource-report" href="{% url resource-report resource.res_id %}?next={{ here }}">Report Resource</a>
+                        {% endif %}
+                    </p>
+
+                    {% if user.is_authenticated %}
+                    <form action="{% if result.curation %}{% url curation-edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <legend><span>Curation details:</span></legend>
+                            <ol>
+                                 {{ result.curation_form.as_ul }}
+                            </ol>
+                        </fieldset>
+                         <fieldset class="submit">
+                            <input type="submit" name="result" value="Save item">
+                        </fieldset>
+                    </form>
+
+                    <form action="{% url resource-report resource.res_id %}?next={{ here }}" class="resource-report" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <legend><span>Report details:</span></legend>
+                            <ol>
+                                 {{ result.resource_report_form.as_ul }}
+                            </ol>
+                        </fieldset>
+                         <fieldset class="submit">
+                            <input type="submit" name="result" value="Save item">
+                        </fieldset>
+                    </form>
+                    {% endif %}
+
+                </li>
+            {% endwith %}
+        {% empty %}
+            <li>no results found</li>
+        {% endfor %}
+    </ol>
+
+</div>
+<div id="map"></div>
+
+{% endblock %}
 
 

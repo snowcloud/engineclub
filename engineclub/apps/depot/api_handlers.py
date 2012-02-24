@@ -82,7 +82,8 @@ def resource_by_id(request, id):
         'description': item.description,
         'resourcetype': item.resource_type or '',
         'uri': item.uri,
-        'locations': [loc.label for loc in item.locations],
+        'locations': ['%s, %s' % (loc.lat_lon[0], loc.lat_lon[1]) for loc in item.locations],
+        'locationnames': [loc.place_name for loc in item.locations],
         # 'event_start': 
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
@@ -127,6 +128,9 @@ def resource_search(request):
         
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
+    collections = request.REQUEST.get('collections', '')
+    if collections:
+        accounts = ''
     event = request.REQUEST.get('event', None)
     query = request.REQUEST.get('query')
     max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
@@ -154,7 +158,15 @@ def resource_search(request):
         result_code = 10
         errors.append('Param \'event\' must be * if present.')
     if not errors:
-        loc, resources = find_by_place_or_kwords(location, query, boost_location, start=start, max=int(max), accounts=accounts.split(), event=event)
+        loc, resources = find_by_place_or_kwords(
+            location, 
+            query, 
+            boost_location, 
+            start=start, 
+            max=int(max), 
+            accounts=accounts.split(), 
+            collections=collections.split(), 
+            event=event)
         if location and not loc:
             result_code = 10
             errors.append('Location \'%s\' not found.' % location)
@@ -165,6 +177,7 @@ def resource_search(request):
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
             'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
+            'accounts': accounts, 'collections': collections,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
         
@@ -180,12 +193,12 @@ def publish_data(request):
             'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
             'source_uri': r.uri,
             'locations': [{
-                'os_id': l._id, 
-                'label': l.postcode, 
+                'postcode': l.postcode, 
                 'place_name': l.place_name, 
-                'os_type': l.os_type, 
-                'lat_lon': l.lat_lon, 
-                
+                'loc_type': l.loc_type, 
+                'lat_lon': l.lat_lon,
+                'district': l.district,
+                'country_code': l.country_code
                 } for l in r.locations],
             # 'event_start': r.event_start,
             'tags': r.all_tags,
