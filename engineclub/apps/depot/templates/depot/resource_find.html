@@ -67,33 +67,37 @@ $('.resource-listing > li').each(function () {
     var $noteInput = $disclosureContent.find('[name=note]');
 
     // fixes for browser back button- value not set, so tags/note not showing
-    $noteInput[0].value = $noteInput[0].innerText;
-    if ($tagsInput.length)  { $tagsInput[0].value = $tagsInput[0].defaultValue; }
-
-    var existingTags = [];
-    if ($tagsInput.val() !== "") {
-        $.each($tagsInput.val().split(', '), function (i, tag) {
-            existingTags.push({id: tag, name: tag});
-        });
+    if ($noteInput.length)  {
+        $noteInput[0].value = $noteInput[0].innerText;
     }
+    if ($tagsInput.length)  { 
+        $tagsInput[0].value = $tagsInput[0].defaultValue;
 
-    $tagsInput.tokenInput('{% url depot.api_handlers.tags %}', {
-        minChars: 3,
-        onResult: function (results) {
-            var typedValue = $disclosureContent.find('.token-input-input-token-aliss input').val();
-            var r = [];
-            if ($.inArray(typedValue, results.data) == -1) {
-                r.push({id: typedValue, name: typedValue});
-            }
-            $.each(results.data, function (i, item) {
-                r.push({id: item, name: item});
+        var existingTags = [];
+        if ($tagsInput.val() !== "") {
+            $.each($tagsInput.val().split(', '), function (i, tag) {
+                existingTags.push({id: tag, name: tag});
             });
-            return r;
-        },
-        prePopulate: existingTags,
-        queryParam: 'match',
-        theme: 'aliss'
-    });
+        }
+
+        $tagsInput.tokenInput('{% url depot.api_handlers.tags %}', {
+            minChars: 3,
+            onResult: function (results) {
+                var typedValue = $disclosureContent.find('.token-input-input-token-aliss input').val();
+                var r = [];
+                if ($.inArray(typedValue, results.data) == -1) {
+                    r.push({id: typedValue, name: typedValue});
+                }
+                $.each(results.data, function (i, item) {
+                    r.push({id: item, name: item});
+                });
+                return r;
+            },
+            prePopulate: existingTags,
+            queryParam: 'match',
+            theme: 'aliss'
+        });
+     }
 
     $disclosureContent.submit(function (event) {
         $form = $(this);
@@ -219,8 +223,8 @@ $('.resource-listing > li').each(function () {
                             {% else %}
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
-                        {% endif %}
                         | <a class="resource-report" href="{% url resource-report resource.res_id %}?next={{ here }}">Report Resource</a>
+                        {% endif %}
                     </p>
 
                     {% if user.is_authenticated %}

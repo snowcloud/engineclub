@@ -86,8 +86,9 @@ def resource_by_id(request, id):
         'description': item.description,
         'resourcetype': item.resource_type or '',
         'uri': item.uri,
-        'locations': [loc.postcode for loc in item.locations],
-        # 'event_start':
+        'locations': ['%s, %s' % (loc.lat_lon[0], loc.lat_lon[1]) for loc in item.locations],
+        'locationnames': [loc.place_name for loc in item.locations],
+        # 'event_start': 
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
     }]
@@ -199,12 +200,12 @@ def publish_data(request):
             'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
             'source_uri': r.uri,
             'locations': [{
-                'os_id': l._id,
-                'label': l.postcode,
-                'place_name': l.place_name,
-                'os_type': l.os_type,
+                'postcode': l.postcode, 
+                'place_name': l.place_name, 
+                'loc_type': l.loc_type, 
                 'lat_lon': l.lat_lon,
-
+                'district': l.district,
+                'country_code': l.country_code
                 } for l in r.locations],
             # 'event_start': r.event_start,
             'tags': r.all_tags,

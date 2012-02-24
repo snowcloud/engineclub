@@ -1,29 +1,89 @@
+body {
+	font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+	background-image: url(../images/groovepaper.png);
+}
 .error{
 	color: red;
 }
 
-a.pagination{
+a:hover, a:visited:hover, a:focus { 
+	color: #000;
+	background-color: #eeefe7;
+}
+a.button {
+	margin: 1em 0;
+}
+/*a.pagination{
 	font-weight: bold;
-	padding: 1em 1em 2em 1em;
+	padding: 1em 1em 1em 0em;
+}*/
+h1, h2, h3, h4, h5, h6 {
+	color: #181818;
+	font-family: Neuton, "Georgia", "Times New Roman", serif;
 }
 
 h1{
 	margin-top: 1em;
+    width: 60%;
+    float: left ;
+    font-size: 3.2em;
+}
+h3 {
+	background-color: #ecece3;
+	padding: 0.3em;
+
 }
 h5{
 	margin-bottom: 1em;
 }
 
-h1{
-    width: 600px;
-    float: left ;
-}
-
 img.logo{
-    float: left;
+    float: right;
+    margin: 1em 0 2em 0;
+	border: 2px solid #b4b8c7;
+	width:  35%;
 }
 
 a.report{
     font-size: 0.9em;
     font-style: italic;
 }
+#map_canvas {
+	border: 2px solid #cedaef;
+	margin-bottom: 2em;
+}
+dl {
+	padding-bottom: 1em;
+}
+dt {
+	margin: 1em 0;
+}
+dt a, dt a:visited {
+	color: #797c85;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+dd {
+	border-bottom: 1px solid #d4d4d4;
+	padding-bottom: 1em;
+}
+dd p {
+	margin-bottom: 0.6em;
+}
+@media only screen and (max-width: 959px) {
+	h1 { font-size: 2.6em; }
+}
+@media only screen and (max-width: 767px) {
+	h1 { font-size: 2.2em; }
+}
+@media only screen and (max-width: 479px) {
+	h1 { 
+		font-size: 1.8em;
+		width:  auto;
+	}
+	img.logo {
+		position: absolute;
+		left: -9999px;
+}
+}
+
