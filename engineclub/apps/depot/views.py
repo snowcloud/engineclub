@@ -314,7 +314,7 @@ def resource_find(request, template='depot/resource_find.html'):
                 })
             centre = form.centre
     else:
-        form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+        form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
 
     context = {
         'form': form,
