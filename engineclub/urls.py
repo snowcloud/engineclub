@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('engine_groups.urls')),
-    # (r'^notifications/', include('notifications.urls')),
+    (r'^notifications/', include('notifications.urls')),
 
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact_form'),
