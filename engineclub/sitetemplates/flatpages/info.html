@@ -1,3 +1,17 @@
 {% extends "flatpages/default.html" %}
 
-{% block nav-home %}<p><a href="/info/" class="nice medium radius blue button">back</a></p>{% endblock %}
+{% block nav_link %}<a href="/info/">back</a>{% endblock %}
+{% block body_class %}presentation{% endblock %}
+
+{% block content %}
+
+<div class="row">
+<p class="breadcrumbs"><a href="/info/">back</a></p>
+
+<h1>{{ flatpage.title }}</h1>
+
+{{ flatpage.content }}
+
+</div>
+
+{% endblock %}

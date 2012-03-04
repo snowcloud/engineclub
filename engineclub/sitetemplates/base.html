@@ -15,6 +15,10 @@
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
 
 <title>ALISS: {% block title %}{% endblock %}</title>
+<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
+
+<script type="text/javascript" src="http://use.typekit.com/amh5xxh.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
 <link rel="stylesheet" href="/static/css/default.css">
 
@@ -31,6 +35,8 @@
     <div class="container site-header">
         <div id="site-header" class="row">
             <h1>aliss</h1>
+            <div class="nav-mobile">{% block nav_link %}<a href="/">home</a>{% endblock %}</div>
+            
             <div class="nav"><a href="/">home</a> | <a href="/find-out-more/">find out more</a> | <a href="/search/">search</a> | <a href="/contact/">contact us</a> | <a href="/myaliss/">myAliss</a></div>
         </div>
     </div>

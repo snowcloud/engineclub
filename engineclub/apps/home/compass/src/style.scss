@@ -19,10 +19,9 @@
 	font-size: 120%;
 	margin-top: 1.98em;
 }
-// #site-header .nav-mobile {
-// 	position: absolute;
-//     left: -999em;
-// }
+#site-header .nav-mobile {
+	@include hide_it;
+}
 .welcome {
 	margin: 3em 0;
 	padding: 2em 6em;
@@ -56,6 +55,10 @@
 .home-links p {
 	padding-top: 1em;
 	//display: inline;
+}
+.breadcrumbs {
+	margin-top: 1em;
+	@include un_hide_it;	
 }
 /* @group search */
 
@@ -97,11 +100,13 @@
 
 /* @group presentation */
 .pres-slide {
+	background-color: #eee;
+}
+.pres-media {
 	float: left;
 	width: 60%;
-	//background-color: pink;
-	//padding: 4em;
-	margin-bottom: 1em;
+	border: none;
+	padding: 1em;
 }
 .pres-text {
 	margin-left: 63%;

@@ -5,12 +5,16 @@
 {% block title %}{{ flatpage.title }}{% endblock %}
 
 {% block body_class %}{{ block.super }} flatpage{% endblock %}
-{% block nav-home %}{{ block.super }}{% endblock %}
+{% block nav_link %}{{ block.super }}{% endblock %}
 
 {% block content %}
+
+<div class="row">
 
 <h1>{{ flatpage.title }}</h1>
 
 {{ flatpage.content|textile }}
+
+</div>
 
 {% endblock %}
