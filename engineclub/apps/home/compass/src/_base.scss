@@ -36,7 +36,8 @@ h1, h2, h3, h4, h5, h6 { color: #181818; font-family: "adelle",serif; font-weigh
 #site-header .nav {
 	color: #6c5f61;
 	@include hide_it;
-    position: absolute; // uses no height
+    //position: absolute; // uses no height
+    height: 1px;
 }
 #site-header a {
 	color: white;
