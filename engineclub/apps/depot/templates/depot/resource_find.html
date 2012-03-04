@@ -241,6 +241,7 @@ $('.resource-listing > li').each(function () {
                         </fieldset>
                     </form>
 
+                    {% comment %}
                     <form action="{% url resource-report resource.res_id %}?next={{ here }}" class="resource-report" method="post">
                         {% csrf_token %}
                         <fieldset>
@@ -253,6 +254,8 @@ $('.resource-listing > li').each(function () {
                             <input type="submit" name="result" value="Save item">
                         </fieldset>
                     </form>
+                        
+                    {% endcomment %}
                     {% endif %}
 
                 </li>
