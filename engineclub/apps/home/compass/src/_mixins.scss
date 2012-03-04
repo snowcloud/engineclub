@@ -1,0 +1,25 @@
+// _mixins.scss
+
+
+@mixin box($col) {
+    box-shadow: 1px 1px 3px $col;
+    -moz-box-shadow: 1px 1px 3px $col;
+    -webkit-box-shadow: 1px 1px 3px $col;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-clip: padding-box;
+}
+
+@mixin hide_it() {
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+@mixin un_hide_it() {
+	text-indent: 0;
+	white-space: normal;
+	overflow: visible;
+}
+

@@ -6,6 +6,79 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
 <head>
+<meta charset="utf-8" />
+<meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+
+<!-- Set the viewport width to device width for mobile -->
+<meta name="HandheldFriendly" content="True" />
+<meta name="viewport" content="width=device-width" />
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+
+<title>ALISS: {% block title %}{% endblock %}</title>
+
+<link rel="stylesheet" href="/static/css/default.css">
+
+<link rel="stylesheet" href="/static/css/style.css" media="(min-width:768px)">
+
+<!--[if (lt IE 9) & (!IEMobile)]>
+<link rel="stylesheet" href="css/style.css">
+<![endif]-->
+
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="page">
+    <!-- container -->
+    <div class="container site-header">
+        <div id="site-header" class="row">
+            <h1>aliss</h1>
+            <div class="nav"><a href="/">home</a> | <a href="/find-out-more/">find out more</a> | <a href="/search/">search</a> | <a href="/contact/">contact us</a> | <a href="/myaliss/">myAliss</a></div>
+        </div>
+    </div>
+
+    <div class="container">{% block content %}&nbsp;{% endblock %}</div>
+
+    </div>
+
+    <div class="container site-footer">
+        <div id="site-footer" class="row">
+            <ul>
+                <li><a href="#">Long Term Conditions Alliance Scotland</a></li>
+                <li><a href="#"><a href="#">Terms &amp; conditions</a></a></li>
+            </ul>
+        </div>
+
+    </div>
+    <!-- container -->
+</div>
+    
+    <!-- Included JS Files
+    <script src="scripts/foundation.js"></script>
+    <script src="scripts/app.js"></script>
+  -->
+  {% block script-extra %}{% endblock %}
+    <script type="text/javascript">
+      $('document').ready(function(){
+        {% block document-ready %}{% endblock %}
+      });
+    </script>
+
+  <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+</body>
+</html>
+
+
+{% comment %}
+
+
+
+<!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
     <meta charset="utf-8" />
     <meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
 
@@ -90,7 +163,6 @@
 
 
 
-{% comment %}
     
 <!DOCTYPE html>
 <html class="no-js" lang="en">
