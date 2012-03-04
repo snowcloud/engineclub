@@ -13,14 +13,19 @@
 }
 
 #site-header .nav {
-	position: static;
-    left: 0;
-	//float: right;
+	//position: static;
+    //left: 0;
+   	@include un_hide_it;
+    position: static;
 	font-size: 120%;
 	margin-top: 1.98em;
 }
 #site-header .nav-mobile {
 	@include hide_it;
+}
+.main {
+	padding-top: 2em;
+	padding-bottom: 2em;
 }
 .welcome {
 	margin: 3em 0;
@@ -57,7 +62,7 @@
 	//display: inline;
 }
 .breadcrumbs {
-	margin-top: 1em;
+	// margin-top: 1em;
 	@include un_hide_it;	
 }
 /* @group search */
