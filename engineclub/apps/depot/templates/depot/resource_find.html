@@ -223,7 +223,12 @@ $('.resource-listing > li').each(function () {
                             {% else %}
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
+                        {% comment %}
+                            
                         | <a class="resource-report" href="{% url resource-report resource.res_id %}?next={{ here }}">Report Resource</a>
+
+                        {% endcomment %}
+
                         {% endif %}
                     </p>
 
