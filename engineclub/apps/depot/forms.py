@@ -1,5 +1,6 @@
 
-from django import forms
+# from django import forms
+import floppyforms as forms
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import CSVTextInput, clean_csvtextinput

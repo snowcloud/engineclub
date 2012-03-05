@@ -17,13 +17,13 @@
         <legend>{% if form.errors %}<span class="">Please correct the errors below:
         {% else%}<span>Your message:{% endif %}</span></legend>
 
-            <label for="id_name">Your name</label> <input id="id_name" type="text" class="required input-text" name="name" maxlength="100" value="{{form.name.value}}">
+            <label for="id_name">Your name</label> <input id="id_name" type="text" class="required input-text" name="name" maxlength="100" value="{{form.name.value|default_if_none:''}}">
             {% if form.name.errors %}<small class="error">{{ form.name.errors|join:", " }}</small>{% endif %}
 
-            <label for="id_email">Your email address</label> <input id="id_email" type="text" class="required input-text" name="email" maxlength="200" value="{{form.email.value}}">
+            <label for="id_email">Your email address</label> <input id="id_email" type="text" class="required input-text" name="email" maxlength="200" value="{{form.email.value|default_if_none:''}}">
             {% if form.email.errors %}<small class="error">{{ form.email.errors|join:", " }}</small>{% endif %}
 
-            <label for="id_body">Your message</label> <textarea id="id_body" rows="10" cols="40" name="body" class="required">{{form.body.value}}</textarea>
+            <label for="id_body">Your message</label> <textarea id="id_body" rows="10" cols="40" name="body" class="required">{{form.body.value|default_if_none:''}}</textarea>
             {% if form.body.errors %}<small class="error">{{ form.body.errors|join:", " }}</small>{% endif %}
 
         <p><input id="id_submit" type="submit" value="Send your messsage" /></p>

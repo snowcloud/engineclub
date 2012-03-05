@@ -2,8 +2,155 @@
 {% load utils depot_tags markup %}
 {% block title %}find resources{% endblock %}
 
-{% block main-content-class %}onecol{% endblock %}
+{% block body_class %}search{% endblock %}
 {% block content %}
+    <h1>Search</h1>
+
+        <div class="row">
+
+            <div class="search-form">
+
+<form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
+    <fieldset>
+        <legend><span>Type in a place, post code, or words:</span></legend>
+             {{ form.as_p }}
+
+        <hr>     
+        {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+        {% endfor %}
+
+
+        {% for field in form %}
+                <label for="id_{{ field.name }}">{{ field.name }}</label> <input type="text" name="{{ field.name }}" value="{{ field.value|default_if_none:'' }}" id="id_{{ field.name }}" class="input-text">
+                {{ field.errors }}
+            {% if field.errors %}<small class="error">{{ field.errors|join:", " }}</small>{% endif %}
+
+<!--             {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+ -->            <!-- <span class="helptext">{{ field.help_text }}</span> -->
+        {% endfor %}
+
+<!--         <label for="slider" id="slider_label">Make results more local:</label>
+        <span class="helptext">drag slider to the right to make location more important than search text.</span>
+ -->            
+        <input type="submit" name="result" value="Find items" id="submit_button">
+        <!-- input type="submit" name="result" value="Cancel" -->
+    </fieldset>
+</form>
+
+
+{% comment %}
+                    
+                <form class="nice" method="post">
+                    <fieldset>
+                        <legend><span>Type in a place, post code, or words:</span></legend>
+
+                        <label for="id_post_code">Location</label> <input type="text" name="post_code" value="pollok" id="id_post_code" class="input-text">
+<!--                        <span class="helptext">enter a post code or a place name</span>
+ -->                    
+                        
+                        <label for="id_kwords">Search text:</label> <input type="text" name="kwords" id="id_kwords" class="input-text">
+<!--                        <span class="helptext">comma separated text (spaces OK)</span>
+ -->                    
+                        
+                        <label for="id_events_only"><input type="checkbox" name="events_only" id="id_events_only">Events only</label> 
+                        <span class="helptext"></span>
+                    
+                        
+<!--                        <label for="id_boost_location">Boost location</label> <input type="hidden" name="boost_location" value="30.0" id="id_boost_location">
+                        <span class="helptext"></span>
+ -->                    
+
+            <!--         <label for="slider" id="slider_label">Make results more local:</label><div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-slider-range-min ui-widget-header" style="width: 22.22222222222222%; "></div><a href="#" class="ui-slider-handle ui-state-default ui-corner-all" style="left: 22.22222222222222%; "></a></div>
+                    <span class="helptext">drag slider to the right to make location more important than search text.</span>
+             -->            
+                    <input type="submit" name="result" value="Find items" id="submit_button">
+                                
+                    </fieldset>
+
+                </form>
+{% endcomment %}                
+
+            </div>      
+
+            <div id="map">
+                <img src="images/map-01.jpg" alt="">
+            </div>      
+        </div>
+
+        <div class="row results">
+            <h2>Results for 'Pollok'</h2>
+            <ul>
+                <li>
+                    <div class="row">
+                    <h3><a href="#">South West Kinship Care Group</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 5AB, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>South West Kinship Care Group Meet in The Wedge 1066 Barrhead Rd Pollok Glasgow G53 5AB For information contact: Linda 882 7629 or Terri 07784 753122 email:southwestkinship@yahoo.co.uk Provides advice and ...</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                    </div>
+                </li>
+                <li>
+                    <h3><a href="#">Pollok Retired Men’s Group</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 5DD, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>Pollok Retired Men’s Group Langton Hall, 69 Langton Road, Pollok G53 5DD</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                </li>
+                <li>
+                    <h3><a href="#">Rossdale Resource Centre</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 6AB, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>Rossdale Resource Centre (Adult Community Mental Health Team, 12 Haughburn Rd, Pollok, Glasgow, G53 6AB, 0141 232 4750 aims to provide care to people suffering from persistent or acute mental ...</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                </li>
+                <li>
+                    <h3><a href="#">South West Bridging Service</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 6AB, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>South West Bridging Service (6 Haughburn Rd, Glasgow G53 6AB, email info@southwestbridgingservice.co.uk, 0141 585 6852 ) Offer dedicated youth service but if call main number can be directed on. One-stop-shop ...</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                </li>
+                <li>
+                    <h3><a href="#">Pollok Library</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 6EW, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>Website home page has day-by-day listing of activities. Services include: Adult Literacy and Numeracy classes; Arts and Crafts: session run by professional artists; Bounce And Rhyme: action, Rhyme and Song ...</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                </li>
+                <li>
+                    <h3><a href="#">Citizens Advice-Home Visiting Service</a></h3>
+                    <div class="location">
+                        <h4>Location:</h4>
+                        <p>G53 6EW, Greater Pollok, Glasgow City</p>
+                    </div>
+                    <p>Citizens Advice-Home Visiting Service The CAB also offers a limited home visiting service for residents of Greater Pollok who are disabled, elderly or have carer responsibilities. Please telephone 0141 876 ...</p>
+                    <p><a href="#top" class="action top">top</a></p>
+                </li>
+
+            </ol>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+
+
+{% comment %}
 
 <div class="row">
     <div class="twelve columns">
@@ -59,7 +206,6 @@
     
                     <div class="resource-description">{{ resource.short_description|truncatewords:30|textile }}</div>
 
-{% comment %}
                     <p class="resource-listing-meta">
                         <a class="resource-url" href="{% url resource resource.res_id %}">more details...</a>
                         {% if resource.uri %}
@@ -103,7 +249,6 @@
                         </fieldset>
                     </form>
                     {% endif %}
-{% endcomment %}
 
                 </li>
             {% endwith %}
@@ -237,7 +382,6 @@ $('.resource-listing > li').each(function () {
         });
     });
 });
-{% endcomment %}
 
 {% if results and centre %}
 
@@ -385,5 +529,6 @@ $('.resource-listing > li').each(function () {
 <div id="map"></div>
 
 {% endblock %}
+{% endcomment %}
 
 
