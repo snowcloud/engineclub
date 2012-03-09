@@ -486,11 +486,9 @@ $('.resource-listing > li').each(function () {
                             {% else %}
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
-                        {% comment %}
                             
                         | <a class="resource-report" href="{% url resource-report resource.res_id %}?next={{ here }}">Report Resource</a>
 
-                        {% endcomment %}
 
                         {% endif %}
                     </p>
@@ -509,7 +507,6 @@ $('.resource-listing > li').each(function () {
                         </fieldset>
                     </form>
 
-                    {% comment %}
                     <form action="{% url resource-report resource.res_id %}?next={{ here }}" class="resource-report" method="post">
                         {% csrf_token %}
                         <fieldset>
@@ -523,7 +520,6 @@ $('.resource-listing > li').each(function () {
                         </fieldset>
                     </form>
                         
-                    {% endcomment %}
                     {% endif %}
 
                 </li>
