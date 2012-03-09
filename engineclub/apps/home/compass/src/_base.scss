@@ -149,7 +149,22 @@ a.top {
 /* fix for foundation.css default 254px*/
 
 input.input-text, textarea { width: 220px; }
-
+input[type=submit] {
+	margin: 1.2em 0;
+}
+legend {
+	font-size: 1.3em;
+}
+form label {
+	font-size: 1.3em;
+	line-height: 1.4em;
+}
+form .helptext {
+	color: #444;
+	font-style: italic;
+	margin: -9px 0 0.6em 0.4em;
+	display: block;
+}
 /* @group search */
 
 .search-form {
@@ -158,9 +173,7 @@ input.input-text, textarea { width: 220px; }
 	border: 1px solid #a9a9a9;
 	border-bottom: 3px solid #a9a9a9;
 	margin-top: 24px;
-}
-#map img {
-	width: 100%;
+    height: 300px;
 }
 .search fieldset {
 	margin-top: 0;

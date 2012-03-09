@@ -1,9 +1,9 @@
 
-# from django import forms
-import floppyforms as forms
+from django import forms
+# import floppyforms as forms
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
-from ecutils.forms import CSVTextInput, clean_csvtextinput
+from ecutils.forms import PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
@@ -38,17 +38,19 @@ class DocumentForm(forms.Form):
             self.instance.save()
         return self.instance
 
-class FindResourceForm(forms.Form):
+class FindResourceForm(PlainForm):
     
-    post_code = forms.CharField(label='Location', help_text='enter a post code or a place name', required=False)
-    kwords = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=False)
+    post_code = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text'}), label='Location', help_text='enter a post code or a place name', required=False)
+    kwords = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text'}), label='Search text', help_text='comma separated text (spaces OK)', required=False)
     events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
-    
+
     def __init__(self, *args, **kwargs):
         self.locations = []
         self.results = []
         self.centre = None
+        if 'label_suffix' not in kwargs:
+            kwargs['label_suffix'] = ''
         super(FindResourceForm, self).__init__(*args, **kwargs)
 
     def clean_boost_location(self):
