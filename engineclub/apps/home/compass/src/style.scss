@@ -37,6 +37,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 .welcome p {
 	font-size: 200%;
 	line-height: 1.6em;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
 }
 .page-nav {
 	float: left;
@@ -68,10 +69,25 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	// margin-top: 1em;
 	@include un_hide_it;	
 }
+ul.breadcrumbs {
+	padding: 0.5em 1em;
+	margin-bottom: 0;
+}
 /* @group search */
 
 .search fieldset {
 	margin-top: 18px;
+}
+.contact form {
+	float: left;
+	width: 60%;
+}
+.contact .advice {
+	margin: 24px 0 0 65%;
+	padding: 1em;
+	p {
+		font-size: 1.6em;
+	}
 }
 
 .search-form {
@@ -108,7 +124,6 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 .resource .metadata {
 	float: left;
 	width: 30%;
-	margin-top: 24px;
 }
 
 /* @end */

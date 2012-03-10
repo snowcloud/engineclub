@@ -3,6 +3,15 @@
 
 {% block title %}edit resource{% endblock %}
 
+{% block breadcrumbs %}
+{% if object %}
+    <ul class="breadcrumbs">
+        <li><a href="{% url resource object.id  %}">Resource</a></li>
+        <li class="current"><a href="#">Edit</a></li>
+    </ul>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 
 {% if not template_info.popup %}<h1>{% if object %}Edit{% else %}Add new{% endif %} item</h1>{% endif %}
@@ -22,8 +31,6 @@
         <fieldset>
             <legend><span>Locations:</span></legend>
             {{ locationform.as_plain }}
-
-            
         </fieldset>
     {% endif %}
     {% if eventform %}

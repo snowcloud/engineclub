@@ -41,7 +41,25 @@
         </div>
     </div>
 
-    <div class="main container"><div class="row">{% block content %}&nbsp;{% endblock %}</div></div>
+    <div class="container" id="top">
+        <div class="row breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
+
+        {% if messages %} 
+            <div class="row usermessages">
+                {% for message in messages %} 
+                <div class="alert-box {{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="" class="close">&times;</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="main container">
+        <div class="row">{% block content %}&nbsp;{% endblock %}</div>
+    </div>
 
     <div class="container site-footer">
         <div id="site-footer" class="row">
@@ -55,11 +73,12 @@
     <!-- container -->
 </div>
     
-    <!-- Included JS Files
-    <script src="scripts/foundation.js"></script>
-    <script src="scripts/app.js"></script>
-  -->
+    <!-- Included JS Files -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script type='text/javascript' src='/static/js/modernizr.foundation.js'></script>
+    <script src="/static/js/foundation.js"></script>
+    <script src="/static/js/app.js"></script>
+    <!-- script src="scripts/app.js"></script -->
 
   {% block script-extra %}{% endblock %}
     <script type="text/javascript">

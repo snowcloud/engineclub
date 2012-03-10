@@ -8,7 +8,7 @@
 
     <div class="row">
 
-        <div class="search-form">
+        <div class="search-form{% if not show_map %}-full{% endif %}">
             <form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
                 <fieldset>
                     <legend><span>Type in a place, post code, or words:</span></legend>
@@ -46,7 +46,9 @@
                     </li>
                 {% endwith %}
             {% empty %}
-                <li>no results found</li>
+                {% if not new_search %} 
+                    <li>no results found</li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

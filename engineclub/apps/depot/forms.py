@@ -40,8 +40,8 @@ class DocumentForm(PlainForm):
 
 class FindResourceForm(PlainForm):
     
-    post_code = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text'}), label='Location', help_text='enter a post code or a place name', required=False)
-    kwords = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text'}), label='Search text', help_text='comma separated text (spaces OK)', required=False)
+    post_code = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), label='Location', help_text='enter a post code or a place name', required=False)
+    kwords = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), label='Search text', help_text='comma separated text (spaces OK)', required=False)
     events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
 
@@ -160,7 +160,6 @@ class LocationUpdateForm(DocumentForm):
 
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
-        
     last_modified = forms.DateField(required=False)
     shelflife = forms.CharField(required=False)
     author = forms.CharField(required=False)

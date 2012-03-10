@@ -13,7 +13,7 @@ urlpatterns = patterns('',
 
     url(r'^$', 'home.views.index', name='home'),
     (r'^api/', include('depot.api_urls')),
-    (r'^cab/', include('enginecab.urls')),
+    (r'^your-aliss/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('engine_groups.urls')),
     (r'^notifications/', include('notifications.urls')),

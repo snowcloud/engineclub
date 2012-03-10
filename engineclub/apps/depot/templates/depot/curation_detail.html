@@ -3,13 +3,24 @@
 
 {% block title %}Curation{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url resource resource.id %}">Resource</a></li>
+    <li class="current"><a href="#">Edit</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
-<p>
-    <a href="{% url resource resource.id %}">back to resource</a>
-    {% if user|can_edit:object %} | <a href="{% url curation-edit resource.id index %}">edit curation</a>{% endif %}
-    {% if user|can_delete:object %} | <a href="{% url curation-remove resource.id index %}">delete curation</a>{% endif %}
-</p>
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    {% if user|can_edit:object %}
+        <dd><a href="{% url curation-edit resource.id index %}">edit curation</a></dd>
+    {% endif %}
+    {% if user|can_delete:object %}
+        <dd><a href="{% url curation-remove resource.id index %}">delete curation</a></dd>
+    {% endif %}
+</dl>
 
 <h1>Curation for {{ resource.title }}</h1>
 

@@ -104,10 +104,11 @@ iframe {
 }
 
 a {
-    color: #546d90;
+    // color: #546d90;
+    color: #2A85E8;
 }
 a, a:hover, a:visited {
-    border-bottom: 1px dotted #919191;
+    // border-bottom: 1px dotted #919191;
 }
 a:hover, a:focus {
     background-color: #d6e8fe;
@@ -134,7 +135,22 @@ a.action:focus, .black.button:focus, input.input-text:focus {
 .breadcrumbs {
 	@include hide_it;	
 }
-
+.usermessages{
+	margin-top: 1em;
+}
+.usermessages .alert-box {
+	font-size: 1.4em;
+	padding: 1em;
+}
+.alert-box.success {
+    background-color: #85a069;
+}
+.alert-box.warning {
+    background-color: #c78940;
+}
+.alert-box.error {
+    background-color: #eb511b;
+}
 a.email {
     background: url(../images/icons/email_32.png) no-repeat left bottom;
 }
@@ -182,13 +198,21 @@ form .sublabel {
 input.timepicker {
 	width: 3em;
 }
+form .errorlist {
+	background-color: #C00000;
+	color: #fff;
+	font-size: 1.2em;
+	padding: 0.5em 1em;
+}
 /* @group search */
-.search-form {
+.search-form, .search-form-full {
+	background-color: #eee;
+	padding: 0 0.5em;
 }
 #map {
 	border: 1px solid #a9a9a9;
 	border-bottom: 3px solid #a9a9a9;
-	margin-top: 24px;
+	//margin-top: 24px;
     height: 300px;
 }
 #map img { max-width: none; }

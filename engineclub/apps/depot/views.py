@@ -259,6 +259,8 @@ def resource_find(request, template='depot/resource_find.html'):
 
     results = []
     centre = None
+    new_search = False
+
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
         if result == 'Cancel':
@@ -289,12 +291,14 @@ def resource_find(request, template='depot/resource_find.html'):
             centre = form.centre
     else:
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+        new_search = True
 
     context = {
         'form': form,
         'results': results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
+        'show_map': results and centre
     }
     return render_to_response(template, RequestContext(request, context))
 
@@ -339,7 +343,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     curation = get_curation_for_user_resource(user, resource)
     if curation:
         index, cur = curation
-        messages.success(request, 'You already have a curation for this resource.')
+        messages.warning(request, 'You already have a curation for this resource- you can edit it if you need to make changes.')
         return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
 
     if request.method == 'POST':
@@ -392,7 +396,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
     else:
         form = CurationForm(instance=object)
 
-    template_context = {'form': form}
+    template_context = {'form': form, 'object': object}
 
     return render_to_response(
         template_name,
