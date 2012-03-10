@@ -14,7 +14,7 @@ from datetime import datetime
 class FormHasNoInstanceException(Exception):
     pass
 
-class DocumentForm(forms.Form):
+class DocumentForm(PlainForm):
     """docstring for DocumentForm"""
 
     instance = None
@@ -82,10 +82,10 @@ class FindResourceForm(PlainForm):
 
 class ShortResourceForm(DocumentForm):
 
-    uri = forms.CharField(required=False)
-    title = forms.CharField()
-    description = forms.CharField(widget=forms.Textarea, required=False)
-    tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
+    uri = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}),required=False)
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
+    tags = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
@@ -110,9 +110,12 @@ class EventForm(DocumentForm):
     from ecutils.fields import JqSplitDateTimeField
     from ecutils.widgets import JqSplitDateTimeWidget
 
+    widget_attrs={'class': 'datetimepicker', 'date_class':'datepicker input-text','time_class':'timepicker input-text'}
+
     start = JqSplitDateTimeField(required=False,
-        widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}, date_format='%d/%m/%Y'))
-    end = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
+        widget=JqSplitDateTimeWidget(attrs=widget_attrs.copy(), date_format='%d/%m/%Y'))
+    end = JqSplitDateTimeField(required=False, 
+        widget=JqSplitDateTimeWidget(attrs=widget_attrs, date_format='%d/%m/%Y'))
 
     def clean(self):
         start = self.cleaned_data.get('start', None)
@@ -134,7 +137,7 @@ class EventForm(DocumentForm):
 
 class LocationUpdateForm(DocumentForm):
     # REPLACE
-    new_location = forms.CharField(required=False)
+    new_location = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
     # new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
     locations = None
 
@@ -180,8 +183,8 @@ class CurationForm(DocumentForm):
     
     outcome = forms.CharField(widget=forms.HiddenInput)
 
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
-    note = forms.CharField(widget=forms.Textarea, required=False)
+    tags = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), help_text='comma separated tags (spaces OK)', required=False)
+    note = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     # data = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean_tags(self):

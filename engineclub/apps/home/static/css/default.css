@@ -1700,61 +1700,67 @@ a.github { background: url(../images/icons/github_32.png) no-repeat left 10px; }
 a.top { background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom; padding-left: 30px; }
 
 /* fix for foundation.css default 254px*/
-/* line 156, ../../compass/src/_base.scss */
-input.input-text, textarea { width: 220px; }
-
-/* line 157, ../../compass/src/_base.scss */
+/* line 158, ../../compass/src/_base.scss */
 input[type=submit] { margin: 1.2em 0; }
 
-/* line 160, ../../compass/src/_base.scss */
+/* line 161, ../../compass/src/_base.scss */
 legend { font-size: 1.3em; }
 
-/* line 163, ../../compass/src/_base.scss */
+/* line 164, ../../compass/src/_base.scss */
 form label { font-size: 1.3em; line-height: 1.4em; }
 
-/* line 167, ../../compass/src/_base.scss */
+/* line 168, ../../compass/src/_base.scss */
 form .helptext { color: #444; font-style: italic; margin: -9px 0 0.6em 0.4em; display: block; }
 
+/* line 174, ../../compass/src/_base.scss */
+form .sublabel { width: 4em; display: inline-block; }
+
+/* line 178, ../../compass/src/_base.scss */
+.datepicker, .timepicker, .datetimepicker select { display: inline !important; }
+
+/* line 182, ../../compass/src/_base.scss */
+input.timepicker { width: 3em; }
+
 /* @group search */
-/* line 177, ../../compass/src/_base.scss */
+/* line 188, ../../compass/src/_base.scss */
 #map { border: 1px solid #a9a9a9; border-bottom: 3px solid #a9a9a9; margin-top: 24px; height: 300px; }
 
-/* line 183, ../../compass/src/_base.scss */
+/* line 194, ../../compass/src/_base.scss */
 #map img { max-width: none; }
 
-/* line 185, ../../compass/src/_base.scss */
+/* line 196, ../../compass/src/_base.scss */
 .search fieldset { margin-top: 0; }
 
-/* line 188, ../../compass/src/_base.scss */
+/* line 199, ../../compass/src/_base.scss */
 .search .results { margin-top: 2em; }
 
-/* line 195, ../../compass/src/_base.scss */
+/* line 206, ../../compass/src/_base.scss */
 .search .results h4 { position: absolute; left: -999em; }
 
-/* line 201, ../../compass/src/_base.scss */
+/* line 212, ../../compass/src/_base.scss */
 .search .results li { border-bottom: 1px solid #dedffd; }
 
 /* @end */
-/* line 205, ../../compass/src/_base.scss */
+/* line 216, ../../compass/src/_base.scss */
 .metadata th { background-color: #D8E1E7; font-weight: bold; vertical-align: top; }
 
-/* line 210, ../../compass/src/_base.scss */
+/* line 221, ../../compass/src/_base.scss */
 .metadata th, .metadata td { border-bottom: 1px solid #E5E7E8; padding: 0.3em 2em 0.3em 0.3em; }
 
-/* line 214, ../../compass/src/_base.scss */
+/* line 225, ../../compass/src/_base.scss */
 caption, th, td { font-weight: normal; text-align: left; vertical-align: middle; }
 
 /* @group presentations */
-/* line 220, ../../compass/src/_base.scss */
+/* line 231, ../../compass/src/_base.scss */
 .presentation dt { visibility: hidden; }
 
-/* line 223, ../../compass/src/_base.scss */
+/* line 234, ../../compass/src/_base.scss */
 .pres-slide { border-top: 4px solid #eee; }
 
-/* line 226, ../../compass/src/_base.scss */
+/* line 237, ../../compass/src/_base.scss */
 .pres-media { border: 1px solid #dedffd; text-align: center; }
 
-/* line 230, ../../compass/src/_base.scss */
+/* line 241, ../../compass/src/_base.scss */
 .pres-text p { margin-bottom: 0.5em; }
 
 /* @end */

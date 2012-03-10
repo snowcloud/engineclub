@@ -9,7 +9,7 @@
 {% block content %}
 
 <p class="content-menu">
-    {% if user.is_authenticated %} | <a href="{% url curation-add object.id %}">new curation</a>{% endif %}
+    {% if user.is_authenticated %}<a href="{% url curation-add object.id %}">new curation</a>{% endif %}
     {% if user|can_edit:object %} | <a href="{% url resource-edit object.id %}">edit resource</a>{% endif %}
     {% if user.is_staff %}
         {% if user|can_delete:object %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}

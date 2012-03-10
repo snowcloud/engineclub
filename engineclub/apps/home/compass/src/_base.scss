@@ -153,7 +153,8 @@ a.top {
 }
 
 /* fix for foundation.css default 254px*/
-input.input-text, textarea { width: 220px; }
+// this breaks using large width
+//input.input-text, textarea { width: 220px; }
 input[type=submit] {
 	margin: 1.2em 0;
 }
@@ -170,8 +171,18 @@ form .helptext {
 	margin: -9px 0 0.6em 0.4em;
 	display: block;
 }
+form .sublabel {
+	width: 4em;
+	display: inline-block;
+}
+.datepicker, .timepicker, .datetimepicker select  {
+	display: inline !important;
+	//margin-left: 2em;
+}
+input.timepicker {
+	width: 3em;
+}
 /* @group search */
-
 .search-form {
 }
 #map {

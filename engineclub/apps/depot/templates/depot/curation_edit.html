@@ -6,12 +6,10 @@
 {% block content %}
 
 
-<form class="form" action="." method="POST">{% csrf_token %}
+<form class="nice form" action="." method="POST">{% csrf_token %}
     <fieldset>
         <legend><span>Curation details:</span></legend>
-        <ol>
-             {{ form.as_ul }}
-        </ol>
+         {{ form.as_plain }}
     </fieldset>
      <fieldset class="submit">
         <input type="submit" name="result" value="Save item">
