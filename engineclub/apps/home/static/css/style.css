@@ -35,81 +35,81 @@ div.panel { border: 1px solid #ccc; }
 #site-header .nav { text-indent: 0; white-space: normal; overflow: visible; position: static; font-size: 130%; margin-top: 1.8em; }
 
 /* line 24, ../../compass/src/style.scss */
-#site-header .nav-mobile { text-indent: 100%; white-space: nowrap; overflow: hidden; }
+#site-header .nav-mobile { text-indent: 100%; white-space: nowrap; overflow: hidden; position: absolute; }
 
-/* line 27, ../../compass/src/style.scss */
+/* line 28, ../../compass/src/style.scss */
 .main { padding-top: 2em; padding-bottom: 2em; }
 
-/* line 31, ../../compass/src/style.scss */
+/* line 32, ../../compass/src/style.scss */
 .welcome { margin: 3em 0; padding: 2em 6em; }
 
-/* line 35, ../../compass/src/style.scss */
+/* line 36, ../../compass/src/style.scss */
 .welcome p { font-size: 200%; line-height: 1.6em; }
 
-/* line 39, ../../compass/src/style.scss */
+/* line 40, ../../compass/src/style.scss */
 .page-nav { float: left; width: 33%; }
 
-/* line 43, ../../compass/src/style.scss */
+/* line 44, ../../compass/src/style.scss */
 .page-nav p { margin-bottom: 1em; }
 
-/* line 46, ../../compass/src/style.scss */
+/* line 47, ../../compass/src/style.scss */
 .page-nav .button { display: block; }
 
-/* line 49, ../../compass/src/style.scss */
+/* line 50, ../../compass/src/style.scss */
 .video { text-indent: 0; white-space: normal; overflow: visible; float: right; width: 66%; }
 
-/* line 54, ../../compass/src/style.scss */
+/* line 55, ../../compass/src/style.scss */
 .home-links { padding-top: 1em; }
 
-/* line 58, ../../compass/src/style.scss */
+/* line 59, ../../compass/src/style.scss */
 .home-links .action { margin-left: 30%; }
 
-/* line 61, ../../compass/src/style.scss */
+/* line 62, ../../compass/src/style.scss */
 .home-links p { padding-top: 1em; }
 
-/* line 65, ../../compass/src/style.scss */
+/* line 66, ../../compass/src/style.scss */
 .breadcrumbs { text-indent: 0; white-space: normal; overflow: visible; }
 
 /* @group search */
-/* line 71, ../../compass/src/style.scss */
+/* line 72, ../../compass/src/style.scss */
 .search fieldset { margin-top: 18px; }
 
-/* line 75, ../../compass/src/style.scss */
+/* line 76, ../../compass/src/style.scss */
 .search-form { float: left; width: 30%; }
 
-/* line 79, ../../compass/src/style.scss */
-#map { float: right; width: 64%; }
-
-/* line 83, ../../compass/src/style.scss */
-.search .results h3 { display: inline; }
+/* line 80, ../../compass/src/style.scss */
+#map { float: right; width: 64%; height: 400px; }
 
 /* line 86, ../../compass/src/style.scss */
-.search .results h3 a { border-bottom: none; }
+.search .results h3 { display: inline; }
 
 /* line 89, ../../compass/src/style.scss */
-.search .results h3, .search .results p { width: 64%; }
+.search .results h3 a { border-bottom: none; }
 
 /* line 92, ../../compass/src/style.scss */
+.search .results h3, .search .results p { width: 64%; }
+
+/* line 95, ../../compass/src/style.scss */
 .search .results h4 { position: static; padding-top: 0.3em; color: #797979; }
 
-/* line 97, ../../compass/src/style.scss */
+/* line 100, ../../compass/src/style.scss */
 .search .results .location { float: right; width: 33%; }
 
-/* line 101, ../../compass/src/style.scss */
+/* line 104, ../../compass/src/style.scss */
 .search .results .location p { width: auto; }
 
 /* @end */
 /* @group presentation */
-/* line 108, ../../compass/src/style.scss */
+/* line 111, ../../compass/src/style.scss */
 .pres-slide { background-color: #eee; }
 
-/* line 111, ../../compass/src/style.scss */
+/* line 114, ../../compass/src/style.scss */
 .pres-media { float: left; width: 60%; border: none; padding: 1em; }
 
-/* line 117, ../../compass/src/style.scss */
+/* line 120, ../../compass/src/style.scss */
 .pres-text { margin-left: 63%; margin-top: 2.5em; }
 
-/* line 121, ../../compass/src/style.scss */
+/* line 124, ../../compass/src/style.scss */
 .pres-text p { font-size: 160%; }
 
 /* @end */

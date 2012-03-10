@@ -23,6 +23,7 @@
 }
 #site-header .nav-mobile {
 	@include hide_it;
+    position: absolute; // uses no height
 }
 .main {
 	padding-top: 2em;
@@ -79,7 +80,9 @@
 #map {
 	float: right;
 	width: 64%;
+    height: 400px;
 }
+
 .search .results h3 {
 	display: inline;
 }

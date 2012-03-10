@@ -12,8 +12,14 @@ body {
 	background-color: #000;
 	font-family: "freight-sans-pro", "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	//font-size: 13px; 
+	-webkit-font-smoothing: subpixel-antialiased; // needed for white on black
+
 }
-h1, h2, h3, h4, h5, h6 { color: #181818; font-family: "adelle",serif; font-weight: normal; line-height: 1.25 }
+h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; font-weight: normal; line-height: 1.25 }
+.button {
+	color: white;
+	font-size: 1.2em;
+}
 
 .page {
 	background-color: #fff;
@@ -64,7 +70,7 @@ h1, h2, h3, h4, h5, h6 { color: #181818; font-family: "adelle",serif; font-weigh
 	padding: 1em;
 }
 .welcome p {
-	font-size: 100%;
+	font-size: 110%;
 	margin-bottom: 0em;
 }
 .page-nav {
@@ -147,6 +153,7 @@ a.top {
 }
 
 /* fix for foundation.css default 254px*/
+#map img { max-width: none; }
 
 input.input-text, textarea { width: 220px; }
 input[type=submit] {
