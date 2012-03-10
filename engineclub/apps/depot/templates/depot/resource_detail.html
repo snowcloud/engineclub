@@ -3,10 +3,9 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
-
-
-{% block body_class %}{{ block.super}} resource-detail{% endblock %}
-{% block breadcrumbs %}<a href="{% url home %}">home</a> &gt; <a href="{% url resource-find %}">search</a>{% endblock %}
+<!-- {% block breadcrumbs %}<a href="{% url home %}">home</a> &gt; <a href="{% url resource-find %}">search</a>{% endblock %}
+ -->
+{% block body_class %}resource{% endblock %}
 {% block content %}
 
 <p class="content-menu">
@@ -28,7 +27,7 @@
 {{ object.description|textile }}
 </div>
 
-<div id="results">
+<div class="row">
 
 <table class="metadata">
 
@@ -57,9 +56,10 @@
 
 </table>
 
+<div id="map"></div>
+
 </div>
 
-<div id="map"></div>
 
 
 {% endblock %}
@@ -93,7 +93,7 @@
     });
     
     //mapstraction.autoCenterAndZoom();
-    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 9);
+    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 14);
 
 {% endif %}
 {% endblock %}

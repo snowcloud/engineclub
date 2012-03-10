@@ -153,8 +153,6 @@ a.top {
 }
 
 /* fix for foundation.css default 254px*/
-#map img { max-width: none; }
-
 input.input-text, textarea { width: 220px; }
 input[type=submit] {
 	margin: 1.2em 0;
@@ -182,6 +180,8 @@ form .helptext {
 	margin-top: 24px;
     height: 300px;
 }
+#map img { max-width: none; }
+
 .search fieldset {
 	margin-top: 0;
 }
@@ -202,7 +202,20 @@ form .helptext {
 	border-bottom: 1px solid #dedffd;
 }
 /* @end */
-
+.metadata th {
+    background-color: #D8E1E7;
+    font-weight: bold;
+    vertical-align: top;
+}
+.metadata th, .metadata td {
+    border-bottom: 1px solid #E5E7E8;
+    padding: 0.3em 2em 0.3em 0.3em;
+}
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+    vertical-align: middle;
+}
 /* @group presentations */
 .presentation dt {
 	visibility: hidden;

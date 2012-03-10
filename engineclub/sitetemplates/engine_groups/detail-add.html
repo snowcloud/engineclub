@@ -2,6 +2,42 @@
 
 <h2>Latest curations for {{ object.name }}</h2>
 
+<div class="search">
+
+<div class="row results">
+
+    {% get_latest_curations object 20 as latest_curations %}
+
+    <ul class="resource-listing">
+        {% for result in latest_curations %}
+            {% with result as resource %}
+
+                <li>
+                    <div class="row">
+                    <h3><a href="{% url resource resource.id %}">{{ resource.title }}</a></h3>
+                    <div class="location">
+                    {% if resource.locations %}
+                        <h4>Location:</h4>
+                        {% for loc in resource.locations %}
+                            <p>{{ loc }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                    {{ resource.description|truncatewords:30|textile }}
+                    <p><a href="#top" class="action top">top</a></p>
+                    </div>
+                </li>
+            {% endwith %}
+        {% empty %}
+            <li>no results found</li>
+        {% endfor %}
+    </ul>
+</div>
+</div>
+
+
+{% comment %}
+    
 <div id="results">
     
     {% get_latest_curations object 20 as latest_curations %}
@@ -46,3 +82,4 @@
         
     </form>
 </div>
+{% endcomment %}

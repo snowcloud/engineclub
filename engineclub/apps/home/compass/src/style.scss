@@ -7,6 +7,7 @@
 .home .page {
 	background: #ffffff url(../images/bg-main.jpg) no-repeat;
 }
+p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 #site-header h1 {
 	float: left;
@@ -103,6 +104,11 @@
 }
 .search .results .location p {
 	width: auto;
+}
+.resource .metadata {
+	float: left;
+	width: 30%;
+	margin-top: 24px;
 }
 
 /* @end */
