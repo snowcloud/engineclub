@@ -9,7 +9,7 @@ from django.template import RequestContext
 
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
-from engine_groups.models import Account
+from accounts.models import Account
 from pymongo.objectid import ObjectId
 
 

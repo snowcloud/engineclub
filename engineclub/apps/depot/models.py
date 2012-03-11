@@ -11,7 +11,7 @@ from pysolr import Solr
 import re
 
 from ecutils.utils import minmax
-from engine_groups.models import Account, get_account
+from accounts.models import Account, get_account
 
 from copy import deepcopy
 

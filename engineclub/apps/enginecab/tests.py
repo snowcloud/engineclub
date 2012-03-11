@@ -12,7 +12,7 @@ from mongoengine.django.tests import MongoTestCase
 from pysolr import Solr
 
 from depot.models import Resource, Curation
-from engine_groups.models import Account, Collection
+from accounts.models import Account, Collection
 
 SEP = '**************'
 SOLR_ROWS = 5 # settings.SOLR_ROWS

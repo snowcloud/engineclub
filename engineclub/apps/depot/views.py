@@ -23,7 +23,7 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
 from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
-from engine_groups.models import Account, get_account
+from accounts.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
     """helper function for Mongoengine documents"""

@@ -1,0 +1,62 @@
+[
+    {
+        "_cls": "Account", 
+        "_id": {
+            "$oid": "4d9b63423de0747a4f000000"
+        }, 
+        "_types": [
+            "Account"
+        ], 
+        "members": [], 
+        "name": "Humph Floogerwhippel"
+    }, 
+    {
+        "_cls": "Account", 
+        "_id": {
+            "$oid": "4d9b63423de0747a4f000001"
+        }, 
+        "_types": [
+            "Account"
+        ], 
+        "members": [], 
+        "name": "Jorph Wheedjil"
+    }, 
+    {
+        "_cls": "Account", 
+        "_id": {
+            "$oid": "4d9b63423de0747a4f000002"
+        }, 
+        "_types": [
+            "Account"
+        ], 
+        "members": [
+            {
+                "_cls": "Membership", 
+                "_types": [
+                    "Membership"
+                ], 
+                "member": {
+                    "$id": {
+                        "$oid": "4d9b63423de0747a4f000000"
+                    }, 
+                    "$ref": "account"
+                }, 
+                "role": "member"
+            }, 
+            {
+                "_cls": "Membership", 
+                "_types": [
+                    "Membership"
+                ], 
+                "member": {
+                    "$id": {
+                        "$oid": "4d9b63423de0747a4f000001"
+                    }, 
+                    "$ref": "account"
+                }, 
+                "role": "admin"
+            }
+        ], 
+        "name": "Flupping Baxterettes of Falkirk"
+    }
+] 

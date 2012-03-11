@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from engine_groups.forms import AccountForm, NewAccountForm
-from engine_groups.views import get_one_or_404
+from accounts.forms import AccountForm, NewAccountForm
+from accounts.views import get_one_or_404
 
 @login_required
 def account(request, template_name='youraliss/account.html'):    
