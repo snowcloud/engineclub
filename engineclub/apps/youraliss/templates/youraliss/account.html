@@ -8,12 +8,19 @@
 {% block module-content %}
 	<h2>Your account</h2>
 
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="{% url logout %}">logout</a></dd>
+        <dd><a href="{% url password_reset %}">reset password</a></dd>
+	</dl>
+
+
 	<form class="nice form" action="." method="POST">{% csrf_token %}
 	    <fieldset>
 	        <legend><span>Account details:</span></legend>
 	         {{ form }}
-	    </fieldset>
-	     <fieldset class="submit">
+
+	         <hr>
 	        <input type="submit" name="result" value="Save changes">
 	    </fieldset>
 	</form>
@@ -25,5 +32,6 @@
 		<tr><th>status</th><td>{{ object.status }}</td></tr>
 		<tr><th>collections</th><td>{{ object.collections }}</td></tr>
 	</table>
+
 
 {% endblock %}
