@@ -128,6 +128,31 @@ class CSVTextInput(forms.TextInput):
             value = ', '.join(value)
         return super(CSVTextInput, self).render(name, value, attrs)
 
+class DocumentForm(PlainForm):
+    """docstring for DocumentForm"""
+
+    instance = None
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.pop('instance', None)
+        if instance:
+            self.instance = instance
+            kwargs.setdefault('initial', {}).update(instance.to_mongo())
+        super(DocumentForm, self).__init__(*args, **kwargs)
+
+    def save(self, do_save=False):
+        if self.instance is None:
+            raise FormHasNoInstanceException("Form cannot save- document instance is None.")
+        for f in self.fields:
+            try:
+                self.instance[f] = self.cleaned_data[f]
+            except KeyError:
+                pass
+        if do_save:
+            self.instance.save()
+        return self.instance
+
+
 class SCContactForm(ContactForm):
     """simple spam prevention for contact form- reject message body with 'http:'
     All the spam I have through contact emails has links in it.

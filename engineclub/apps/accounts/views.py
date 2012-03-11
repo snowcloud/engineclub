@@ -41,7 +41,8 @@ def edit(request, object_id, template_name='accounts/edit.html'):
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=object)
         if form.is_valid():
-            g = form.save()
+            g = form.save(True)
+            print g
             return HttpResponseRedirect(reverse('group', args=[object.id]))
     else:
         form = AccountForm(instance=object)

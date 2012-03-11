@@ -18,7 +18,7 @@
 	<form class="nice form" action="." method="POST">{% csrf_token %}
 	    <fieldset>
 	        <legend><span>Account details:</span></legend>
-	         {{ form }}
+	         {{ form.as_plain }}
 
 	         <hr>
 	        <input type="submit" name="result" value="Save changes">

@@ -1,20 +1,24 @@
 from django import forms
 from django.db import IntegrityError
 from django.contrib.auth.models import User
-from mongoforms import MongoForm
+
+# from mongoforms import MongoForm
+from ecutils.forms import DocumentForm
 
 from models import Account
 
 
-class AccountForm(MongoForm):
-    class Meta:
-        document = Account
-        fields = ('name', 'email', 'description', 'local_id')
+class AccountForm(DocumentForm):
+    # class Meta:
+    #     document = Account
+    #     fields = ('name', 'email', 'description', 'local_id')
 
-    description = forms.CharField(widget=forms.Textarea, required=False)
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     local_id = forms.CharField(widget=forms.HiddenInput, help_text='do not change this!')
 
-class NewAccountForm(MongoForm):
+class NewAccountForm(DocumentForm):
     class Meta:
         document = Account
         fields = ('name', 'email', 'description', 'local_id')

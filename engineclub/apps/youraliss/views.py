@@ -11,14 +11,12 @@ from accounts.views import get_one_or_404
 @login_required
 def account(request, template_name='youraliss/account.html'):    
 
-    print request.user.id
-    
     object =  get_one_or_404(local_id=str(request.user.id))
     
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=object)
         if form.is_valid():
-            g = form.save()
+            g = form.save(True)
             messages.success(request, 'Changes saved.')
             return HttpResponseRedirect(reverse('youraliss-account'))
     else:
