@@ -116,17 +116,24 @@ ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; }
 .resource .metadata { float: left; width: 30%; }
 
 /* @end */
-/* @group presentation */
+/* @group youraliss */
 /* line 132, ../../compass/src/style.scss */
+.youraliss .module-nav { float: left; width: 22%; }
+/* line 136, ../../compass/src/style.scss */
+.youraliss .module-content { float: right; width: 70%; }
+
+/* @end */
+/* @group presentation */
+/* line 144, ../../compass/src/style.scss */
 .pres-slide { background-color: #eee; }
 
-/* line 135, ../../compass/src/style.scss */
+/* line 147, ../../compass/src/style.scss */
 .pres-media { float: left; width: 60%; border: none; padding: 1em; }
 
-/* line 141, ../../compass/src/style.scss */
+/* line 153, ../../compass/src/style.scss */
 .pres-text { margin-left: 63%; margin-top: 2.5em; }
 
-/* line 145, ../../compass/src/style.scss */
+/* line 157, ../../compass/src/style.scss */
 .pres-text p { font-size: 160%; }
 
 /* @end */

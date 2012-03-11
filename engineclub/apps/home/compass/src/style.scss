@@ -127,6 +127,18 @@ ul.breadcrumbs {
 }
 
 /* @end */
+/* @group youraliss */
+.youraliss {
+	.module-nav {
+		float: left;
+		width: 22%;
+	}
+	.module-content {
+		float: right;
+		width: 70%;
+	}
+}
+/* @end */
 
 /* @group presentation */
 .pres-slide {

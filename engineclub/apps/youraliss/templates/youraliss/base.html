@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}your aliss{% endblock %}
+{% block body_class %}youraliss{% endblock %}
+{% block nav_link %}{% endblock %}
+
+{% block content %}
+
+<h1>Your Aliss</h1>
+
+<div class="row">
+
+	<div class="module-nav">
+		<dl class="nice tabs vertical">
+			<dd><a class="{% block mod-nav-account %}{% endblock %}" href="{% url youraliss-account %}">your account</a></dd>
+			<dd><a class="{% block mod-nav-alerts %}{% endblock %}" href="{% url youraliss-alerts %}">alerts</a></dd>
+			<dd><a class="{% block mod-nav-curations %}{% endblock %}" href="{% url youraliss-curations %}">curations</a></dd>
+			<dd><a class="{% block mod-nav-groups %}{% endblock %}" href="{% url youraliss-groups %}">groups</a></dd>
+		</dl>
+	</div>
+	<div class="module-content">{% block module-content %}{% endblock %}</div>
+</div>
+
+{% endblock %}

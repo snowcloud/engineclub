@@ -20,21 +20,15 @@
 <p class="notice">Please note, this site is currently in closed beta testing</p>
 {% endcomment %}
 
-<form class="form" method="post">{% csrf_token %}
+<form class="nice form" method="post">{% csrf_token %}
     <fieldset>
 
-        <label for="id_username">Username:</label> {{ form.username }}
-        <label for="id_password">Password:</label> {{ form.password }}
+        <label for="id_username">Username:</label>
+        <input type="text" maxlength="30" name="username" id="id_username" class="input-text large">
 
-    {% comment %}
-        
-        <ol>
-        <li><label for="id_username">Username:</label> {{ form.username }}</li>
-        <li><label for="id_password">Password:</label> {{ form.password }}</li>
-        </ol>
-    </fieldset>
-    <fieldset class="submit">
-    {% endcomment %}
+        <label for="id_password">Password:</label>
+        <input type="password" id="id_password" name="password" class="input-text large">
+
         <p>
         <input type="submit" value="Log in">
         <input type="hidden" name="next" value="{% if next %}{{ next|urlencode }}{% else %}/{% endif %}">

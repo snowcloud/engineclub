@@ -163,6 +163,7 @@ INSTALLED_APPS = (
     'firebox',
     'engine_groups',
     'ecutils',
+    'youraliss',
     'contact_form',
     'sitedown',
     'notifications',

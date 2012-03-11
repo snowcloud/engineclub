@@ -13,11 +13,12 @@ urlpatterns = patterns('',
 
     url(r'^$', 'home.views.index', name='home'),
     (r'^api/', include('depot.api_urls')),
-    (r'^your-aliss/', include('enginecab.urls')),
+    (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('engine_groups.urls')),
     (r'^notifications/', include('notifications.urls')),
     url(r'^search/$', 'depot.views.resource_find', name='search'),
+    (r'^youraliss/', include('youraliss.urls')),
 
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact'),

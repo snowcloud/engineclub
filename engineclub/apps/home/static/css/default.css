@@ -1768,17 +1768,22 @@ form .errorlist { background-color: #C00000; color: #fff; font-size: 1.2em; padd
 /* line 249, ../../compass/src/_base.scss */
 caption, th, td { font-weight: normal; text-align: left; vertical-align: middle; }
 
+/* @group youraliss */
+/* line 257, ../../compass/src/_base.scss */
+.youraliss .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
+
+/* @end */
 /* @group presentations */
-/* line 255, ../../compass/src/_base.scss */
+/* line 266, ../../compass/src/_base.scss */
 .presentation dt { visibility: hidden; }
 
-/* line 258, ../../compass/src/_base.scss */
+/* line 269, ../../compass/src/_base.scss */
 .pres-slide { border-top: 4px solid #eee; }
 
-/* line 261, ../../compass/src/_base.scss */
+/* line 272, ../../compass/src/_base.scss */
 .pres-media { border: 1px solid #dedffd; text-align: center; }
 
-/* line 265, ../../compass/src/_base.scss */
+/* line 276, ../../compass/src/_base.scss */
 .pres-text p { margin-bottom: 0.5em; }
 
 /* @end */

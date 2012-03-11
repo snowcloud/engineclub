@@ -35,9 +35,9 @@
     <div class="container site-header">
         <div id="site-header" class="row">
             <h1>aliss</h1>
-            <div class="nav-mobile">{% block nav_link %}<a href="/">home</a>{% endblock %}</div>
+            <div class="nav-mobile">{% block nav_link %}<a href="{% url home %}">home</a>{% endblock %}</div>
             
-            <div class="nav"><a href="/">home</a> | <a href="/info/">find out more</a> | <a href="/search/">search</a> | <a href="/contact/">contact us</a> | <a href="/your-aliss/">your Aliss</a></div>
+            <div class="nav"><a href="/">home</a> | <a href="/info/">find out more</a> | <a href="{% url search %}">search</a> | <a href="{% url contact %}">contact us</a> | <a href="{% url youraliss %}">your Aliss</a></div>
         </div>
     </div>
 

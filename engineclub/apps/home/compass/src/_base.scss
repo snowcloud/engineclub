@@ -251,6 +251,17 @@ caption, th, td {
     text-align: left;
     vertical-align: middle;
 }
+
+/* @group youraliss */
+.youraliss {
+	.module-content {
+		@include box(#555);
+		background-color: #fafeff;
+		padding: 1em;
+	}
+}
+/* @end */
+
 /* @group presentations */
 .presentation dt {
 	visibility: hidden;
