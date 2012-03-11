@@ -210,7 +210,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
             else:
                 resource.calendar_event = None
-            resource = resourceform.save()
+            resource = resourceform.save(do_save=False)
             
             try:
                 resource.save(author=acct, reindex=True)

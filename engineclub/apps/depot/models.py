@@ -176,30 +176,6 @@ class Curation(Document):
         # print self.owner, acct
         return self.owner == acct
 
-# def place_as_cb_value(place):
-#     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
-#     if place:
-#         return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
-#     return ''
-
-# def location_from_cb_value(cb_value):
-#     """takes cb_string and returns Location"""
-#     values = cb_value.split('|')
-#     if not len(values) == 5:
-#         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-#     lat = float(values[3])
-#     lon = float(values[4])
-#     print lat, lon
-#     loc_values = {
-#         'lat_lon': [lat, lon],
-#         # 'woeid': values[0],
-#         'name': values[1],
-#         'placetype': values[2],
-#         'latitude': lat,
-#         'longitude': lon
-#         }
-#     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
-
 class Resource(Document):
     """ Main model for ALISS resource """
     title = StringField(required=True)

@@ -2,6 +2,11 @@
 
 {% block title %}your aliss account{% endblock %}
 
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">your account</a></li>
+{% endblock breadcrumb-add %}
+
+
 {% block mod-nav-account %}active{% endblock mod-nav-account %}
 
 
@@ -11,7 +16,7 @@
 	<dl class="sub-nav">
 	    <dt>Actions:</dt>
         <dd><a href="{% url logout %}">logout</a></dd>
-        <dd><a href="{% url password_reset %}">reset password</a></dd>
+        <dd><a href="{% url password_change %}">change password</a></dd>
 	</dl>
 
 
@@ -27,7 +32,6 @@
 
 	<table class="metadata">
 		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
-		<tr><th>url</th><td>{{ object.url }}</td></tr>
 		<tr><th>members</th><td>{{ object.members }}</td></tr>
 		<tr><th>status</th><td>{{ object.status }}</td></tr>
 		<tr><th>collections</th><td>{{ object.collections }}</td></tr>

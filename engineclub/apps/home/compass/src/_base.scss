@@ -61,7 +61,12 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
-
+.cab .main {
+	background-color: #57659b;
+	h1 {
+		color: white;
+	}
+}
 .welcome {
 	background-color: #eb511b;
 	color: #fff;
@@ -79,6 +84,13 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 }
 dl.sub-nav dd a {
     padding: 0.3em;
+}
+dl.nice.tabs.vertical {
+	border-bottom-color: #bbb;
+	dd a {
+	    background-color: #e5f2fe;
+	    border-color: #bbb #bbb -moz-use-text-color;
+	}
 }
 .video {
 	@include hide_it;
@@ -204,6 +216,7 @@ form .errorlist {
 	color: #fff;
 	font-size: 1.2em;
 	padding: 0.5em 1em;
+	margin-top: -9px;
 }
 /* @group search */
 .search-form, .search-form-full {
@@ -255,6 +268,16 @@ caption, th, td {
 
 /* @group youraliss */
 .youraliss {
+	.module-content {
+		@include box(#555);
+		background-color: #fafeff;
+		padding: 1em;
+	}
+}
+/* @end */
+
+/* @group cab */
+.cab {
 	.module-content {
 		@include box(#555);
 		background-color: #fafeff;

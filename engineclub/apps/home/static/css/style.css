@@ -118,9 +118,9 @@ ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; }
 /* @end */
 /* @group youraliss */
 /* line 132, ../../compass/src/style.scss */
-.youraliss .module-nav { float: left; width: 22%; }
+.youraliss .module-nav, .cab .module-nav { float: left; width: 22%; }
 /* line 136, ../../compass/src/style.scss */
-.youraliss .module-content { float: right; width: 70%; }
+.youraliss .module-content, .cab .module-content { float: right; width: 70%; }
 
 /* @end */
 /* @group presentation */

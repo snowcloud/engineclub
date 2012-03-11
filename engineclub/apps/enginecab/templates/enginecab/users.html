@@ -1,5 +1,32 @@
-{% extends "base.html" %}
+{% extends "enginecab/base.html" %}
 
+{% block title %}engine cab{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">Users</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-users %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>User accounts</h2>
+
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="#">New user</a></dd>
+        <!-- <dd><a href="#">change password</a></dd> -->
+	</dl>
+
+
+
+{% endblock %}
+
+
+
+{% comment %}
+	
 {% block title %}engine admin{% endblock %}
 
 {% block content %}
@@ -23,12 +50,10 @@
     <li><a href="{% url fix-curationless-resources %}">fix-curationless-resources</a></li>
     <li><a href="{% url cab-one-off-util %}">one off util</a></li>
 
-    {% comment %}
-    <!-- li><a href="{% url cab-fix-resource-accounts %}">fix resource accounts</a></li -->
-    {% endcomment %}
 
 </ul>
 {% endif %}
 
 
 {% endblock %}
+{% endcomment %}

@@ -103,13 +103,14 @@ class PlainForm(forms.Form):
     def as_plain(self):
         "Returns this form rendered as HTML with no tags wrapping a field."
         return self._html_output(
-            normal_row = u'%(label)s %(field)s%(help_text)s',
-            checkbox_row = u'<label>%(field)s %(label)s</label> %(help_text)s',
+            normal_row = u'%(label)s %(field)s %(errors)s %(help_text)s',
+            checkbox_row = u'<label>%(field)s %(label)s</label>%(errors)s %(help_text)s',
             # normal_row = u'<span%(html_class_attr)s>%(label)s %(field)s%(help_text)s</span>',
             error_row = u'%s',
             row_ender = '</span>',
             help_text_html = u' <span class="helptext">%s</span>',
-            errors_on_separate_row = True)
+            # make this False to include errors in format strings above
+            errors_on_separate_row = False)
 
 def clean_csvtextinput(data):
     """docstring for _clean_tags"""
@@ -140,12 +141,13 @@ class DocumentForm(PlainForm):
             kwargs.setdefault('initial', {}).update(instance.to_mongo())
         super(DocumentForm, self).__init__(*args, **kwargs)
 
-    def save(self, do_save=False):
+    def save(self, do_save=True):
         if self.instance is None:
             raise FormHasNoInstanceException("Form cannot save- document instance is None.")
         for f in self.fields:
             try:
-                self.instance[f] = self.cleaned_data[f]
+                if self.cleaned_data[f]:
+                    self.instance[f] = self.cleaned_data[f]
             except KeyError:
                 pass
         if do_save:
