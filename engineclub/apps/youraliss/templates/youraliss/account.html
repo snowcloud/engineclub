@@ -8,11 +8,22 @@
 {% block module-content %}
 	<h2>Your account</h2>
 
-	<p>More than 3 consecutive hours of sleep, coming up. No chance. Still hyped… Me! The man that can't not sleep, ever. I'm so tired. I even vaguely recollect there been an umpa lumpa at the hospital link here.</p>
-<p>Don't I look cute link here. "Well, that's the easy bit done with" - My taxi driver on the way home. Yeah. P.s Let's peer to peer our cupboards link here.</p>
-<p>Hear My Song, Violetta. link here. From now on, I will only respond to people using that voice. Latest Violetta pic. Sophie now doing much better. link here. Can anyone find the chords for "Hear My Song" by Josef Locke?</p>
-<p>Awake! link here. A builder asked what HIS name was, "well the Pom Pom is blue". I said, it's not a boy, it's a lesbian. Cheeky but the moon looks like it is sitting in a bed of clouds, would you take me a picture?</p>
-<p>Sorry, I thought you had a telescope, I just wanted a moody snap :-) no worries if not. No worries if difficult, I just fancied a pic of this particular moon. You were my first thought :-).</p>
-<p>Perfect, thanks. Gorgeous, thanks both. Sophie and I are both lunatics, and having a nice pic of her moon is lovely. Thanks! S is still sore from C section. V is such a good nosher she latched on to me through my shirt. Ready meal. Home alone and emotional :-). No morphine, don't think. Sophie can't do most pain killers either… Starts fitting. At least it's not me eh?</p>
+	<form class="nice form" action="." method="POST">{% csrf_token %}
+	    <fieldset>
+	        <legend><span>Account details:</span></legend>
+	         {{ form }}
+	    </fieldset>
+	     <fieldset class="submit">
+	        <input type="submit" name="result" value="Save changes">
+	    </fieldset>
+	</form>
+
+	<table class="metadata">
+		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
+		<tr><th>url</th><td>{{ object.url }}</td></tr>
+		<tr><th>members</th><td>{{ object.members }}</td></tr>
+		<tr><th>status</th><td>{{ object.status }}</td></tr>
+		<tr><th>collections</th><td>{{ object.collections }}</td></tr>
+	</table>
 
 {% endblock %}
