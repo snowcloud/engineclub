@@ -23,7 +23,7 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
 from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
-from engine_groups.models import Account, get_account
+from accounts.models import Account, get_account
 
 def get_one_or_404(obj_class=Resource, **kwargs):
     """helper function for Mongoengine documents"""
@@ -61,6 +61,8 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
     resource = get_one_or_404(id=ObjectId(object_id))
 
+    raise Exception()
+    
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
         if form.is_valid():
@@ -199,35 +201,8 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
-            # new_loc = locationform.cleaned_data['new_location']
-            # if new_loc: 
-            #     resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            #     resource.save(author=acct, reindex=True)
-            # else:
-            #     event_start = eventform.cleaned_data['start']
-            #     if event_start:
-            #         resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
-            #         # print 'event_start', event_start
-            #         # print 'event_finish', eventform.cleaned_data['end']
-            #     else:
-            #         resource.calendar_event = None
-            #     resource = resourceform.save()
-                
-            #     try:
-            #         resource.save(author=acct, reindex=True)
-            #         return resource_edit_complete(request, resource, template_info)
-            #     except OperationError:
-            #         pass
-
-            # Location
-            # new_loc = locationform.cleaned_data['new_location'].split(',')
-            # print new_loc
-            # resource.locations = Location.objects(id__in=new_loc)
-            # print locationform.locations
             resource.locations = locationform.locations
             resource.save()
-            #resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            #resource.save(author=acct, reindex=True)
 
             # Event dates
             event_start = eventform.cleaned_data['start']
@@ -235,7 +210,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
                 resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
             else:
                 resource.calendar_event = None
-            resource = resourceform.save()
+            resource = resourceform.save(do_save=False)
             
             try:
                 resource.save(author=acct, reindex=True)
@@ -260,7 +235,6 @@ def resource_edit_complete(request, resource, template_info):
     """docstring for resource_edit_complete"""
     
     if resource:
-        # resource.collection_status = COLL_STATUS_COMPLETE
         resource.save(author=str(request.user.id))
         popup_url = reverse('resource-popup-close')
         url = reverse('resource', args=[resource.id])
@@ -285,6 +259,8 @@ def resource_find(request, template='depot/resource_find.html'):
 
     results = []
     centre = None
+    new_search = False
+
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
         if result == 'Cancel':
@@ -314,7 +290,8 @@ def resource_find(request, template='depot/resource_find.html'):
                 })
             centre = form.centre
     else:
-        form = FindResourceForm(initial={'post_code': 'aberdeen', 'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+        form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+        new_search = True
 
     context = {
         'next': urlquote_plus(request.get_full_path()),
@@ -322,6 +299,7 @@ def resource_find(request, template='depot/resource_find.html'):
         'results': results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
+        'show_map': results and centre
     }
     return render_to_response(template, RequestContext(request, context))
 
@@ -366,7 +344,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     curation = get_curation_for_user_resource(user, resource)
     if curation:
         index, cur = curation
-        messages.success(request, 'You already have a curation for this resource.')
+        messages.warning(request, 'You already have a curation for this resource- you can edit it if you need to make changes.')
         return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
 
     if request.method == 'POST':
@@ -428,7 +406,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
     else:
         form = CurationForm(instance=object)
 
-    template_context = {'form': form}
+    template_context = {'form': form, 'object': object}
 
     return render_to_response(
         template_name,

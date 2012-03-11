@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{% if new %}New group{% else %}Edit {{ form.instance.name }}{% endif %}{% endblock %}
+
+{% block content %}
+
+ 
+<h1>{% if new %}New group{% else %}Edit: {{ form.instance.name }}{% endif %}</h1>
+
+<form method="post" action=".">{% csrf_token %}
+    {{ form.as_p }}
+    
+    <input type="submit" value="Submit" id="" />
+</form>
+
+
+
+{% endblock %}

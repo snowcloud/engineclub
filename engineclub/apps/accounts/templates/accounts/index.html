@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}groups{% endblock %}
+
+{% block content %}
+
+{% if user.is_staff %}
+<p><a href="{% url group-new %}">new group</a></p>
+{% endif %}
+
+<h1>Groups</h1>
+
+<ol>
+{% for object in objects %}
+
+    <li><a href="{% url group object.id %}">{{ object.name }}</a></li>
+
+{% empty %}
+    <li>no groups found.</li>
+{% endfor %}
+</ol>
+{% endblock %}

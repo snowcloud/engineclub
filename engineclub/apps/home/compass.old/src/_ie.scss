@@ -1,0 +1,26 @@
+/* 
+Title:		IE patches
+Author: 	dan@simplebits.com
+*/
+
+/* nav fix */
+
+*:first-child+html #nav li {
+	width: 16.5%;
+	}
+
+/* PNG fix */
+
+* html #selector { /* for IE<6 */
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='img/image.png'); background-image: none; background-repeat: no-repeat; background-color: transparent;
+	}
+
+/* self-clear floats */
+
+* html .group { /* IE6 */
+	height: 1%;
+	}
+*:first-child+html .group { /* IE7 */
+	min-height: 1px;
+	}
+

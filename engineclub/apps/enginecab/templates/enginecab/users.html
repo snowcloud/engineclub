@@ -1,0 +1,59 @@
+{% extends "enginecab/base.html" %}
+
+{% block title %}engine cab{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">Users</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-users %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>User accounts</h2>
+
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="#">New user</a></dd>
+        <!-- <dd><a href="#">change password</a></dd> -->
+	</dl>
+
+
+
+{% endblock %}
+
+
+
+{% comment %}
+	
+{% block title %}engine admin{% endblock %}
+
+{% block content %}
+
+<h1>The Cab</h1>
+
+<p><a href="{% url groups %}">Groups</a></p>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<hr>
+{% if user.is_superuser %}
+
+<p>&nbsp;</p>
+<ul>
+    <li><a href="{% url notifications-list %}">Notifications ({{ notifications_count }})</a></li>
+    <li><a href="{% url cab-reindex %}">reindex resources</a></li>
+    <li><a href="{% url remove-dud-curations %}">remove-dud-curations</a></li>
+    <li><a href="{% url show-curationless-resources %}">show-curationless-resources</a></li>
+    <li><a href="{% url fix-curationless-resources %}">fix-curationless-resources</a></li>
+    <li><a href="{% url cab-one-off-util %}">one off util</a></li>
+
+
+</ul>
+{% endif %}
+
+
+{% endblock %}
+{% endcomment %}

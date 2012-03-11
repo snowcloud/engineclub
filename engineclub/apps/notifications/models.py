@@ -7,7 +7,7 @@ from mongoengine import *
 from mongoengine.queryset import QuerySet
 from mongoengine.base import ValidationError
 
-from engine_groups.models import Account
+from accounts.models import Account
 
 
 class NotificationGroup(Document):

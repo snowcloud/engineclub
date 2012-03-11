@@ -1,7 +1,308 @@
-$blueprint-grid-columns : 24;
-$blueprint-grid-width   : 30px;
-$blueprint-grid-margin  : 10px;
-$font-color             : #333;
+// _base.scss
 
-@import "compass/reset";
-@import "compass/utilities";
+
+
+/*
+
+768 / 800
+1023px
+
+*/
+body {
+	background-color: #000;
+	font-family: "freight-sans-pro", "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	//font-size: 13px; 
+	-webkit-font-smoothing: subpixel-antialiased; // needed for white on black
+
+}
+h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; font-weight: normal; line-height: 1.25 }
+.button {
+	color: white;
+	font-size: 1.2em;
+}
+
+.page {
+	background-color: #fff;
+}
+
+.container.site-header {
+	background-color: black;
+}
+#site-header {
+	color: #fffeff;
+}
+
+#site-header h1 {
+	color: #fff;
+	margin-bottom: 0.1em;
+	text-align: center;
+	font-family: "adelle",serif;
+	font-weight: 400;
+	padding-top: 0.2em;
+}
+#site-header .nav {
+	color: #6c5f61;
+	@include hide_it;
+    //position: absolute; // uses no height
+    height: 1px;
+}
+#site-header a {
+	color: white;
+}
+#site-header a:hover, #site-header a:focus {
+    background-color: #636dbc;
+}
+
+#site-header .nav-mobile {
+	float: left;
+	margin-top: -2em;
+}
+.main {
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+.cab .main {
+	background-color: #57659b;
+	h1 {
+		color: white;
+	}
+}
+.welcome {
+	background-color: #eb511b;
+	color: #fff;
+	margin: 1.4em 0;
+	padding: 1em;
+}
+.welcome p {
+	font-size: 110%;
+	margin-bottom: 0em;
+}
+.page-nav {
+}
+.page-nav p {
+	margin-bottom: 0.8em;
+}
+dl.sub-nav dd a {
+    padding: 0.3em;
+}
+dl.nice.tabs.vertical {
+	border-bottom-color: #bbb;
+	dd a {
+	    background-color: #e5f2fe;
+	    border-color: #bbb #bbb -moz-use-text-color;
+	}
+}
+.video {
+	@include hide_it;
+	background-color: #fff;
+	margin-bottom: 3.5em;
+	padding: 0em 0;
+	text-align: center;
+}
+iframe {
+	border: 1px solid #a9a9a9;
+	border-bottom: 3px solid #a9a9a9;
+}
+.video a {
+	color: black;
+}
+.video p {
+	margin-bottom: 0;
+}
+.container.site-footer {
+	background-color: #a8aeb2;
+	color: #fff;
+	padding-top: 2em;
+	padding-bottom: 2em;
+}
+
+a {
+    // color: #546d90;
+    color: #2A85E8;
+}
+a, a:hover, a:visited {
+    // border-bottom: 1px dotted #919191;
+}
+a:hover, a:focus {
+    background-color: #d6e8fe;
+}
+
+a.action {
+    padding-left: 50px;
+    padding-top: 12px;
+    line-height: 1.5em;
+}
+a.action:focus, .black.button:focus, input.input-text:focus {
+    background-color: #aaf;
+}
+.home-links {
+	margin-top: 1.5em;
+	margin-bottom: 1em;
+}
+.home-links .action {
+    border-bottom: none;
+    margin-left: 40%;
+    padding-top: 1.2em;
+    padding-bottom: 1.2em;
+}
+.breadcrumbs {
+	@include hide_it;	
+}
+.usermessages{
+	margin-top: 1em;
+}
+.usermessages .alert-box {
+	font-size: 1.4em;
+	padding: 1em;
+}
+.alert-box.success {
+    background-color: #85a069;
+}
+.alert-box.warning {
+    background-color: #c78940;
+}
+.alert-box.error {
+    background-color: #eb511b;
+}
+a.email {
+    background: url(../images/icons/email_32.png) no-repeat left bottom;
+}
+a.twitter {
+    background: url(../images/icons/twitter_32.png) no-repeat left 10px;
+}
+a.blog {
+    background: url(../images/icons/wordpress_32.png) no-repeat left 10px;
+}
+a.github {
+    background: url(../images/icons/github_32.png) no-repeat left 10px;
+}
+a.top {
+    background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom;
+    padding-left: 30px;
+}
+
+/* fix for foundation.css default 254px*/
+// this breaks using large width
+//input.input-text, textarea { width: 220px; }
+input[type=submit] {
+	margin: 1.2em 0;
+}
+legend {
+	font-size: 1.3em;
+}
+form label {
+	font-size: 1.3em;
+	line-height: 1.4em;
+}
+form .helptext {
+	color: #444;
+	font-style: italic;
+	margin: -9px 0 0.6em 0.4em;
+	display: block;
+}
+form .sublabel {
+	width: 4em;
+	display: inline-block;
+}
+.datepicker, .timepicker, .datetimepicker select  {
+	display: inline !important;
+	//margin-left: 2em;
+}
+input.timepicker {
+	width: 3em;
+}
+form .errorlist {
+	background-color: #C00000;
+	color: #fff;
+	font-size: 1.2em;
+	padding: 0.5em 1em;
+	margin-top: -9px;
+}
+/* @group search */
+.search-form, .search-form-full {
+	background-color: #eee;
+	padding: 0 0.5em;
+}
+#map {
+	border: 1px solid #a9a9a9;
+	border-bottom: 3px solid #a9a9a9;
+	//margin-top: 24px;
+    height: 300px;
+}
+#map img { max-width: none; }
+
+.search fieldset {
+	margin-top: 0;
+}
+.search .results {
+	margin-top: 2em;
+}
+.search .results h3, .search .results h4 {
+	
+}
+
+.search .results h4 {
+	position: absolute;
+    left: -999em;	
+}
+.search .results .location {
+}
+.search .results li {
+	border-bottom: 1px solid #dedffd;
+}
+/* @end */
+.metadata th {
+    background-color: #D8E1E7;
+    font-weight: bold;
+    vertical-align: top;
+}
+.metadata th, .metadata td {
+    border-bottom: 1px solid #E5E7E8;
+    padding: 0.3em 2em 0.3em 0.3em;
+}
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* @group youraliss */
+.youraliss {
+	.module-content {
+		@include box(#555);
+		background-color: #fafeff;
+		padding: 1em;
+	}
+}
+/* @end */
+
+/* @group cab */
+.cab {
+	.module-content {
+		@include box(#555);
+		background-color: #fafeff;
+		padding: 1em;
+	}
+}
+/* @end */
+
+/* @group presentations */
+.presentation dt {
+	visibility: hidden;
+}
+.pres-slide {
+	border-top: 4px solid #eee;
+}
+.pres-media {
+	border: 1px solid #dedffd;
+	text-align: center;
+}
+.pres-text p {
+	margin-bottom: 0.5em;
+}
+.pres-text {
+}
+/* @end */
+
+
+

@@ -16,7 +16,11 @@
 
 /* #Site Styles
 ================================================== */
-
+.message {
+	padding: 1em;
+	border: 1px solid #d9dfca;
+	background-color: #fdfdd8;
+}
 /* #Page Styles
 ================================================== */
 

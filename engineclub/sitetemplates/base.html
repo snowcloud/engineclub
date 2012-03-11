@@ -1,4 +1,201 @@
 <!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+
+<!-- Set the viewport width to device width for mobile -->
+<meta name="HandheldFriendly" content="True" />
+<meta name="viewport" content="width=device-width" />
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+
+<title>ALISS: {% block title %}{% endblock %}</title>
+<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
+
+<script type="text/javascript" src="http://use.typekit.com/amh5xxh.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+<link rel="stylesheet" href="/static/css/default.css">
+
+<link rel="stylesheet" href="/static/css/style.css" media="(min-width:768px)">
+
+<!--[if (lt IE 9) & (!IEMobile)]>
+<link rel="stylesheet" href="css/style.css">
+<![endif]-->
+
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="page">
+    <!-- container -->
+    <div class="container site-header">
+        <div id="site-header" class="row">
+            <h1>aliss</h1>
+            <div class="nav-mobile">{% block nav_link %}<a href="{% url home %}">home</a>{% endblock %}</div>
+            
+            <div class="nav"><a href="/">home</a> | <a href="/info/">find out more</a> | <a href="{% url search %}">search</a> | <a href="{% url contact %}">contact us</a> | 
+                <a href="{% url youraliss %}">your Aliss
+                {% with notifications_count as alerts %}
+                    {% if alerts %}({{alerts}} alerts){% endif %}
+                {% endwith %}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="top">
+        <div class="row breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
+
+        {% if messages %} 
+            <div class="row usermessages">
+                {% for message in messages %} 
+                <div class="alert-box {{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="" class="close">&times;</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="main container">
+        <div class="row">{% block content %}&nbsp;{% endblock %}</div>
+    </div>
+
+    <div class="container site-footer">
+        <div id="site-footer" class="row">
+            <ul>
+                <li><a href="#">Long Term Conditions Alliance Scotland</a></li>
+                <li><a href="#"><a href="#">Terms &amp; conditions</a></a></li>
+            </ul>
+        </div>
+
+    </div>
+    <!-- container -->
+</div>
+    
+    <!-- Included JS Files -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script type='text/javascript' src='/static/js/modernizr.foundation.js'></script>
+    <script src="/static/js/foundation.js"></script>
+    <script src="/static/js/app.js"></script>
+    <!-- script src="scripts/app.js"></script -->
+
+  {% block script-extra %}{% endblock %}
+    <script type="text/javascript">
+      $('document').ready(function(){
+        {% block document-ready %}{% endblock %}
+      });
+    </script>
+<!--  -->
+  <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+</body>
+</html>
+
+
+{% comment %}
+
+
+
+<!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+
+    <!-- Set the viewport width to device width for mobile -->
+    <meta name="viewport" content="width=device-width" />
+    
+    <title>ALISS: {% block title %}{% endblock %}</title>
+  
+    <script type="text/javascript" src="http://use.typekit.com/amh5xxh.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <!-- Included CSS Files -->
+    <link rel="stylesheet" href="/static/css/default.css">
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/static/stylesheets/ie.css">
+    <![endif]-->
+
+    <!-- IE Fix for HTML5 Tags -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+    <!-- container -->
+    <div class="container">
+        <div class="row">
+            <div class="twelve columns">
+                <h1 class="site-logo">aliss</h1>
+            </div>
+        </div>
+        {% block nav-home %}<p><a href="/" class="nice medium radius blue button">home</a></p>{% endblock %}
+        
+
+        <div class="row breadcrumbs">
+            {% block breadcrumbs %}{% endblock %}
+        </div>
+
+        {% if messages %}
+          <div class="row usermessage alert-box {{ message.0.tags }}">
+            <ul> 
+                {% for message in messages %} 
+                    <li class="{{ message.tags }}">{{ message|safe }}</li>
+                {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <div class="row" id="top">
+
+        {% block content %}&nbsp;{% endblock %}
+        </div>
+    <div class="site-footer row">
+        <ul>
+            <li><a href="#">Long Term Conditions Alliance Scotland</a></li>
+            <li><a href="#"><a href="#">Terms &amp; conditions</a></a></li>
+        </ul>
+    </div>
+    </div>
+    <!-- container -->
+    
+    
+
+
+    <!-- Included JS Files -->
+    <script src="/static/scripts/foundation.js"></script>
+    <script src="/static/scripts/app.js"></script>
+    {% block script-extra %}{% endblock %}
+    <script type="text/javascript">
+      $('document').ready(function(){
+        {% block document-ready %}{% endblock %}
+      });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+    
+<!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
@@ -82,10 +279,6 @@
     <p>Geolocation data provided by <a href="http://www.geonames.org">www.geonames.org</a></p>
     <p><a href="javascript:(function(){aliss_script=document.createElement('SCRIPT');aliss_script.type='text/javascript';aliss_script.src='http://www.aliss.org/static/js/aliss_bm.js?x='+(Math.random());document.getElementsByTagName('head')[0].appendChild(aliss_script);})();g">ALISS it</a> bookmark</p>
 </div>
-{% comment %}
-<script type="text/javascript" src="http://static.wehearvoices.net/widget.js"></script>
-<script type="text/javascript" src="http://widget.wehearvoices.net/node/init.js?user_id=9cac9f62-69cd-11e0-bf5e-fefdb24f91c5"></script>
-{% endcomment %}
 
 <script type="text/javascript">
 
@@ -103,3 +296,4 @@
 
 </body>
 </html>
+{% endcomment %}

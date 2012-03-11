@@ -1,0 +1,21 @@
+{% extends "flatpages/default.html" %}
+
+{% block nav_link %}<a href="/info/">back</a>{% endblock %}
+{% block body_class %}presentation{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumbs">
+        <li><a href="/info/">Find out more</a></li>
+        <li class="current"><a href="#">{{ flatpage.title }}</a></li>
+    </ul>
+{% endblock %}
+
+
+
+{% block content %}
+
+<h1>{{ flatpage.title }}</h1>
+
+{{ flatpage.content }}
+
+{% endblock %}

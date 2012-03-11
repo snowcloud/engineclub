@@ -117,7 +117,7 @@ TEMPLATE_LOADERS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'engine_groups.backends.EngineGroupsBackend',
+    'accounts.backends.EngineGroupsBackend',
 )
 
 
@@ -156,12 +156,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    # 'floppyforms',
     'home',
+    'accounts',
     'enginecab',
     'depot',
     'firebox',
-    'engine_groups',
     'ecutils',
+    'youraliss',
     'contact_form',
     'sitedown',
     'notifications',
