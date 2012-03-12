@@ -20,6 +20,29 @@
 	</dl>
 
 
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in objects  %}
+            <tr>
+                <td><a href="{% url cab-user-detail user.id %}">{{ user.name }}</a></td>
+                <td><a href="">{{ user.email }}</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">no users</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 

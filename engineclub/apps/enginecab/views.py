@@ -10,23 +10,39 @@ from django.template import RequestContext
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
 from accounts.models import Account
+from accounts.views import get_one_or_404
 from pymongo.objectid import ObjectId
 
 
 @user_passes_test(lambda u: u.is_staff)
-def alerts(request):    
-    return render_to_response('enginecab/alerts.html', RequestContext(request, {}))
+def alerts(request, template='enginecab/alerts.html'):    
+    context = {}
+    return render_to_response(template, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
-def resources(request):    
-    return render_to_response('enginecab/resources.html', RequestContext(request, {}))
+def resources(request, template='enginecab/resources.html'):    
+    context = {}
+    return render_to_response(template, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
-def users(request):    
-    return render_to_response('enginecab/users.html', RequestContext(request, {}))
+def users(request, template='enginecab/users.html'):
+    context = {'objects': Account.objects.all()[:20]}
+    return render_to_response(template, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
-def reindex(request):
+def user_detail(request, object_id, template='enginecab/user_detail.html'):
+    object = get_one_or_404(id=object_id)
+    context = {'object': object}
+    return render_to_response(template, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_staff)
+def user_edit(request, object_id, template='enginecab/user_edit.html'):
+    object = get_one_or_404(id=object_id)
+    context = {'object': object}
+    return render_to_response(template, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_staff)
+def reindex(request, template=''):
     reindex_resources(settings.MONGO_DATABASE_NAME, printit=False)
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab-resources'))

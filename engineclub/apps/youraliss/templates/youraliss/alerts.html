@@ -1,4 +1,5 @@
 {% extends "youraliss/base.html" %}
+{% load notifications_tags %}
 
 {% block title %}your aliss alerts{% endblock %}
 
@@ -13,10 +14,47 @@
 {% block module-content %}
 	<h2>Alerts</h2>
 
-	<p>{{ notifications_count }}</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Severity</th>
+				<th>Message</th>
+				<th>Resource</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for alert in notifications  %}
+			<tr>
+				<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
+				<td>{{ alert.type }}</td>
+				<td class="alert-{{alert.severity}}">{{ alert.severity|notification_severity }}</td>
+				<td>{{ alert.message }}</td>
+				<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
+			</tr>
+			{% empty %}
+			<tr>
+				<td colspan="4">no alerts</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-<p>Awake! link here. A builder asked what HIS name was, "well the Pom Pom is blue". I said, it's not a boy, it's a lesbian. Cheeky but the moon looks like it is sitting in a bed of clouds, would you take me a picture?</p>
-<p>Sorry, I thought you had a telescope, I just wanted a moody snap :-) no worries if not. No worries if difficult, I just fancied a pic of this particular moon. You were my first thought :-).</p>
-<p>Perfect, thanks. Gorgeous, thanks both. Sophie and I are both lunatics, and having a nice pic of her moon is lovely. Thanks! S is still sore from C section. V is such a good nosher she latched on to me through my shirt. Ready meal. Home alone and emotional :-). No morphine, don't think. Sophie can't do most pain killers either… Starts fitting. At least it's not me eh?</p>
+
 
 {% endblock %}
+
+{% comment %}
+    account = ReferenceField(Account, required=True)
+    group = ReferenceField(NotificationGroup, required=False)
+    type = ReferenceField(NotificationType, required=True)
+    severity = IntField(choices=SEVERITY_CHOICES, required=True)
+    datetime = DateTimeField(default=datetime.now)
+    origin = ReferenceField(Account, required=False)
+    message = StringField()
+    opened = BooleanField(default=False)
+    resolved = BooleanField(default=False)
+    related_document = GenericReferenceField()
+
+{% endcomment %}

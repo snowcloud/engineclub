@@ -251,14 +251,18 @@ form .errorlist {
 	border-bottom: 1px solid #dedffd;
 }
 /* @end */
+table.metadata {
+	//font-size: 0.8em;
+}
 .metadata th {
-    background-color: #D8E1E7;
+    // background-color: #D8E1E7;
     font-weight: bold;
     vertical-align: top;
+    width: 22%;
 }
 .metadata th, .metadata td {
     border-bottom: 1px solid #E5E7E8;
-    padding: 0.3em 2em 0.3em 0.3em;
+    padding: 0.3em 2em 0.3em 0.6em;
 }
 caption, th, td {
     font-weight: normal;
@@ -273,6 +277,10 @@ caption, th, td {
 		background-color: #fafeff;
 		padding: 1em;
 	}
+	td.alert-0 { background-color: #ffea99;}
+	td.alert-1 { background-color: #ffb73c;}
+	td.alert-2 { background-color: #ff796a;}
+	td.alert-3 { background-color: red;}
 }
 /* @end */
 
