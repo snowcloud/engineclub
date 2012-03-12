@@ -15,7 +15,6 @@ def notifications(request):
         notifications = None
         notifications_count = 0
 
-    print account, notifications_count
     return {
         'notifications_count': notifications_count,
         'notifications': notifications
