@@ -1,0 +1,52 @@
+{% extends "enginecab/base.html" %}
+
+{% block title %}user invitations{% endblock %}
+
+{% block breadcrumb-add %}
+    <li><a href="{% url cab-users %}">Users</a></li>
+    <li class="current"><a href="#">Invitations</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-users %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Invitations</h2>
+
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="{% url invite %}">Invite a new user</a></dd>
+	</dl>
+
+    <table class="metadata">
+    	<thead>
+             <tr>
+             	<th>User email</th>
+             	<th>Date invited</th>
+             	<th>Invited by</th>
+             	<th colspan="2">Accepted</th>
+             </tr>
+   		
+    	</thead>
+        <tbody>
+        	{% for object in objects  %}
+	            <tr>
+	            	<td>{{ object.email }}</td>
+	            	<td>{{ object.date_invited|date:"d M Y, H:i" }}</td>
+	            	<td>{{ object.invite_from }}</td>
+	            	<td class="{{ object.accepted|yesno }}">{{ object.accepted|yesno }}</td>
+                    <!-- <td><a href="{% url invite-delete object.id %}" class="red label">delete</a></td> -->
+                    <td><form class="inline" method="post" action="{% url invite-delete object.id %}">{% csrf_token %}<input type="submit" value="delete" /></form></td>
+	            </tr>
+        	{% empty %}
+	            <tr>
+	            	<td colspan="4">no invitations found</td>
+	            </tr>
+        	{% endfor %}
+            
+        </tbody>
+    </table>
+
+{% endblock %}
+

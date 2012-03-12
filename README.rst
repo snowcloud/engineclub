@@ -16,6 +16,11 @@ All documentation is in the "docs" directory- see docs/_build/html/index.html
 
 ChangeLog
 ---------
+0.6.0
+^^^^^
+UI makeover. 'engine-groups' app moved into this repo and renamed 'acccounts'.
+Demo apps moving out into own git modules.
+
 0.5.0
 ^^^^^
 major change to Location model, backwards incompatible. Contact us if you need help migrating data.

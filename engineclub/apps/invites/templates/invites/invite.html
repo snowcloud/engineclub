@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Invitation{% endblock %}
+
+{% block content %}
+
+<form class="nice form" method="post" action=".">
+
+    {% csrf_token %}
+    <fieldset>
+    {{ form.as_plain }}
+
+    <input type="submit" value="send invitation" />
+	</fieldset>
+</form>
+
+{% endblock %}

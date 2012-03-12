@@ -12,7 +12,7 @@ from depot.forms import ShortResourceForm
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
 
-from engine_groups.models import Account, get_account
+from accounts.models import Account, get_account
 from pymongo.objectid import ObjectId
 
 import re

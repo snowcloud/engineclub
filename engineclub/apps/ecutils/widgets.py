@@ -9,10 +9,9 @@ from time import strftime
 class JqSplitDateTimeWidget(MultiWidget):
 
     def __init__(self, attrs=None, date_format='%d/%m/%Y', time_format=None):
-        date_class = attrs['date_class']
-        time_class = attrs['time_class']
-        del attrs['date_class']
-        del attrs['time_class']
+        date_class = attrs.pop('date_class', None)
+        time_class = attrs.pop('time_class', None)
+        self.main_class = attrs.pop('class', None)
 
         time_attrs = attrs.copy()
         time_attrs['class'] = time_class
@@ -43,8 +42,13 @@ class JqSplitDateTimeWidget(MultiWidget):
 
         Returns a Unicode string representing the HTML for the whole lot.
         """
-        return '<span class="sublabel">Date:</span> %s<br/><span class="sublabel">Time:</span> %s:%s %s' % (rendered_widgets[0], rendered_widgets[1],
-                                                rendered_widgets[2], rendered_widgets[3])
+        class_attr = u' class="%s"' % self.main_class if self.main_class else ''
+        return u'<div%s><span class="sublabel">Date:</span> %s<br/><span class="sublabel">Time:</span> %s:%s %s</div>' % (
+                class_attr,
+                rendered_widgets[0],
+                rendered_widgets[1],
+                rendered_widgets[2],
+                rendered_widgets[3])
 
     class Media:
         css = {

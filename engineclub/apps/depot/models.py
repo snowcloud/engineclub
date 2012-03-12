@@ -5,13 +5,13 @@ from django.conf import settings
 from mongoengine import *
 from mongoengine.connection import _get_db as get_db
 from datetime import datetime
-    
+
 from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from pysolr import Solr
 import re
 
 from ecutils.utils import minmax
-from engine_groups.models import Account, get_account
+from accounts.models import Account, get_account
 
 from copy import deepcopy
 
@@ -38,7 +38,7 @@ class ItemMetadata(EmbeddedDocument):
     shelflife = DateTimeField(default=datetime.now) # TODO set to now + settings.DEFAULT_SHELFLIFE
     status = StringField()
     note = StringField()
-    
+
     def update(self, author, last_modified=None):
         """docstring for update"""
         self.author = author
@@ -50,7 +50,7 @@ class CalendarEvent(EmbeddedDocument):
     end = DateTimeField()
     status = StringField(default='confirmed') # 'provisional', 'confirmed', 'cancelled'.
     # recurrence = EmbeddedDocumentField(CalendarRepeatRule)
-           
+
 class oldLocation(Document):
     """Location document, based on Ordnance Survey data
     ALISS only uses 4 types: postcode, ward, district, country
@@ -61,7 +61,7 @@ class oldLocation(Document):
     os_type = StringField(required=True)
     parents = ListField(ReferenceField("Location"), default=list)
     lat_lon = GeoPointField()
-    
+
     def __unicode__(self):
         return ', '.join([self.label, self.place_name or '-'])
 
@@ -88,7 +88,7 @@ class Location(Document):
         return ', '.join([self.postcode, self.place_name]) \
             if self.postcode \
             else ', '.join([self.place_name, self.district])
-    
+
     @classmethod
     def create_from(cls, name):
         result = None
@@ -128,7 +128,7 @@ def lookup_postcode(pc):
     return res, addr
 
 def _make_addr(results):
-    
+
     for res in results:
         addr = {}
         for c in res.address_components:
@@ -176,30 +176,6 @@ class Curation(Document):
         # print self.owner, acct
         return self.owner == acct
 
-# def place_as_cb_value(place):
-#     """takes placemaker.Place and builds a string for use in forms (eg checkbox.value) to encode place data"""
-#     if place:
-#         return '%s|%s|%s|%s|%s' % (place.woeid,place.name,place.placetype,place.centroid.latitude,place.centroid.longitude)
-#     return ''
-
-# def location_from_cb_value(cb_value):
-#     """takes cb_string and returns Location"""
-#     values = cb_value.split('|')
-#     if not len(values) == 5:
-#         raise Exception('place_from_cb_value could not make a Location from values: %s' % values)
-#     lat = float(values[3])
-#     lon = float(values[4])
-#     print lat, lon
-#     loc_values = {
-#         'lat_lon': [lat, lon],
-#         # 'woeid': values[0],
-#         'name': values[1],
-#         'placetype': values[2],
-#         'latitude': lat,
-#         'longitude': lon
-#         }
-#     return Location.objects.get_or_create(woeid=values[0], defaults=loc_values)
-
 class Resource(Document):
     """ Main model for ALISS resource """
     title = StringField(required=True)
@@ -240,24 +216,24 @@ class Resource(Document):
                 obj.save()
                 self.curations.append(obj)
             super(Resource, self).save(*args, **kwargs)
-        
+
         if reindex:
             self.reindex()
-     
+
     def delete(self, *args, **kwargs):
         """docstring for delete"""
         for c in self.curations:
             c.delete()
         self.reindex(remove=True)
         super(Resource, self).delete(*args, **kwargs)
-        
+
     def _all_tags(self):
         tags = self.tags
         for c in self.curations:
             tags.extend(c.tags)
         return list(set(tags))
     all_tags = property(_all_tags)
-    
+
     def reindex(self, remove=False):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
@@ -265,14 +241,14 @@ class Resource(Document):
         conn.delete(q='id:%s*' % self.id)
         if not remove:
             self.index(conn)
-    
+
     def index(self, conn=None):
         """conn is Solr connection"""
         tags = list(self.tags)
         accounts = []
         collections = []
         description = [self.description]
-        
+
         # try:
 
         for obj in self.curations:
@@ -312,8 +288,8 @@ class Resource(Document):
                 loc_doc['loc_labels'] = [unicode(loc)]
                 result.append(loc_doc)
         else:
-            result = [doc]    
-            
+            result = [doc]
+
         if conn:
             conn.add(result)
         return result
@@ -341,13 +317,13 @@ class Resource(Document):
         acct = get_account(user.id)
         # print self.owner, acct
         return self.owner == acct
-        
+
 class RelatedResource(Document):
     """docstring for RelatedResource"""
     source = ReferenceField(Resource)
     target = ReferenceField(Resource)
     rel_type = StringField()
-    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)    
+    item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
 
 def load_resource_data(document, resource_data):
@@ -361,7 +337,7 @@ def load_resource_data(document, resource_data):
 
 # def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 #     return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
-    
+
 # def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 #     return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
 
@@ -426,13 +402,13 @@ def lat_lon_to_str(loc):
 #             }
 #         return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
 #     raise Location.DoesNotExist
-    
+
 # def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_with=False):
 #     """return place from geonames data- either postcode or named place depending on collname
-    
+
 #     {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
 #     {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
-    
+
 #     """
 #     name = namestr.upper().replace(' ', '').strip()
 #     if starts_with:
@@ -499,8 +475,8 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
         }
         fq =  _make_fq(event, accounts, collections)
         if fq:
-            kw['fq'] = fq        
-        
+            kw['fq'] = fq
+
         conn = Solr(settings.SOLR_URL)
         return loc['lat_lon'], conn.search(kwords.strip() if kwords else '', **kw)
     else:

@@ -1,121 +1,44 @@
-ul.token-input-list-aliss {
-	border: 1px solid #999;
-	background: #f0dbc4;
-	clear: left;
-	cursor: text;
-	font-family: Verdana, sans-serif;
-	font-size: 12px;
-	height: 1%;
-	height: auto !important; 
-	list-style-type: none;
-	margin: 0;
-	min-height: 1px;
-	overflow: hidden; 
-	padding: 0;
-	width: 400px;
-	z-index: 999;
-}
+/* line 1, ../../compass/src/token-input-aliss.scss */
+ul.token-input-list-aliss { border: 1px solid #999; background: #eee; clear: left; cursor: text; font-family: Verdana, sans-serif; height: 1%; height: auto !important; list-style-type: none; min-height: 1px; overflow: hidden; padding: 0; z-index: 999; }
 
-ul.token-input-list-aliss li input {
-	-webkit-appearance: caret;
-	background: #f0dbc4;
-	border: 0;
-	margin: 2px 0;
-	padding: 3px 8px;
-	width: 100px;
-}
+/* line 19, ../../compass/src/token-input-aliss.scss */
+ul.token-input-list-aliss li input { -webkit-appearance: caret; background: #eee; border: 0; margin: 2px 0; padding: 3px 8px; width: 100px; }
 
-li.token-input-token-aliss {
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	background: #fcefdc;
-	border-radius: 5px;
-	border: 1px solid #db965a;
-	clear: none;
-	color: #000;
-	cursor: default;
-	float: left;
-	font-size: 11px;
-	height: 15px;
-	height: auto !important; 
-	margin: 3px;
-	overflow: hidden; 
-	padding: 1px 3px;
-	white-space: nowrap;
-	width: auto;
-}
+/* line 28, ../../compass/src/token-input-aliss.scss */
+li.token-input-token-aliss { -moz-border-radius: 5px; -webkit-border-radius: 5px; background: #fff; border-radius: 5px; border: 1px solid #999; clear: none; color: #000; cursor: default; float: left; font-size: 11px; height: 15px; height: auto !important; margin: 3px; overflow: hidden; padding: 1px 3px; white-space: nowrap; width: auto; }
 
-li.token-input-token-aliss p {
-	display: inline;
-	margin: 0;
-	padding: 0;
-}
+/* line 48, ../../compass/src/token-input-aliss.scss */
+li.token-input-token-aliss p { display: inline; margin: 0; padding: 0; font-size: 1.2em; }
 
-li.token-input-token-aliss span {
-	color: #db965a;
-	cursor: pointer;
-	font-weight: bold;
-	margin-left: 5px;
-}
+/* line 55, ../../compass/src/token-input-aliss.scss */
+li.token-input-token-aliss span { color: #e77; cursor: pointer; font-weight: bold; margin-left: 5px; }
 
-li.token-input-selected-token-aliss {
-	background: #db965a;
-	border: 1px solid #db965a;
-	color: #fff;
-}
+/* line 62, ../../compass/src/token-input-aliss.scss */
+li.token-input-selected-token-aliss { background: #555; border: 1px solid #000; color: #fff; }
 
-li.token-input-input-token-aliss {
-	float: left;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
+/* line 68, ../../compass/src/token-input-aliss.scss */
+li.token-input-input-token-aliss { float: left; list-style-type: none; margin: 0; padding: 0; }
 
-div.token-input-dropdown-aliss {
-	background: #fff;
-	border-bottom: 1px solid #999;
-	border-left: 1px solid #999;
-	border-right: 1px solid #999;
-	cursor: default;
-	font-family: Verdana, sans-serif;
-	font-size: 11px;
-	overflow: hidden;
-	position: absolute;
-	width: 400px;
-	z-index: 1;
-}
+/* line 75, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss { background: #fff; border-bottom: 1px solid #999; border-left: 1px solid #999; border-right: 1px solid #999; cursor: default; font-family: Verdana, sans-serif; font-size: 11px; overflow: hidden; position: absolute; width: 400px; z-index: 1; }
 
-div.token-input-dropdown-aliss p {
-	color: #777;
-	margin: 0;
-	padding: 5px;
-}
+/* line 89, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss p { color: #777; margin: 0; padding: 5px; }
 
-div.token-input-dropdown-aliss ul {
-	margin: 0;
-	padding: 0;
-}
+/* line 95, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul { margin: 0; padding: 0; }
 
-div.token-input-dropdown-aliss ul li {
-	background: #fff;
-	list-style-type: none;
-	margin: 0;
-	padding: 3px;
-}
+/* line 100, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul li { background: #fff; list-style-type: none; margin: 0; padding: 3px; }
 
-div.token-input-dropdown-aliss ul li.token-input-dropdown-item-aliss {
-	background: #fff;
-}
+/* line 107, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul li.token-input-dropdown-item-aliss { background: #fff; }
 
-div.token-input-dropdown-aliss ul li.token-input-dropdown-item2-aliss {
-	background: #fff;
-}
+/* line 111, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul li.token-input-dropdown-item2-aliss { background: #fff; }
 
-div.token-input-dropdown-aliss ul li em {
-	font-style: normal;
-}
+/* line 115, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul li em { font-style: normal; }
 
-div.token-input-dropdown-aliss ul li.token-input-selected-dropdown-item-aliss {
-	background: #db965a;
-	color: #000;
-}
+/* line 119, ../../compass/src/token-input-aliss.scss */
+div.token-input-dropdown-aliss ul li.token-input-selected-dropdown-item-aliss { background: #ddd; color: #000; }
