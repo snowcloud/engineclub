@@ -14,32 +14,32 @@
 {% block module-content %}
 	<h2>Alerts</h2>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Date</th>
-				<th>Type</th>
-				<th>Severity</th>
-				<th>Message</th>
-				<th>Resource</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for alert in notifications  %}
-			<tr>
-				<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
-				<td>{{ alert.type }}</td>
-				<td class="alert-{{alert.severity}}">{{ alert.severity|notification_severity }}</td>
-				<td>{{ alert.message }}</td>
-				<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
-			</tr>
-			{% empty %}
-			<tr>
-				<td colspan="4">no alerts</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+	{% if notifications %} 	
+		<table>
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Type</th>
+					<th>Severity</th>
+					<th>Message</th>
+					<th>Resource</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for alert in notifications  %}
+				<tr>
+					<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
+					<td>{{ alert.type }}</td>
+					<td class="alert-{{alert.severity}}">{{ alert.severity|notification_severity }}</td>
+					<td>{{ alert.message }}</td>
+					<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>no alerts</p>
+	{% endif %}
 
 
 

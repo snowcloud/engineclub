@@ -19,7 +19,6 @@ urlpatterns = patterns('',
     (r'^notifications/', include('notifications.urls')),
     url(r'^search/$', 'depot.views.resource_find', name='search'),
     (r'^youraliss/', include('youraliss.urls')),
-    (r'^invite/', include('invites.urls')),
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact'),
     url(r'^contact/sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' },

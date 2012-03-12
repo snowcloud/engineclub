@@ -61,7 +61,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
-.cab .main {
+.cab .main, .cab .container#top {
 	background-color: #57659b;
 	h1 {
 		color: white;
@@ -218,6 +218,13 @@ form .errorlist {
 	padding: 0.5em 1em;
 	margin-top: -9px;
 }
+form.inline {
+	margin: 0;
+	padding: 0;
+	input[type="submit"] {
+	    margin: 0;
+	}
+}
 /* @group search */
 .search-form, .search-form-full {
 	background-color: #eee;
@@ -263,6 +270,12 @@ table.metadata {
 .metadata th, .metadata td {
     border-bottom: 1px solid #E5E7E8;
     padding: 0.3em 2em 0.3em 0.6em;
+}
+td.yes {
+	background-color: #ccff66;
+}
+td.no {
+	background-color: #ff6666;
 }
 caption, th, td {
     font-weight: normal;

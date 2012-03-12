@@ -11,6 +11,8 @@ urlpatterns = patterns('enginecab.views',
     url(r'^users/(?P<object_id>\w+)/$', 'user_detail', name='cab-user-detail'),
     url(r'^users/(?P<object_id>\w+)/edit/$', 'user_edit', name='cab-user-edit'),
 
+    (r'^invite/', include('invites.urls')),
+
     # url(r'^fix-resource-accounts/$', 'enginecab.views.fix_resource_accounts', name='cab-fix-resource-accounts'),
     # url(r'^one-off-util/$', 'enginecab.views.one_off_util', name='cab-one-off-util'),
     # url(r'^remove-dud-curations/$', 'enginecab.views.remove_dud_curations', name='remove-dud-curations'),

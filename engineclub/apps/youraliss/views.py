@@ -7,6 +7,16 @@ from django.template import RequestContext
 
 from accounts.forms import AccountForm, NewAccountForm
 from accounts.views import get_one_or_404
+from notifications.context_processors import notifications
+
+@login_required
+def index(request):
+
+    if notifications(request)['notifications_count']:
+        return alerts(request)
+    else:
+        return account(request)
+
 
 @login_required
 def account(request, template_name='youraliss/account.html'):    

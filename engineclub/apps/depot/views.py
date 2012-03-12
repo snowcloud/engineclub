@@ -15,8 +15,8 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from analytics.shortcuts import (increment_queries, increment_locations,
-    increment_resources, increment_resource_crud)
+# from analytics.shortcuts import (increment_queries, increment_locations,
+#     increment_resources, increment_resource_crud)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
@@ -50,7 +50,7 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     object = get_one_or_404(id=ObjectId(object_id))
 
-    increment_resources(object_id)
+    # increment_resources(object_id)
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
@@ -282,8 +282,8 @@ def resource_find(request, template='depot/resource_find.html'):
         if form.is_valid():
             user = get_account(request.user.id)
 
-            increment_queries(form.cleaned_data['kwords'], account=user)
-            increment_locations(form.cleaned_data['post_code'], account=user)
+            # increment_queries(form.cleaned_data['kwords'], account=user)
+            # increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
                 resource = get_one_or_404(id=ObjectId(result['res_id']))

@@ -1,3 +1,4 @@
+from datetime import datetime
 from hashlib import sha1
 from random import random
 
@@ -5,7 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from mongoengine import *
 
-from engine_groups.models import Account
+from accounts.models import Account
 
 
 class Invitation(Document):
@@ -13,9 +14,11 @@ class Invitation(Document):
     email = EmailField(required=True)
     code = StringField(max_length=40)
     invite_from = ReferenceField(Account, required=True)
+    date_invited = DateTimeField(default=datetime.now, required=True)
+    accepted = BooleanField(default=False, required=True)
 
     def __unicode__(self):
-        return self.message
+        return self.email
 
     def generate_code(self):
 
@@ -30,7 +33,7 @@ class Invitation(Document):
 
         from django.core.urlresolvers import reverse
 
-        accept_url = reverse("invite_accept", args=[self.code, ])
+        accept_url = reverse("invite-accept", args=[self.code, ])
 
         message = render_to_string('invites/invitation_email.txt', {
             'sender': self.invite_from,

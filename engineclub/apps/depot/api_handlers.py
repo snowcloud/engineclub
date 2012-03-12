@@ -10,11 +10,11 @@ from django.utils import simplejson as json
 from mongoengine import ValidationError #, Q
 from mongoengine.connection import _get_db as get_db
 
-from analytics.shortcuts import (increment_api_queries, increment_api_locations,
-    increment_api_resources)
+# from analytics.shortcuts import (increment_api_queries, increment_api_locations,
+#     increment_api_resources)
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_location
 
-increment_api_resources
+# increment_api_resources
 class JsonResponse(HttpResponse):
     """from http://www.djangosnippets.org/snippets/1639/"""
     errors = {}
