@@ -9,5 +9,12 @@
     {{ notification.message }}<br/>
 
 
+    {% if not notification.resolved %}
+    <form method="post" action=".">
+        {% csrf_token %}
+        <input type="submit" name="resolved" value="Mark resolved" />
+    </form>
+    {% endif %}
+
 
 {% endblock %}

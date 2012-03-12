@@ -1,0 +1,60 @@
+{% extends "youraliss/base.html" %}
+{% load notifications_tags %}
+
+{% block title %}your aliss alerts{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">alerts</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-alerts %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Alerts</h2>
+
+	{% if notifications %} 	
+		<table>
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Type</th>
+					<th>Severity</th>
+					<th>Message</th>
+					<th>Resource</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for alert in notifications  %}
+				<tr>
+					<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
+					<td>{{ alert.type }}</td>
+					<td class="alert-{{alert.severity}}">{{ alert.severity|notification_severity }}</td>
+					<td>{{ alert.message }}</td>
+					<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>no alerts</p>
+	{% endif %}
+
+
+
+{% endblock %}
+
+{% comment %}
+    account = ReferenceField(Account, required=True)
+    group = ReferenceField(NotificationGroup, required=False)
+    type = ReferenceField(NotificationType, required=True)
+    severity = IntField(choices=SEVERITY_CHOICES, required=True)
+    datetime = DateTimeField(default=datetime.now)
+    origin = ReferenceField(Account, required=False)
+    message = StringField()
+    opened = BooleanField(default=False)
+    resolved = BooleanField(default=False)
+    related_document = GenericReferenceField()
+
+{% endcomment %}

@@ -3,52 +3,29 @@ from django import forms
 from django.forms.formsets import formset_factory, BaseFormSet
 
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
-from ecutils.forms import CSVTextInput, clean_csvtextinput
+from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
 
 from mongoengine.queryset import DoesNotExist
-from mongoforms import MongoForm
 
 from datetime import datetime
 
 class FormHasNoInstanceException(Exception):
     pass
 
-class DocumentForm(forms.Form):
-    """docstring for DocumentForm"""
-
-    instance = None
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.pop('instance', None)
-        if instance:
-            self.instance = instance
-            kwargs.setdefault('initial', {}).update(instance.to_mongo())
-        super(DocumentForm, self).__init__(*args, **kwargs)
-
-    def save(self, do_save=False):
-        if self.instance is None:
-            raise FormHasNoInstanceException("Form cannot save- document instance is None.")
-        for f in self.fields:
-            try:
-                self.instance[f] = self.cleaned_data[f]
-            except KeyError:
-                pass
-        if do_save:
-            self.instance.save()
-        return self.instance
-
-class FindResourceForm(forms.Form):
+class FindResourceForm(PlainForm):
     
-    post_code = forms.CharField(label='Location', help_text='enter a post code or a place name', required=False)
-    kwords = forms.CharField(widget=CSVTextInput, label='Search text:', help_text='comma separated text (spaces OK)', required=False)
+    post_code = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), label='Location', help_text='enter a post code or a place name', required=False)
+    kwords = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), label='Search text', help_text='comma separated text (spaces OK)', required=False)
     events_only = forms.BooleanField(required=False)
     boost_location = forms.CharField(widget=forms.HiddenInput, required=False)
-    
+
     def __init__(self, *args, **kwargs):
         self.locations = []
         self.results = []
         self.centre = None
+        if 'label_suffix' not in kwargs:
+            kwargs['label_suffix'] = ''
         super(FindResourceForm, self).__init__(*args, **kwargs)
 
     def clean_boost_location(self):
@@ -80,10 +57,10 @@ class FindResourceForm(forms.Form):
 
 class ShortResourceForm(DocumentForm):
 
-    uri = forms.CharField(required=False)
-    title = forms.CharField()
-    description = forms.CharField(widget=forms.Textarea, required=False)
-    tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
+    uri = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}),required=False)
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
+    tags = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
@@ -108,9 +85,12 @@ class EventForm(DocumentForm):
     from ecutils.fields import JqSplitDateTimeField
     from ecutils.widgets import JqSplitDateTimeWidget
 
+    widget_attrs={'class': 'datetimepicker', 'date_class':'datepicker input-text','time_class':'timepicker input-text'}
+
     start = JqSplitDateTimeField(required=False,
-        widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}, date_format='%d/%m/%Y'))
-    end = JqSplitDateTimeField(required=False, widget=JqSplitDateTimeWidget(attrs={'date_class':'datepicker','time_class':'timepicker'}))
+        widget=JqSplitDateTimeWidget(attrs=widget_attrs.copy(), date_format='%d/%m/%Y'))
+    end = JqSplitDateTimeField(required=False, 
+        widget=JqSplitDateTimeWidget(attrs=widget_attrs, date_format='%d/%m/%Y'))
 
     def clean(self):
         start = self.cleaned_data.get('start', None)
@@ -132,7 +112,7 @@ class EventForm(DocumentForm):
 
 class LocationUpdateForm(DocumentForm):
     # REPLACE
-    new_location = forms.CharField(required=False)
+    new_location = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
     # new_location = forms.CharField(widget=CSVTextInput, required=False, help_text='comma separated text (spaces OK)')
     locations = None
 
@@ -155,7 +135,6 @@ class LocationUpdateForm(DocumentForm):
 
 class MetadataForm(DocumentForm):
     """docstring for MetadataForm"""
-        
     last_modified = forms.DateField(required=False)
     shelflife = forms.CharField(required=False)
     author = forms.CharField(required=False)
@@ -178,8 +157,8 @@ class CurationForm(DocumentForm):
     
     outcome = forms.CharField(widget=forms.HiddenInput)
 
-    tags = forms.CharField(widget=CSVTextInput, help_text='comma separated tags (spaces OK)', required=False)
-    note = forms.CharField(widget=forms.Textarea, required=False)
+    tags = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), help_text='comma separated tags (spaces OK)', required=False)
+    note = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     # data = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean_tags(self):

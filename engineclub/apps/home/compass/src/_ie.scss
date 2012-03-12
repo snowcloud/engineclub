@@ -1,26 +1,14 @@
-/* 
-Title:		IE patches
-Author: 	dan@simplebits.com
-*/
+/* Foundation v2.2 http://foundation.zurb.com */
+/* This is for all IE specfific style less than IE9. We hate IE. */
 
-/* nav fix */
-
-*:first-child+html #nav li {
-	width: 16.5%;
-	}
-
-/* PNG fix */
-
-* html #selector { /* for IE<6 */
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='img/image.png'); background-image: none; background-repeat: no-repeat; background-color: transparent;
-	}
-
-/* self-clear floats */
-
-* html .group { /* IE6 */
-	height: 1%;
-	}
-*:first-child+html .group { /* IE7 */
-	min-height: 1px;
-	}
+	div.panel { border: 1px solid #ccc; }
+	.lt-ie8 .nav-bar li.has-flyout a { padding-right: 20px; }
+	.lt-ie8 .nav-bar li.has-flyout a:after { border-top: none; }
+	
+	/* Correct IE7 button padding */
+	.lt-ie8 input[type=submit].nice.button { filter:chroma(color=#000000); position: relative; top: -2px; }
+	.lt-ie8 input[type=submit].tiny.button		{ padding: 5px 5px 7px; }
+	.lt-ie8 input[type=submit].small.button		{ padding: 8px 7px 9px; }
+	.lt-ie8 input[type=submit].medium.button	{ padding: 9px 13px 9px; }
+	.lt-ie8 input[type=submit].large.button		{ padding: 9px 18px 10px; }
 

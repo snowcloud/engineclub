@@ -4,25 +4,13 @@
 
 {% block title %}{{ flatpage.title }}{% endblock %}
 
+{% block body_class %}{{ block.super }} flatpage{% endblock %}
+{% block nav_link %}{{ block.super }}{% endblock %}
+
 {% block content %}
 
 <h1>{{ flatpage.title }}</h1>
 
 {{ flatpage.content|textile }}
 
-
-
-
 {% endblock %}
-
-{% block secondary-content-default %}
-{% if not "%sside-info/"|flatpage:flatpage.url %}
-<h2>Can't find something?</h2>
-<p>Take a look at our <a href="/info/">information pages</a>.</p>
-{% endif %}
-{% endblock %}
-
-{% block secondary-content %}
-	{{ "%sside-info/"|flatpage:flatpage.url|textile }}
-{% endblock %}
-

@@ -7,7 +7,7 @@ from mongoengine import *
 from mongoengine.queryset import QuerySet
 from mongoengine.base import ValidationError
 
-from engine_groups.models import Account
+from accounts.models import Account
 
 
 class NotificationGroup(Document):
@@ -66,6 +66,7 @@ class NotificationQuerySet(QuerySet):
         return self._user(account=account)
 
     def _user(self, account=None):
+        # XXX: THIS MEANS A QUERY USING for_account WILL RETURN ALL NOTIFICATIONS IF NO ACCOUNT
         if account:
             return Notification.objects(account=account)
         else:

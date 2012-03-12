@@ -11,7 +11,7 @@ class NotificationsTestCase(MongoTestCase):
 
         from django.contrib.auth.models import User
 
-        from engine_groups.models import Account, Membership
+        from accounts.models import Account, Membership
 
         # Create three normal contrib.auth users
         self.user_bob = User.objects.create_user('bob', email="bob@example.com",

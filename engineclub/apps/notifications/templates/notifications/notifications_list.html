@@ -11,6 +11,8 @@
             <li><a href="{% url notifications-detail notification.id %}">
                 {{ notification.message }}
                 {% if notification.related_document %} - {{ notification.related_document }} {% endif %}
+                {% if not notification.opened %}(unread){% else %}(read){% endif %}
+                {% if notification.resolved %}(resolved){% else %}(unresolved){% endif %}
             </a></li>
         {% endfor %}
         </ul>

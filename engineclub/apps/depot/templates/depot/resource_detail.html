@@ -1,56 +1,34 @@
 {% extends "base.html" %}
-{% load markup utils engine_groups_tags depot_tags %}
+{% load markup utils accounts_tags depot_tags %}
 
 {% block title %}{{ object.title }}{% endblock %}
-{% block head-extra %}
-{% comment %}{% endcomment %}
 
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
-<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
- -->
+{% block body_class %}resource{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url resource-find %}">Search</a></li>
+    <li class="current"><a href="#">Resource</a></li>
+</ul>
 {% endblock %}
 
-{% block document-ready %}
-{% if object.locations %}
-    mapstraction = new mxn.Mapstraction('map','google');
-    //mapstraction = new mxn.Mapstraction('map','openlayers');
-    mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}})));
-    {% for loc in object.locations %}
-        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
-        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
-        //map.addMarker(currentGeoPoint);  
-	{% endfor %}
-	
-	mapstraction.addControls({
-        pan: true, 
-        zoom: 'small',
-        map_type: true 
-    });
-    
-    //mapstraction.autoCenterAndZoom();
-    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 9);
-
-{% endif %}
-{% endblock %}
-​
-
-
-{% block body_class %}{{ block.super}} resource-detail{% endblock %}
 {% block content %}
 
-<p class="content-menu">
-    <a href="{% url resource-find %}">search items</a>
-    {% if user.is_authenticated %} | <a href="{% url curation-add object.id %}">new curation</a>{% endif %}
-    {% if user|can_edit:object %} | <a href="{% url resource-edit object.id %}">edit resource</a>{% endif %}
-    {% if user.is_staff %}
-        {% if user|can_delete:object %} | <a href="{% url resource-remove object.id %}">delete resource</a>{% endif %}
-        | <a href="{% url resource-list %}">all items</a>
+{% if user.is_authenticated %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url curation-add object.id %}">New curation</a></dd>
+    {% if user|can_edit:object %}
+        <dd><a href="{% url resource-edit object.id %}">Edit resource</a></dd>
     {% endif %}
-</p>
+    {% if user.is_staff %}
+        {% if user|can_delete:object %}
+            <dd><a href="{% url resource-remove object.id %}">Delete resource</a></dd>
+        {% endif %}
+    {% endif %}
+</dl>
+{% endif %}
+
 
 {% if object.uri %}
 <h1><a href="{{ object.uri }}">{{ object.title }}</a></h1>
@@ -62,7 +40,7 @@
 {{ object.description|textile }}
 </div>
 
-<div id="results">
+<div class="row">
 
 <table class="metadata">
 
@@ -84,13 +62,52 @@
 {% empty %}
     <tr><th>curation</th><td>-</td></tr>
 {% endfor %}
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>
+{% comment %}
+    
+<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr> -->
+{% endcomment %}
 
 </table>
 
+<div id="map"></div>
+
 </div>
 
-<div id="map"></div>
 
 
 {% endblock %}
+
+{% block script-extra %}
+
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
+<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
+ -->
+{% endblock %}
+
+{% block document-ready %}
+{% if object.locations %}
+    mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
+    mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}})));
+    {% for loc in object.locations %}
+        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
+        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
+        //map.addMarker(currentGeoPoint);  
+    {% endfor %}
+    
+    mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true 
+    });
+    
+    //mapstraction.autoCenterAndZoom();
+    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 14);
+
+{% endif %}
+{% endblock %}
+​

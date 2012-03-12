@@ -1,0 +1,270 @@
+@import "foundation";
+@import "app";
+
+// generates rem sizes after px: https://github.com/bitmanic/rem
+// set baseline size in _rem.scss to body size, eg 16px
+@import "rem";
+
+// using:
+// 480px for tablet
+// 767px for desktop
+
+
+body {
+    color: #222;
+    //font-family: chaparral-pro, Times New Roman, serif;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    //font-size: 100%;
+    //line-height: 1.125em;
+	background-color: #fef9f0;
+}
+
+// foundation.css
+// mobile
+//@media handheld, only screen and (max-width: 767px) {
+	//body, p {  font-size: 15px; font-size: 1.5rem; line-height: 1.4; }
+	//body, p {  font-size: 110%; line-height: 1.125em; }
+//}
+
+
+h1.site-logo {
+    font-family: alwyn-new-rounded-web, sans-serif;
+    @include rem('font-size', 55px);
+    @media screen and (min-width: 480px) {
+        padding-top: 0.4em;
+        //font-size: 8.6rem;
+        color: red;
+    }
+    @media screen and (min-width: 767px) {
+        //padding-top: 0.4em;
+        @include rem('font-size', 90px);
+        color: green;
+    }
+}
+body.home h1 {
+	@include rem('font-size', 75px);
+}
+
+h1, h2, h3 {
+    font-weight: 600 // semi-bold;
+}
+p {
+    //font-size: 140%;
+    line-height: 1.2em;
+}
+p.blurb {
+    //font-family: cronos-pro,sans-serif;
+    //font-size: 140%;
+    @include rem('font-size', 26px);
+    @media screen and (min-width: 780px) {
+        //font-size: 240%;
+	    @include rem('font-size', 40px);
+    }
+}
+
+/* @group links */
+
+a {
+    color: #0b5590;
+}
+
+a, a:hover, a:visited {
+    border-bottom: 1px dotted #919191;
+}
+a.action {
+    //font-size: 0.875em;
+    //font-size: 0.8em;
+    padding-left: 50px;
+    padding-top: 12px;
+    line-height: 1.5em;
+    //background-color: red;
+}
+.home .action {
+    border-bottom: none;
+    margin-left: 1em;
+}
+a.email {
+    background: url(../images/icons/email_32.png) no-repeat left bottom;
+}
+a.twitter {
+    background: url(../images/icons/twitter_32.png) no-repeat left bottom;
+}
+a.blog {
+    background: url(../images/icons/wordpress_32.png) no-repeat left bottom;
+}
+a.github {
+    background: url(../images/icons/github_32.png) no-repeat left bottom;
+}
+
+/* @end */
+
+/*form {
+	label {
+		//margin-bottom: 0;
+	}
+	.helptext {
+		color: #797979;
+		@include rem('font-size', 18px);
+		//font-size: 90%;
+		display: block;
+	}
+	label + input, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
+		//margin-top: 0px;
+		//font-size: 18px;
+		//padding: 6px 2% 4px;
+		//width:  96%;
+	}
+}
+form.nice div.form-field.error small, form.nice small.error {
+	//margin-top: 0;
+}
+label + input, label + textarea, label + select, label + div.dropdown, select + div.dropdown {
+//margin-top: -9px;
+}*/
+#map {
+    height: 300px;
+    //width: auto;
+    //float: right;
+}
+/* @group My Group */
+#results ul, #results ol {
+    list-style: none;
+    margin: 0;
+}
+
+.resource-listing {
+    //font-size: 0.9em;
+    padding-top: 1em;
+    color: #5e5e5e;
+    p {
+        //font-size: 1.2em;
+        //margin-bottom: 0.5em;
+    }
+    li {
+        border-bottom: 1px solid #e1dbca;
+        //margin-bottom: 0.6em;
+        //padding-bottom: 0.3em;
+    }
+}
+.resource-listing-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+    padding-bottom: 0.5em;
+}
+li.resource-listing-locs {
+    border-bottom-style: none;
+    list-style-type: circle;
+    margin-left: 1.5em;
+}
+.resource-listing-meta, li.resource-listing-locs {
+    font-size: 0.8em;
+    color: #085591;
+}
+.resource-description {
+    //padding: 2em 0em;
+	overflow: hidden;
+}
+li.location-listing-item {
+    xlist-style-type: square;
+    xmargin-left: 1.5em;
+}
+.location-label {
+    background-color: #f0dbc4;
+    padding: 0.4em;
+}
+/* @end */
+
+.site-footer.row {
+    border-top: 1px solid #c3c2c3;
+    font-size: 0.8em;
+    margin-top: 2em;
+	text-align: center;
+}
+
+
+/* My Comment 
+
+.pres .row {
+    //border-top: 1px solid #d6e6d6;
+    padding-bottom: 2em;
+}
+
+
+.pres h2 {
+    border-top: 1px solid #d6e6d6;
+
+.flatpage ul {
+    list-style: disc outside;
+    margin-left: 1.4em;
+}
+form label {
+    margin-bottom: 0;
+}
+label + textarea, form.nice small.error {
+    margin-top: 0;
+}
+div.usermessage {
+	padding: 1em;
+	font-size: 120%;
+	background-color: #fefa7f;
+    @media screen and (min-width: 768px) {
+		margin-top: 10px;
+        width: 95%;
+    }
+}
+
+#results {
+    //float: left;
+    //width: 45%;
+}
+#map {
+    height: 400px;
+    //width: 50%;
+    //float: right;
+}
+//.resource-detail #mapx {
+    //float: none;
+    //margin-top: 2em;
+//}
+
+#map td {
+    background-color: #fff;
+    border: 0 none;
+    padding: 0;
+}
+table.metadata {
+    border: 2px solid #d5d5d5;
+    //float: left;
+    margin-bottom: 2em;
+}
+.metadata th, .metadata td {
+    padding: 0.3em 2em 0.3em 0.3em;
+    border-bottom: 1px solid #e5e7e8;
+}
+.metadata th {
+    font-weight: bold;
+    background-color: #d8e1e7;
+    text-align: left;
+    vertical-align: top;
+}
+#id_new_location {
+    width: 50%;
+}
+.event {
+    background: url(../media/img/clock.png) no-repeat left top;
+    padding-left: 25px;
+    vertical-align: middle;
+}
+.del-link, .add-link {
+    margin-left: 2em;
+    font-size: 0.9em;
+    padding: 4px 25px 4px 0;
+}
+.add-link {
+    background: url(../media/img/add.png) no-repeat right center;
+}
+.del-link {
+    background: url(../media/img/delete.png) no-repeat right center;
+}
+*/

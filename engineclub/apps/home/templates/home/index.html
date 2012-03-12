@@ -1,205 +1,31 @@
 {% extends "base.html" %}
-{% load rss_tags utils %}
-{% block title %}Home{% endblock %}
-{% block head-extra %}
-    <script type="text/javascript" src="/static/verticaltabs/js/verticaltabs.js"></script>
-    <link rel="stylesheet" href="/static/css/verticaltabs.css" />
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
-    <link class="ui-theme" rel="Stylesheet" type="text/css" href="http://jqueryui.com/themeroller/css/parseTheme.css.php?ffDefault=Segoe+UI%2C+Arial%2C+sans-serif&amp;fwDefault=bold&amp;fsDefault=1.1em&amp;cornerRadius=6px&amp;bgColorHeader=333333&amp;bgTextureHeader=12_gloss_wave.png&amp;bgImgOpacityHeader=25&amp;borderColorHeader=333333&amp;fcHeader=ffffff&amp;iconColorHeader=ffffff&amp;bgColorContent=000000&amp;bgTextureContent=05_inset_soft.png&amp;bgImgOpacityContent=25&amp;borderColorContent=666666&amp;fcContent=ffffff&amp;iconColorContent=cccccc&amp;bgColorDefault=555555&amp;bgTextureDefault=02_glass.png&amp;bgImgOpacityDefault=20&amp;borderColorDefault=666666&amp;fcDefault=eeeeee&amp;iconColorDefault=cccccc&amp;bgColorHover=0078a3&amp;bgTextureHover=02_glass.png&amp;bgImgOpacityHover=40&amp;borderColorHover=59b4d4&amp;fcHover=ffffff&amp;iconColorHover=ffffff&amp;bgColorActive=f58400&amp;bgTextureActive=05_inset_soft.png&amp;bgImgOpacityActive=30&amp;borderColorActive=ffaf0f&amp;fcActive=ffffff&amp;iconColorActive=222222&amp;bgColorHighlight=eeeeee&amp;bgTextureHighlight=03_highlight_soft.png&amp;bgImgOpacityHighlight=80&amp;borderColorHighlight=cccccc&amp;fcHighlight=2e7db2&amp;iconColorHighlight=4b8e0b&amp;bgColorError=ffc73d&amp;bgTextureError=02_glass.png&amp;bgImgOpacityError=40&amp;borderColorError=ffb73d&amp;fcError=111111&amp;iconColorError=a83300&amp;bgColorOverlay=5c5c5c&amp;bgTextureOverlay=01_flat.png&amp;bgImgOpacityOverlay=50&amp;opacityOverlay=80&amp;bgColorShadow=cccccc&amp;bgTextureShadow=01_flat.png&amp;bgImgOpacityShadow=30&amp;opacityShadow=60&amp;thicknessShadow=7px&amp;offsetTopShadow=-7px&amp;offsetLeftShadow=-7px&amp;cornerRadiusShadow=8px">
-{% endblock head-extra %}
-{% block document-ready %}
-    $('.js .media').embedly({
-      maxWidth: 500,
-      wmode: 'transparent',
-      methodx: 'before'
-    });
 
-    $("#textExample").verticaltabs({slideShow: false, speed: 500, activeIndex: 0});
-    var $dialog = $('<div></div>')
-    		.html('<iframe src="http://player.vimeo.com/video/23257731?title=0&amp;byline=0&amp;portrait=0" width="600" height="375" frameborder="0"></iframe><p><a href="http://vimeo.com/23257731">What is ALISS?</a></p>')
-    		.dialog({
-    			autoOpen: false,
-    			title: 'What is ALISS?',
-    			modal: true,
-    			width: 650,
-    			buttons: { "Close": function() { $dialog.dialog("close"); } },
-    			open: function(event, ui) { $dialog.html('<iframe src="http://player.vimeo.com/video/23257731?title=0&amp;byline=0&amp;portrait=0" width="600" height="375" frameborder="0"></iframe><p><a href="http://vimeo.com/23257731">What is ALISS?</a></p>'); },
-    			close: function(event, ui) { $dialog.html("closed"); }
-    		});
-    var $dialog2 = $('<div></div>')
-    		.html('<iframe src="http://player.vimeo.com/video/22614113?title=0&amp;byline=0&amp;portrait=0" width="600" height="450" frameborder="0"></iframe><p><a href="http://vimeo.com/22614113">How will ALISS work?</a></p>')
-    		.dialog({
-    			autoOpen: false,
-    			title: 'How will ALISS work?',
-    			modal: true,
-    			width: 650,
-    			buttons: { "Close": function() { $dialog2.dialog("close"); } },
-    			open: function(event, ui) { $dialog2.html('<iframe src="http://player.vimeo.com/video/22614113?title=0&amp;byline=0&amp;portrait=0" width="600" height="450" frameborder="0"></iframe><p><a href="http://vimeo.com/22614113">How will ALISS work?</a></p>'); },
-    			close: function(event, ui) { $dialog2.html("closed"); }
-    		});
-    $('.ui-widget-overlay').live("click", function() {
-       //Close the dialog
-       $dialog.dialog("close");
-       $dialog2.dialog("close");
-    });
-	$('#opener').click(function() {
-		$dialog.dialog('open');
-		return false;
-	});	
-	$('#opener2').click(function() {
-		$dialog2.dialog('open');
-		return false;
-	});	
-{% endblock %}
-
-{% block pageintro %}
-<div id="pageintro">
-<h1>Better information for self&nbsp;management</h1>
-
-{{ "home_alert"|flatpage|safe}}
-
-<div class="grid_7 alpha"><p>About 40% of the Scottish population live with a long term health condition, such as heart disease, stroke, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="/about/">Learn&nbsp;more&nbsp;»</a></p></div>
-<div class="grid_1"><p>&nbsp;</p></div>
-<div class="grid_4 omega">
-    <div class="call-btn" id="opener"><a href="/info/what-is-aliss/">What is ALISS?</a> <span class="sub-info">(7 min video)</span></div>
-    <div class="call-btn" id="opener2"><a href="/info/how-will-it-work/">How will it work?</a> <span class="sub-info">(10 min video)</span></div>
-    
-</div>
-{% comment %}
-<p>About 40% of the Scottish population live with a long term health condition, such as heart disease, epilepsy, arthritis and chronic pain- conditions that have an impact on just about every aspect of daily life. &nbsp;<a href="/about/">Learn&nbsp;more&nbsp;»</a></p>
-<div class="call-btn grid_6 alpha" id="opener"><a href="/info/what-is-aliss/">What is ALISS?</a> <span class="sub-info">(7 min screencast)</span></div>
-<div class="call-btn grid_6 omega" id="opener2"><a href="/info/how-will-it-work/">How will it work?</a> <span class="sub-info">(10 min screencast)</span></div>
-{% endcomment %}
-</div>
-{%endblock%}
+{% block title %}home{% endblock %}
+{% block body_class %}home{% endblock %}
+{% block nav_link %}{% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="welcome"><p>Welcome to ALISS: access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p></div>
+    </div>
 
-    <!-- Text Example -->
-	<div class="verticalslider group" id="textExample">
-        <ul class="verticalslider_tabs">
-            <li><a href="#">What's the problem?</a></li>
-            <li><a href="#">What is the ALISS project and how will it help?</a></li>
-            <li><a href="#">How will the ALISS Engine work?</a></li>
-            <li><a href="#">How will we discover and collect resources?</a></li>                        
-            <li><a href="#">How will we moderate and sort resources?</a></li>                        
-            <li><a href="#">How will we make resources available?</a></li>                        
-        </ul>
-        <ul class="verticalslider_contents">
-            <li style="display: list-item;">
-            <h2>What's the problem?</h2>
-            {% comment %}
-            <div class="media"><a href="http://vimeo.com/11986849">Watch the ALISS Engine screencast.</a></div>
-            {% endcomment %}
-            <p>About 40% of the Scottish population live with a long term health condition. That’s around 2 million people and the numbers are rising. Conditions such as heart disease, epilepsy, arthritis and chronic pain have an impact on just about every aspect of daily life – looking after a family, studying, holding down a job or keeping up with friends.</p>
-            <p>An important part of helping people to live well with their condition is enabling them to manage their own health. Self Management is a person-centred approach to better health and wellbeing, providing the tools, activities and information they need to manage their condition effectively and live a full life. To be confident and successful self managers, people require support and advice. Self Management support is usually provided close to home, sometimes by people who have been through similar experiences. You’ll often find good examples of support on your community centre or library notice board.</p>
-            <p>But it’s difficult to find on the web...</p>
-            </li>
-            <li>
-            <h2>What is the ALISS project and how will it help?</h2>
-            <p><a href="http://vimeo.com/23257731" class="media">Watch a screencast</a></p>
-            <p>The ALISS project is a Scottish Government funded venture. It has many interests and activities but it's main focus is to make information about Self Management support more findable. You can find out more here( link to blog for the moment) </p>
+    <div class="row">
+        <div class="page-nav">
+            <p><a href="/info/" class="nice radius black button"><span>Find out more</span></a></p>
+            <p><a href="{% url search %}" class="nice radius black button">Search</a></p>
+            <p><a href="{% url contact %}" class="nice radius black button">Contact us</a></p>
+            <p><a href="{% url youraliss %}" class="nice radius black button">your Aliss</a></p>
 
-            <p>A key part of the ALISS project has been the development of the ALISS Engine which will link up current data and new contributions – including those from people living with long term conditions – to make a richer set of information about local self management support, openly available to all. We’re working towards a new national set of links can be used by everyone to provide better, more tailored local information and create new self management information services.</p>
-            </li>
-            <li>
-            <h2>How will the ALISS Engine work?</h2>
-            <p><a href="http://vimeo.com/22614113" class="media">Watch a screencast</a></p>
-            <p>In a nutshell, the Engine manages an online index of links. It’s the one place that information about self management resources can be brought together. Likewise, it’s the one place that those using this kind of data can find accurate and comprehensive information about health and wellbeing information. </p>
-            <p>At the moment this information inside separate databases around Scotland. To find them we have to know where they are held in order to search for them. Once the Engine holds links to them, they’ll be in a single, open, searchable national collection of data. </p>
-            <p>In addition to this:</p>
-            <p>* the links can be included in searches on any website</p>
-            <p>* we’ll make important connections between them and other useful information</p>
-            <p>All in all, the Engine will make self management information more findable
-            </li>
-            <li>
-            <h2>How will we discover and collect resources?</h2>
-            <p>We’ve been working with those who already develop directory services to explore ways in which we can incorporate their data. We’re also developing tools with which all of us can contribute our ideas and suggestions. In this way we can learn from and share the experiences of those who live with long term conditions.</p>
-            </li>
-            <li>
-            <h2>How will we moderate and sort resources?</h2>
-            <p>-to do-</p>
-            </li>
-            <li>
-            <h2>How will we make resources available?</h2>
-            <p>-to do-</p>
-            </li>
-        </ul>
-    </div> 
+            <div class="home-links">
+                <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
+                <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
+                <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
+            </div>
 
-<div class="article-holder group">
-        <p>See also <a href="/about/">About ALISS</a> for more information.</p>
-<div class="article grid_4 alpha">
-<h3>Blog</h3>
-<p>The <a href="http://www.aliss.scot.nhs.uk/index.php/blog">ALISS project blog</a> is your first stop to get background on the project, news of current work, and find out about upcoming events.</p>
+        </div>
 
-{% comment %}    
-<p><strong>* Blog not available for now. *</strong></p>
 
-{% get_feed_items as items %}
+        <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
 
-<ul>
-{% for item in items  %}
-    <li><a href="{{ item.link }}">{{ item.title }}</a></li>
-{% endfor %}
-</ul>
-
-<div class="more-btn"><a href="http://www.aliss.scot.nhs.uk/">more...</a></div>
-{% endcomment %}    
-
-</div>
-
-<div class="article grid_4 twitterlinks">
-    <h3>Twitter</h3>
-
-    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-    <script>
-    new TWTR.Widget({
-      version: 2,
-      type: 'profile',
-      rpp: 4,
-      interval: 6000,
-      width: 'auto',
-      height: 300,
-      theme: {
-        shell: {
-          background: '#ebeaed',
-          color: '#eb410e'
-        },
-        tweets: {
-          background: '#fcfcfc',
-          color: '#030303',
-          links: '#5f89bf'
-        }
-      },
-      features: {
-        scrollbar: false,
-        loop: false,
-        live: false,
-        hashtags: false,
-        timestamp: false,
-        avatars: false,
-        behavior: 'all'
-      }
-    }).render().setUser('alissproject').start();
-    </script>
-</div>
-
-<div class="article grid_4 omega">
-<h3>Engine</h3>
-
-<p>We have a <a href="{% url resource-find %}">demonstration search</a> which shows how any web site might use the ALISS engine. If you are involved in the ALISS project or related projects please <a href="/contact/">contact us</a> for a demo account which will allow you to add your own data. A screencast of a demonstration is in the section "How will the ALISS Engine work?" above.</p>
-
-<p>See our <a href="http://demo.aliss.org">demonstrations page</a> for examples using the <a href="http://engineclub.org/en/latest/depot/api.html">ALISS API</a>. We have a very simple demonstration of a widget pulling in resources to the web site of the fictitious <a href="http://demo.aliss.org/gag/demo.html">Grampian Arthritis Group</a> showing the latest resources curated by that group via the ALISS.org.</p>
-
-<p>There is now an example of a <a href="http://demo.aliss.org/ajax/">search form using AJAX</a>.</p>
-
-<p>If you want to find more technical details visit the <a href="http://engineclub.org">ALISS Engine Club</a>, where you can read documentation, specifications, and the code.</p>
-
-<p>The ALISS engine uses open source software, and is published as open source software on <a href="http://github.com/snowcloud/engineclub">Github</a>.</p>
-</div>
-
-</div>
-
-{%endblock%}
+    </div>
+{% endblock %}

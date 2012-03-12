@@ -215,42 +215,42 @@ def fix_pcdistricts(dbname):
 #     search = geocoder.get(Gosport)
 #     res, addr = _make_addr(search)
 
-def test_unlock():
+# def test_unlock():
 
-    """
-    looks like Unlock is more accurate using 'os' gazetteer, but that needs an api key.
+#     """
+#     looks like Unlock is more accurate using 'os' gazetteer, but that needs an api key.
 
-    or just use http://unlock.edina.ac.uk/ws/search?format=json&count=no&name=Pollok, GB
+#     or just use http://unlock.edina.ac.uk/ws/search?format=json&count=no&name=Pollok, GB
 
-    format: 'json', // Retrieve the results in JSON format
-    maxRows: 10, // Limit the number of results to 10
-    count: 'no', // Prevent Unlock from counting the total possible results (faster)
-    name:
+#     format: 'json', // Retrieve the results in JSON format
+#     maxRows: 10, // Limit the number of results to 10
+#     count: 'no', // Prevent Unlock from counting the total possible results (faster)
+#     name:
 
-    Gosport PO12 3BY
-    """
+#     Gosport PO12 3BY
+#     """
 
-    from unlock import Places
-    import requests
+#     from unlock import Places
+#     import requests
 
-    def _postCodeSearch(place,postCode=None,format='txt'):
-        """postCodeSearch?postCode=EH91PR&gazetteer=unlock&format=txt"""
+#     def _postCodeSearch(place,postCode=None,format='txt'):
+#         """postCodeSearch?postCode=EH91PR&gazetteer=unlock&format=txt"""
 
-        params = {'postCode':postCode,'format':format, 'gazetteer':place.pick_gazetteer()}   
-        results = place.ask_service('postCodeSearch',params)
-        return results
+#         params = {'postCode':postCode,'format':format, 'gazetteer':place.pick_gazetteer()}   
+#         results = place.ask_service('postCodeSearch',params)
+#         return results
 
-    p = Places()
+#     p = Places()
 
-    # xml = p.nameSearch('Pollok, GB')
-    # print xml
+#     # xml = p.nameSearch('Pollok, GB')
+#     # print xml
 
-    # r = requests.get('http://unlock.edina.ac.uk/ws/search?format=json&maxRows=50&count=no&name=Pollok,%20GB')
-    # print r.status_code
-    # print r.content
+#     # r = requests.get('http://unlock.edina.ac.uk/ws/search?format=json&maxRows=50&count=no&name=Pollok,%20GB')
+#     # print r.status_code
+#     # print r.content
 
-    txt = _postCodeSearch(p, 'PO123BY')
-    print txt
+#     txt = _postCodeSearch(p, 'PO123BY')
+#     print txt
 
 
 def recreate_indexes(coll):
