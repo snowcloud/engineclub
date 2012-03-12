@@ -1,7 +1,7 @@
 import re
 
 from django.conf import settings
-from django.core import serializers 
+from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
@@ -10,58 +10,60 @@ from django.utils import simplejson as json
 from mongoengine import ValidationError #, Q
 from mongoengine.connection import _get_db as get_db
 
+from analytics.shortcuts import (increment_api_queries, increment_api_locations,
+    increment_api_resources)
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords, get_location
 
-
+increment_api_resources
 class JsonResponse(HttpResponse):
     """from http://www.djangosnippets.org/snippets/1639/"""
     errors = {}
     __data = []
     callback = None
-    
+
     def __set_data(self, data):
         if data == []:
             self.__data = []
         else:
             self.__data = (isinstance(data, QuerySet) or hasattr(data[0], '_meta'))\
                 and serializers.serialize('python', data) or data
-    
+
     data = property(fset = __set_data)
 
     def __get_container(self):
-        content = json.dumps( 
+        content = json.dumps(
             {
-                "data": self.__data, 
+                "data": self.__data,
                 "errors":self.errors,
             }, cls = DjangoJSONEncoder)
         if self.callback:
             return '%s (%s)' % (self.callback, content)
         else:
             return content
-            
+
     def __set_container(self, val):
         pass
-    
+
     _container = property(__get_container, __set_container)
-    
+
     def __init__(self, *args, **kwargs):
         kwargs["mimetype"] = "application/javascript"
 
         if "data" in kwargs:
             self.data = kwargs.pop("data")
-            
+
         if "errors" in kwargs:
             self.errors = kwargs.pop("errors")
-        
+
         if "callback" in kwargs:
             self.callback = kwargs.pop('callback')
-            
+
         super(JsonResponse, self).__init__(*args, **kwargs)
 
 def resource_by_id(request, id):
     """docstring for item_resource"""
     callback = request.REQUEST.get('callback')
-    
+
     errors = []
     try:
         item = Resource.objects.get(id=id)
@@ -76,9 +78,11 @@ def resource_by_id(request, id):
     if errors:
         return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)})
 
+    increment_api_resources(id)
+
     data=[{
         'id': unicode(item.id),
-        'title': item.title, 
+        'title': item.title,
         'description': item.description,
         'resourcetype': item.resource_type or '',
         'uri': item.uri,
@@ -108,7 +112,7 @@ def resource_search(request):
     def _resource_result(r):
         result = {
             'id': r['res_id'],
-            'title': r['title'], 
+            'title': r['title'],
             'description': r.get('short_description', ''),
             # 'resource_type': r[''] resource_type or '',
             'uri': r.get('uri', ''),
@@ -125,7 +129,7 @@ def resource_search(request):
         if r.get('event_end'):
             result['event_end'] = r.get('event_end')
         return result
-        
+
     location = request.REQUEST.get('location', '')
     accounts = request.REQUEST.get('accounts', '')
     collections = request.REQUEST.get('collections', '')
@@ -139,8 +143,11 @@ def resource_search(request):
     boost_location = request.REQUEST.get('boostlocation', (settings.SOLR_LOC_BOOST_DEFAULT))
     callback = request.REQUEST.get('callback')
 
+    increment_api_queries(query)
+    increment_api_locations(location)
+
     result_code = 200
-    
+
     errors = []
     # if not query:
     #     result_code = 10
@@ -170,7 +177,7 @@ def resource_search(request):
         if location and not loc:
             result_code = 10
             errors.append('Location \'%s\' not found.' % location)
-        
+
     if errors:
         return JsonResponse(errors=[{ 'code': result_code, 'message': '. '.join(errors)}], callback=callback)
     else:
@@ -180,14 +187,14 @@ def resource_search(request):
             'accounts': accounts, 'collections': collections,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)
-        
+
 
 def publish_data(request):
     """docstring for publish_data"""
     def _resource_result(r):
         return {
             'id': unicode(r.id),
-            'title': r.title, 
+            'title': r.title,
             'description': r.description,
             'resource_type': r.resource_type,
             'uri': 'http://aliss.org/depot/resource/%s/' % unicode(r.id),
@@ -207,13 +214,13 @@ def publish_data(request):
             # 'score': r['score']
             # # 'last_modified': r[''] .item_metadata.last_modified,
         }
-    
+
     max = request.REQUEST.get('max', unicode(settings.SOLR_ROWS))
     start = request.REQUEST.get('start', 0)
     callback = request.REQUEST.get('callback')
-    
+
     result_code = 200
-    
+
     errors = []
     if not _check_int(max) or int(max) > settings.SOLR_ROWS:
         result_code = 10
@@ -241,15 +248,15 @@ def tags(request):
     errors = []
     data = None
     result_code = 200
-    
+
     # /api/tags/?callback=jsonp1268179474512&match=exe
-    
+
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
 
     if not match is None:
         if len(match) > 2:
-            results = [t for t in 
+            results = [t for t in
                 Curation.objects.ensure_index("tags").filter(tags__istartswith=match).distinct("tags") \
                     if t.lower().startswith(match.lower())]
         else:
@@ -260,14 +267,14 @@ def tags(request):
 
     if errors:
         return JsonResponse(errors={ 'code': result_code, 'message': '. '.join(errors)}, data=[],  callback=callback)
-    
+
     return JsonResponse(data=sorted(results), callback=callback)
 
 def locations(request):
     def _location_context(location):
         return {
-            'id': str(location['_id']), 
-            'place_name': l['place_name'], 
+            'id': str(location['_id']),
+            'place_name': l['place_name'],
             'postcode': l.get('postcode', ''),
             'district': l.get('district', '')}
     errors = []
