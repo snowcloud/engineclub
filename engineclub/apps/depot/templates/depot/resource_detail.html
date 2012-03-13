@@ -8,7 +8,7 @@
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
     <li><a href="{% url resource-find %}">Search</a></li>
-    <li class="current"><a href="#">Resource</a></li>
+    <li class="current"><a href="#">{{ object.title }}</a></li>
 </ul>
 {% endblock %}
 
@@ -63,9 +63,9 @@
     <tr><th>curation</th><td>-</td></tr>
 {% endfor %}
 {% comment %}
-    
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr> -->
 {% endcomment %}
+    
+<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>
 
 </table>
 

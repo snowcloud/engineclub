@@ -165,5 +165,5 @@ class CurationForm(DocumentForm):
         return clean_csvtextinput(self.cleaned_data['tags'])
 
 
-class ResourceReportForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea)
+class ResourceReportForm(PlainForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text large'}))

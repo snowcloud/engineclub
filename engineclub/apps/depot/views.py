@@ -65,8 +65,6 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
     resource = get_one_or_404(id=ObjectId(object_id))
 
-    raise Exception()
-    
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
         if form.is_valid():
