@@ -7,6 +7,7 @@ from django.template import RequestContext
 
 from accounts.forms import AccountForm, NewAccountForm
 from accounts.views import get_one_or_404
+from depot.models import Curation
 from notifications.context_processors import notifications
 
 @login_required
@@ -41,14 +42,17 @@ def account(request, template_name='youraliss/account.html'):
     )
 
 @login_required
-def alerts(request):    
-    return render_to_response('youraliss/alerts.html', RequestContext(request, {}))
+def alerts(request, template_name='youraliss/alerts.html'):    
+    return render_to_response(template_name, RequestContext(request, {}))
 
 @login_required
-def curations(request):    
-    return render_to_response('youraliss/curations.html', RequestContext(request, {}))
+def curations(request, template_name='youraliss/curations.html'):
+    object =  get_one_or_404(local_id=str(request.user.id))
+    curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
+    template_context = {'object': object, 'curations': curations}
+    return render_to_response(template_name, RequestContext(request, template_context))
 
 @login_required
-def groups(request):    
-    return render_to_response('youraliss/groups.html', RequestContext(request, {}))
+def groups(request, template_name='youraliss/groups.html'):    
+    return render_to_response(template_name, RequestContext(request, {}))
 
