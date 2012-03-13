@@ -65,10 +65,13 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	background-color: #f4f4f4;
 	border: 1px solid #DDDDDD;
 }
-.cab .main, .cab .container#top {
-	background-color: #57659b;
-	h1 {
-		color: white;
+.cab {
+	.main {
+		background-color: #57659b;
+		border: none;
+		h1 {
+			color: white;
+		}
 	}
 }
 .welcome {
