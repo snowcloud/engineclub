@@ -22,7 +22,7 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
-from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
+from tickets.models import (Alert, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
 from accounts.models import Account, get_account
@@ -73,30 +73,30 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             severity=int(form.cleaned_data['severity'])
             message=form.cleaned_data['message']
 
-            group = None
+            ticket = None
 
             # XXX currently this view is login_required
             # unauthenticated users are directed to /contact/ until this is bedded in
 
             if request.user.is_authenticated():
 
-                # 1. reporter notification
-                # If the user is logged in, they get a notification so they
+                # 1. reporter alert
+                # If the user is logged in, they get a alert so they
                 # can track the issue. Their complaint is also treated more
                 # seriously and a moderation is created to mark the resource as
                 # bad.
 
                 reporter_account = get_account(request.user.id)
 
-                notification = Notification.objects.create_for_account(
-                    reporter_account, group=True, type="report",
+                alert = Alert.objects.create_for_account(
+                    reporter_account, create_ticket=True, type="resource report",
                     severity=severity, message="Report submitted",
                     related_document=resource)
 
-                if notification.should_send_email():
-                    notification.send_email()
+                if alert.should_send_email():
+                    alert.send_email()
 
-                group = notification.group
+                ticket = alert.ticket
 
                 # onle moderate as STATUS_BAD if SEVERITY_HIGH
                 if severity == SEVERITY_HIGH:
@@ -108,19 +108,19 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                         resource.moderations.append(mod)
                     resource.save()
 
-            # 2. owner and curation owner notifications
+            # 2. owner and curation owner alerts
             # The owner should always have a curation, however, to be safe
             # make sure they are added.
             accounts = set(cur.owner for cur in resource.curations)
             accounts.add(resource.owner)
 
-            notifications = Notification.objects.create_for_accounts(accounts,
-                group=group, type="report", severity=severity,
+            alerts = Alert.objects.create_for_accounts(accounts,
+                ticket=ticket, type="report", severity=severity,
                 related_document=resource, message=message)
 
-            for notification in notifications:
-                if notification.should_send_email:
-                    notification.send_email()
+            for alert in alerts:
+                if alert.should_send_email:
+                    alert.send_email()
 
             if 'next' in request.GET:
                 url = request.GET['next']

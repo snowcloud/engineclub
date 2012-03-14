@@ -10,7 +10,7 @@ from mongoengine.base import ValidationError
 from accounts.models import Account
 
 
-class NotificationGroup(Document):
+class Ticket(Document):
 
     meta = {
         'allow_inheritance': False
@@ -18,7 +18,7 @@ class NotificationGroup(Document):
 
 
 
-class NotificationType(Document):
+class AlertType(Document):
 
     meta = {
         'allow_inheritance': False
@@ -30,46 +30,46 @@ class NotificationType(Document):
         return self.name
 
 
-class NotificationQuerySet(QuerySet):
+class AlertQuerySet(QuerySet):
 
     def create_for_accounts(self, accounts, **kwargs):
         """
-        Create notifications for a list of accounts. This is done so that
-        when a notification if given to a group of people, once one person
+        Create alerts for a list of accounts. This is done so that
+        when a notification if given to a ticket of people, once one person
         deals with it, we can strike it off for all the others.
         """
 
         # For convenience allow type to be given as a string, and we will
-        # automaticlally lookup/create the NotificationType.
+        # automaticlally lookup/create the AlertType.
         if 'type' in kwargs and isinstance(kwargs['type'], basestring):
-            kwargs['type'], _ = NotificationType.objects.get_or_create(
+            kwargs['type'], _ = AlertType.objects.get_or_create(
                 name=kwargs['type'])
 
-        # If a group is provided (and its truthy), use that. Otherwise create
-        # a new group if more than one account is going to be notified.
-        if 'group' not in kwargs or not kwargs['group']:
+        # If a ticket is provided (and its truthy), use that. Otherwise create
+        # a new ticket if more than one account is going to be notified.
+        if 'ticket' not in kwargs or not kwargs['ticket']:
             if len(accounts) > 1:
-                kwargs['group'] = NotificationGroup.objects.create()
+                kwargs['ticket'] = Ticket.objects.create()
             else:
-                kwargs['group'] = None
+                kwargs['ticket'] = None
 
-        notifications = []
+        alerts = []
         for account in accounts:
-            notifications.append(Notification.objects.create(
+            alerts.append(Alert.objects.create(
                 account=account, **kwargs))
-        return notifications
+        return alerts
 
-    def create_for_account(self, account, group=False, **kwargs):
+    def create_for_account(self, account, create_ticket=False, **kwargs):
 
-        if group:
-            kwargs['group'] = NotificationGroup.objects.create()
+        if create_ticket:
+            kwargs['ticket'] = Ticket.objects.create()
 
         return self.create_for_accounts([account, ], **kwargs)[0]
 
     def for_account(self, account):
         """
         Wrapped into a simpler helper as we may want to change the behaviour
-        later to retrieve notifications for sub or parent accounts based on
+        later to retrieve alerts for sub or parent accounts based on
         the membership.
         """
         return self._user(account=account)
@@ -77,9 +77,9 @@ class NotificationQuerySet(QuerySet):
     def _user(self, account=None):
         # XXX: THIS MEANS A QUERY USING for_account WILL RETURN ALL NOTIFICATIONS IF NO ACCOUNT
         if account:
-            return Notification.objects(account=account)
+            return Alert.objects(account=account)
         else:
-            return Notification.objects
+            return Alert.objects
 
     def low(self, user=None):
         return self._user(user)(severity=SEVERITY_LOW)
@@ -96,8 +96,8 @@ class NotificationQuerySet(QuerySet):
     def get_or_404(self, **kwargs):
         try:
             return self.get(**kwargs)
-        except (Notification.DoesNotExist, ValidationError):
-            raise Http404("Notification not found for %s" % kwargs)
+        except (Alert.DoesNotExist, ValidationError):
+            raise Http404("Alert not found for %s" % kwargs)
 
 
 SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL = (0, 1, 2, 3)
@@ -110,16 +110,16 @@ SEVERITY_CHOICES = (
 )
 
 
-class Notification(Document):
+class Alert(Document):
 
     meta = {
-        'queryset_class': NotificationQuerySet,
+        'queryset_class': AlertQuerySet,
         'allow_inheritance': False
     }
 
     account = ReferenceField(Account, required=True)
-    group = ReferenceField(NotificationGroup, required=False)
-    type = ReferenceField(NotificationType, required=True)
+    ticket = ReferenceField(Ticket, required=False)
+    type = ReferenceField(AlertType, required=True)
     severity = IntField(choices=SEVERITY_CHOICES, required=True)
     datetime = DateTimeField(default=datetime.now)
     origin = ReferenceField(Account, required=False)
@@ -135,33 +135,33 @@ class Notification(Document):
         self.opened = True
         self.save()
 
-    def resolve(self):
-        """
-        If the notification is in a group, update the full notification
-        group - including this one. Otherwise update only this notification.
-        """
+    # def resolve(self):
+    #     """
+    #     If the alert is in a ticket, update the full notification
+    #     ticket - including this one. Otherwise update only this notification.
+    #     """
 
-        if not self.group:
-            self.resolved = True
-            self.save()
-            return
+    #     if not self.ticket:
+    #         self.resolved = True
+    #         self.save()
+    #         return
 
-        for notification in Notification.objects(group=self.group):
-            notification.resolved = True
-            notification.save()
+    #     for notification in Alert.objects(ticket=self.ticket):
+    #         notification.resolved = True
+    #         notification.save()
 
     def should_send_email(self):
         return True
 
     def send_email(self, request=None):
 
-        notifications_count = Notification.objects.for_account(self.account
+        alerts_count = Alert.objects.for_account(self.account
             ).filter(opened=False, resolved=False).count()
 
-        message = render_to_string('notifications/notification_email.txt', {
+        message = render_to_string('tickets/alert_email.txt', {
             'account': self.account,
-            'notifications_count': notifications_count
+            'alerts_count': alerts_count
         })
 
-        send_mail('ALISS Notifications', message, 'no-reply@aliss.org',
+        send_mail('ALISS Alerts', message, 'no-reply@aliss.org',
             [self.account.email], fail_silently=False)

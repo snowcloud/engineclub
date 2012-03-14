@@ -39,7 +39,7 @@
             
             <div class="nav"><a href="/">home</a> | <a href="/info/">find out more</a> | <a href="{% url search %}">search</a> | <a href="{% url contact %}">contact us</a> | 
                 <a href="{% url youraliss %}">your Aliss
-                {% with notifications_count as alerts %}
+                {% with alerts_count as alerts %}
                     {% if alerts %}({{alerts}} alerts){% endif %}
                 {% endwith %}</a>
             </div>

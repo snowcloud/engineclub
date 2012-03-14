@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
     (r'^groups/', include('accounts.urls')),
-    (r'^notifications/', include('notifications.urls')),
+    (r'^alerts/', include('tickets.urls')),
     url(r'^search/$', 'depot.views.resource_find', name='search'),
     (r'^youraliss/', include('youraliss.urls')),
 

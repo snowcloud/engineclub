@@ -1,5 +1,5 @@
 {% extends "youraliss/base.html" %}
-{% load notifications_tags %}
+{% load tickets_tags %}
 
 {% block title %}your aliss alerts{% endblock %}
 
@@ -14,7 +14,7 @@
 {% block module-content %}
 	<h2>Alerts</h2>
 
-	{% if notifications %} 	
+	{% if alerts %} 	
 		<table>
 			<thead>
 				<tr>
@@ -26,11 +26,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for alert in notifications  %}
+				{% for alert in alerts  %}
 				<tr>
 					<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
 					<td>{{ alert.type }}</td>
-					<td class="alert-{{alert.severity}}">{{ alert.severity|notification_severity }}</td>
+					<td class="alert-{{alert.severity}}">{{ alert.severity|alert_severity }}</td>
 					<td>{{ alert.message }}</td>
 					<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
 				</tr>
@@ -47,8 +47,8 @@
 
 {% comment %}
     account = ReferenceField(Account, required=True)
-    group = ReferenceField(NotificationGroup, required=False)
-    type = ReferenceField(NotificationType, required=True)
+    group = ReferenceField(AlertGroup, required=False)
+    type = ReferenceField(AlertType, required=True)
     severity = IntField(choices=SEVERITY_CHOICES, required=True)
     datetime = DateTimeField(default=datetime.now)
     origin = ReferenceField(Account, required=False)

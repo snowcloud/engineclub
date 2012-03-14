@@ -1,9 +1,9 @@
-# notifications_tags.py
+# tickets_tags.py
 
 from django.template import Library, Node, Variable
 from django.utils.safestring import mark_safe
 
-from notifications.models import SEVERITY_CHOICES
+from tickets.models import SEVERITY_CHOICES
 
 SEVERITY_LABEL_CLASSES = ['white', 'blue', 'black', 'red']
 
@@ -17,5 +17,5 @@ SEVERITY_LABEL_CLASSES = ['white', 'blue', 'black', 'red']
 register = Library()
 
 @register.filter
-def notification_severity(value, labels=None):
+def alert_severity(value, labels=None):
 	return SEVERITY_CHOICES[value][1]
