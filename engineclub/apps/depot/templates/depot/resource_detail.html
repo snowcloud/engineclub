@@ -64,8 +64,20 @@
 {% endfor %}
 
 
+{% for mod in object.moderations  %}
+    <tr><td colspan="2">{{ mod.owner }} {{ mod.outcome }}</td> </tr>
+{% endfor %}
+
+
+
 {% if not user|is_owner:object %}
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>    
+<tr><th colspan="2">
+    {% if user.is_authenticated %} 
+        <a href="{% url resource-report object.id %}">Report Resource</a>
+    {% else %}
+    <a href="{% url contact %}">Report Resource</a>   
+    {% endif %}
+</th></tr>
 {% endif %}
 
 </table>

@@ -55,6 +55,7 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
+@login_required
 def resource_report(request, object_id, template='depot/resource_report.html'):
     """
     View for reporting a curation when a user finds it to be malformed or
@@ -69,19 +70,20 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
         form = ResourceReportForm(request.POST)
         if form.is_valid():
 
-            accounts = set(cur.owner for cur in resource.curations)
-            # The owner should always have a curation, however, to be safe
-            # make sure they are added.
-            accounts.add(resource.owner)
-
             severity = SEVERITY_MEDIUM
             group = None
 
-            # If the user is logged in, they get a notification so they
-            # can track the issue. Their compliant is also treated more
-            # seriously and a moderation is created to mark the resource as
-            # bad.
+            # XXX currently this view is login_required
+            # unauthenticated users are directed to /contact/ until this is bedded in
+            
             if request.user.is_authenticated():
+
+                # 1. reporter notification
+                # If the user is logged in, they get a notification so they
+                # can track the issue. Their complaint is also treated more
+                # seriously and a moderation is created to mark the resource as
+                # bad.
+
                 reporter_account = get_account(request.user.id)
 
                 notification = Notification.objects.create_for_account(
@@ -102,6 +104,12 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                     mod.item_metadata.author = reporter_account
                     resource.moderations.append(mod)
                 resource.save()
+
+            # 2. owner and curation owner notifications
+            # The owner should always have a curation, however, to be safe
+            # make sure they are added.
+            accounts = set(cur.owner for cur in resource.curations)
+            accounts.add(resource.owner)
 
             notifications = Notification.objects.create_for_accounts(accounts,
                 group=group, type="report", severity=severity,

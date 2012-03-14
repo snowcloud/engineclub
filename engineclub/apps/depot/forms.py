@@ -5,6 +5,7 @@ from django import forms
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
+from notifications.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH
 
 from mongoengine.queryset import DoesNotExist
 
@@ -164,6 +165,15 @@ class CurationForm(DocumentForm):
     def clean_tags(self):
         return clean_csvtextinput(self.cleaned_data['tags'])
 
+REPORT_CHOICES=(
+    (SEVERITY_LOW, 'Not serious- a spelling mistake or some other small correction'), 
+    (SEVERITY_MEDIUM, 'Quite serious- something wrong, misleading, or content not suitable for ALISS'), 
+    (SEVERITY_HIGH, 'Very serious- a service that has stopped, or content that is dangerous or offensive')
+    )
 
 class ResourceReportForm(PlainForm):
+    severity = forms.ChoiceField(
+        widget= forms.RadioSelect,
+        choices=REPORT_CHOICES,
+        label="How serious is this?")
     message = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text large'}))
