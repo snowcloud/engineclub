@@ -17,6 +17,7 @@ class NotificationGroup(Document):
     }
 
 
+
 class NotificationType(Document):
 
     meta = {
@@ -158,7 +159,7 @@ class Notification(Document):
             ).filter(opened=False, resolved=False).count()
 
         message = render_to_string('notifications/notification_email.txt', {
-            'account': self,
+            'account': self.account,
             'notifications_count': notifications_count
         })
 
