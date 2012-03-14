@@ -95,9 +95,12 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                 group = notification.group
                 severity = SEVERITY_HIGH
 
-                mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-                mod.item_metadata.author = reporter_account
-                resource.moderations.append(mod)
+                _, mod = resource.get_moderation_for_acct(reporter_account)
+
+                if mod is None:
+                    mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+                    mod.item_metadata.author = reporter_account
+                    resource.moderations.append(mod)
                 resource.save()
 
             notifications = Notification.objects.create_for_accounts(accounts,
@@ -110,10 +113,9 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
             if 'next' in request.GET:
                 url = request.GET['next']
-            else:
-                url = reverse('resource', args=[resource.id])
+            url = url or reverse('resource', args=[resource.id])
 
-            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+            return HttpResponseRedirect(url)
     else:
         form = ResourceReportForm()
 
@@ -491,6 +493,8 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
 
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
+
+    # TODO use resource.get_curation_for_user instead
     if user:
         for index, cur in enumerate(resource.curations):
             if cur.owner.id == user.id:
