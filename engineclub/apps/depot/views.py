@@ -70,12 +70,14 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
         form = ResourceReportForm(request.POST)
         if form.is_valid():
 
-            severity = SEVERITY_MEDIUM
+            severity=int(form.cleaned_data['severity'])
+            message=form.cleaned_data['message']
+
             group = None
 
             # XXX currently this view is login_required
             # unauthenticated users are directed to /contact/ until this is bedded in
-            
+
             if request.user.is_authenticated():
 
                 # 1. reporter notification
@@ -88,22 +90,23 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
                 notification = Notification.objects.create_for_account(
                     reporter_account, group=True, type="report",
-                    severity=SEVERITY_LOW, message="Report submitted",
+                    severity=severity, message="Report submitted",
                     related_document=resource)
 
                 if notification.should_send_email():
                     notification.send_email()
 
                 group = notification.group
-                severity = SEVERITY_HIGH
 
-                _, mod = resource.get_moderation_for_acct(reporter_account)
+                # onle moderate as STATUS_BAD if SEVERITY_HIGH
+                if severity == SEVERITY_HIGH:
+                    _, mod = resource.get_moderation_for_acct(reporter_account)
 
-                if mod is None:
-                    mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-                    mod.item_metadata.author = reporter_account
-                    resource.moderations.append(mod)
-                resource.save()
+                    if mod is None:
+                        mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+                        mod.item_metadata.author = reporter_account
+                        resource.moderations.append(mod)
+                    resource.save()
 
             # 2. owner and curation owner notifications
             # The owner should always have a curation, however, to be safe
@@ -113,7 +116,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
             notifications = Notification.objects.create_for_accounts(accounts,
                 group=group, type="report", severity=severity,
-                related_document=resource, message=form.cleaned_data['message'])
+                related_document=resource, message=message)
 
             for notification in notifications:
                 if notification.should_send_email:
