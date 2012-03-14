@@ -11,10 +11,18 @@ from accounts.models import Account
 
 
 class NotificationGroup(Document):
-    pass
+
+    meta = {
+        'allow_inheritance': False
+    }
 
 
 class NotificationType(Document):
+
+    meta = {
+        'allow_inheritance': False
+    }
+
     name = StringField()
 
     def __unicode__(self):
@@ -103,7 +111,10 @@ SEVERITY_CHOICES = (
 
 class Notification(Document):
 
-    meta = {'queryset_class': NotificationQuerySet}
+    meta = {
+        'queryset_class': NotificationQuerySet,
+        'allow_inheritance': False
+    }
 
     account = ReferenceField(Account, required=True)
     group = ReferenceField(NotificationGroup, required=False)
