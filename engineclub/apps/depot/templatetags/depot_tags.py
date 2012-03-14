@@ -1,8 +1,10 @@
+from datetime import datetime
+from dateutil import parser
+
 from django.template import Library, Node, Variable
 from django.template.defaultfilters import date
 
-from datetime import datetime
-from dateutil import parser
+from accounts.models import get_account
 
 register = Library()
 
@@ -30,7 +32,11 @@ def event_date(value, arg=None):
 def idx_event_date(value, arg=None):
     if value.get('event_start', None):
         dt = parser.parse(value['event_start'])
-
         return date(dt).replace(', 00:00', '')
     else:
         return ''
+
+@register.filter
+def is_owner(user, resource):
+    return get_account(user.id) == resource.owner
+

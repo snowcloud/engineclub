@@ -62,10 +62,11 @@
 {% empty %}
     <tr><th>curation</th><td>-</td></tr>
 {% endfor %}
-{% comment %}
-{% endcomment %}
-    
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>
+
+
+{% if not user|is_owner:object %}
+<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr>    
+{% endif %}
 
 </table>
 
