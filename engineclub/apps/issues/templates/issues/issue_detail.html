@@ -4,12 +4,12 @@
 
 {% block content %}
 
-    {{ ticket.get_severity_display }} severity<br/>
-    {{ ticket.type }}<br/>
-    {{ ticket.message }}<br/>
+    {{ issue.get_severity_display }} severity<br/>
+    {{ issue.type }}<br/>
+    {{ issue.message }}<br/>
 
 
-    {% if not ticket.resolved %}
+    {% if not issue.resolved %}
     <form method="post" action=".">
         {% csrf_token %}
         <input type="submit" name="resolved" value="Mark resolved" />

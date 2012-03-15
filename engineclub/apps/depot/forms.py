@@ -5,7 +5,7 @@ from django import forms
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
-from tickets.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH
+from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH
 
 from mongoengine.queryset import DoesNotExist
 

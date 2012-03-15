@@ -1,73 +1,73 @@
-# from mongoengine.django.tests import MongoTestCase
+from mongoengine.django.tests import MongoTestCase
 
 
-# class AlertsTestCase(MongoTestCase):
+class AlertsTestCase(MongoTestCase):
 
-#     def setUp(self):
-#         """
-#         Create two test accounts and a parent account with alice being a
-#         member.
-#         """
+    def setUp(self):
+        """
+        Create two test accounts and a parent account with alice being a
+        member.
+        """
 
-#         from django.contrib.auth.models import User
+        from django.contrib.auth.models import User
 
-#         from accounts.models import Account, Membership
+        from accounts.models import Account, Membership
 
-#         # Create three normal contrib.auth users
-#         self.user_bob = User.objects.create_user('bob', email="bob@example.com",
-#             password='password')
-#         self.user_alice = User.objects.create_user('alice', email="alice@example.com",
-#             password='password')
-#         self.user_company = User.objects.create_user('company',
-#             email="company@example.com", password="password")
+        # Create three normal contrib.auth users
+        self.user_bob = User.objects.create_user('bob', email="bob@example.com",
+            password='password')
+        self.user_alice = User.objects.create_user('alice', email="alice@example.com",
+            password='password')
+        self.user_company = User.objects.create_user('company',
+            email="company@example.com", password="password")
 
-#         # Create three mongodb accounts and related them to the contrib.auth
-#         # user accounts.
-#         self.bob = Account.objects.create(name="Bob", email="bob@example.com",
-#             local_id=str(self.user_bob.id))
-#         self.alice = Account.objects.create(name="Alice",
-#             email="alice@example.com", local_id=str(self.user_alice.id))
-#         self.company = Account.objects.create(name="company",
-#             email="org@example.com", local_id=str(self.user_company.id))
+        # Create three mongodb accounts and related them to the contrib.auth
+        # user accounts.
+        self.bob = Account.objects.create(name="Bob", email="bob@example.com",
+            local_id=str(self.user_bob.id))
+        self.alice = Account.objects.create(name="Alice",
+            email="alice@example.com", local_id=str(self.user_alice.id))
+        self.company = Account.objects.create(name="company",
+            email="org@example.com", local_id=str(self.user_company.id))
 
-#         # Add alice to the company, so she is a "sub account"
-#         Membership.objects.create(parent_account=self.company, member=self.alice)
+        # Add alice to the company, so she is a "sub account"
+        Membership.objects.create(parent_account=self.company, member=self.alice)
 
 
-# class ApiTestCase(AlertsTestCase):
+class ApiTestCase(AlertsTestCase):
 
-#     def test_types(self):
+    def test_types(self):
 
-#         from tickets.models import AlertType
+        from issues.models import AlertType
 
-#         nt, _ = AlertType.objects.get_or_create(name="expired")
+        nt, _ = AlertType.objects.get_or_create(name="expired")
 
-#     def test_create(self):
+    def test_create(self):
 
-#         from tickets.models import Alert, AlertType
+        from issues.models import Alert, AlertType
 
-#         expired, _ = AlertType.objects.get_or_create(name="expired")
+        expired, _ = AlertType.objects.get_or_create(name="expired")
 
-#         accounts = [self.bob, self.alice]
+        accounts = [self.bob, self.alice]
 
-#         Alert.objects.create_for_accounts(accounts, type=expired,
-#             severity=1, message='Curation X has expired'
-#         )
+        Alert.objects.create_for_accounts(accounts, type=expired,
+            severity=1, message='Curation X has expired'
+        )
 
-#         Alert.objects.create_for_accounts(accounts, type="expired",
-#             severity=1, message='Curation X has expired'
-#         )
+        Alert.objects.create_for_accounts(accounts, type="expired",
+            severity=1, message='Curation X has expired'
+        )
 
-#         Alert.objects.create_for_accounts(accounts, type="test",
-#             severity=1, message='Curation X has expired'
-#         )
+        Alert.objects.create_for_accounts(accounts, type="test",
+            severity=1, message='Curation X has expired'
+        )
 
-#         test, created = AlertType.objects.get_or_create(name="expired")
-#         self.assertFalse(created)
+        test, created = AlertType.objects.get_or_create(name="expired")
+        self.assertFalse(created)
 
 #     def test_get_alerts(self):
 
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 
@@ -81,7 +81,7 @@
 
 #     def test_get_member_alerts(self):
 
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 #         incorrect, _ = AlertType.objects.get_or_create(name="incorrect")
@@ -105,7 +105,7 @@
 
 #     def test_group_alerts(self):
 
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 
@@ -119,7 +119,7 @@
 
 #     def test_severity(self):
 
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 
@@ -135,7 +135,7 @@
 
 #     def test_related_document(self):
 
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         account, _ = AlertType.objects.get_or_create(name="account")
 
@@ -172,7 +172,7 @@
 #     def test_alerts_list(self):
 
 #         from django.core.urlresolvers import reverse
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 #         account, _ = AlertType.objects.get_or_create(name="account")
@@ -194,7 +194,7 @@
 #     def test_detail_view(self):
 
 #         from django.core.urlresolvers import reverse
-#         from tickets.models import Alert, AlertType
+#         from issues.models import Alert, AlertType
 
 #         expired, _ = AlertType.objects.get_or_create(name="expired")
 
@@ -228,7 +228,7 @@
 #     def test_annon_report(self):
 
 #         from django.core.urlresolvers import reverse
-#         from tickets.models import Alert, SEVERITY_MEDIUM
+#         from issues.models import Alert, SEVERITY_MEDIUM
 
 #         # Check there are no alerts.
 #         self.assertEqual(Alert.objects.count(), 0)
@@ -252,7 +252,7 @@
 #     def test_user_report(self):
 
 #         from django.core.urlresolvers import reverse
-#         from tickets.models import Alert, SEVERITY_HIGH
+#         from issues.models import Alert, SEVERITY_HIGH
 
 #         self.client.login(username='alice', password='password')
 

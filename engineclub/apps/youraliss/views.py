@@ -8,13 +8,12 @@ from django.template import RequestContext
 from accounts.forms import AccountForm, NewAccountForm
 from accounts.views import get_one_or_404
 from depot.models import Curation
-from tickets.context_processors import alert_stats
+from issues.context_processors import message_stats
 
 @login_required
 def index(request):
 
-    print alert_stats(request)
-    if alert_stats(request)['alerts_count']:
+    if message_stats(request)['message_count']:
         return alerts(request)
     else:
         return account(request)

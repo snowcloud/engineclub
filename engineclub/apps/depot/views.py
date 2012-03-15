@@ -22,7 +22,7 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
-from tickets.models import (Alert, SEVERITY_LOW, SEVERITY_MEDIUM,
+from issues.models import (Alert, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
 from accounts.models import Account, get_account
@@ -73,7 +73,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             severity=int(form.cleaned_data['severity'])
             message=form.cleaned_data['message']
 
-            ticket = None
+            issue = None
 
             # XXX currently this view is login_required
             # unauthenticated users are directed to /contact/ until this is bedded in
@@ -89,14 +89,14 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                 reporter_account = get_account(request.user.id)
 
                 alert = Alert.objects.create_for_account(
-                    reporter_account, create_ticket=True, type="resource report",
+                    reporter_account, create_issue=True, type="resource report",
                     severity=severity, message="Report submitted",
                     related_document=resource)
 
                 if alert.should_send_email():
                     alert.send_email()
 
-                ticket = alert.ticket
+                issue = alert.issue
 
                 # onle moderate as STATUS_BAD if SEVERITY_HIGH
                 if severity == SEVERITY_HIGH:
@@ -115,7 +115,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             accounts.add(resource.owner)
 
             alerts = Alert.objects.create_for_accounts(accounts,
-                ticket=ticket, type="report", severity=severity,
+                issue=issue, type="report", severity=severity,
                 related_document=resource, message=message)
 
             for alert in alerts:

@@ -10,12 +10,36 @@ from mongoengine.base import ValidationError
 from accounts.models import Account
 
 
-class Ticket(Document):
+class Issue(Document):
 
     meta = {
         'allow_inheritance': False
     }
 
+class IssueComment(Document):
+
+    meta = {
+        'allow_inheritance': False
+    }
+
+class AccountMessage(Document):
+
+    meta = {
+        'allow_inheritance': False
+    }
+
+    to_account = ReferenceField(Account, required=True)
+
+
+
+
+###############################################################
+
+class OldTicket(Document):
+
+    meta = {
+        'allow_inheritance': False
+    }
 
 
 class AlertType(Document):
@@ -35,7 +59,7 @@ class AlertQuerySet(QuerySet):
     def create_for_accounts(self, accounts, **kwargs):
         """
         Create alerts for a list of accounts. This is done so that
-        when a notification if given to a ticket of people, once one person
+        when a notification if given to a issue of people, once one person
         deals with it, we can strike it off for all the others.
         """
 
@@ -45,13 +69,13 @@ class AlertQuerySet(QuerySet):
             kwargs['type'], _ = AlertType.objects.get_or_create(
                 name=kwargs['type'])
 
-        # If a ticket is provided (and its truthy), use that. Otherwise create
-        # a new ticket if more than one account is going to be notified.
-        if 'ticket' not in kwargs or not kwargs['ticket']:
+        # If a issue is provided (and its truthy), use that. Otherwise create
+        # a new issue if more than one account is going to be notified.
+        if 'issue' not in kwargs or not kwargs['issue']:
             if len(accounts) > 1:
-                kwargs['ticket'] = Ticket.objects.create()
+                kwargs['issue'] = OldTicket.objects.create()
             else:
-                kwargs['ticket'] = None
+                kwargs['issue'] = None
 
         alerts = []
         for account in accounts:
@@ -59,10 +83,10 @@ class AlertQuerySet(QuerySet):
                 account=account, **kwargs))
         return alerts
 
-    def create_for_account(self, account, create_ticket=False, **kwargs):
+    def create_for_account(self, account, create_issue=False, **kwargs):
 
-        if create_ticket:
-            kwargs['ticket'] = Ticket.objects.create()
+        if create_issue:
+            kwargs['issue'] = OldTicket.objects.create()
 
         return self.create_for_accounts([account, ], **kwargs)[0]
 
@@ -118,7 +142,7 @@ class Alert(Document):
     }
 
     account = ReferenceField(Account, required=True)
-    ticket = ReferenceField(Ticket, required=False)
+    issue = ReferenceField(OldTicket, required=False)
     type = ReferenceField(AlertType, required=True)
     severity = IntField(choices=SEVERITY_CHOICES, required=True)
     datetime = DateTimeField(default=datetime.now)
@@ -137,16 +161,16 @@ class Alert(Document):
 
     # def resolve(self):
     #     """
-    #     If the alert is in a ticket, update the full notification
-    #     ticket - including this one. Otherwise update only this notification.
+    #     If the alert is in a issue, update the full notification
+    #     issue - including this one. Otherwise update only this notification.
     #     """
 
-    #     if not self.ticket:
+    #     if not self.issue:
     #         self.resolved = True
     #         self.save()
     #         return
 
-    #     for notification in Alert.objects(ticket=self.ticket):
+    #     for notification in Alert.objects(issue=self.issue):
     #         notification.resolved = True
     #         notification.save()
 
@@ -158,7 +182,7 @@ class Alert(Document):
         alerts_count = Alert.objects.for_account(self.account
             ).filter(opened=False, resolved=False).count()
 
-        message = render_to_string('tickets/alert_email.txt', {
+        message = render_to_string('issues/alert_email.txt', {
             'account': self.account,
             'alerts_count': alerts_count
         })

@@ -1,9 +1,9 @@
-# tickets_tags.py
+# issues_tags.py
 
 from django.template import Library, Node, Variable
 from django.utils.safestring import mark_safe
 
-from tickets.models import SEVERITY_CHOICES
+from issues.models import SEVERITY_CHOICES
 
 SEVERITY_LABEL_CLASSES = ['white', 'blue', 'black', 'red']
 

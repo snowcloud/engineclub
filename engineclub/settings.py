@@ -139,7 +139,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
-    "tickets.context_processors.alert_stats",
+    "issues.context_processors.message_stats",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
@@ -166,7 +166,7 @@ INSTALLED_APPS = (
     'youraliss',
     'contact_form',
     'sitedown',
-    'tickets',
+    'issues',
     'invites',
 
 )
