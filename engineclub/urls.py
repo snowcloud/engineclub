@@ -1,11 +1,10 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 
 from contact_form.views import contact_form
 from ecutils.forms import SCContactForm
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
@@ -21,7 +20,7 @@ urlpatterns = patterns('',
     (r'^youraliss/', include('youraliss.urls')),
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact'),
-    url(r'^contact/sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' },
+    url(r'^contact/sent/$', TemplateView.as_view(template_name='contact_form/contact_form_sent.html'),
         name='contact_form_sent'),
 
     (r'^admin/', include(admin.site.urls)),
