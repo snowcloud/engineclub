@@ -15,8 +15,8 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-# from analytics.shortcuts import (increment_queries, increment_locations,
-#     increment_resources, increment_resource_crud)
+from analytics.shortcuts import (increment_queries, increment_locations,
+    increment_resources, increment_resource_crud)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
@@ -50,7 +50,7 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
     object = get_one_or_404(id=ObjectId(object_id))
 
-    # increment_resources(object_id)
+    increment_resources(object_id)
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
@@ -168,7 +168,7 @@ def resource_add(request, template='depot/resource_edit.html'):
                 resource.owner = user
                 # save will create default moderation and curation using owner acct
                 resource.save(author=user, reindex=True)
-                # increment_resource_crud('resouce_add', account=user)
+                increment_resource_crud('resouce_add', account=user)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
@@ -217,7 +217,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             resource.locations = locationform.locations
             resource.save()
 
-            # increment_resource_crud('resouce_edit', account=acct)
+            increment_resource_crud('resouce_edit', account=acct)
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
 
@@ -270,7 +270,7 @@ def resource_remove(request, object_id):
     object.delete()
 
     user = get_account(request.user.id)
-    # increment_resource_crud('resouce_remove', account=user)
+    increment_resource_crud('resouce_remove', account=user)
     return HttpResponseRedirect(reverse('resource_list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
@@ -290,8 +290,8 @@ def resource_find(request, template='depot/resource_find.html'):
         if form.is_valid():
             user = get_account(request.user.id)
 
-            # increment_queries(form.cleaned_data['kwords'], account=user)
-            # increment_locations(form.cleaned_data['post_code'], account=user)
+            increment_queries(form.cleaned_data['kwords'], account=user)
+            increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
                 resource = get_one_or_404(id=ObjectId(result['res_id']))
@@ -383,7 +383,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation.resource = resource
             curation.save()
 
-            # increment_resource_crud('curation_add', account=user)
+            increment_resource_crud('curation_add', account=user)
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -427,7 +427,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
             curation.save()
-            # increment_resource_crud('curation_edit', account=user)
+            increment_resource_crud('curation_edit', account=user)
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -449,7 +449,7 @@ def curation_remove(request, object_id, index):
     del resource.curations[int(index)]
     resource.save(reindex=True)
 
-    # increment_resource_crud('curation_remove', account=user)
+    increment_resource_crud('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required
