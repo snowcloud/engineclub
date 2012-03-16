@@ -72,6 +72,8 @@ class ApiTestCase(IssuesTestCase):
         # check messages sent
 
         # get messages for an account
+        self.assertEqual(2, Issue.objects.for_account(self.bob).count())
+        self.assertEqual(1, Issue.objects.for_account(self.jorph).count())
 
         # get issues for an account
 
@@ -139,7 +141,7 @@ class ViewsTestCase(IssuesTestCase):
         self.assertEqual(issue.message, 'I am reporting this now.')
         self.assertEqual(issue.reporter, self.bob)
         self.assertEqual(issue.related_document, self.resource1)
-        
+
         response = self.client.post(reverse('issue_list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'I am reporting this now.')

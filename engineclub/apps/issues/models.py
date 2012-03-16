@@ -18,10 +18,21 @@ SEVERITY_CHOICES = (
     (SEVERITY_CRITICAL, 'Critical'),
 )
 
+class IssueQuerySet(QuerySet):
+    def for_account(self, account):
+        """
+        Wrapped into a simpler helper as we may want to change the behaviour
+        later to retrieve alerts for sub or parent accounts based on
+        the membership.
+        """
+        # TODO add in curators...
+        return Issue.objects(Q(reporter=account)|Q(resource_owner=account)|Q(curators=account))
+
 class Issue(Document):
 
     meta = {
-       'allow_inheritance': False
+       'allow_inheritance': False,
+       'queryset_class': IssueQuerySet
     }
 
     message = StringField(required=True)
