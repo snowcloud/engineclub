@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 
 urlpatterns = patterns('',
     # Example:
@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     url(r'^resource/(?P<object_id>\w+)/edit/$', 'depot.views.resource_edit', name='resource-edit'),
     url(r'^resource/find/$', 'depot.views.resource_find', name='resource-find'),
     url(r'^resource/(?P<object_id>\w+)/remove/$', 'depot.views.resource_remove', name='resource-remove'),
-    url(r'^resource/popup-cancel/$', direct_to_template, {'template': 'depot/resource_popup_cancel.html'}, name='resource-popup-cancel' ),
-    url(r'^resource/popup-close/$', direct_to_template, {'template': 'depot/resource_popup_done.html'}, name='resource-popup-close' ),
+    url(r'^resource/popup-cancel/$', TemplateView.as_view(template_name='depot/resource_popup_cancel.html'), name='resource-popup-cancel' ),
+    url(r'^resource/popup-close/$', TemplateView.as_view(template_name='depot/resource_popup_done.html'), name='resource-popup-close' ),
     url(r'^resource/(?P<object_id>\w+)/$', 'depot.views.resource_detail', name='resource'),
     # url(r'^resource/(?P<object_id>\w+)/report/$', 'depot.views.resource_report', name='resource-report'),
 
