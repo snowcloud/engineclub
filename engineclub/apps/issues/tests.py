@@ -88,6 +88,30 @@ class ApiTestCase(IssuesTestCase):
         # check resource moderation
 
 
+class ViewsTestCase(IssuesTestCase):
+
+    def setUp(self):
+        super(ViewsTestCase, self).setUp()
+
+        from django.test.client import Client
+
+        self.client = Client()
+
+    def test_no_issues(self):
+
+        from django.core.urlresolvers import reverse
+
+        # Can't access when we are not logged in.
+        response = self.client.get(reverse('issue-list'))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(reverse('issue-list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You don't have any issues")
+
+
 
 # class ApiTestCase(IssuesTestCase):
 

@@ -17,12 +17,6 @@ SEVERITY_CHOICES = (
     (SEVERITY_HIGH, 'High'),
     (SEVERITY_CRITICAL, 'Critical'),
 )
-class duff(object):
-    """docstring for duff"""
-    def __init__(self, arg):
-        super(duff, self).__init__()
-        self.arg = arg
-        
 
 class Issue(Document):
 
@@ -48,7 +42,7 @@ class Issue(Document):
         super(Issue, self).save(*args, **kwargs)
 
 
-class IssueComment(Document):
+class IssueComment(EmbeddedDocument):
 
     meta = {
         'allow_inheritance': False
