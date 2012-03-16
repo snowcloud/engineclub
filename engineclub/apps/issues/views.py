@@ -12,20 +12,15 @@ from issues.models import Issue
 
 
 @login_required
-def issue_list(request):
+def issue_list(request, template_name='youraliss/issues.html'):
 
     account = get_account(request.user.id)
-
-    issues = Issue.objects.all()
-
-    return render_to_response('issues/issue_list.html', {
-        'account': account,
-        'issues': issues,
-    }, RequestContext(request))
-
+    issues = Issue.objects.for_account(account)
+    template_context = {'objects': issues}
+    return render_to_response(template_name, RequestContext(request, template_context))
 
 @login_required
-def issue_detail(request, object_id):
+def issue_detail(request, object_id, template_name='youraliss/issue_detail.html'):
 
     account = get_account(request.user.id)
     issue = get_one_or_404(Issue, id=ObjectId(object_id))
@@ -44,4 +39,5 @@ def issue_detail(request, object_id):
         'account': account,
         'issue': issue,
     }, RequestContext(request))
+    return render_to_response(template_name, RequestContext(request, template_context))
 

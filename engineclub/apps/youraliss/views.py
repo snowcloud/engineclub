@@ -42,9 +42,9 @@ def account(request, template_name='youraliss/account.html'):
         RequestContext(request)
     )
 
-@login_required
-def alerts(request, template_name='youraliss/alerts.html'):    
-    return render_to_response(template_name, RequestContext(request, {}))
+# @login_required
+# def alerts(request, template_name='youraliss/alerts.html'):    
+#     return render_to_response(template_name, RequestContext(request, {}))
 
 @login_required
 def curations(request, template_name='youraliss/curations.html'):
