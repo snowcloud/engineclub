@@ -9,12 +9,44 @@ from mongoengine.base import ValidationError
 
 from accounts.models import Account
 
+SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL = (0, 1, 2, 3)
+
+SEVERITY_CHOICES = (
+    (SEVERITY_LOW, 'Low'),
+    (SEVERITY_MEDIUM, 'Medium'),
+    (SEVERITY_HIGH, 'High'),
+    (SEVERITY_CRITICAL, 'Critical'),
+)
+class duff(object):
+    """docstring for duff"""
+    def __init__(self, arg):
+        super(duff, self).__init__()
+        self.arg = arg
+        
 
 class Issue(Document):
 
     meta = {
         'allow_inheritance': False
     }
+
+
+    message = StringField(required=True)
+    severity = IntField(choices=SEVERITY_CHOICES, required=True)
+    reporter = ReferenceField(Account, required=True)
+    resource_owner = ReferenceField(Account)
+    curators = ListField(ReferenceField(Account), default=list)
+    # status = 
+    # link to Resource = 
+    # date/time of report = 
+    resolved = BooleanField(default=False)
+    related_document = GenericReferenceField()
+
+    def save(self, *args, **kwargs):
+        if self.related_document:
+            self.resource_owner = self.related_document.owner
+        super(Issue, self).save(*args, **kwargs)
+
 
 class IssueComment(Document):
 
@@ -122,16 +154,6 @@ class AlertQuerySet(QuerySet):
             return self.get(**kwargs)
         except (Alert.DoesNotExist, ValidationError):
             raise Http404("Alert not found for %s" % kwargs)
-
-
-SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL = (0, 1, 2, 3)
-
-SEVERITY_CHOICES = (
-    (SEVERITY_LOW, 'Low'),
-    (SEVERITY_MEDIUM, 'Medium'),
-    (SEVERITY_HIGH, 'High'),
-    (SEVERITY_CRITICAL, 'Critical'),
-)
 
 
 class Alert(Document):

@@ -1,7 +1,7 @@
 from mongoengine.django.tests import MongoTestCase
 
 
-class AlertsTestCase(MongoTestCase):
+class IssuesTestCase(MongoTestCase):
 
     def setUp(self):
         """
@@ -12,58 +12,113 @@ class AlertsTestCase(MongoTestCase):
         from django.contrib.auth.models import User
 
         from accounts.models import Account, Membership
+        from accounts.tests import make_test_user_and_account
 
-        # Create three normal contrib.auth users
-        self.user_bob = User.objects.create_user('bob', email="bob@example.com",
-            password='password')
-        self.user_alice = User.objects.create_user('alice', email="alice@example.com",
-            password='password')
-        self.user_company = User.objects.create_user('company',
-            email="company@example.com", password="password")
-
-        # Create three mongodb accounts and related them to the contrib.auth
-        # user accounts.
-        self.bob = Account.objects.create(name="Bob", email="bob@example.com",
-            local_id=str(self.user_bob.id))
-        self.alice = Account.objects.create(name="Alice",
-            email="alice@example.com", local_id=str(self.user_alice.id))
-        self.company = Account.objects.create(name="company",
-            email="org@example.com", local_id=str(self.user_company.id))
+        # Create normal contrib.auth users & their mongodb accounts
+        for name in ['alice', 'bob', 'emma', 'hugo', 'jorph','company']:
+            a, b =  make_test_user_and_account(name)
+            setattr(self, 'user_%s' % name, a)
+            setattr(self, name, b)
 
         # Add alice to the company, so she is a "sub account"
         Membership.objects.create(parent_account=self.company, member=self.alice)
 
 
-class ApiTestCase(AlertsTestCase):
-
-    def test_types(self):
-
-        from issues.models import AlertType
-
-        nt, _ = AlertType.objects.get_or_create(name="expired")
+class ApiTestCase(IssuesTestCase):
 
     def test_create(self):
 
-        from issues.models import Alert, AlertType
+        from depot.models import Resource
+        from issues.models import Issue, \
+            SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
-        expired, _ = AlertType.objects.get_or_create(name="expired")
+        # create resources
+        resource, created = Resource.objects.get_or_create(
+            title='title',
+            owner=self.alice)
+        self.assertTrue(created)
+        self.assertTrue(resource.title=='title')
 
-        accounts = [self.bob, self.alice]
+        resource2, created = Resource.objects.get_or_create(
+            title='title too',
+            owner=self.bob)
+        self.assertTrue(created)
+        self.assertTrue(resource.title=='title')
 
-        Alert.objects.create_for_accounts(accounts, type=expired,
-            severity=1, message='Curation X has expired'
-        )
+        # create issues
+        issue, created = Issue.objects.get_or_create(
+            message = 'blah blah',
+            severity = SEVERITY_LOW,
+            reporter = self.bob,
+            related_document=resource
+            )
+        issue.curators = [self.emma, self.hugo]
+        issue.save()
+        self.assertEqual(issue.related_document.title, 'title')
+        self.assertEqual(issue.resource_owner, self.alice)
 
-        Alert.objects.create_for_accounts(accounts, type="expired",
-            severity=1, message='Curation X has expired'
-        )
+        issue2, created = Issue.objects.get_or_create(
+            message = 'more blah blah',
+            severity = SEVERITY_MEDIUM,
+            reporter = self.alice,
+            related_document=resource2
+            )
+        issue2.curators = [self.jorph, self.hugo]
+        issue2.save()
+        self.assertEqual(issue2.related_document.title, 'title too')
+        self.assertEqual(issue2.resource_owner, self.bob)
 
-        Alert.objects.create_for_accounts(accounts, type="test",
-            severity=1, message='Curation X has expired'
-        )
+        self.assertTrue(Issue.objects.count() == 2)
 
-        test, created = AlertType.objects.get_or_create(name="expired")
-        self.assertFalse(created)
+
+        # send accountmessages
+
+        # add some comments
+
+        # check messages sent
+
+        # get messages for an account
+
+        # get issues for an account
+
+        # resolve issue
+
+        # check messages
+
+        # check resource moderation
+
+
+
+# class ApiTestCase(IssuesTestCase):
+
+#     def test_types(self):
+
+#         from issues.models import AlertType
+
+#         nt, _ = AlertType.objects.get_or_create(name="expired")
+
+#     def test_create(self):
+
+#         from issues.models import Alert, AlertType
+
+#         expired, _ = AlertType.objects.get_or_create(name="expired")
+
+#         accounts = [self.bob, self.alice]
+
+#         Alert.objects.create_for_accounts(accounts, type=expired,
+#             severity=1, message='Curation X has expired'
+#         )
+
+#         Alert.objects.create_for_accounts(accounts, type="expired",
+#             severity=1, message='Curation X has expired'
+#         )
+
+#         Alert.objects.create_for_accounts(accounts, type="test",
+#             severity=1, message='Curation X has expired'
+#         )
+
+#         test, created = AlertType.objects.get_or_create(name="expired")
+#         self.assertFalse(created)
 
 #     def test_get_alerts(self):
 

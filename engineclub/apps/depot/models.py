@@ -161,7 +161,6 @@ class Resource(Document):
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
-    tmp_locations = ListField(StringField(max_length=16), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
