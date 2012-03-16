@@ -22,23 +22,12 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
+from ecutils.utils import get_one_or_404
 from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
 from accounts.models import Account, get_account
 
-def get_one_or_404(obj_class=Resource, **kwargs):
-    """helper function for Mongoengine documents"""
-    try:
-       user = kwargs.pop('user', None)
-       perm = kwargs.pop('perm', None)
-       object = obj_class.objects.get(**kwargs)
-       if user and perm:
-           if not user.has_perm(perm, object):
-               raise PermissionDenied()
-       return object
-    except (MultipleObjectsReturned, ValidationError, DoesNotExist):
-        raise Http404
 
 def resource_index(request):
 
@@ -48,7 +37,7 @@ def resource_index(request):
 
 def resource_detail(request, object_id, template='depot/resource_detail.html'):
 
-    object = get_one_or_404(id=ObjectId(object_id))
+    object = get_one_or_404(Resource, id=ObjectId(object_id))
 
     increment_resources(object_id)
 
@@ -58,13 +47,10 @@ def resource_detail(request, object_id, template='depot/resource_detail.html'):
 @login_required
 def resource_report(request, object_id, template='depot/resource_report.html'):
     """
-    View for reporting a curation when a user finds it to be malformed or
-    incorrect.
-
-    NOTE: Some of this needs to be abstracted out, its gotten a bit complicated.
+    View for reporting a report when a user finds a problem with it.
     """
 
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(Resource, id=ObjectId(object_id))
 
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
@@ -73,56 +59,63 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             severity=int(form.cleaned_data['severity'])
             message=form.cleaned_data['message']
 
-            issue = None
+            issue = Issue(
+                message=message,
+                severity=severity,
+                reporter=get_account(request.user.id))
+            issue.related_document = resource
+            issue.save()
 
             # XXX currently this view is login_required
             # unauthenticated users are directed to /contact/ until this is bedded in
 
-            if request.user.is_authenticated():
+            # if request.user.is_authenticated():
 
-                # 1. reporter alert
-                # If the user is logged in, they get a alert so they
-                # can track the issue. Their complaint is also treated more
-                # seriously and a moderation is created to mark the resource as
-                # bad.
+            #     # 1. reporter alert
+            #     # If the user is logged in, they get a alert so they
+            #     # can track the issue. Their complaint is also treated more
+            #     # seriously and a moderation is created to mark the resource as
+            #     # bad.
 
-                reporter_account = get_account(request.user.id)
+            #     # reporter_account = get_account(request.user.id)
 
-                # alert = Alert.objects.create_for_account(
-                #     reporter_account, create_issue=True, type="resource report",
-                #     severity=severity, message="Report submitted",
-                #     related_document=resource)
+            #     # alert = Alert.objects.create_for_account(
+            #     #     reporter_account, create_issue=True, type="resource report",
+            #     #     severity=severity, message="Report submitted",
+            #     #     related_document=resource)
 
-                # if alert.should_send_email():
-                #     alert.send_email()
+            #     # if alert.should_send_email():
+            #     #     alert.send_email()
 
-                # issue = alert.issue
+            #     # issue = alert.issue
 
-                # # only moderate as STATUS_BAD if SEVERITY_HIGH
-                # if severity == SEVERITY_HIGH:
-                #     _, mod = resource.get_moderation_for_acct(reporter_account)
+            #     # # only moderate as STATUS_BAD if SEVERITY_HIGH
+            #     # if severity == SEVERITY_HIGH:
+            #     #     _, mod = resource.get_moderation_for_acct(reporter_account)
 
-                #     if mod is None:
-                #         mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-                #         mod.item_metadata.author = reporter_account
-                #         resource.moderations.append(mod)
-                #     resource.save()
+            #     #     if mod is None:
+            #     #         mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+            #     #         mod.item_metadata.author = reporter_account
+            #     #         resource.moderations.append(mod)
+            #     #     resource.save()
 
-            # 2. owner and curation owner alerts
-            # The owner should always have a curation, however, to be safe
-            # make sure they are added.
-            accounts = set(cur.owner for cur in resource.curations)
+            # # 2. owner and curation owner alerts
+            # # The owner should always have a curation, however, to be safe
+            # # make sure they are added.
+            # accounts = set(cur.owner for cur in resource.curations)
 
-            # alerts = Alert.objects.create_for_accounts(accounts,
-            #     issue=issue, type="report", severity=severity,
-            #     related_document=resource, message=message)
+            # # alerts = Alert.objects.create_for_accounts(accounts,
+            # #     issue=issue, type="report", severity=severity,
+            # #     related_document=resource, message=message)
 
-            # for alert in alerts:
-            #     if alert.should_send_email:
-            #         alert.send_email()
+            # # for alert in alerts:
+            # #     if alert.should_send_email:
+            # #         alert.send_email()
 
             if 'next' in request.GET:
                 url = request.GET['next']
+            else:
+                url = None
             url = url or reverse('resource', args=[resource.id])
 
             return HttpResponseRedirect(url)
@@ -196,7 +189,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
 
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
 
     # doc = ''
     # places = None
@@ -266,7 +259,7 @@ def resource_edit_complete(request, resource, template_info):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    object = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
 
     user = get_account(request.user.id)
@@ -294,7 +287,7 @@ def resource_find(request, template='depot/resource_find.html'):
             increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
-                resource = get_one_or_404(id=ObjectId(result['res_id']))
+                resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
 
                 try:
                     curation_index, curation = get_curation_for_user_resource(user, resource)
@@ -331,10 +324,10 @@ def resource_find(request, template='depot/resource_find.html'):
 def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:
-        resource = get_one_or_404(id=ObjectId(object_id))
+        resource = get_one_or_404(Resource, id=ObjectId(object_id))
         curation = resource.curations[int(index)]
     else:
-        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
+        curation = get_one_or_404(Curation, id=ObjectId(object_id))
         resource = curation.resource
 
     if request.is_ajax():
@@ -362,7 +355,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
 @login_required
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(Resource, id=ObjectId(object_id))
     user = get_account(request.user.id)
 
     curation = get_curation_for_user_resource(user, resource)
@@ -414,7 +407,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
 
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
 
     if request.method == 'POST':
@@ -444,7 +437,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
@@ -455,14 +448,14 @@ def curation_remove(request, object_id, index):
 @login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
-    resource = get_one_or_404(id=object_id, user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
     return HttpResponseRedirect(reverse('resource_edit', args=[resource.id]))
 
 def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
     """docstring for curations_for_group"""
-    object = get_one_or_404(obj_class=Account, id=object_id)
+    object = get_one_or_404(Account, id=ObjectId(object_id))
 
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
@@ -475,7 +468,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
 
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
 
-    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
 
@@ -487,7 +480,7 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
 
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
 
-    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     base_url = Site.objects.get_current().domain
     print base_url

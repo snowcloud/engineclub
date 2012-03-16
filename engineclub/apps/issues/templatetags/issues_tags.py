@@ -17,5 +17,5 @@ SEVERITY_LABEL_CLASSES = ['white', 'blue', 'black', 'red']
 register = Library()
 
 @register.filter
-def alert_severity(value, labels=None):
+def issue_severity(value, labels=None):
 	return SEVERITY_CHOICES[value][1]

@@ -291,16 +291,16 @@ caption, th, td {
 }
 
 /* @group youraliss */
-.youraliss {
+.youraliss, .cab {
 	.module-content {
 		@include box(#555);
 		background-color: #fafeff;
 		padding: 1em;
 	}
-	td.alert-0 { background-color: #ffea99;}
-	td.alert-1 { background-color: #ffb73c;}
-	td.alert-2 { background-color: #ff796a;}
-	td.alert-3 { background-color: red;}
+	td.issue-0 { background-color: #ffea99;}
+	td.issue-1 { background-color: #ffb73c;}
+	td.issue-2 { background-color: #ff796a;}
+	td.issue-3 { background-color: red;}
 }
 /* @end */
 

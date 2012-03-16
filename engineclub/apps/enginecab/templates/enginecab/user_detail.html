@@ -3,7 +3,7 @@
 {% block title %}user{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab-users %}">Users</a></li>
+    <li><a href="{% url cab_users %}">Users</a></li>
     <li class="current"><a href="#">{{ object.name }}</a></li>
 {% endblock breadcrumb-add %}
 
@@ -16,7 +16,7 @@
 
 	<dl class="sub-nav">
 	    <dt>Actions:</dt>
-        <dd><a href="{% url cab-user-edit object.id %}">Edit</a></dd>
+        <dd><a href="{% url cab_user_edit object.id %}">Edit</a></dd>
         <dd><a href="#">Reset password</a></dd>
 	</dl>
 

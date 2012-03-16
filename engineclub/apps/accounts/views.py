@@ -10,14 +10,15 @@ from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNo
 from pymongo.objectid import ObjectId
 
 from accounts.models import Account
+from ecutils.utils import get_one_or_404
 from forms import AccountForm, NewAccountForm
 
-def get_one_or_404(**kwargs):
-    try:
-       object = Account.objects.get(**kwargs)
-       return object
-    except (MultipleObjectsReturned, ValidationError, DoesNotExist):
-        raise Http404
+# def get_one_or_404(**kwargs):
+#     try:
+#        object = Account.objects.get(**kwargs)
+#        return object
+#     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
+#         raise Http404
     
 def index(request):
     objects = Account.objects
@@ -25,7 +26,7 @@ def index(request):
         RequestContext( request, { 'objects': objects }))
 
 def detail(request, object_id, template_name='accounts/detail.html'):
-    group = get_one_or_404(id=object_id)
+    group = get_one_or_404(Account, id=object_id)
     
     return render_to_response(
         template_name,
@@ -36,7 +37,7 @@ def detail(request, object_id, template_name='accounts/detail.html'):
 @user_passes_test(lambda u: u.is_staff)
 def edit(request, object_id, template_name='accounts/edit.html'):
 
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(Account, id=object_id)
     
     if request.method == 'POST':
         form = AccountForm(request.POST, instance=object)

@@ -30,7 +30,7 @@
 				<tr>
 					<td>{{ alert.datetime|date:"d M Y, H:i" }}</td>
 					<td>{{ alert.type }}</td>
-					<td class="alert-{{alert.severity}}">{{ alert.severity|alert_severity }}</td>
+					<td class="issue-{{alert.severity}}">{{ alert.severity|issue_severity }}</td>
 					<td>{{ alert.message }}</td>
 					<td>{% if alert.related_document %}<a href="{% url resource alert.related_document.id %}">{{ alert.related_document.title }}</a>{% endif %}</td>
 				</tr>

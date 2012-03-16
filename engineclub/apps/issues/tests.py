@@ -13,6 +13,7 @@ class IssuesTestCase(MongoTestCase):
 
         from accounts.models import Account, Membership
         from accounts.tests import make_test_user_and_account
+        from depot.models import Resource
 
         # Create normal contrib.auth users & their mongodb accounts
         for name in ['alice', 'bob', 'emma', 'hugo', 'jorph','company']:
@@ -23,34 +24,27 @@ class IssuesTestCase(MongoTestCase):
         # Add alice to the company, so she is a "sub account"
         Membership.objects.create(parent_account=self.company, member=self.alice)
 
+        self.resource1, created = Resource.objects.get_or_create(
+            title='title',
+            owner=self.alice)
+
+        self.resource2, created = Resource.objects.get_or_create(
+            title='title too',
+            owner=self.bob)
 
 class ApiTestCase(IssuesTestCase):
 
     def test_create(self):
 
-        from depot.models import Resource
         from issues.models import Issue, \
             SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
-
-        # create resources
-        resource, created = Resource.objects.get_or_create(
-            title='title',
-            owner=self.alice)
-        self.assertTrue(created)
-        self.assertTrue(resource.title=='title')
-
-        resource2, created = Resource.objects.get_or_create(
-            title='title too',
-            owner=self.bob)
-        self.assertTrue(created)
-        self.assertTrue(resource.title=='title')
 
         # create issues
         issue, created = Issue.objects.get_or_create(
             message = 'blah blah',
             severity = SEVERITY_LOW,
             reporter = self.bob,
-            related_document=resource
+            related_document=self.resource1
             )
         issue.curators = [self.emma, self.hugo]
         issue.save()
@@ -61,7 +55,7 @@ class ApiTestCase(IssuesTestCase):
             message = 'more blah blah',
             severity = SEVERITY_MEDIUM,
             reporter = self.alice,
-            related_document=resource2
+            related_document=self.resource2
             )
         issue2.curators = [self.jorph, self.hugo]
         issue2.save()
@@ -102,12 +96,12 @@ class ViewsTestCase(IssuesTestCase):
         from django.core.urlresolvers import reverse
 
         # Can't access when we are not logged in.
-        response = self.client.get(reverse('issue-list'))
+        response = self.client.get(reverse('issue_list'))
         self.assertEqual(response.status_code, 302)
 
         self.client.login(username='bob', password='password')
 
-        response = self.client.get(reverse('issue-list'))
+        response = self.client.get(reverse('issue_list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "You don't have any issues")
 
@@ -115,14 +109,46 @@ class ViewsTestCase(IssuesTestCase):
 
         from django.core.urlresolvers import reverse
         from depot.models import Resource
+        from issues.models import Issue, \
+            SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
-        resource, created = Resource.objects.get_or_create(
-            title='title',
-            owner=self.alice)
 
         # Can't access when we are not logged in.
-        response = self.client.get(reverse('issue-list'))
+        response = self.client.get(reverse(
+            'resource_report',
+            kwargs={'object_id': self.resource1.id}))
         self.assertEqual(response.status_code, 302)
+
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(reverse(
+            'resource_report',
+            kwargs={'object_id': self.resource1.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ALISS: report %s" % self.resource1.title)
+
+        response = self.client.post(
+            reverse(
+                'resource_report',
+                kwargs={'object_id': self.resource1.id}),
+            data={'severity': '1', 'message': 'I am reporting this now.'})
+        self.assertEqual(response.status_code, 302)
+
+        issue = Issue.objects.first()
+        self.assertEqual(issue.severity, 1)
+        self.assertEqual(issue.message, 'I am reporting this now.')
+        self.assertEqual(issue.reporter, self.bob)
+        self.assertEqual(issue.related_document, self.resource1)
+        
+        response = self.client.post(reverse('issue_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'I am reporting this now.')
+
+        response = self.client.post(reverse('issue_detail', kwargs={'object_id': issue.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'I am reporting this now.')
+
+
 
 
 # class ApiTestCase(IssuesTestCase):

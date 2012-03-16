@@ -21,18 +21,15 @@ SEVERITY_CHOICES = (
 class Issue(Document):
 
     meta = {
-        'allow_inheritance': False
+       'allow_inheritance': False
     }
-
 
     message = StringField(required=True)
     severity = IntField(choices=SEVERITY_CHOICES, required=True)
     reporter = ReferenceField(Account, required=True)
     resource_owner = ReferenceField(Account)
     curators = ListField(ReferenceField(Account), default=list)
-    # status = 
-    # link to Resource = 
-    # date/time of report = 
+    reported_at = DateTimeField(default=datetime.now)
     resolved = BooleanField(default=False)
     related_document = GenericReferenceField()
 

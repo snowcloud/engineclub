@@ -1797,15 +1797,15 @@ caption, th, td { font-weight: normal; text-align: left; vertical-align: middle;
 
 /* @group youraliss */
 /* line 295, ../../compass/src/_base.scss */
-.youraliss .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
+.youraliss .module-content, .cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 /* line 300, ../../compass/src/_base.scss */
-.youraliss td.alert-0 { background-color: #ffea99; }
+.youraliss td.issue-0, .cab td.issue-0 { background-color: #ffea99; }
 /* line 301, ../../compass/src/_base.scss */
-.youraliss td.alert-1 { background-color: #ffb73c; }
+.youraliss td.issue-1, .cab td.issue-1 { background-color: #ffb73c; }
 /* line 302, ../../compass/src/_base.scss */
-.youraliss td.alert-2 { background-color: #ff796a; }
+.youraliss td.issue-2, .cab td.issue-2 { background-color: #ff796a; }
 /* line 303, ../../compass/src/_base.scss */
-.youraliss td.alert-3 { background-color: red; }
+.youraliss td.issue-3, .cab td.issue-3 { background-color: red; }
 
 /* @end */
 /* @group cab */

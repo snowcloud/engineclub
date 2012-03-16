@@ -21,8 +21,8 @@
 	<div class="module-nav">
 		<dl class="nice tabs vertical">
 			<dd><a class="{% block mod-nav-users %}{% endblock %}" href="{% url cab %}">Users</a></dd>
-			<dd><a class="{% block mod-nav-alerts %}{% endblock %}" href="{% url cab-alerts %}">Alerts</a></dd>
-			<dd><a class="{% block mod-nav-resources %}{% endblock %}" href="{% url cab-resources %}">Resources</a></dd>
+			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url cab_issues %}">Issues</a></dd>
+			<dd><a class="{% block mod-nav-resources %}{% endblock %}" href="{% url cab_resources %}">Resources</a></dd>
 		</dl>
 	</div>
 	<div class="module-content">{% block module-content %}{% endblock %}</div>
