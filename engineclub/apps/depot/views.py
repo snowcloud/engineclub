@@ -22,7 +22,7 @@ from depot.models import Resource, Curation, Location, CalendarEvent,  \
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
-from issues.models import (Alert, SEVERITY_LOW, SEVERITY_MEDIUM,
+from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH)
 
 from accounts.models import Account, get_account
@@ -88,39 +88,38 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
 
                 reporter_account = get_account(request.user.id)
 
-                alert = Alert.objects.create_for_account(
-                    reporter_account, create_issue=True, type="resource report",
-                    severity=severity, message="Report submitted",
-                    related_document=resource)
+                # alert = Alert.objects.create_for_account(
+                #     reporter_account, create_issue=True, type="resource report",
+                #     severity=severity, message="Report submitted",
+                #     related_document=resource)
 
-                if alert.should_send_email():
-                    alert.send_email()
+                # if alert.should_send_email():
+                #     alert.send_email()
 
-                issue = alert.issue
+                # issue = alert.issue
 
-                # onle moderate as STATUS_BAD if SEVERITY_HIGH
-                if severity == SEVERITY_HIGH:
-                    _, mod = resource.get_moderation_for_acct(reporter_account)
+                # # only moderate as STATUS_BAD if SEVERITY_HIGH
+                # if severity == SEVERITY_HIGH:
+                #     _, mod = resource.get_moderation_for_acct(reporter_account)
 
-                    if mod is None:
-                        mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-                        mod.item_metadata.author = reporter_account
-                        resource.moderations.append(mod)
-                    resource.save()
+                #     if mod is None:
+                #         mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
+                #         mod.item_metadata.author = reporter_account
+                #         resource.moderations.append(mod)
+                #     resource.save()
 
             # 2. owner and curation owner alerts
             # The owner should always have a curation, however, to be safe
             # make sure they are added.
             accounts = set(cur.owner for cur in resource.curations)
-            accounts.add(resource.owner)
 
-            alerts = Alert.objects.create_for_accounts(accounts,
-                issue=issue, type="report", severity=severity,
-                related_document=resource, message=message)
+            # alerts = Alert.objects.create_for_accounts(accounts,
+            #     issue=issue, type="report", severity=severity,
+            #     related_document=resource, message=message)
 
-            for alert in alerts:
-                if alert.should_send_email:
-                    alert.send_email()
+            # for alert in alerts:
+            #     if alert.should_send_email:
+            #         alert.send_email()
 
             if 'next' in request.GET:
                 url = request.GET['next']
@@ -134,8 +133,6 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
         'next': urlquote_plus(request.GET.get('next', '')),
         'form': form,
         'object': resource,
-        'yahoo_appid': settings.YAHOO_KEY,
-        'google_key': settings.GOOGLE_KEY,
     }, RequestContext(request))
 
 
@@ -171,11 +168,11 @@ def resource_add(request, template='depot/resource_edit.html'):
                 resource.owner = user
                 # save will create default moderation and curation using owner acct
                 resource.save(author=user, reindex=True)
-                increment_resource_crud('resouce_add', account=user)
+                # increment_resource_crud('resouce_add', account=user)
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
-                return HttpResponseRedirect('%s?popup=%s' % (reverse('resource-edit', args=[resource.id]), template_info['popup']))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('resource_edit', args=[resource.id]), template_info['popup']))
             except OperationError:
                 pass
 
@@ -220,7 +217,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
             resource.locations = locationform.locations
             resource.save()
 
-            increment_resource_crud('resouce_edit', account=acct)
+            # increment_resource_crud('resouce_edit', account=acct)
             #resource.add_location_from_name(locationform.cleaned_data['new_location'])
             #resource.save(author=acct, reindex=True)
 
@@ -256,11 +253,11 @@ def resource_edit_complete(request, resource, template_info):
 
     if resource:
         resource.save(author=str(request.user.id))
-        popup_url = reverse('resource-popup-close')
+        popup_url = reverse('resource_popup_close')
         url = reverse('resource', args=[resource.id])
-    else: # resource-add cancelled
-        popup_url = reverse('resource-popup-cancel')
-        url = reverse('resource-list')
+    else: # resource_add cancelled
+        popup_url = reverse('resource_popup_cancel')
+        url = reverse('resource_list')
 
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)
@@ -273,8 +270,8 @@ def resource_remove(request, object_id):
     object.delete()
 
     user = get_account(request.user.id)
-    increment_resource_crud('resouce_remove', account=user)
-    return HttpResponseRedirect(reverse('resource-list'))
+    # increment_resource_crud('resouce_remove', account=user)
+    return HttpResponseRedirect(reverse('resource_list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
@@ -287,7 +284,7 @@ def resource_find(request, template='depot/resource_find.html'):
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
         if result == 'Cancel':
-            return HttpResponseRedirect(reverse('resource-list'))
+            return HttpResponseRedirect(reverse('resource_list'))
         form = FindResourceForm(request.REQUEST)
 
         if form.is_valid():
@@ -350,7 +347,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
                 'title': resource.title,
                 'description': resource.description,
             },
-            'url': reverse('curation-add', args=(resource.id, )),
+            'url': reverse('curation_add', args=(resource.id, )),
         }
         return HttpResponse(json.dumps(context), mimetype='application/json')
 
@@ -386,7 +383,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation.resource = resource
             curation.save()
 
-            increment_resource_crud('curation_add', account=user)
+            # increment_resource_crud('curation_add', account=user)
             resource.curations.append(curation)
             resource.save(reindex=True)
             index = len(resource.curations) - 1
@@ -430,7 +427,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
             curation.save()
-            increment_resource_crud('curation_edit', account=user)
+            # increment_resource_crud('curation_edit', account=user)
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
@@ -452,7 +449,7 @@ def curation_remove(request, object_id, index):
     del resource.curations[int(index)]
     resource.save(reindex=True)
 
-    increment_resource_crud('curation_remove', account=user)
+    # increment_resource_crud('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required
@@ -461,7 +458,7 @@ def location_remove(request, object_id, index):
     resource = get_one_or_404(id=object_id, user=request.user, perm='can_edit')
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
-    return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
+    return HttpResponseRedirect(reverse('resource_edit', args=[resource.id]))
 
 def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
     """docstring for curations_for_group"""

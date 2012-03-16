@@ -111,6 +111,18 @@ class ViewsTestCase(IssuesTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "You don't have any issues")
 
+    def test_report(self):
+
+        from django.core.urlresolvers import reverse
+        from depot.models import Resource
+
+        resource, created = Resource.objects.get_or_create(
+            title='title',
+            owner=self.alice)
+
+        # Can't access when we are not logged in.
+        response = self.client.get(reverse('issue-list'))
+        self.assertEqual(response.status_code, 302)
 
 
 # class ApiTestCase(IssuesTestCase):

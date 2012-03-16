@@ -7,7 +7,7 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url resource-find %}">Search</a></li>
+    <li><a href="{% url resource_find %}">Search</a></li>
     <li class="current"><a href="#">{{ object.title }}</a></li>
 </ul>
 {% endblock %}
@@ -17,13 +17,13 @@
 {% if user.is_authenticated %}
 <dl class="sub-nav">
     <dt>Actions:</dt>
-    <dd><a href="{% url curation-add object.id %}">New curation</a></dd>
+    <dd><a href="{% url curation_add object.id %}">New curation</a></dd>
     {% if user|can_edit:object %}
-        <dd><a href="{% url resource-edit object.id %}">Edit resource</a></dd>
+        <dd><a href="{% url resource_edit object.id %}">Edit resource</a></dd>
     {% endif %}
     {% if user.is_staff %}
         {% if user|can_delete:object %}
-            <dd><a href="{% url resource-remove object.id %}">Delete resource</a></dd>
+            <dd><a href="{% url resource_remove object.id %}">Delete resource</a></dd>
         {% endif %}
     {% endif %}
 </dl>
@@ -73,7 +73,7 @@
 {% if not user|is_owner:object %}
 <tr><th colspan="2">
     {% if user.is_authenticated %} 
-        <a href="{% url resource-report object.id %}">Report Resource</a>
+        <a href="{% url resource_report object.id %}">Report Resource</a>
     {% else %}
     <a href="{% url contact %}">Report Resource</a>   
     {% endif %}

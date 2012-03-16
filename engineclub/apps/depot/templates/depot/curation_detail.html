@@ -15,10 +15,10 @@
 <dl class="sub-nav">
     <dt>Actions:</dt>
     {% if user|can_edit:object %}
-        <dd><a href="{% url curation-edit resource.id index %}">edit curation</a></dd>
+        <dd><a href="{% url curation_edit resource.id index %}">edit curation</a></dd>
     {% endif %}
     {% if user|can_delete:object %}
-        <dd><a href="{% url curation-remove resource.id index %}">delete curation</a></dd>
+        <dd><a href="{% url curation_remove resource.id index %}">delete curation</a></dd>
     {% endif %}
 </dl>
 

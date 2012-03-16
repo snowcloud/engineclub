@@ -166,7 +166,7 @@
 
                         {% if user.is_authenticated %}
                             {% if result.curation %}
-                                | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
+                                | <a class="curation-add" href="{% url curation_edit resource.res_id result.curation_index %}">edit curation...</a>
                             {% else %}
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
@@ -175,7 +175,7 @@
                     </p>
 
                     {% if user.is_authenticated %}
-                    <form action="{% if result.curation %}{% url curation-edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
+                    <form action="{% if result.curation %}{% url curation_edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
                         {% csrf_token %}
                         <fieldset>
                             <legend><span>Curation details:</span></legend>
@@ -434,7 +434,7 @@ $('.resource-listing > li').each(function () {
 
                         {% if user.is_authenticated %}
                             {% if result.curation %}
-                                | <a class="curation-add" href="{% url curation-edit resource.res_id result.curation_index %}">edit curation...</a>
+                                | <a class="curation-add" href="{% url curation_edit resource.res_id result.curation_index %}">edit curation...</a>
                             {% else %}
                                 | <a class="curation-add" href="{% url curation-add resource.res_id %}">create curation...</a>
                             {% endif %}
@@ -446,7 +446,7 @@ $('.resource-listing > li').each(function () {
                     </p>
 
                     {% if user.is_authenticated %}
-                    <form action="{% if result.curation %}{% url curation-edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
+                    <form action="{% if result.curation %}{% url curation_edit resource.res_id result.curation_index %}{% else %}{% url curation-add resource.res_id %}{% endif %}" class="curation-add" method="post">
                         {% csrf_token %}
                         <fieldset>
                             <legend><span>Curation details:</span></legend>
