@@ -1,10 +1,10 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
 from mongoengine import *
-from mongoengine.django.auth import User
 
 # dependancy loop
 # from depot.models import Location
@@ -84,6 +84,10 @@ class Account(Document):
         if coll not in self.collections:
             self.collections.append(coll)
             self.save()
+
+    def _is_staff(self):
+        return User.objects.get(pk=self.local_id).is_staff
+    is_staff = property(_is_staff)
 
 class CollectionMember(Document):
     account = ReferenceField('Account', required=True)

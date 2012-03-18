@@ -48,7 +48,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
     height: 1px;
 }
 #site-header a {
-	color: #fff; //#faef00;
+	color: #faef00;
 }
 #site-header a:hover, #site-header a:focus {
     background-color: #636dbc;
@@ -167,7 +167,8 @@ a.action:focus, .black.button:focus, input.input-text:focus {
     background-color: #85a069;
 }
 .alert-box.warning {
-    background-color: #c78940;
+    background-color: #f9e60f;
+    color: #000;
 }
 .alert-box.error {
     background-color: #eb511b;

@@ -7,21 +7,11 @@ from models import Account, EMAIL_UPDATE_CHOICES
 
 
 class AccountForm(DocumentForm):
-    # class Meta:
-    #     document = Account
-    #     fields = ('name', 'email', 'description', 'local_id')
-
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     url = forms.URLField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
     email_preference = forms.ChoiceField(choices=EMAIL_UPDATE_CHOICES, required=False)
-
-    # severity = forms.ChoiceField(
-    #     widget= forms.RadioSelect,
-    #     choices=REPORT_CHOICES,
-    #     label="How serious is this?")
-
 
 class NewAccountForm(DocumentForm):
     class Meta:

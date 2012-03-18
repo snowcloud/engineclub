@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/$', 'depot.views.curation_detail', name='curation'),
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/edit/$', 'depot.views.curation_edit', name='curation_edit'),
     url(r'^curation/(?P<object_id>\w+)/(?P<index>\w+)/remove/$', 'depot.views.curation_remove', name='curation_remove'),
+
     url(r'^group/(?P<object_id>\w+)/curations/$', 'depot.views.curations_for_group', name='curations_for_group'),
     url(r'^group/(?P<object_id>\w+)/curations.html$', 'depot.views.curations_for_group_html', name='curations_for_group_html'),
     url(r'^group/(?P<object_id>\w+)/curations.js$', 'depot.views.curations_for_group_js', name='curations_for_group_js'),

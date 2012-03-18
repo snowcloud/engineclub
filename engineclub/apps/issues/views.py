@@ -25,19 +25,13 @@ def issue_detail(request, object_id, template_name='youraliss/issue_detail.html'
     account = get_account(request.user.id)
     issue = get_one_or_404(Issue, id=ObjectId(object_id))
 
-    # issue = Issue.objects.get_or_404(id=issue_id,
-    #     account=account)
-
-    # if not issue.opened:
-    #     alert.mark_read()
-
     if request.method == 'POST' and 'resolved' in request.POST:
-        # alert.resolve()
+
+
         return HttpResponseRedirect(reverse('issue_list'))
 
-    return render_to_response('issues/issue_detail.html', {
-        'account': account,
-        'issue': issue,
-    }, RequestContext(request))
+    form = None
+
+    template_context = {'object': issue, 'form': form}
     return render_to_response(template_name, RequestContext(request, template_context))
 

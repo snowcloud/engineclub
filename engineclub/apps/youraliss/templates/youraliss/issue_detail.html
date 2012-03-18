@@ -1,10 +1,11 @@
 {% extends "youraliss/base.html" %}
 {% load accounts_tags issues_tags %}
 
-{% block title %}your aliss issues{% endblock %}
+{% block title %}your aliss- issue{% endblock %}
 
 {% block breadcrumb-add %}
-    <li class="current"><a href="#">Issues</a></li>
+    <li><a href="{% url issue_list %}">Issues</a></li>
+    <li class="current"><a href="#">Issue detail</a></li>
 {% endblock breadcrumb-add %}
 
 
@@ -12,9 +13,8 @@
 
 
 {% block module-content %}
-	<h2>Issues</h2>
+	<h2>Issue</h2>
 
-	{% if objects %} 	
 		<table>
 	        <thead>
 	            <tr>
@@ -27,7 +27,6 @@
 	            </tr>
 	        </thead>
 	        <tbody>
-	            {% for object in objects  %}
 	            <tr>
 					<td><p>{% if user|account == object.reporter %}
 						<span class="blue radius label">{{ object.reporter }}</span>
@@ -40,15 +39,13 @@
 					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
 					<td>{{ object.resolved|yesno }}</td>
 	            </tr>
-	            {% empty %}
-	            <tr>
-	                <td colspan="4">no issues</td>
-	            </tr>
-	            {% endfor %}
 	        </tbody>
 		</table>
-	{% else %}
-		<p>no alerts</p>
+
+	{% if user|account|can_resolve:object %} 
+
+		<p>resolve form here...</p>
+	
 	{% endif %}
 
 {% endblock %}

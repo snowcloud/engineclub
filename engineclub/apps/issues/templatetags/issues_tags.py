@@ -19,3 +19,8 @@ register = Library()
 @register.filter
 def issue_severity(value, labels=None):
 	return SEVERITY_CHOICES[value][1]
+
+@register.filter
+def can_resolve(account, issue):
+	resolvers = [issue.reporter] + [issue.related_document.owner]
+	return account.is_staff or account in resolvers

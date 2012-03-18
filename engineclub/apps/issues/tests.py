@@ -105,7 +105,7 @@ class ViewsTestCase(IssuesTestCase):
 
         response = self.client.get(reverse('issue_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "You don't have any issues")
+        self.assertContains(response, "no alerts")
 
     def test_report(self):
 

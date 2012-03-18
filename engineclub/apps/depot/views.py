@@ -30,15 +30,12 @@ from accounts.models import Account, get_account
 
 
 def resource_index(request):
-
     objects = Resource.objects
     return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
 
 def resource_detail(request, object_id, template='depot/resource_detail.html'):
-
     object = get_one_or_404(Resource, id=ObjectId(object_id))
-
     increment_resources(object_id)
 
     return render_to_response(template,
@@ -49,20 +46,18 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
     """
     View for reporting a report when a user finds a problem with it.
     """
-
     resource = get_one_or_404(Resource, id=ObjectId(object_id))
     reporter=get_account(request.user.id)
 
-    if 'next' in request.GET:
-        url = request.GET['next']
-    else:
-        url = None
-    url = url or reverse('resource', args=[resource.id])
+    # if 'next' in request.GET:
+    #     url = request.GET['next']
+    # else:
+    #     url = None
+    # url = url or reverse('resource', args=[resource.id])
 
     if Issue.objects(reporter=reporter, related_document=resource).count():
         messages.warning(request, 'You have already reported this resource.')
-        print 'balh'
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
@@ -82,53 +77,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             if severity == SEVERITY_CRITICAL:
                 resource.moderate_as_bad(reporter)
 
-            # XXX currently this view is login_required
-            # unauthenticated users are directed to /contact/ until this is bedded in
-
-            # if request.user.is_authenticated():
-
-            #     # 1. reporter alert
-            #     # If the user is logged in, they get a alert so they
-            #     # can track the issue. Their complaint is also treated more
-            #     # seriously and a moderation is created to mark the resource as
-            #     # bad.
-
-            #     # reporter_account = get_account(request.user.id)
-
-            #     # alert = Alert.objects.create_for_account(
-            #     #     reporter_account, create_issue=True, type="resource report",
-            #     #     severity=severity, message="Report submitted",
-            #     #     related_document=resource)
-
-            #     # if alert.should_send_email():
-            #     #     alert.send_email()
-
-            #     # issue = alert.issue
-
-            #     # # only moderate as STATUS_BAD if SEVERITY_HIGH
-            #     # if severity == SEVERITY_HIGH:
-            #     #     _, mod = resource.get_moderation_for_acct(reporter_account)
-
-            #     #     if mod is None:
-            #     #         mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-            #     #         mod.item_metadata.author = reporter_account
-            #     #         resource.moderations.append(mod)
-            #     #     resource.save()
-
-            # # 2. owner and curation owner alerts
-            # # The owner should always have a curation, however, to be safe
-            # # make sure they are added.
-            # accounts = set(cur.owner for cur in resource.curations)
-
-            # # alerts = Alert.objects.create_for_accounts(accounts,
-            # #     issue=issue, type="report", severity=severity,
-            # #     related_document=resource, message=message)
-
-            # # for alert in alerts:
-            # #     if alert.should_send_email:
-            # #         alert.send_email()
-
-            return HttpResponseRedirect(url)
+            return HttpResponseRedirect(reverse('issue_detail', args=[issue.id]))
     else:
         form = ResourceReportForm()
 
@@ -137,7 +86,6 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
         'form': form,
         'object': resource,
     }, RequestContext(request))
-
 
 def _template_info(popup):
     """docstring for _template_info"""
@@ -153,10 +101,8 @@ def update_resource_metadata(self, resource, request):
 @login_required
 def resource_add(request, template='depot/resource_edit.html'):
     """adds a new resource"""
-
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
-
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
@@ -253,7 +199,6 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
 @login_required
 def resource_edit_complete(request, resource, template_info):
     """docstring for resource_edit_complete"""
-
     if resource:
         resource.save(author=str(request.user.id))
         popup_url = reverse('resource_popup_close')
@@ -279,7 +224,6 @@ def resource_remove(request, object_id):
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
-
     results = []
     centre = None
     new_search = False
@@ -416,7 +360,6 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
-
     resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
 

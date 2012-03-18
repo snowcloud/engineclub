@@ -32,10 +32,10 @@ div.panel { border: 1px solid #ccc; }
 p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 /* line 12, ../../compass/src/style.scss */
-#site-header h1 { float: left; padding-right: 1em; }
+#site-header h1 { float: left; padding-right: 3em; }
 
 /* line 17, ../../compass/src/style.scss */
-#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 130%; margin-top: 1.93em; }
+#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 150%; margin-top: 1.65em; }
 
 /* line 25, ../../compass/src/style.scss */
 #site-header .nav-mobile { display: none !important; visibility: hidden; position: absolute; }
