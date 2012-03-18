@@ -35,7 +35,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 #site-header h1 { float: left; padding-right: 1em; }
 
 /* line 17, ../../compass/src/style.scss */
-#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 130%; margin-top: 1.9em; }
+#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 130%; margin-top: 1.93em; }
 
 /* line 25, ../../compass/src/style.scss */
 #site-header .nav-mobile { display: none !important; visibility: hidden; position: absolute; }
