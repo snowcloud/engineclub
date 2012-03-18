@@ -15,7 +15,7 @@ class AccountForm(DocumentForm):
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     url = forms.URLField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
-    email_preference = forms.ChoiceField(choices=EMAIL_UPDATE_CHOICES, widget=forms.Select(attrs={'class': 'expand'}), required=False)
+    email_preference = forms.ChoiceField(choices=EMAIL_UPDATE_CHOICES, required=False)
 
     # severity = forms.ChoiceField(
     #     widget= forms.RadioSelect,

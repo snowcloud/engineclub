@@ -30,7 +30,7 @@ def account(request, template_name='youraliss/account.html'):
         if form.is_valid():
             g = form.save(True)
             messages.success(request, 'Changes saved.')
-            return HttpResponseRedirect(reverse('youraliss-account'))
+            return HttpResponseRedirect(reverse('youraliss_account'))
     else:
         form = AccountForm(instance=object)
     
