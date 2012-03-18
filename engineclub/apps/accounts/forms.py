@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 
 from ecutils.forms import DocumentForm
-from models import Account
+from models import Account, EMAIL_UPDATE_CHOICES
 
 
 class AccountForm(DocumentForm):
@@ -15,6 +15,13 @@ class AccountForm(DocumentForm):
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
     url = forms.URLField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
+    email_preference = forms.ChoiceField(choices=EMAIL_UPDATE_CHOICES, widget=forms.Select(attrs={'class': 'expand'}), required=False)
+
+    # severity = forms.ChoiceField(
+    #     widget= forms.RadioSelect,
+    #     choices=REPORT_CHOICES,
+    #     label="How serious is this?")
+
 
 class NewAccountForm(DocumentForm):
     class Meta:

@@ -36,6 +36,11 @@ class Membership(Document):
     def __unicode__(self):
         return u'%s, %s' % (self.member.name, self.role)
 
+
+EMAIL_NONE, EMAIL_SINGLE, EMAIL_DIGEST = (
+    'none', 'single', 'digest')
+EMAIL_UPDATE_CHOICES= ((EMAIL_NONE, 'No updates'), (EMAIL_SINGLE, 'Single emails'), (EMAIL_DIGEST, 'Daily digest'))
+
 class Account(Document):
     """
     An account can be held 
@@ -52,6 +57,7 @@ class Account(Document):
     members = ListField(ReferenceField(Membership), default=list)
     status = StringField(max_length=12, default=STATUS_OK, required=True )
     collections = ListField(ReferenceField('Collection'), default=list)
+    email_preference = StringField(choices=EMAIL_UPDATE_CHOICES, default=EMAIL_SINGLE, required=True)
 
     meta = {
         'ordering': ['name'],
