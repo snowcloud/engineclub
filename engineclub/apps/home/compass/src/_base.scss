@@ -27,6 +27,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 
 .container.site-header {
 	background-color: black;
+	border-bottom: 4px solid #c74a14;
 }
 #site-header {
 	color: #fffeff;
@@ -47,7 +48,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
     height: 1px;
 }
 #site-header a {
-	color: white;
+	color: #faef00;
 }
 #site-header a:hover, #site-header a:focus {
     background-color: #636dbc;
@@ -63,7 +64,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 }
 .container#top {
 	background-color: #f4f4f4;
-	border: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
 }
 .cab {
 	.main {
@@ -297,11 +298,31 @@ caption, th, td {
 		background-color: #fafeff;
 		padding: 1em;
 	}
-	td.issue-0 { background-color: #ffea99;}
-	td.issue-1 { background-color: #ffb73c;}
-	td.issue-2 { background-color: #ff796a;}
-	td.issue-3 { background-color: red;}
 }
+.issue-0 { background-color: #ffea99;}
+.issue-1 { background-color: #ffb73c;}
+.issue-2 { background-color: #ff796a;}
+.issue-3 { font-weight: bold; background-color: red;}
+
+.panel.issue-0 {
+	background: none;
+	background-color: #ffea99;
+}
+.panel.issue-1 {
+	background: none;
+	background-color: #ffb73c;
+}
+.panel.issue-2 {
+	background: none;
+	background-color: #ff796a;
+}
+.panel.issue-3 {
+	background: none;
+	background-color: red;
+	font-weight: bold;
+}
+
+
 /* @end */
 
 /* @group cab */

@@ -23,6 +23,10 @@ COLL_STATUS_COMPLETE = 'complete'
 
 STATUS_OK = 'OK'
 STATUS_BAD = 'BAD'
+STATUS_CHOICES = (
+    (STATUS_OK, 'OK'),
+    (STATUS_BAD, 'Bad')
+    )
 
 POSTCODE = 'POSTCODE'
 POSTCODEDISTRICT = 'POSTCODEDISTRICT'
@@ -169,6 +173,7 @@ class Resource(Document):
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account, required=True)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+    status = StringField(choices=STATUS_CHOICES, default=STATUS_OK, required=True)
 
     @classmethod
     def reindex_for(cls, acct):
@@ -227,6 +232,17 @@ class Resource(Document):
                     return index, obj
         return None, None
 
+    def moderate_as_bad(self, account):
+        _, mod = self.get_moderation_for_acct(account)
+
+        if mod is None:
+            mod = Moderation(outcome=STATUS_BAD, owner=account)
+            mod.item_metadata.author = account
+            self.moderations.append(mod)
+            self.status = STATUS_BAD
+        self.save()
+        self.reindex(remove=True)
+
     def reindex(self, remove=False):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
@@ -237,6 +253,8 @@ class Resource(Document):
 
     def index(self, conn=None):
         """conn is Solr connection"""
+        if self.status == STATUS_BAD:
+            return None
         tags = list(self.tags)
         accounts = []
         collections = []

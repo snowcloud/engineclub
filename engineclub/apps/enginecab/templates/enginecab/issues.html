@@ -36,7 +36,7 @@
             {% for object in objects  %}
             <tr>
 					<td>{{ object.reporter }}</td>
-					<td>{{ object.reported_at|date:"d M Y, H:i" }}</td>
+					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
 					<td class="issue-{{object.severity}}">{{ object.severity|issue_severity }}</td>
 					<td>{{ object.message|linebreaks }}</td>
 					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>

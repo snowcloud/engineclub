@@ -8,13 +8,13 @@ def message_stats(request):
     account = get_account(request.user.id)
 
     if account:
-        messages = AccountMessage.objects.filter(to_account=account)
-        message_count = len(messages)
+        account_messages = AccountMessage.objects.filter(to_account=account)
+        account_message_count = len(account_messages)
     else:
-        messages = None
-        message_count = 0
+        account_messages = None
+        account_message_count = 0
 
     return {
-        'message_count': message_count,
-        'messages': messages
+        'account_message_count': account_message_count,
+        'account_messages': account_messages
     }

@@ -1,5 +1,7 @@
 from django import template
 
+from accounts.models import get_account
+
 register = template.Library()
 
 @register.filter
@@ -17,4 +19,7 @@ def can_delete(user, obj):
     """ usage {{ user|can_delete:object }}"""
     return user.has_perm('can_delete', obj)
 
+@register.filter
+def account(user):
+	return get_account(user.id)
 

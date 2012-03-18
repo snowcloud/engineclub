@@ -5,6 +5,7 @@ from django.template import Library, Node, Variable
 from django.template.defaultfilters import date
 
 from accounts.models import get_account
+from issues.models import Issue
 
 register = Library()
 
@@ -40,3 +41,14 @@ def idx_event_date(value, arg=None):
 def is_owner(user, resource):
     return get_account(user.id) == resource.owner
 
+@register.filter
+def status(resource):
+    result = -1
+    for issue in Issue.objects(related_document=resource):
+        result = issue.severity if issue.severity > result else result
+    return result
+
+@register.filter
+def status_text(resource):
+    STATUSES = ['', '', 'serious', 'very serious']
+    return STATUSES[status(resource)]

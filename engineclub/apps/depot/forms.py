@@ -5,7 +5,7 @@ from django import forms
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
-from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH
+from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
 from mongoengine.queryset import DoesNotExist
 
@@ -167,8 +167,9 @@ class CurationForm(DocumentForm):
 
 REPORT_CHOICES=(
     (SEVERITY_LOW, 'Not serious- a spelling mistake or some other small correction'), 
-    (SEVERITY_MEDIUM, 'Quite serious- something wrong, misleading, or content not suitable for ALISS'), 
-    (SEVERITY_HIGH, 'Very serious- a service that has stopped, or content that is dangerous or offensive')
+    (SEVERITY_MEDIUM, 'Quite serious- something wrong, misleading, or should be checked'), 
+    (SEVERITY_HIGH, 'Serious- content that might not suitable for ALISS'),
+    (SEVERITY_CRITICAL, 'Very serious- content that is dangerous or offensive')
     )
 
 class ResourceReportForm(PlainForm):

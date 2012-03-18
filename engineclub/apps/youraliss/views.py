@@ -14,7 +14,7 @@ from issues.context_processors import message_stats
 @login_required
 def index(request):
 
-    if message_stats(request)['message_count']:
+    if message_stats(request)['account_message_count']:
         return alerts(request)
     else:
         return account(request)

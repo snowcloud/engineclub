@@ -39,8 +39,8 @@
             
             <div class="nav"><a href="/">home</a> - <a href="/info/">find out more</a> - <a href="{% url search %}">search</a> - <a href="{% url contact %}">contact us</a> - 
                 <a href="{% url youraliss %}">your Aliss
-                {% with alerts_count as alerts %}
-                    {% if alerts %}({{alerts}} alerts){% endif %}
+                {% with account_message_count as alerts %}
+                    {% if alerts %}({{alerts}} messages){% endif %}
                 {% endwith %}</a>
             </div>
         </div>
@@ -49,7 +49,7 @@
     <div class="container" id="top">
         <div class="row breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
 
-        {% if messages %} 
+        {% if messages %}
             <div class="row usermessages">
                 {% for message in messages %} 
                 <div class="alert-box {{ message.tags }}">

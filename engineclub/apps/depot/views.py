@@ -24,7 +24,7 @@ from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm,
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
 from ecutils.utils import get_one_or_404
 from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,
-    SEVERITY_HIGH)
+    SEVERITY_HIGH, SEVERITY_CRITICAL)
 
 from accounts.models import Account, get_account
 
@@ -51,6 +51,18 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
     """
 
     resource = get_one_or_404(Resource, id=ObjectId(object_id))
+    reporter=get_account(request.user.id)
+
+    if 'next' in request.GET:
+        url = request.GET['next']
+    else:
+        url = None
+    url = url or reverse('resource', args=[resource.id])
+
+    if Issue.objects(reporter=reporter, related_document=resource).count():
+        messages.warning(request, 'You have already reported this resource.')
+        print 'balh'
+        return HttpResponseRedirect(url)
 
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
@@ -62,9 +74,13 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             issue = Issue(
                 message=message,
                 severity=severity,
-                reporter=get_account(request.user.id))
+                reporter=reporter)
             issue.related_document = resource
             issue.save()
+
+            # only moderate as STATUS_BAD if SEVERITY_CRITICAL
+            if severity == SEVERITY_CRITICAL:
+                resource.moderate_as_bad(reporter)
 
             # XXX currently this view is login_required
             # unauthenticated users are directed to /contact/ until this is bedded in
@@ -111,12 +127,6 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
             # # for alert in alerts:
             # #     if alert.should_send_email:
             # #         alert.send_email()
-
-            if 'next' in request.GET:
-                url = request.GET['next']
-            else:
-                url = None
-            url = url or reverse('resource', args=[resource.id])
 
             return HttpResponseRedirect(url)
     else:

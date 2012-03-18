@@ -36,6 +36,14 @@
 <h1>{{ object.title }}</h1>
 {% endif %}
 
+{% if object|status > -1 %} 
+    <div class="panel issue-{{ object|status }}"><p>This resource has had a {{ object|status_text }} problem reported which is waiting to be resolved. Please <a href="/contact/">contact us</a> if you need more information.</p>
+    {% if object|status == 3 %}
+        <p>THIS RESOURCE IS NOT CURRENTLY AVAILABLE IN SEARCHES OF ALISS.</p>
+    {% endif %}
+    </div>
+{% endif %}
+
 <div class="resource-description">
 {{ object.description|textile }}
 </div>
