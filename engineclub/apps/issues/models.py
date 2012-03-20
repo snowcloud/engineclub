@@ -18,6 +18,19 @@ SEVERITY_CHOICES = (
     (SEVERITY_CRITICAL, 'Critical'),
 )
 
+RESOLUTION_NONE, RESOLUTION_NO_ACTION, RESOLUTION_CHANGED, RESOLUTION_FOR_REMOVAL = (0, 1, 2, 3)
+RESOLUTION_CHOICES = (
+    (RESOLUTION_NONE, 'Not resolved yet'),
+    (RESOLUTION_NO_ACTION, 'Resolved- no action required'),
+    (RESOLUTION_CHANGED, 'Resolved- edited'),
+    (RESOLUTION_FOR_REMOVAL, 'Resolved- for removal'),
+)
+
+class IssueComment(EmbeddedDocument):
+    owner = ReferenceField(Account, required=True)
+    message = StringField(required=True)
+    created = DateTimeField(default=datetime.now)
+
 class IssueQuerySet(QuerySet):
     def for_account(self, account):
         """
@@ -25,14 +38,13 @@ class IssueQuerySet(QuerySet):
         later to retrieve alerts for sub or parent accounts based on
         the membership.
         """
-        # TODO add in curators...
         return Issue.objects(Q(reporter=account)|Q(resource_owner=account)|Q(curators=account))
 
 class Issue(Document):
-
     meta = {
        'allow_inheritance': False,
-       'queryset_class': IssueQuerySet
+       'queryset_class': IssueQuerySet,
+       'ordering': ['-reported_at']
     }
 
     message = StringField(required=True)
@@ -41,8 +53,10 @@ class Issue(Document):
     resource_owner = ReferenceField(Account)
     curators = ListField(ReferenceField(Account), default=list)
     reported_at = DateTimeField(default=datetime.now)
-    resolved = BooleanField(default=False)
+    resolved = IntField(choices=RESOLUTION_CHOICES, default=RESOLUTION_NONE, required=True)
+    resolved_message = StringField()
     related_document = GenericReferenceField()
+    comments = ListField(EmbeddedDocumentField(IssueComment), default=list)
 
     def save(self, *args, **kwargs):
         if self.related_document:
@@ -50,14 +64,7 @@ class Issue(Document):
         super(Issue, self).save(*args, **kwargs)
 
 
-class IssueComment(EmbeddedDocument):
-
-    meta = {
-        'allow_inheritance': False
-    }
-
 class AccountMessage(Document):
-
     meta = {
         'allow_inheritance': False
     }

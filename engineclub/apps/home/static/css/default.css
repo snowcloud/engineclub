@@ -1800,13 +1800,13 @@ caption, th, td { font-weight: normal; text-align: left; vertical-align: middle;
 .youraliss .module-content, .cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 
 /* line 303, ../../compass/src/_base.scss */
-.issue-0 { background-color: #ffea99; }
+.issue-0 { background-color: #ffea99; color: #000; }
 
 /* line 304, ../../compass/src/_base.scss */
-.issue-1 { background-color: #ffb73c; }
+.issue-1 { background-color: #ffb73c; color: #000; }
 
 /* line 305, ../../compass/src/_base.scss */
-.issue-2 { background-color: #ff796a; }
+.issue-2 { background-color: #ff796a; color: #000; }
 
 /* line 306, ../../compass/src/_base.scss */
 .issue-3 { font-weight: bold; background-color: red; }

@@ -36,12 +36,13 @@
 <h1>{{ object.title }}</h1>
 {% endif %}
 
-{% if object|status > -1 %} 
-    <div class="panel issue-{{ object|status }}"><p>This resource has had a {{ object|status_text }} problem reported which is waiting to be resolved. Please <a href="/contact/">contact us</a> if you need more information.</p>
-    {% if object|status == 3 %}
-        <p>THIS RESOURCE IS NOT CURRENTLY AVAILABLE IN SEARCHES OF ALISS.</p>
+{% if object.status_is_bad %} 
+    <div class="panel issue-3"><p>THIS RESOURCE IS NOT CURRENTLY AVAILABLE IN SEARCHES OF ALISS.</p></div>
+{% else %}
+    {% if object|status > -1 %} 
+        <div class="panel issue-{{ object|status }}"><p>This resource has had a {{ object|status_text }} problem reported which is waiting to be resolved. Please <a href="/contact/">contact us</a> if you need more information.</p>
+        </div>
     {% endif %}
-    </div>
 {% endif %}
 
 <div class="resource-description">

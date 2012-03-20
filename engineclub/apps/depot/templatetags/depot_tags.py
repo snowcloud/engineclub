@@ -44,7 +44,7 @@ def is_owner(user, resource):
 @register.filter
 def status(resource):
     result = -1
-    for issue in Issue.objects(related_document=resource):
+    for issue in Issue.objects(related_document=resource, resolved=0):
         result = issue.severity if issue.severity > result else result
     return result
 

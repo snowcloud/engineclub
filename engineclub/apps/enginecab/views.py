@@ -13,6 +13,7 @@ from accounts.models import Account
 # from accounts.views import get_one_or_404
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
+from issues.views import issue_detail as def_issue_detail
 from pymongo.objectid import ObjectId
 
 
@@ -56,9 +57,10 @@ def issues(request, template='enginecab/issues.html'):
 
 @user_passes_test(lambda u: u.is_staff)
 def issue_detail(request, object_id, template='enginecab/issue_detail.html'):
-    object = get_one_or_404(Issue, id=ObjectId(object_id))
-    context = {'object': object}
-    return render_to_response(template, RequestContext(request, context))
+    return def_issue_detail(request, object_id, template_name='enginecab/issue_detail.html', next='cab_issue_detail')
+    # object = get_one_or_404(Issue, id=ObjectId(object_id))
+    # context = {'object': object}
+    # return render_to_response(template, RequestContext(request, context))
 
 
 

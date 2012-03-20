@@ -27,20 +27,24 @@
                 <th>Reported by</th>
                 <th>Date</th>
                 <th>Severity</th>
-                <th>Report</th>
+                <th class="hide-on-phones">Report</th>
                 <th>Resource</th>
-                <th>Status</th>
+                <th class="hide-on-phones">Status</th>
             </tr>
         </thead>
         <tbody>
             {% for object in objects  %}
             <tr>
-					<td>{{ object.reporter }}</td>
+					<td>{{ object.reporter }}<br>
+                        <a href="{%url cab_issue_detail object.id %}">view</a>
+                    </td>
 					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
-					<td class="issue-{{object.severity}}">{{ object.severity|issue_severity }}</td>
-					<td>{{ object.message|linebreaks }}</td>
-					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
-					<td>{{ object.resolved|yesno }}</td>
+                    <td {% if not object.resolved %}class="issue-{{object.severity}}"{% endif %}>{{ object.severity|issue_severity }}
+                    <span class="show-on-phones"><br>{{ object.resolved|display_resolved }}</span></td>
+ 					<td class="hide-on-phones">{{ object.message|linebreaks }}</td>
+					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}
+                    </td>
+					<td class="hide-on-phones">{{ object.resolved|display_resolved }}</td>
 
             </tr>
             {% empty %}

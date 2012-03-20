@@ -232,9 +232,10 @@ class Resource(Document):
                     return index, obj
         return None, None
 
-    def moderate_as_bad(self, account):
+    def moderate_as_bad(self, account, remove_old=True):
+        if remove_old:
+            self.remove_bad_mod(save=False)
         _, mod = self.get_moderation_for_acct(account)
-
         if mod is None:
             mod = Moderation(outcome=STATUS_BAD, owner=account)
             mod.item_metadata.author = account
@@ -242,6 +243,16 @@ class Resource(Document):
             self.status = STATUS_BAD
         self.save()
         self.reindex(remove=True)
+
+    def remove_bad_mod(self, save=True):
+        self.moderations = [mod for mod in self.moderations if mod.outcome != STATUS_BAD]
+        self.status = STATUS_OK
+        if save:
+            self.save()
+
+    def _status_is_bad(self):
+        return self.status == STATUS_BAD
+    status_is_bad = property(_status_is_bad)
 
     def reindex(self, remove=False):
         """docstring for reindex"""

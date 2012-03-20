@@ -39,9 +39,12 @@
             
             <div class="nav"><a href="/">home</a> - <a href="/info/">find out more</a> - <a href="{% url search %}">search</a> - <a href="{% url contact %}">contact us</a> - 
                 <a href="{% url youraliss %}">your Aliss
-                {% with account_message_count as alerts %}
-                    {% if alerts %}({{alerts}} messages){% endif %}
-                {% endwith %}</a>
+                    {% if user.is_authenticated %} 
+                        {% with account_message_count as alerts %}
+                            ({% if alerts %}{{alerts}} messages for {% endif %}{{ user.username }})
+                        {% endwith %}</a>
+                        
+                    {% endif %}
             </div>
         </div>
     </div>
