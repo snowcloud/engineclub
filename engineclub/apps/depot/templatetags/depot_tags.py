@@ -42,7 +42,7 @@ def is_owner(user, resource):
     return get_account(user.id) == resource.owner
 
 @register.filter
-def status(resource):
+def issue_status(resource):
     result = -1
     for issue in Issue.objects(related_document=resource, resolved=0):
         result = issue.severity if issue.severity > result else result
@@ -51,4 +51,4 @@ def status(resource):
 @register.filter
 def status_text(resource):
     STATUSES = ['', '', 'serious', 'very serious']
-    return STATUSES[status(resource)]
+    return STATUSES[issue_status(resource)]
