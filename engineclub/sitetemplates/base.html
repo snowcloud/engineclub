@@ -44,9 +44,9 @@
                     {% if user.is_authenticated %} 
                         {% with account_message_count as alerts %}
                             ({% if alerts %}{{alerts}} messages for {% endif %}{{ user.username }})
-                        {% endwith %}</a>
+                        {% endwith %}
                         
-                    {% endif %}
+                    {% endif %}</a>
             </div>
         </div>
     </div>
