@@ -10,7 +10,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^$', 'home.views.index', name='home'),
+    url(r'^$', 'home.views.index', name='index'),
+    url(r'^home/$', 'home.views.home', name='home'),
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),

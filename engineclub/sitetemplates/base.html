@@ -37,7 +37,9 @@
             <h1>aliss</h1>
             <div class="nav-mobile">{% block nav_link %}<a href="{% url home %}">home</a>{% endblock %}</div>
             
-            <div class="nav"><a href="/">home</a> - <a href="/info/">find out more</a> - <a href="{% url search %}">search</a> - <a href="{% url contact %}">contact us</a> - 
+            <div class="nav">
+                <a href="{% url home %}">home</a> -
+                <a href="/info/">find out more</a> - <a href="{% url search %}">search</a> - <a href="{% url contact %}">contact us</a> - 
                 <a href="{% url youraliss %}">your Aliss
                     {% if user.is_authenticated %} 
                         {% with account_message_count as alerts %}
