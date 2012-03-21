@@ -63,7 +63,15 @@ class Issue(Document):
             self.resource_owner = self.related_document.owner
         super(Issue, self).save(*args, **kwargs)
 
+    def notify_comment(self, comment):
+        pass
 
+    def notify_resolved(self):
+        pass
+
+    def notify_created(self):
+        pass
+        
 class AccountMessage(Document):
     meta = {
         'allow_inheritance': False

@@ -36,6 +36,7 @@ def issue_detail(request, object_id, template_name='youraliss/issue_detail.html'
                 )
             issue.comments.append(comment)
             issue.save()
+            issue.notify_comment(comment)
             return HttpResponseRedirect(reverse(next, args=[issue.id]))
     else:
         commentform = CommentForm()
@@ -55,7 +56,8 @@ def issue_detail(request, object_id, template_name='youraliss/issue_detail.html'
                 issue.related_document.moderate_as_bad(account)
             elif issue.severity == SEVERITY_CRITICAL:
                 issue.related_document.remove_bad_mod()
-
+            issue.notify_resolved()
+            
             return HttpResponseRedirect(reverse(next, args=[issue.id]))
     else:
         form = IssueResolveForm(initial={'resolved': issue.resolved, 'resolved_message': issue.resolved_message})

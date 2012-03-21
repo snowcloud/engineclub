@@ -72,7 +72,8 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
                 reporter=reporter)
             issue.related_document = resource
             issue.save()
-
+            issue.notify_created()
+            
             # only moderate as STATUS_BAD if SEVERITY_CRITICAL
             if severity == SEVERITY_CRITICAL:
                 resource.moderate_as_bad(reporter)
