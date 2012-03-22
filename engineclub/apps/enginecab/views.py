@@ -9,7 +9,7 @@ from django.template import RequestContext
 
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
-from accounts.models import Account
+from accounts.models import Account, Collection
 # from accounts.views import get_one_or_404
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
@@ -62,6 +62,16 @@ def issue_detail(request, object_id, template='enginecab/issue_detail.html'):
     # context = {'object': object}
     # return render_to_response(template, RequestContext(request, context))
 
+@user_passes_test(lambda u: u.is_staff)
+def lists(request, template='enginecab/lists.html'):
+    context = {'objects': Collection.objects.all()}
+    return render_to_response(template, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_staff)
+def list_detail(request, object_id, template='enginecab/list_detail.html'):
+    object = get_one_or_404(Collection, id=ObjectId(object_id))
+    context = {'object': object}
+    return render_to_response(template, RequestContext(request, context))
 
 
 

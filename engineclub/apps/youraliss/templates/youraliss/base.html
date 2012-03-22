@@ -19,10 +19,11 @@
 
 	<div class="module-nav">
 		<dl class="nice tabs vertical">
-			<dd><a class="{% block mod-nav-account %}{% endblock %}" href="{% url youraliss_account %}">your account</a></dd>
-			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url issue_list %}">issues</a></dd>
+			<dd><a class="{% block mod-nav-profile %}{% endblock %}" href="{% url youraliss %}">profile</a></dd>
 			<dd><a class="{% block mod-nav-curations %}{% endblock %}" href="{% url youraliss_curations %}">curations</a></dd>
-			<dd><a class="{% block mod-nav-groups %}{% endblock %}" href="{% url youraliss_groups %}">groups</a></dd>
+			<dd><a class="{% block mod-nav-groups %}{% endblock %}" href="{% url youraliss_lists %}">lists</a></dd>
+			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url issue_list %}">issues</a></dd>
+			<dd><a class="{% block mod-nav-account %}{% endblock %}" href="{% url youraliss_account %}">account settings</a></dd>
 			{% if user.is_staff %} 
 				<dd><a class="{% block mod-nav-admin %}{% endblock %}" href="{% url cab %}">engine cab</a></dd>			
 			{% endif %}

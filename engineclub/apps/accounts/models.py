@@ -46,7 +46,7 @@ class Account(Document):
     An account can be held 
     
     """
-    name = StringField(max_length=100, required=True)
+    name = StringField(max_length=100, unique=True, required=True)
     local_id = StringField(max_length=20, unique=True) # for demo, links to local user id
     email = EmailField(required=True)
     url = URLField(required=False)
@@ -58,6 +58,17 @@ class Account(Document):
     status = StringField(max_length=12, default=STATUS_OK, required=True )
     collections = ListField(ReferenceField('Collection'), default=list)
     email_preference = StringField(choices=EMAIL_UPDATE_CHOICES, default=EMAIL_SINGLE, required=True)
+    
+    # FOR MOVE TO MONGOENGINE AUTH BACKEND
+    # username = StringField(max_length=30, unique=True, help_text="Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters")
+    # password = models.CharField(_('password'), max_length=128, help_text=_("Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change password form</a>."))
+    # is_staff = models.BooleanField(_('staff status'), default=False, help_text=_("Designates whether the user can log into this admin site."))
+    # is_active = models.BooleanField(_('active'), default=True, help_text=_("Designates whether this user should be treated as active. Unselect this instead of deleting accounts."))
+    # is_superuser = models.BooleanField(_('superuser status'), default=False, help_text=_("Designates that this user has all permissions without explicitly assigning them."))
+    # last_login = models.DateTimeField(_('last login'), default=datetime.datetime.now)
+    # date_joined = models.DateTimeField(_('date joined'), default=datetime.datetime.now)
+
+    # password 
 
     meta = {
         'ordering': ['name'],
@@ -88,6 +99,10 @@ class Account(Document):
     def _is_staff(self):
         return User.objects.get(pk=self.local_id).is_staff
     is_staff = property(_is_staff)
+
+    def _last_login(self):
+        return User.objects.get(pk=self.local_id).last_login
+    last_login = property(_last_login)
 
 class CollectionMember(Document):
     account = ReferenceField('Account', required=True)

@@ -19,6 +19,17 @@ def index(request):
     else:
         return account(request)
 
+@login_required
+def profile(request, template_name='youraliss/profile.html'):    
+    object =  get_one_or_404(Account, local_id=str(request.user.id))
+
+    template_context = {'object': object}
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
 
 @login_required
 def account(request, template_name='youraliss/account.html'):    
@@ -54,6 +65,6 @@ def curations(request, template_name='youraliss/curations.html'):
     return render_to_response(template_name, RequestContext(request, template_context))
 
 @login_required
-def groups(request, template_name='youraliss/groups.html'):    
+def lists(request, template_name='youraliss/lists.html'):    
     return render_to_response(template_name, RequestContext(request, {}))
 
