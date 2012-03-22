@@ -1,0 +1,5 @@
+Dear {{ account }},
+
+You have {{ alerts_count }} unread alerts{{ alerts_count|pluralize }}.
+
+Visit http://aliss.org/youraliss/alerts/ to view them.

@@ -1,10 +1,10 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
 from mongoengine import *
-from mongoengine.django.auth import User
 
 # dependancy loop
 # from depot.models import Location
@@ -36,6 +36,11 @@ class Membership(Document):
     def __unicode__(self):
         return u'%s, %s' % (self.member.name, self.role)
 
+
+EMAIL_NONE, EMAIL_SINGLE, EMAIL_DIGEST = (
+    'none', 'single', 'digest')
+EMAIL_UPDATE_CHOICES= ((EMAIL_NONE, 'No updates'), (EMAIL_SINGLE, 'Single emails'), (EMAIL_DIGEST, 'Daily digest'))
+
 class Account(Document):
     """
     An account can be held 
@@ -52,6 +57,7 @@ class Account(Document):
     members = ListField(ReferenceField(Membership), default=list)
     status = StringField(max_length=12, default=STATUS_OK, required=True )
     collections = ListField(ReferenceField('Collection'), default=list)
+    email_preference = StringField(choices=EMAIL_UPDATE_CHOICES, default=EMAIL_SINGLE, required=True)
 
     meta = {
         'ordering': ['name'],
@@ -78,6 +84,10 @@ class Account(Document):
         if coll not in self.collections:
             self.collections.append(coll)
             self.save()
+
+    def _is_staff(self):
+        return User.objects.get(pk=self.local_id).is_staff
+    is_staff = property(_is_staff)
 
 class CollectionMember(Document):
     account = ReferenceField('Account', required=True)

@@ -1,0 +1,59 @@
+{% extends "enginecab/base.html" %}
+{% load issues_tags %}
+
+{% block title %}engine cab issues{% endblock %}
+
+{% block breadcrumb-add %}
+    <li><a href="{% url cab %}">Engine cab</a></li>
+    <li class="current"><a href="#">Issues</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-issues %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Issues</h2>
+
+<!-- 	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="#"></a></dd>
+	</dl>
+ -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Reported by</th>
+                <th>Date</th>
+                <th>Severity</th>
+                <th class="hide-on-phones">Report</th>
+                <th>Resource</th>
+                <th class="hide-on-phones">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in objects  %}
+            <tr>
+					<td>{{ object.reporter }}<br>
+                        <a href="{%url cab_issue_detail object.id %}">view</a>
+                    </td>
+					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
+                    <td {% if not object.resolved %}class="issue-{{object.severity}}"{% endif %}>{{ object.severity|issue_severity }}
+                    <span class="show-on-phones"><br>{{ object.resolved|display_resolved }}</span></td>
+ 					<td class="hide-on-phones">{{ object.message|linebreaks }}</td>
+					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}
+                    </td>
+					<td class="hide-on-phones">{{ object.resolved|display_resolved }}</td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">no issues</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

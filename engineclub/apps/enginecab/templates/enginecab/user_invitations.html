@@ -3,7 +3,7 @@
 {% block title %}user invitations{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab-users %}">Users</a></li>
+    <li><a href="{% url cab_users %}">Users</a></li>
     <li class="current"><a href="#">Invitations</a></li>
 {% endblock breadcrumb-add %}
 
@@ -36,8 +36,7 @@
 	            	<td>{{ object.date_invited|date:"d M Y, H:i" }}</td>
 	            	<td>{{ object.invite_from }}</td>
 	            	<td class="{{ object.accepted|yesno }}">{{ object.accepted|yesno }}</td>
-                    <!-- <td><a href="{% url invite-delete object.id %}" class="red label">delete</a></td> -->
-                    <td><form class="inline" method="post" action="{% url invite-delete object.id %}">{% csrf_token %}<input type="submit" value="delete" /></form></td>
+                    <td><form class="inline" method="post" action="{% url invite_delete object.id %}">{% csrf_token %}<input type="submit" value="delete" /></form></td>
 	            </tr>
         	{% empty %}
 	            <tr>

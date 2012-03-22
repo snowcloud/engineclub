@@ -7,8 +7,8 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url resource-find %}">Search</a></li>
-    <li class="current"><a href="#">Resource</a></li>
+    <li><a href="{% url resource_find %}">Search</a></li>
+    <li class="current"><a href="#">{{ object.title }}</a></li>
 </ul>
 {% endblock %}
 
@@ -17,13 +17,13 @@
 {% if user.is_authenticated %}
 <dl class="sub-nav">
     <dt>Actions:</dt>
-    <dd><a href="{% url curation-add object.id %}">New curation</a></dd>
+    <dd><a href="{% url curation_add object.id %}">New curation</a></dd>
     {% if user|can_edit:object %}
-        <dd><a href="{% url resource-edit object.id %}">Edit resource</a></dd>
+        <dd><a href="{% url resource_edit object.id %}">Edit resource</a></dd>
     {% endif %}
     {% if user.is_staff %}
         {% if user|can_delete:object %}
-            <dd><a href="{% url resource-remove object.id %}">Delete resource</a></dd>
+            <dd><a href="{% url resource_remove object.id %}">Delete resource</a></dd>
         {% endif %}
     {% endif %}
 </dl>
@@ -34,6 +34,15 @@
 <h1><a href="{{ object.uri }}">{{ object.title }}</a></h1>
 {% else %}
 <h1>{{ object.title }}</h1>
+{% endif %}
+
+{% if object.status_is_bad %} 
+    <div class="panel issue-3"><p>THIS RESOURCE IS NOT CURRENTLY AVAILABLE IN SEARCHES OF ALISS.</p></div>
+{% else %}
+    {% if object|issue_status > -1 %} 
+        <div class="panel issue-{{ object|issue_status }}"><p>This resource has had a {{ object|status_text }} problem reported which is waiting to be resolved. Please <a href="/contact/">contact us</a> if you need more information.</p>
+        </div>
+    {% endif %}
 {% endif %}
 
 <div class="resource-description">
@@ -62,10 +71,23 @@
 {% empty %}
     <tr><th>curation</th><td>-</td></tr>
 {% endfor %}
-{% comment %}
-    
-<tr><th colspan="2"><a href="{% url resource-report object.id %}">Report Resource</a></th></tr> -->
-{% endcomment %}
+
+
+{% for mod in object.moderations  %}
+    <tr><td colspan="2">{{ mod.owner }} {{ mod.outcome }}</td> </tr>
+{% endfor %}
+
+
+
+{% if not user|is_owner:object %}
+<tr><th colspan="2">
+    {% if user.is_authenticated %} 
+        <a href="{% url resource_report object.id %}">Report Resource</a>
+    {% else %}
+    <a href="{% url contact %}">Report Resource</a>   
+    {% endif %}
+</th></tr>
+{% endif %}
 
 </table>
 

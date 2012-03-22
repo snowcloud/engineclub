@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Notifications{% endblock %}
+{% block title %}Ticket{% endblock %}
 
 {% block content %}
 
-    {{ notification.get_severity_display }} severity<br/>
-    {{ notification.type }}<br/>
-    {{ notification.message }}<br/>
+    {{ issue.get_severity_display }} severity<br/>
+    {{ issue.type }}<br/>
+    {{ issue.message }}<br/>
 
 
-    {% if not notification.resolved %}
+    {% if not issue.resolved %}
     <form method="post" action=".">
         {% csrf_token %}
         <input type="submit" name="resolved" value="Mark resolved" />

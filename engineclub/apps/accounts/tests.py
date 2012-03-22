@@ -48,25 +48,27 @@ def _print_db_info():
     print 'Collection: ', Collection.objects.count()
     print SEP
 
-def _make_user(name):
-    return User.objects.create_user(name, email="%s@example.com" % name, password='password')
+def make_test_user_and_account(name):
+    user = User.objects.create_user(name, email="%s@example.com" % name, password='password')
+    acct = Account.objects.create(name=name, email="%s@example.com" % name, local_id=str(user.id))
+    return user, acct
 
 class AccountsBaseTest(MongoTestCase):
     def setUp(self):
         # _print_db_info()
-        self.user_bob = _make_user('bob')
-        self.user_humph = _make_user('humph')
-        self.user_jorph = _make_user('jorph')
-        self.user_group = _make_user('group')
+        self.user_bob, self.bob = make_test_user_and_account('bob')
+        self.user_humph, self.humph = make_test_user_and_account('humph')
+        self.user_jorph, self.jorph = make_test_user_and_account('jorph')
+        self.user_group, self.group = make_test_user_and_account('group')
 
-        self.bob = Account.objects.create(name="Bob Hope", email="bob@example.com", local_id=str(self.user_bob.id))
-        self.humph = Account.objects.create(name="Humph Floogerwhippel", email="humph@example.com", local_id=str(self.user_humph.id))
-        self.jorph = Account.objects.create(name="Jorph Wheedjilli", email="jorph@example.com", local_id=str(self.user_jorph.id))
-        self.group = Account.objects.create(
-            name="Flupping Baxters of Falkirk", 
-            email="group@example.com", 
-            local_id=str(self.user_group.id),
-            )
+        # self.bob = Account.objects.create(name="Bob Hope", email="bob@example.com", local_id=str(self.user_bob.id))
+        # self.humph = Account.objects.create(name="Humph Floogerwhippel", email="humph@example.com", local_id=str(self.user_humph.id))
+        # self.jorph = Account.objects.create(name="Jorph Wheedjilli", email="jorph@example.com", local_id=str(self.user_jorph.id))
+        # self.group = Account.objects.create(
+        #     name="Flupping Baxters of Falkirk", 
+        #     email="group@example.com", 
+        #     local_id=str(self.user_group.id),
+        #     )
         self.group.add_member(self.humph)
         self.group.add_member(self.jorph, role=ADMIN_ROLE)
 
@@ -105,8 +107,8 @@ class AccountsTest(AccountsBaseTest):
         _load_collections()
         self.assertEqual(Account.objects.count(), 4)
 
-        arthur = _make_user('arthur')
-        acct1 = Account.objects.create(name="Arthur Sixpence", email="arthur@example.com", local_id=str(arthur.id))
+        arthur, acct1 = make_test_user_and_account('arthur')
+        # acct1 = Account.objects.create(name="Arthur Sixpence", email="arthur@example.com", local_id=str(arthur.id))
 
         self.group.add_member(acct1)
         self.group.save()

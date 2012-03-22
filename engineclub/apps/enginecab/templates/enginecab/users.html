@@ -33,7 +33,7 @@
         <tbody>
             {% for user in objects  %}
             <tr>
-                <td><a href="{% url cab-user-detail user.id %}">{{ user.name }}</a></td>
+                <td><a href="{% url cab_user_detail user.id %}">{{ user.name }}</a></td>
                 <td><a href="">{{ user.email }}</a></td>
             </tr>
             {% empty %}
@@ -46,37 +46,3 @@
 
 {% endblock %}
 
-
-
-{% comment %}
-	
-{% block title %}engine admin{% endblock %}
-
-{% block content %}
-
-<h1>The Cab</h1>
-
-<p><a href="{% url groups %}">Groups</a></p>
-
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-<hr>
-{% if user.is_superuser %}
-
-<p>&nbsp;</p>
-<ul>
-    <li><a href="{% url notifications-list %}">Notifications ({{ notifications_count }})</a></li>
-    <li><a href="{% url cab-reindex %}">reindex resources</a></li>
-    <li><a href="{% url remove-dud-curations %}">remove-dud-curations</a></li>
-    <li><a href="{% url show-curationless-resources %}">show-curationless-resources</a></li>
-    <li><a href="{% url fix-curationless-resources %}">fix-curationless-resources</a></li>
-    <li><a href="{% url cab-one-off-util %}">one off util</a></li>
-
-
-</ul>
-{% endif %}
-
-
-{% endblock %}
-{% endcomment %}

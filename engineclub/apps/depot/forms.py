@@ -5,6 +5,7 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from depot.models import Resource, Curation, Location, find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
+from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
 from mongoengine.queryset import DoesNotExist
 
@@ -165,8 +166,6 @@ class CurationForm(DocumentForm):
         return clean_csvtextinput(self.cleaned_data['tags'])
 
 
-class ResourceReportForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea)
 
 
 
@@ -224,3 +223,16 @@ def dict_form_factory(initial, extra=0, **kwargs):
 
     return DictFormSet(initial=form_initial, **kwargs)
 
+REPORT_CHOICES=(
+    (SEVERITY_LOW, 'Not serious- a spelling mistake or some other small correction'), 
+    (SEVERITY_MEDIUM, 'Quite serious- something wrong, misleading, or should be checked'), 
+    (SEVERITY_HIGH, 'Serious- content that might not suitable for ALISS'),
+    (SEVERITY_CRITICAL, 'Very serious- content that is dangerous or offensive')
+    )
+
+class ResourceReportForm(PlainForm):
+    severity = forms.ChoiceField(
+        widget= forms.RadioSelect,
+        choices=REPORT_CHOICES,
+        label="How serious is this?")
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text large'}))

@@ -4,12 +4,13 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('enginecab.views',
     
     url(r'^$', 'users', name='cab'),
-    url(r'^alerts/$', 'alerts', name='cab-alerts'),
-    url(r'^reindex/$', 'reindex', name='cab-reindex'),
-    url(r'^resources/$', 'resources', name='cab-resources'),
-    url(r'^users/$', 'users', name='cab-users'),
-    url(r'^users/(?P<object_id>\w+)/$', 'user_detail', name='cab-user-detail'),
-    url(r'^users/(?P<object_id>\w+)/edit/$', 'user_edit', name='cab-user-edit'),
+    url(r'^issues/$', 'issues', name='cab_issues'),
+    url(r'^issues/(?P<object_id>\w+)/$', 'issue_detail', name='cab_issue_detail'),
+    url(r'^reindex/$', 'reindex', name='cab_reindex'),
+    url(r'^resources/$', 'resources', name='cab_resources'),
+    url(r'^users/$', 'users', name='cab_users'),
+    url(r'^users/(?P<object_id>\w+)/$', 'user_detail', name='cab_user_detail'),
+    url(r'^users/(?P<object_id>\w+)/edit/$', 'user_edit', name='cab_user_edit'),
 
     (r'^invite/', include('invites.urls')),
 

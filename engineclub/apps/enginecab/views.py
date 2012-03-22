@@ -10,7 +10,10 @@ from django.template import RequestContext
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
 from accounts.models import Account
-from accounts.views import get_one_or_404
+# from accounts.views import get_one_or_404
+from ecutils.utils import get_one_or_404
+from issues.models import Issue
+from issues.views import issue_detail as def_issue_detail
 from pymongo.objectid import ObjectId
 
 
@@ -26,18 +29,18 @@ def resources(request, template='enginecab/resources.html'):
 
 @user_passes_test(lambda u: u.is_staff)
 def users(request, template='enginecab/users.html'):
-    context = {'objects': Account.objects.all()[:20]}
+    context = {'objects': Account.objects.all()[:40]}
     return render_to_response(template, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
 def user_detail(request, object_id, template='enginecab/user_detail.html'):
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     context = {'object': object}
     return render_to_response(template, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
 def user_edit(request, object_id, template='enginecab/user_edit.html'):
-    object = get_one_or_404(id=object_id)
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     context = {'object': object}
     return render_to_response(template, RequestContext(request, context))
 
@@ -45,7 +48,20 @@ def user_edit(request, object_id, template='enginecab/user_edit.html'):
 def reindex(request, template=''):
     reindex_resources(settings.MONGO_DATABASE_NAME, printit=False)
     messages.success(request, 'Resources have been reindexed.')
-    return HttpResponseRedirect(reverse('cab-resources'))
+    return HttpResponseRedirect(reverse('cab_resources'))
+
+@user_passes_test(lambda u: u.is_staff)
+def issues(request, template='enginecab/issues.html'):
+    context = {'objects': Issue.objects.all()}
+    return render_to_response(template, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_staff)
+def issue_detail(request, object_id, template='enginecab/issue_detail.html'):
+    return def_issue_detail(request, object_id, template_name='enginecab/issue_detail.html', next='cab_issue_detail')
+    # object = get_one_or_404(Issue, id=ObjectId(object_id))
+    # context = {'object': object}
+    # return render_to_response(template, RequestContext(request, context))
+
 
 
 

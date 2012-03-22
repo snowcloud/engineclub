@@ -32,10 +32,10 @@ div.panel { border: 1px solid #ccc; }
 p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 /* line 12, ../../compass/src/style.scss */
-#site-header h1 { float: left; padding-right: 1em; }
+#site-header h1 { float: left; padding-right: 3em; }
 
 /* line 17, ../../compass/src/style.scss */
-#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 130%; margin-top: 1.8em; }
+#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 150%; margin-top: 1.65em; }
 
 /* line 25, ../../compass/src/style.scss */
 #site-header .nav-mobile { display: none !important; visibility: hidden; position: absolute; }
@@ -74,66 +74,66 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 .breadcrumbs { display: inherit !important; visibility: visible; }
 
 /* line 72, ../../compass/src/style.scss */
-ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; }
+ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; border: none; }
 
 /* @group search */
-/* line 78, ../../compass/src/style.scss */
+/* line 79, ../../compass/src/style.scss */
 .search fieldset { margin-top: 18px; }
 
-/* line 81, ../../compass/src/style.scss */
+/* line 82, ../../compass/src/style.scss */
 .contact form { float: left; width: 60%; }
 
-/* line 85, ../../compass/src/style.scss */
+/* line 86, ../../compass/src/style.scss */
 .contact .advice { margin: 24px 0 0 65%; padding: 1em; }
-/* line 88, ../../compass/src/style.scss */
+/* line 89, ../../compass/src/style.scss */
 .contact .advice p { font-size: 1.6em; }
 
-/* line 93, ../../compass/src/style.scss */
+/* line 94, ../../compass/src/style.scss */
 .search-form { float: left; width: 30%; }
 
-/* line 97, ../../compass/src/style.scss */
+/* line 98, ../../compass/src/style.scss */
 #map { float: right; width: 64%; height: 400px; }
 
-/* line 103, ../../compass/src/style.scss */
+/* line 104, ../../compass/src/style.scss */
 .search .results h3 { display: inline; }
 
-/* line 106, ../../compass/src/style.scss */
+/* line 107, ../../compass/src/style.scss */
 .search .results h3 a { border-bottom: none; }
 
-/* line 109, ../../compass/src/style.scss */
+/* line 110, ../../compass/src/style.scss */
 .search .results h3, .search .results p { width: 64%; }
 
-/* line 112, ../../compass/src/style.scss */
+/* line 113, ../../compass/src/style.scss */
 .search .results h4 { position: static; padding-top: 0.3em; color: #797979; }
 
-/* line 117, ../../compass/src/style.scss */
+/* line 118, ../../compass/src/style.scss */
 .search .results .location { float: right; width: 33%; }
 
-/* line 121, ../../compass/src/style.scss */
+/* line 122, ../../compass/src/style.scss */
 .search .results .location p { width: auto; }
 
-/* line 124, ../../compass/src/style.scss */
+/* line 125, ../../compass/src/style.scss */
 .resource .metadata { float: left; width: 30%; }
 
 /* @end */
 /* @group youraliss */
-/* line 132, ../../compass/src/style.scss */
-.youraliss .module-nav, .cab .module-nav { float: left; width: 22%; }
-/* line 136, ../../compass/src/style.scss */
-.youraliss .module-content, .cab .module-content { float: right; width: 70%; }
+/* line 133, ../../compass/src/style.scss */
+.youraliss .module-nav, .cab .module-nav { float: left; width: 18%; }
+/* line 137, ../../compass/src/style.scss */
+.youraliss .module-content, .cab .module-content { float: right; width: 75%; }
 
 /* @end */
 /* @group presentation */
-/* line 144, ../../compass/src/style.scss */
+/* line 145, ../../compass/src/style.scss */
 .pres-slide { background-color: #eee; }
 
-/* line 147, ../../compass/src/style.scss */
+/* line 148, ../../compass/src/style.scss */
 .pres-media { float: left; width: 60%; border: none; padding: 1em; }
 
-/* line 153, ../../compass/src/style.scss */
+/* line 154, ../../compass/src/style.scss */
 .pres-text { margin-left: 63%; margin-top: 2.5em; }
 
-/* line 157, ../../compass/src/style.scss */
+/* line 158, ../../compass/src/style.scss */
 .pres-text p { font-size: 160%; }
 
 /* @end */

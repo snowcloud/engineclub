@@ -3,8 +3,8 @@
 {% block title %}user edit{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab-users %}">Users</a></li>
-    <li><a href="{% url cab-user-detail object.id %}">{{ object.name }}</a></li>
+    <li><a href="{% url cab_users %}">Users</a></li>
+    <li><a href="{% url cab_user_detail object.id %}">{{ object.name }}</a></li>
     <li class="current"><a href="#">Edit</a></li>
 {% endblock breadcrumb-add %}
 

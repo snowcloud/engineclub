@@ -23,6 +23,10 @@ COLL_STATUS_COMPLETE = 'complete'
 
 STATUS_OK = 'OK'
 STATUS_BAD = 'BAD'
+STATUS_CHOICES = (
+    (STATUS_OK, 'OK'),
+    (STATUS_BAD, 'Bad')
+    )
 
 POSTCODE = 'POSTCODE'
 POSTCODEDISTRICT = 'POSTCODEDISTRICT'
@@ -50,20 +54,6 @@ class CalendarEvent(EmbeddedDocument):
     end = DateTimeField()
     status = StringField(default='confirmed') # 'provisional', 'confirmed', 'cancelled'.
     # recurrence = EmbeddedDocumentField(CalendarRepeatRule)
-
-class oldLocation(Document):
-    """Location document, based on Ordnance Survey data
-    ALISS only uses 4 types: postcode, ward, district, country
-    """
-    os_id = StringField(unique=True, required=True)
-    label = StringField(required=True)
-    place_name = StringField()
-    os_type = StringField(required=True)
-    parents = ListField(ReferenceField("Location"), default=list)
-    lat_lon = GeoPointField()
-
-    def __unicode__(self):
-        return ', '.join([self.label, self.place_name or '-'])
 
 class Location(Document):
     """Location document, based on combined data sources, geonames + OSM
@@ -111,7 +101,6 @@ class Location(Document):
                 attrs['id'] = '%s_%s' % (attrs['place_name'], attrs['district'])
             attrs['country_code'] = C.get(addr.get('administrative_area_level_1', 'other')) or addr.get('country')
 
-            # print attrs
             result = Location(**attrs)
             result.save()
         return result
@@ -132,7 +121,6 @@ def _make_addr(results):
     for res in results:
         addr = {}
         for c in res.address_components:
-            # print c, c.types, c.short_name, c.long_name
             try:
                 addr[c.__dict__['types'][0]] = c.long_name
             except IndexError:
@@ -142,10 +130,6 @@ def _make_addr(results):
         if pc: # any pc
             addr['postal_code'] = ' '.join(pc)
             break
-    # print results
-    # print addr
-    # print 'postcode:', addr.get('postal_code', '-')
-    # print res.geometry.location
     return res, addr
 
 class Moderation(EmbeddedDocument):
@@ -167,13 +151,11 @@ class Curation(Document):
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        # print self.owner, acct
         return self.owner == acct
 
     def perm_can_delete(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        # print self.owner, acct
         return self.owner == acct
 
 class Resource(Document):
@@ -183,7 +165,6 @@ class Resource(Document):
     resource_type = StringField()
     uri = StringField()
     locations = ListField(ReferenceField(Location), default=list)
-    tmp_locations = ListField(StringField(max_length=16), default=list)
     service_area = ListField(ReferenceField(Location), default=list)
     calendar_event = EmbeddedDocumentField(CalendarEvent)
     moderations = ListField(EmbeddedDocumentField(Moderation), default=list)
@@ -192,6 +173,7 @@ class Resource(Document):
     related_resources = ListField(ReferenceField('RelatedResource'))
     owner = ReferenceField(Account, required=True)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+    status = StringField(choices=STATUS_CHOICES, default=STATUS_OK, required=True)
 
     @classmethod
     def reindex_for(cls, acct):
@@ -234,6 +216,44 @@ class Resource(Document):
         return list(set(tags))
     all_tags = property(_all_tags)
 
+    def get_curation_for_acct(self, account):
+        # check if user already has a curation for this resource
+        if account:
+            for index, obj in enumerate(self.curations):
+                if obj.owner.id == account.id:
+                    return index, obj
+        return None, None
+
+    def get_moderation_for_acct(self, account):
+        # check if user already has a moderation for this resource
+        if account:
+            for index, obj in enumerate(self.moderations):
+                if obj.owner.id == account.id:
+                    return index, obj
+        return None, None
+
+    def moderate_as_bad(self, account, remove_old=True):
+        if remove_old:
+            self.remove_bad_mod(save=False)
+        _, mod = self.get_moderation_for_acct(account)
+        if mod is None:
+            mod = Moderation(outcome=STATUS_BAD, owner=account)
+            mod.item_metadata.author = account
+            self.moderations.append(mod)
+            self.status = STATUS_BAD
+        self.save()
+        self.reindex(remove=True)
+
+    def remove_bad_mod(self, save=True):
+        self.moderations = [mod for mod in self.moderations if mod.outcome != STATUS_BAD]
+        self.status = STATUS_OK
+        if save:
+            self.save()
+
+    def _status_is_bad(self):
+        return self.status == STATUS_BAD
+    status_is_bad = property(_status_is_bad)
+
     def reindex(self, remove=False):
         """docstring for reindex"""
         conn = Solr(settings.SOLR_URL)
@@ -244,6 +264,8 @@ class Resource(Document):
 
     def index(self, conn=None):
         """conn is Solr connection"""
+        if self.status == STATUS_BAD:
+            return None
         tags = list(self.tags)
         accounts = []
         collections = []
@@ -275,7 +297,6 @@ class Resource(Document):
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
         if self.calendar_event:
-            # print self.calendar_event.start.date(), self.calendar_event.end
             doc['event_start'] = self.calendar_event.start #.date()
             if self.calendar_event.end:
                 doc['event_end'] = self.calendar_event.end #.date()
@@ -294,28 +315,14 @@ class Resource(Document):
             conn.add(result)
         return result
 
-    # def add_location_from_name(self, placestr):
-    #     """place_str can be anything"""
-    #     # first get a geonames postcode or place
-    #     place = get_place_for_postcode(placestr) or get_place_for_placename(placestr)
-    #     if place:
-    #         # if it's a postcode already, fine, otherwise use the lat_lon to get a postcode
-    #         postcode = place.get('postcode', None) or _get_postcode_for_lat_lon(place['lat_lon'])['postcode']
-    #         location, created = get_location_for_postcode(postcode)
-    #         if location not in self.locations:
-    #             self.locations.append(location)
-    #             self.save()
-
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        # print self.owner, acct
         return self.owner == acct
 
     def perm_can_delete(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        # print self.owner, acct
         return self.owner == acct
 
 class RelatedResource(Document):
@@ -334,19 +341,6 @@ def load_resource_data(document, resource_data):
 
 ###############################################################
 # LOCATION STUFF - PUBLIC
-
-# def get_place_for_postcode(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
-#     return _get_place_for_name(name, 'postcode_locations', 'postcode', dbname, just_one, starts_with)
-
-# def get_place_for_placename(name, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
-#     return _get_place_for_name(name, 'placename_locations','name_upper',  dbname, just_one, starts_with)
-
-# def get_location_for_postcode(postcode):
-#     result = _get_place_for_name(postcode, 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
-#     if not result and len(postcode.split()) > 1:
-#         print 'trying ', postcode.split()[0]
-#         result = _get_place_for_name(postcode.split()[0], 'postcode_locations', 'postcode', settings.MONGO_DATABASE_NAME)
-#     return _get_or_create_location(result)
 
 def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 
@@ -381,66 +375,6 @@ def lat_lon_to_str(loc):
         return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
     else:
         return ''
-
-###############################################################
-# NEWLOCATION STUFF - PRIVATE
-
-
-
-
-###############################################################
-# LOCATION STUFF - PRIVATE
-
-# def _get_or_create_location(result):
-#     """return Location, created (bool) if successful"""
-#     if result:
-#         loc_values = {
-#             'label': result['label'],
-#             'place_name': result['place_name'],
-#             'os_type': 'POSTCODE',
-#             'lat_lon': result['lat_lon'],
-#             }
-#         return Location.objects.get_or_create(os_id=result['postcode'], defaults=loc_values)
-#     raise Location.DoesNotExist
-
-# def _get_place_for_name(namestr, collname, field, dbname, just_one=True, starts_with=False):
-#     """return place from geonames data- either postcode or named place depending on collname
-
-#     {u'label': u'EH15 2QR', u'_id': ObjectId('4d91fd593de0748efd0734b4'), u'postcode': u'EH152QR', u'lat_lon': [55.945360336317798, -3.1018998114292899], u'place_name': u'Portobello/Craigmillar Ward'}
-#     {u'name_upper': u'KEITH', u'_id': ObjectId('4d8e0a013de074fdef000fad'), u'name': u'Keith', u'lat_lon': [57.53633, -2.9481099999999998]}
-
-#     """
-#     name = namestr.upper().replace(' ', '').strip()
-#     if starts_with:
-#         name = re.compile('%s' % name, re.IGNORECASE)
-#     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-#     db = connection[dbname]
-#     coll = db[collname]
-#     result = coll.find_one({field: name}) if just_one else coll.find({field: name})
-#     if result and (type(result) == dict or result.count() > 0):
-#         return result
-#     else:
-#         return None
-
-# def _get_postcode_for_lat_lon(lat_lon, dbname=settings.MONGO_DATABASE_NAME):
-#     """looks up nearest postcode for lat_lon in geonames data"""
-#     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-#     db = connection[dbname]
-#     coll = db['postcode_locations']
-#     coll.create_index([("lat_lon", GEO2D)])
-#     result = coll.find_one({"lat_lon": {"$near": lat_lon}})
-#     if result:
-#         return result
-#     return None
-
-# def lat_lon_to_str(loc):
-#     """docstring for lat_lon_to_str"""
-#     if loc:
-#         if type(loc) == Location:
-#             return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
-#         return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
-#     else:
-#         return ''
 
 
 ###############################################################

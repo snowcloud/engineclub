@@ -400,7 +400,7 @@ class TestSearchStats(unittest.TestCase):
         yesterday = date.today() - timedelta(days=1)
         tomorrow = date.today() + timedelta(days=1)
 
-        url = reverse('resource-find')
+        url = reverse('resource_find')
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])

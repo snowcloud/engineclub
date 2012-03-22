@@ -11,7 +11,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 #site-header h1 {
 	float: left;
-	padding-right: 1em;
+	padding-right: 3em;
 }
 
 #site-header .nav {
@@ -19,8 +19,8 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
     //left: 0;
    	@include un_hide_it;
     position: static;
-	font-size: 130%;
-	margin-top: 1.8em;
+	font-size: 150%;
+	margin-top: 1.65em;
 }
 #site-header .nav-mobile {
 	@include hide_it;
@@ -72,6 +72,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 ul.breadcrumbs {
 	padding: 0.5em 1em;
 	margin-bottom: 0;
+	border: none;
 }
 /* @group search */
 
@@ -131,11 +132,11 @@ ul.breadcrumbs {
 .youraliss, .cab {
 	.module-nav {
 		float: left;
-		width: 22%;
+		width: 18%;
 	}
 	.module-content {
 		float: right;
-		width: 70%;
+		width: 75%;
 	}
 }
 /* @end */

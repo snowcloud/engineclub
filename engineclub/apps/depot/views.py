@@ -15,107 +15,70 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-# from analytics.shortcuts import (increment_queries, increment_locations,
-#     increment_resources, increment_resource_crud)
+from analytics.shortcuts import (increment_queries, increment_locations,
+    increment_resources, increment_resource_crud)
 from depot.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm, dict_form_factory
-from notifications.models import (Notification, SEVERITY_LOW, SEVERITY_MEDIUM,
-    SEVERITY_HIGH)
+from ecutils.utils import get_one_or_404
+from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,
+    SEVERITY_HIGH, SEVERITY_CRITICAL)
 
 from accounts.models import Account, get_account
 
-def get_one_or_404(obj_class=Resource, **kwargs):
-    """helper function for Mongoengine documents"""
-    try:
-       user = kwargs.pop('user', None)
-       perm = kwargs.pop('perm', None)
-       object = obj_class.objects.get(**kwargs)
-       if user and perm:
-           if not user.has_perm(perm, object):
-               raise PermissionDenied()
-       return object
-    except (MultipleObjectsReturned, ValidationError, DoesNotExist):
-        raise Http404
 
 def resource_index(request):
-
     objects = Resource.objects
     return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
 
 def resource_detail(request, object_id, template='depot/resource_detail.html'):
-
-    object = get_one_or_404(id=ObjectId(object_id))
-
-    # increment_resources(object_id)
+    object = get_one_or_404(Resource, id=ObjectId(object_id))
+    increment_resources(object_id)
 
     return render_to_response(template,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
+@login_required
 def resource_report(request, object_id, template='depot/resource_report.html'):
     """
-    View for reporting a curation when a user finds it to be malformed or
-    incorrect.
-
-    NOTE: Some of this needs to be abstracted out, its gotten a bit complicated.
+    View for reporting a report when a user finds a problem with it.
     """
+    resource = get_one_or_404(Resource, id=ObjectId(object_id))
+    reporter=get_account(request.user.id)
 
-    resource = get_one_or_404(id=ObjectId(object_id))
+    # if 'next' in request.GET:
+    #     url = request.GET['next']
+    # else:
+    #     url = None
+    # url = url or reverse('resource', args=[resource.id])
 
-    raise Exception()
-    
+    if Issue.objects(reporter=reporter, related_document=resource).count():
+        messages.warning(request, 'You have already reported this resource.')
+        return HttpResponseRedirect(reverse('resource', args=[resource.id]))
+
     if request.method == 'POST':
         form = ResourceReportForm(request.POST)
         if form.is_valid():
 
-            accounts = set(cur.owner for cur in resource.curations)
-            # The owner should always have a curation, however, to be safe
-            # make sure they are added.
-            accounts.add(resource.owner)
+            severity=int(form.cleaned_data['severity'])
+            message=form.cleaned_data['message']
 
-            severity = SEVERITY_MEDIUM
-            group = None
+            issue = Issue(
+                message=message,
+                severity=severity,
+                reporter=reporter)
+            issue.related_document = resource
+            issue.save()
+            issue.notify_created()
+            
+            # only moderate as STATUS_BAD if SEVERITY_CRITICAL
+            if severity == SEVERITY_CRITICAL:
+                resource.moderate_as_bad(reporter)
 
-            # If the user is logged in, they get a notification so they
-            # can track the issue. Their compliant is also treated more
-            # seriously and a moderation is created to mark the resource as
-            # bad.
-            if request.user.is_authenticated():
-                reporter_account = get_account(request.user.id)
-
-                notification = Notification.objects.create_for_account(
-                    reporter_account, group=True, type="report",
-                    severity=SEVERITY_LOW, message="Report submitted",
-                    related_document=resource)
-
-                if notification.should_send_email():
-                    notification.send_email()
-
-                group = notification.group
-                severity = SEVERITY_HIGH
-
-                mod = Moderation(outcome=STATUS_BAD, owner=reporter_account)
-                mod.item_metadata.author = reporter_account
-                resource.moderations.append(mod)
-                resource.save()
-
-            notifications = Notification.objects.create_for_accounts(accounts,
-                group=group, type="report", severity=severity,
-                related_document=resource, message=form.cleaned_data['message'])
-
-            for notification in notifications:
-                if notification.should_send_email:
-                    notification.send_email()
-
-            if 'next' in request.GET:
-                url = request.GET['next']
-            else:
-                url = reverse('resource', args=[resource.id])
-
-            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+            return HttpResponseRedirect(reverse('issue_detail', args=[issue.id]))
     else:
         form = ResourceReportForm()
 
@@ -123,10 +86,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
         'next': urlquote_plus(request.GET.get('next', '')),
         'form': form,
         'object': resource,
-        'yahoo_appid': settings.YAHOO_KEY,
-        'google_key': settings.GOOGLE_KEY,
     }, RequestContext(request))
-
 
 def _template_info(popup):
     """docstring for _template_info"""
@@ -142,10 +102,8 @@ def update_resource_metadata(self, resource, request):
 @login_required
 def resource_add(request, template='depot/resource_edit.html'):
     """adds a new resource"""
-
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
-
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
@@ -164,7 +122,7 @@ def resource_add(request, template='depot/resource_edit.html'):
                 # resource.index()
                 # if popup:
                 #     return HttpResponseRedirect(reverse('resource-popup-close'))
-                return HttpResponseRedirect('%s?popup=%s' % (reverse('resource-edit', args=[resource.id]), template_info['popup']))
+                return HttpResponseRedirect('%s?popup=%s' % (reverse('resource_edit', args=[resource.id]), template_info['popup']))
             except OperationError:
                 pass
 
@@ -188,7 +146,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
 
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
 
     # doc = ''
     # places = None
@@ -242,14 +200,13 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
 @login_required
 def resource_edit_complete(request, resource, template_info):
     """docstring for resource_edit_complete"""
-
     if resource:
         resource.save(author=str(request.user.id))
-        popup_url = reverse('resource-popup-close')
+        popup_url = reverse('resource_popup_close')
         url = reverse('resource', args=[resource.id])
-    else: # resource-add cancelled
-        popup_url = reverse('resource-popup-cancel')
-        url = reverse('resource-list')
+    else: # resource_add cancelled
+        popup_url = reverse('resource_popup_cancel')
+        url = reverse('resource_list')
 
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)
@@ -258,17 +215,16 @@ def resource_edit_complete(request, resource, template_info):
 
 @login_required
 def resource_remove(request, object_id):
-    object = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    object = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()
 
     user = get_account(request.user.id)
     increment_resource_crud('resouce_remove', account=user)
-    return HttpResponseRedirect(reverse('resource-list'))
+    return HttpResponseRedirect(reverse('resource_list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
 def resource_find(request, template='depot/resource_find.html'):
     """docstring for resource_find"""
-
     results = []
     centre = None
     new_search = False
@@ -276,17 +232,17 @@ def resource_find(request, template='depot/resource_find.html'):
     result = request.REQUEST.get('result', '')
     if request.method == 'POST' or result:
         if result == 'Cancel':
-            return HttpResponseRedirect(reverse('resource-list'))
+            return HttpResponseRedirect(reverse('resource_list'))
         form = FindResourceForm(request.REQUEST)
 
         if form.is_valid():
             user = get_account(request.user.id)
 
-            # increment_queries(form.cleaned_data['kwords'], account=user)
-            # increment_locations(form.cleaned_data['post_code'], account=user)
+            increment_queries(form.cleaned_data['kwords'], account=user)
+            increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
-                resource = get_one_or_404(id=ObjectId(result['res_id']))
+                resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
 
                 try:
                     curation_index, curation = get_curation_for_user_resource(user, resource)
@@ -329,7 +285,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
         except (IndexError, ValueError):
             raise Http404, "Curation with index %s not found" % index
     else:
-        curation = get_one_or_404(obj_class=Curation, id=ObjectId(object_id))
+        curation = get_one_or_404(Curation, id=ObjectId(object_id))
         resource = curation.resource
 
     if request.is_ajax():
@@ -342,7 +298,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
                 'title': resource.title,
                 'description': resource.description,
             },
-            'url': reverse('curation-add', args=(resource.id, )),
+            'url': reverse('curation_add', args=(resource.id, )),
         }
         return HttpResponse(json.dumps(context), mimetype='application/json')
 
@@ -357,7 +313,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
 @login_required
 def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     """docstring for curation_add"""
-    resource = get_one_or_404(id=ObjectId(object_id))
+    resource = get_one_or_404(Resource, id=ObjectId(object_id))
     user = get_account(request.user.id)
 
     curation = get_curation_for_user_resource(user, resource)
@@ -408,8 +364,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
-
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
     object = resource.curations[int(index)]
 
     if request.method == 'POST':
@@ -442,7 +397,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
-    resource = get_one_or_404(id=ObjectId(object_id), user=request.user, perm='can_delete')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     resource.curations[int(index)].delete()
     del resource.curations[int(index)]
     resource.save(reindex=True)
@@ -453,14 +408,14 @@ def curation_remove(request, object_id, index):
 @login_required
 def location_remove(request, object_id, index):
     """docstring for location_remove"""
-    resource = get_one_or_404(id=object_id, user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
     del resource.locations[int(index)]
     resource.save(author=get_account(request.user.id), reindex=True)
-    return HttpResponseRedirect(reverse('resource-edit', args=[resource.id]))
+    return HttpResponseRedirect(reverse('resource_edit', args=[resource.id]))
 
 def curations_for_group(request, object_id, template_name='depot/curations_for_group.html'):
     """docstring for curations_for_group"""
-    object = get_one_or_404(obj_class=Account, id=object_id)
+    object = get_one_or_404(Account, id=ObjectId(object_id))
 
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
@@ -473,7 +428,7 @@ def curations_for_group(request, object_id, template_name='depot/curations_for_g
 
 def curations_for_group_html(request, object_id, template_name='depot/curations_for_group_embed.html'):
 
-    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     template_context = {'object': object, 'curations': curations}
 
@@ -485,7 +440,7 @@ def curations_for_group_html(request, object_id, template_name='depot/curations_
 
 def curations_for_group_js(request, object_id, template_name='depot/curations_for_group_embed.js'):
 
-    object = get_one_or_404(obj_class=Account, id=ObjectId(object_id))
+    object = get_one_or_404(Account, id=ObjectId(object_id))
     curations = [c.resource for c in Curation.objects(owner=object).order_by('-item_metadata__last_modified')[:10]]
     base_url = Site.objects.get_current().domain
     print base_url
@@ -499,6 +454,8 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
 
 def get_curation_for_user_resource(user, resource):
     # check if user already has a curation for this resource
+
+    # TODO use resource.get_curation_for_user instead
     if user:
         for index, cur in enumerate(resource.curations):
             if cur.owner.id == user.id:

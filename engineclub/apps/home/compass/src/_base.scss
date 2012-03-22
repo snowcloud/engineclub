@@ -27,6 +27,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 
 .container.site-header {
 	background-color: black;
+	border-bottom: 4px solid #c74a14;
 }
 #site-header {
 	color: #fffeff;
@@ -47,7 +48,7 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
     height: 1px;
 }
 #site-header a {
-	color: white;
+	color: #faef00;
 }
 #site-header a:hover, #site-header a:focus {
     background-color: #636dbc;
@@ -61,10 +62,17 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
-.cab .main, .cab .container#top {
-	background-color: #57659b;
-	h1 {
-		color: white;
+.container#top {
+	background-color: #f4f4f4;
+	border-bottom: 1px solid #DDDDDD;
+}
+.cab {
+	.main {
+		background-color: #57659b;
+		border: none;
+		h1 {
+			color: white;
+		}
 	}
 }
 .welcome {
@@ -159,7 +167,8 @@ a.action:focus, .black.button:focus, input.input-text:focus {
     background-color: #85a069;
 }
 .alert-box.warning {
-    background-color: #c78940;
+    background-color: #f9e60f;
+    color: #000;
 }
 .alert-box.error {
     background-color: #eb511b;
@@ -172,6 +181,9 @@ a.twitter {
 }
 a.blog {
     background: url(../images/icons/wordpress_32.png) no-repeat left 10px;
+}
+a.facebook {
+    background: url(../images/icons/facebook_32.png) no-repeat left 10px;
 }
 a.github {
     background: url(../images/icons/github_32.png) no-repeat left 10px;
@@ -284,17 +296,37 @@ caption, th, td {
 }
 
 /* @group youraliss */
-.youraliss {
+.youraliss, .cab {
 	.module-content {
 		@include box(#555);
 		background-color: #fafeff;
 		padding: 1em;
 	}
-	td.alert-0 { background-color: #ffea99;}
-	td.alert-1 { background-color: #ffb73c;}
-	td.alert-2 { background-color: #ff796a;}
-	td.alert-3 { background-color: red;}
 }
+.issue-0 { background-color: #ffea99; color: #000;}
+.issue-1 { background-color: #ffb73c; color: #000;}
+.issue-2 { background-color: #ff796a; color: #000;}
+.issue-3 { font-weight: bold; background-color: red;}
+
+.panel.issue-0 {
+	background: none;
+	background-color: #ffea99;
+}
+.panel.issue-1 {
+	background: none;
+	background-color: #ffb73c;
+}
+.panel.issue-2 {
+	background: none;
+	background-color: #ff796a;
+}
+.panel.issue-3 {
+	background: none;
+	background-color: red;
+	font-weight: bold;
+}
+
+
 /* @end */
 
 /* @group cab */
