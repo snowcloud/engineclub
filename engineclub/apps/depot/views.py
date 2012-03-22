@@ -279,7 +279,7 @@ def resource_find(request, template='depot/resource_find.html'):
 def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:
-        resource = get_one_or_404(id=ObjectId(object_id))
+        resource = get_one_or_404(Resource, id=ObjectId(object_id))
         try:
             curation = resource.curations[int(index)]
         except (IndexError, ValueError):
