@@ -19,6 +19,13 @@ def index(request):
         context,
         RequestContext(request))
 
+def get_message_default():
+
+# You have been invited to create an account on ALISS.org by .
+
+    
+    return 'wahooo'
+
 
 @user_passes_test(lambda u: u.is_staff)
 def invite(request):
@@ -30,7 +37,9 @@ def invite(request):
         form = InvitationForm(request.POST)
 
         if form.is_valid():
-            invite = Invitation(email=form.cleaned_data['email'],
+            invite = Invitation(
+                email=form.cleaned_data['email'],
+                message=form.cleaned_data['message'],
                 invite_from=account)
             invite.save()
             invite.send_email()
@@ -39,7 +48,8 @@ def invite(request):
             return HttpResponseRedirect(reverse('invitations'))
 
     else:
-        form = InvitationForm()
+        form = InvitationForm(initial={
+            'message': 'You have been invited to create an account on ALISS.org by %s.'% account.name})
 
     return render_to_response('invites/invite.html', {
         'account': account,

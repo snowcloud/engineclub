@@ -5,9 +5,14 @@ from accounts.models import Account
 from ecutils.forms import PlainForm
 from invites.models import Invitation
 
+
 class InvitationForm(PlainForm):
 
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'input-text large'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}))
+
+    def __init__(self, *args, **kwargs):
+        super(InvitationForm, self).__init__(*args, **kwargs)
 
     def clean_email(self):
 

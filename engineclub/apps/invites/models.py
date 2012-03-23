@@ -16,6 +16,8 @@ class Invitation(Document):
     invite_from = ReferenceField(Account, required=True)
     date_invited = DateTimeField(default=datetime.now, required=True)
     accepted = BooleanField(default=False, required=True)
+    message = StringField()
+
 
     def __unicode__(self):
         return self.email
@@ -33,14 +35,14 @@ class Invitation(Document):
 
         from django.core.urlresolvers import reverse
 
-        accept_url = reverse("invite-accept", args=[self.code, ])
+        accept_url = reverse("invite_accept", args=[self.code, ])
 
-        message = render_to_string('invites/invitation_email.txt', {
-            'sender': self.invite_from,
+        body = render_to_string('invites/invitation_email.txt', {
+            'message': self.message,
             'accept_url': accept_url,
         })
 
-        send_mail('ALISS Invitation', message, 'no-reply@aliss.org',
+        send_mail('ALISS Invitation', body, 'no-reply@aliss.org',
             [self.email], fail_silently=False)
 
     def save(self, *args, **kwargs):
