@@ -11,6 +11,7 @@ urlpatterns = patterns('enginecab.views',
     url(r'^reindex/$', 'reindex', name='cab_reindex'),
     url(r'^resources/$', 'resources', name='cab_resources'),
     url(r'^users/$', 'users', name='cab_users'),
+    url(r'^users/add/$', 'user_add', name='cab_user_add'),
     url(r'^users/(?P<object_id>\w+)/$', 'user_detail', name='cab_user_detail'),
     url(r'^users/(?P<object_id>\w+)/edit/$', 'user_edit', name='cab_user_edit'),
 

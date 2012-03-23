@@ -5,58 +5,29 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from accounts.forms import AccountForm, NewAccountForm
 from accounts.models import Account
+from accounts.views import detail as account_detail, edit as account_edit
 from depot.models import Curation
 from ecutils.utils import get_one_or_404
 from issues.context_processors import message_stats
 
 @login_required
 def index(request):
-
     if message_stats(request)['account_message_count']:
         return alerts(request)
     else:
         return account(request)
 
 @login_required
-def profile(request, template_name='youraliss/profile.html'):    
+def profile(request, object_id=None, template_name='youraliss/profile.html'):
     object =  get_one_or_404(Account, local_id=str(request.user.id))
-
-    template_context = {'object': object}
-
-    return render_to_response(
-        template_name,
-        template_context,
-        RequestContext(request)
-    )
+    return account_detail(request, object.id, template_name)
 
 @login_required
 def account(request, template_name='youraliss/account.html'):    
-
     object =  get_one_or_404(Account, local_id=str(request.user.id))
+    return account_edit(request, object.id, template_name)
     
-    if request.method == 'POST':
-        form = AccountForm(request.POST, instance=object)
-        if form.is_valid():
-            g = form.save(True)
-            messages.success(request, 'Changes saved.')
-            return HttpResponseRedirect(reverse('youraliss_account'))
-    else:
-        form = AccountForm(instance=object)
-    
-    template_context = {'form': form, 'new': False, 'object': object}
-
-    return render_to_response(
-        template_name,
-        template_context,
-        RequestContext(request)
-    )
-
-# @login_required
-# def alerts(request, template_name='youraliss/alerts.html'):    
-#     return render_to_response(template_name, RequestContext(request, {}))
-
 @login_required
 def curations(request, template_name='youraliss/curations.html'):
     object =  get_one_or_404(Account, local_id=str(request.user.id))

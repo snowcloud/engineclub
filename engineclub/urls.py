@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^api/', include('depot.api_urls')),
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('depot.urls')),
-    (r'^groups/', include('accounts.urls')),
+    # (r'^groups/', include('accounts.urls')),
     url(r'^search/$', 'depot.views.resource_find', name='search'),
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact'),

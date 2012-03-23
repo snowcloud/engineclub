@@ -10,7 +10,8 @@ from django.template import RequestContext
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from firebox.views import reindex_resources
 from accounts.models import Account, Collection
-from accounts.views import list_detail as def_list_detail
+from accounts.views import list_detail as def_list_detail, \
+    detail as account_detail, edit as account_edit, new as account_add
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
@@ -35,14 +36,16 @@ def users(request, template_name='enginecab/users.html'):
 @user_passes_test(lambda u: u.is_staff)
 def user_detail(request, object_id, template_name='enginecab/user_detail.html'):
     object = get_one_or_404(Account, id=ObjectId(object_id))
-    context = {'object': object}
-    return render_to_response(template_name, RequestContext(request, context))
+    return account_detail(request, object.id, template_name)
 
 @user_passes_test(lambda u: u.is_staff)
 def user_edit(request, object_id, template_name='enginecab/user_edit.html'):
     object = get_one_or_404(Account, id=ObjectId(object_id))
-    context = {'object': object}
-    return render_to_response(template_name, RequestContext(request, context))
+    return account_edit(request, object.id, template_name, next='cab_user_detail')
+
+@user_passes_test(lambda u: u.is_staff)
+def user_add(request, template_name='enginecab/user_edit.html'):
+    return account_add(request, template_name, next='cab_user_detail')
 
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request, template_name=''):

@@ -14,15 +14,20 @@ class AccountForm(DocumentForm):
     email_preference = forms.ChoiceField(choices=EMAIL_UPDATE_CHOICES, required=False)
 
 class NewAccountForm(DocumentForm):
-    class Meta:
-        document = Account
-        fields = ('name', 'email', 'description', 'local_id')
-    
-    description = forms.CharField(widget=forms.Textarea, required=False)
-    username = forms.CharField(required=False)
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
-    password2 = forms.CharField(widget=forms.PasswordInput, required=False, label='Password (again)')
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'input-text expand'}), required=False)
+    url = forms.URLField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-text expand'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-text expand'}), label='Password (again)')
     local_id = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    def clean_url(self):
+        # fix so that new Account can be filled with cleaned_data
+        # without validation caused by empty string
+        data = self.cleaned_data['url']
+        return data or None
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -32,7 +37,6 @@ class NewAccountForm(DocumentForm):
         self.password = cleaned_data.get('password')
         self.password2 = cleaned_data.get('password2')
         # subject = cleaned_data.get("subject")
-
 
         if local_id and self.username:
             raise forms.ValidationError("Please enter a local id or a username and passwords, but not both!")

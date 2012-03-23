@@ -4,8 +4,12 @@
 
 {% block breadcrumb-add %}
     <li><a href="{% url cab_users %}">Users</a></li>
-    <li><a href="{% url cab_user_detail object.id %}">{{ object.name }}</a></li>
-    <li class="current"><a href="#">Edit</a></li>
+    {% if new %}
+	    <li class="current"><a href="#">New account</a></li>
+    {% else %} 
+	    <li><a href="{% url cab_user_detail object.id %}">{{ object.name }}</a></li>
+	    <li class="current"><a href="#">Edit</a></li>
+    {% endif %}
 {% endblock breadcrumb-add %}
 
 
@@ -13,31 +17,30 @@
 
 
 {% block module-content %}
-	<h2>Edit {{ object.name }}</h2>
+    {% if new %}
+		<h2>New user account</h2>
+		<p>Consider using an <a href="{% url invite %}">invitation</a> instead!</p>
+    {% else %} 
+		<h2>Edit {{ object.name }}</h2>
+    {% endif %}
 
 
-    <table class="metadata">
-        <tbody>
-            <tr><th>name</th><td>{{ object.name }}</td></tr>
-            <tr><th>email</th><td><a href="mailto:{{ object.email }}">{{ object.email }}</a></td></tr>
-            <tr><th>description</th><td>{{ object.description }}</td></tr>
-            <tr><th>url</th><td>{{ object.url }}</td></tr>
-			<tr><th>aliss id</th><td>{{ object.id }}</td></tr>
-			<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
-			<tr><th>status</th><td>{{ object.status }}</td></tr>
-			<tr><th>members</th><td>
-				{% for memb in object.members %}
-					<p><a href="#">{{ memb.name }}</a></p>
-				{% endfor %}				
-			</td></tr>
-			<tr><th>collections</th><td>
-				{% for coll in object.collections %}
-					<a href="#">{{ coll.name }}</a><br>
-				{% endfor %}
-			</td></tr>
-            
-        </tbody>
-    </table>
+	<form class="nice form" action="." method="POST">{% csrf_token %}
+	    <fieldset>
+	        <legend><span>Account details:</span></legend>
+	         {{ form.as_plain }}
+
+	         <hr>
+	        <input type="submit" name="result" value="Save changes">
+	    </fieldset>
+	</form>
+
+	<table class="metadata">
+		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
+		<tr><th>members</th><td>{{ object.members }}</td></tr>
+		<tr><th>status</th><td>{{ object.status }}</td></tr>
+		<tr><th>collections</th><td>{{ object.collections }}</td></tr>
+	</table>
 
 {% endblock %}
 

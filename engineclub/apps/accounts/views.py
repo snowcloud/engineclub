@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
@@ -25,29 +26,36 @@ def index(request):
     return render_to_response('accounts/index.html',
         RequestContext( request, { 'objects': objects }))
 
+@login_required
 def detail(request, object_id, template_name='accounts/detail.html'):
-    group = get_one_or_404(Account, id=object_id)
+    account = get_one_or_404(Account, id=object_id)
+    user = request.user
+    if not (user.is_staff or account.local_id == str(user.id)):
+        raise PermissionDenied()
     
     return render_to_response(
         template_name,
-        {'object': group},
+        {'object': account},
         RequestContext(request)
     )
     
-@user_passes_test(lambda u: u.is_staff)
-def edit(request, object_id, template_name='accounts/edit.html'):
+@login_required
+def edit(request, object_id, template_name='accounts/edit.html', next='youraliss'):
 
-    object = get_one_or_404(Account, id=object_id)
+    account = get_one_or_404(Account, id=object_id)
+    user = request.user
+    if not (user.is_staff or account.local_id == str(user.id)):
+        raise PermissionDenied()
     
     if request.method == 'POST':
-        form = AccountForm(request.POST, instance=object)
+        form = AccountForm(request.POST, instance=account)
         if form.is_valid():
             g = form.save(True)
-            return HttpResponseRedirect(reverse('group', args=[object.id]))
+            return HttpResponseRedirect(reverse(next, args=[account.id]))
     else:
-        form = AccountForm(instance=object)
+        form = AccountForm(instance=account)
     
-    template_context = {'form': form, 'new': False}
+    template_context = {'form': form, 'object': account, 'new': False}
 
     return render_to_response(
         template_name,
@@ -56,13 +64,14 @@ def edit(request, object_id, template_name='accounts/edit.html'):
     )
 
 @user_passes_test(lambda u: u.is_staff)
-def new(request, template_name='accounts/edit.html'):
+def new(request, template_name='accounts/edit.html', next='cab_user_detail'):
     
     if request.method == 'POST':
         form = NewAccountForm(request.POST)
         if form.is_valid():
-            g = form.save(True)
-            return HttpResponseRedirect(reverse('group', args=[g.id]))
+            account = Account(**form.cleaned_data)
+            account.save()
+            return HttpResponseRedirect(reverse(next, args=[account.id]))
     else:
         form = NewAccountForm()
     
