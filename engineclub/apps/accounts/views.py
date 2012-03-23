@@ -9,7 +9,7 @@ from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from accounts.models import Account
+from accounts.models import Account, Collection
 from ecutils.utils import get_one_or_404
 from forms import AccountForm, NewAccountForm
 
@@ -74,3 +74,8 @@ def new(request, template_name='accounts/edit.html'):
         RequestContext(request)
     )
 
+@login_required
+def list_detail(request, object_id, template_name='youraliss/list_detail.html'):
+    object = get_one_or_404(Collection, id=ObjectId(object_id))
+    context = {'object': object}
+    return render_to_response(template_name, RequestContext(request, context))

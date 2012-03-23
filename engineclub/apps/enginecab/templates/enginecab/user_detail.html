@@ -25,7 +25,7 @@
         <tbody>
             <tr><th>name</th><td>{{ object.name }}</td></tr>
             <tr><th>email</th><td><a href="mailto:{{ object.email }}">{{ object.email }}</a></td></tr>
-            <tr><th>description</th><td>{{ object.description }}</td></tr>
+            <tr><th>description</th><td>{{ object.description|linebreaks }}</td></tr>
             <tr><th>url</th><td>{{ object.url|default:"" }}</td></tr>
 			<tr><th>aliss id</th><td>{{ object.id }}</td></tr>
 			<tr><th>local id</th><td>{{ object.local_id }}</td></tr>

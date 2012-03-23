@@ -99,6 +99,10 @@ dl.nice.tabs.vertical {
 	    background-color: #e5f2fe;
 	    border-color: #bbb #bbb -moz-use-text-color;
 	}
+	.cab {
+		background-color: #57659b;
+		color: #fff;
+	}
 }
 .video {
 	@include hide_it;

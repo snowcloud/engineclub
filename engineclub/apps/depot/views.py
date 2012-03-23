@@ -34,15 +34,15 @@ def resource_index(request):
     return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
 
-def resource_detail(request, object_id, template='depot/resource_detail.html'):
+def resource_detail(request, object_id, template_name='depot/resource_detail.html'):
     object = get_one_or_404(Resource, id=ObjectId(object_id))
     increment_resources(object_id)
 
-    return render_to_response(template,
+    return render_to_response(template_name,
         RequestContext( request, { 'object': object, 'yahoo_appid': settings.YAHOO_KEY, 'google_key': settings.GOOGLE_KEY }))
 
 @login_required
-def resource_report(request, object_id, template='depot/resource_report.html'):
+def resource_report(request, object_id, template_name='depot/resource_report.html'):
     """
     View for reporting a report when a user finds a problem with it.
     """
@@ -82,7 +82,7 @@ def resource_report(request, object_id, template='depot/resource_report.html'):
     else:
         form = ResourceReportForm()
 
-    return render_to_response(template, {
+    return render_to_response(template_name, {
         'next': urlquote_plus(request.GET.get('next', '')),
         'form': form,
         'object': resource,
@@ -100,7 +100,7 @@ def update_resource_metadata(self, resource, request):
     resource.metadata.author = str(request.user.id)
 
 @login_required
-def resource_add(request, template='depot/resource_edit.html'):
+def resource_add(request, template_name='depot/resource_edit.html'):
     """adds a new resource"""
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
@@ -135,11 +135,11 @@ def resource_add(request, template='depot/resource_edit.html'):
             }
         form = ShortResourceForm(initial=initial)
 
-    return render_to_response(template,
+    return render_to_response(template_name,
         RequestContext( request, {'resourceform': form, 'template_info': template_info }))
 
 @login_required
-def resource_edit(request, object_id, template='depot/resource_edit.html'):
+def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
     """ edits an existing resource. Uses a wizard-like approach, so checks resource.collection_status
         and hands off to resource_* function handler
     """
@@ -191,7 +191,7 @@ def resource_edit(request, object_id, template='depot/resource_edit.html'):
         eventform = EventForm(instance=resource.calendar_event)
         # shelflifeform = ShelflifeForm(instance=resource)
 
-    return render_to_response(template,
+    return render_to_response(template_name,
         RequestContext( request, { 'template_info': template_info, 'object': resource,
             'resourceform': resourceform, 'locationform': locationform, 'eventform': eventform, #'places': places,
             # 'tagsform': tagsform, #'shelflifeform': shelflifeform,
@@ -223,7 +223,7 @@ def resource_remove(request, object_id):
     return HttpResponseRedirect(reverse('resource_list'))
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
-def resource_find(request, template='depot/resource_find.html'):
+def resource_find(request, template_name='depot/resource_find.html'):
     """docstring for resource_find"""
     results = []
     centre = None
@@ -273,10 +273,10 @@ def resource_find(request, template='depot/resource_find.html'):
         'google_key': settings.GOOGLE_KEY,
         'show_map': results and centre
     }
-    return render_to_response(template, RequestContext(request, context))
+    return render_to_response(template_name, RequestContext(request, context))
 
 
-def curation_detail(request, object_id, index=None, template='depot/curation_detail.html'):
+def curation_detail(request, object_id, index=None, template_name='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:
         resource = get_one_or_404(Resource, id=ObjectId(object_id))
@@ -304,7 +304,7 @@ def curation_detail(request, object_id, index=None, template='depot/curation_det
         'object': curation,
         'resource': resource,
     }
-    return render_to_response(template, RequestContext(request, context))
+    return render_to_response(template_name, RequestContext(request, context))
 
 
 @login_required
