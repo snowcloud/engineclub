@@ -63,7 +63,7 @@
     <tr><th>location</th><td>-</td></tr>
 {% endfor %}
 <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
-<tr><th>owner</th><td><a href="{% url 'account' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>owner</th><td><a href="{% url 'account_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
 <tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
     <tr>
         <th>{% ifchanged %}curation{% endifchanged %}</th>

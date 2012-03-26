@@ -75,10 +75,13 @@ class Location(Document):
         'collection': 'location'
     }
     def __unicode__(self):
-        return ', '.join([self.postcode, self.place_name]) \
+        return u', '.join([self.postcode, self.place_name]) \
             if self.postcode \
-            else ', '.join([self.place_name, self.district])
+            else u', '.join([self.place_name, self.district])
 
+    # def __string__(self):
+    #     return 'blah'
+        
     @classmethod
     def create_from(cls, name):
         result = None
