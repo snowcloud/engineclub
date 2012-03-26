@@ -79,9 +79,6 @@ class Location(Document):
             if self.postcode \
             else u', '.join([self.place_name, self.district])
 
-    # def __string__(self):
-    #     return 'blah'
-        
     @classmethod
     def create_from(cls, name):
         result = None
