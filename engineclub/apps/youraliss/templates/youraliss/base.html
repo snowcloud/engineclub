@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}your aliss{% endblock %}
 {% block body_class %}youraliss{% endblock %}
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url youraliss %}">your account</a></li>
+    <li><a href="{% url 'youraliss' %}">your account</a></li>
     {% block breadcrumb-add %}{% endblock breadcrumb-add %}
 </ul>
 {% endblock %}
@@ -19,14 +20,14 @@
 
 	<div class="module-nav">
 		<dl class="nice tabs vertical">
-			<dd><a class="{% block mod-nav-profile %}{% endblock %}" href="{% url youraliss %}">profile</a></dd>
-			<dd><a class="{% block mod-nav-curations %}{% endblock %}" href="{% url youraliss_curations %}">curations</a></dd>
-			<dd><a class="{% block mod-nav-groups %}{% endblock %}" href="{% url youraliss_lists %}">lists</a></dd>
-			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url issue_list %}">issues</a></dd>
-			<dd><a class="{% block mod-nav-account %}{% endblock %}" href="{% url youraliss_account %}">account settings</a></dd>
+			<dd><a class="{% block mod-nav-profile %}{% endblock %}" href="{% url 'youraliss' %}">profile</a></dd>
+			<dd><a class="{% block mod-nav-curations %}{% endblock %}" href="{% url 'youraliss_curations' %}">curations</a></dd>
+			<dd><a class="{% block mod-nav-groups %}{% endblock %}" href="{% url 'youraliss_lists' %}">lists</a></dd>
+			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url 'issue_list' %}">issues</a></dd>
+			<dd><a class="{% block mod-nav-account %}{% endblock %}" href="{% url 'youraliss_account' %}">account settings</a></dd>
 		</dl>
 		{% if user.is_staff %} 
-			<p><a href="{% url cab %}" class="medium radius red button">engine cab</a></p>
+			<p><a href="{% url 'cab' %}" class="medium radius red button">engine cab</a></p>
 		{% endif %}
 	</div>
 

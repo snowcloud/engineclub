@@ -1,13 +1,14 @@
 {% extends "enginecab/base.html" %}
+{% load url from future %}
 
 {% block title %}user edit{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab_users %}">Users</a></li>
+    <li><a href="{% url 'cab_users' %}">Users</a></li>
     {% if new %}
 	    <li class="current"><a href="#">New account</a></li>
     {% else %} 
-	    <li><a href="{% url cab_user_detail object.id %}">{{ object.name }}</a></li>
+	    <li><a href="{% url 'cab_user_detail' object.id %}">{{ object.name }}</a></li>
 	    <li class="current"><a href="#">Edit</a></li>
     {% endif %}
 {% endblock breadcrumb-add %}
@@ -19,7 +20,7 @@
 {% block module-content %}
     {% if new %}
 		<h2>New user account</h2>
-		<p>Consider using an <a href="{% url invite %}">invitation</a> instead!</p>
+		<p>Consider using an <a href="{% url 'invite' %}">invitation</a> instead!</p>
     {% else %} 
 		<h2>Edit {{ object.name }}</h2>
     {% endif %}

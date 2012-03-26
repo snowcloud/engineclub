@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}Invitation used{% endblock %}
 
@@ -6,6 +7,6 @@
 
 <h1>This invitation has already been used.</h1>
 
-<p>Please <a href="{% url contact %}">contact us</a> if there is a problem.</p>
+<p>Please <a href="{% url 'contact' %}">contact us</a> if there is a problem.</p>
 
 {% endblock %}

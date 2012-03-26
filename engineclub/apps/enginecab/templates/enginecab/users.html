@@ -1,4 +1,5 @@
 {% extends "enginecab/base.html" %}
+{% load url from future %}
 
 {% block title %}engine cab{% endblock %}
 
@@ -15,8 +16,8 @@
 
 	<dl class="sub-nav">
 	    <dt>Actions:</dt>
-        <dd><a href="{% url cab_user_add %}">New user</a></dd>
-        <dd><a href="{% url invitations %}">Invitations to new users</a></dd>
+        <dd><a href="{% url 'cab_user_add' %}">New user</a></dd>
+        <dd><a href="{% url 'invitations' %}">Invitations to new users</a></dd>
 	</dl>
 
 
@@ -33,7 +34,7 @@
         <tbody>
             {% for user in objects  %}
             <tr>
-                <td><a href="{% url cab_user_detail user.id %}">{{ user.name }}</a></td>
+                <td><a href="{% url 'cab_user_detail' user.id %}">{{ user.name }}</a></td>
                 <td><a href="">{{ user.email }}</a></td>
             </tr>
             {% empty %}

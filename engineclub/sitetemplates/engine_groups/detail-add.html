@@ -1,4 +1,5 @@
 {% load markup utils depot_tags %}
+{% load url from future %}
 
 <h2>Latest curations for {{ object.name }}</h2>
 
@@ -14,7 +15,7 @@
 
                 <li>
                     <div class="row">
-                    <h3><a href="{% url resource resource.id %}">{{ resource.title }}</a></h3>
+                    <h3><a href="{% url 'resource' resource.id %}">{{ resource.title }}</a></h3>
                     <div class="location">
                     {% if resource.locations %}
                         <h4>Location:</h4>
@@ -40,38 +41,6 @@
     
 <div id="results">
     
-    {% get_latest_curations object 20 as latest_curations %}
-
-    <ol class="resource-listing">
-    {% for resource in latest_curations %}
-        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
-
-            {% if resource.calendar_event.start %}
-                <p class="event">{{ resource.calendar_event|event_date }}</p>
-            {% endif %}
-
-            {% if resource.locations %}
-                <ol>
-                    {% for loc in resource.locations %}
-                        <li class="resource-listing-locs">{{ loc }}</li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
-
-            <p>{{ resource.description|truncatewords:30 }}</p>
-            <p class="resource-listing-meta">
-                <a class="resource-url" href="{% url resource resource.id %}">more details...</a>
-                {% if resource.uri %} |
-                    <a href="{{ resource.uri }}">external site...</a>
-                {% endif %}
-            </p>
-<!-- 
--->
-        </li>
-    {% empty %}
-        <li>no results found</li>
-    {% endfor %}
-    </ol>
 
     <form class="form">
         <fieldset>

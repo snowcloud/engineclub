@@ -1,12 +1,13 @@
 {% extends template_info.base %}
 {% load utils %}
+{% load url from future %}
 
 {% block title %}edit resource{% endblock %}
 
 {% block breadcrumbs %}
 {% if object %}
     <ul class="breadcrumbs">
-        <li><a href="{% url resource object.id  %}">Resource</a></li>
+        <li><a href="{% url 'resource' object.id  %}">Resource</a></li>
         <li class="current"><a href="#">Edit</a></li>
     </ul>
 {% endif %}
@@ -67,7 +68,7 @@ $('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_loca
 $('#new_location_link').click(function() {$('#main-form').submit();});
 $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 
-$('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
+$('#id_tags').tokenInput('{% url 'depot.api_handlers.tags' %}', {
     minChars: 3,
     onResult: function (results) {
         var typedValue = $('#token-input-id_tags').val();
@@ -82,7 +83,7 @@ $('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
     theme: 'aliss'
 });
 {% if locationform %}
-    $('#id_new_location').tokenInput('{% url depot.api_handlers.locations %}', {
+    $('#id_new_location').tokenInput('{% url 'depot.api_handlers.locations' %}', {
         minChars: 3,
         onResult: function (results) {
             var typedValue = $('#token-input-id_new_location').val();

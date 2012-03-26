@@ -1,10 +1,11 @@
 {% extends "youraliss/base.html" %}
 {% load accounts_tags issues_tags %}
+{% load url from future %}
 
 {% block title %}your aliss- issue{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url issue_list %}">Issues</a></li>
+    <li><a href="{% url 'issue_list' %}">Issues</a></li>
     <li class="current"><a href="#">Issue detail</a></li>
 {% endblock breadcrumb-add %}
 
@@ -33,7 +34,7 @@
 					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
 					<td class="issue-{{object.severity}}">{{ object.severity|issue_severity }}</td>
 					<td>{{ object.message|linebreaks }}</td>
-					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
+					<td>{% if object.related_document %}<a href="{% url 'resource' object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
 					<td>{{ object.resolved|display_resolved }}</td>
 	            </tr>
 	        </tbody>

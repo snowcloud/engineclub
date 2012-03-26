@@ -1,9 +1,10 @@
 {% extends "enginecab/base.html" %}
+{% load url from future %}
 
 {% block title %}list- {{object.name}}{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab_lists %}">Lists</a></li>
+    <li><a href="{% url 'cab_lists' %}">Lists</a></li>
     <li class="current"><a href="#">{{object.name}}</a></li>
 {% endblock breadcrumb-add %}
 
@@ -24,7 +25,7 @@
 
  	<ul class="disc">
 	{% for member in object.accounts %}
-		<li><a href="{% url cab_user_detail member.account.id %}">{{ member.account.name }}</a></li>
+		<li><a href="{% url 'cab_user_detail' member.account.id %}">{{ member.account.name }}</a></li>
 	{% empty %}
 		<li>no member accounts found</li>
 	{% endfor %}

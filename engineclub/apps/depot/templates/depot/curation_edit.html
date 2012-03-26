@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load utils %}
+{% load url from future %}
 
 {% block title %}edit curation{% endblock %}
 
@@ -28,7 +29,7 @@
 {% endblock script-extra %}
 {% block document-ready %}
 
-$('#id_tags').tokenInput('{% url depot.api_handlers.tags %}', {
+$('#id_tags').tokenInput('{% url 'depot.api_handlers.tags' %}', {
     minChars: 3,
     onResult: function (results) {
         var typedValue = $('#token-input-id_tags').val();

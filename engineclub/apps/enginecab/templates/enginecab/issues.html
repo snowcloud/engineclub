@@ -1,10 +1,11 @@
 {% extends "enginecab/base.html" %}
 {% load issues_tags %}
+{% load url from future %}
 
 {% block title %}engine cab issues{% endblock %}
 
 {% block breadcrumb-add %}
-    <li><a href="{% url cab %}">Engine cab</a></li>
+    <li><a href="{% url 'cab' %}">Engine cab</a></li>
     <li class="current"><a href="#">Issues</a></li>
 {% endblock breadcrumb-add %}
 
@@ -36,13 +37,13 @@
             {% for object in objects  %}
             <tr>
 					<td>{{ object.reporter }}<br>
-                        <a href="{%url cab_issue_detail object.id %}">view</a>
+                        <a href="{%url 'cab_issue_detail' object.id %}">view</a>
                     </td>
 					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
                     <td {% if not object.resolved %}class="issue-{{object.severity}}"{% endif %}>{{ object.severity|issue_severity }}
                     <span class="show-on-phones"><br>{{ object.resolved|display_resolved }}</span></td>
  					<td class="hide-on-phones">{{ object.message|linebreaks }}</td>
-					<td>{% if object.related_document %}<a href="{% url resource object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}
+					<td>{% if object.related_document %}<a href="{% url 'resource' object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}
                     </td>
 					<td class="hide-on-phones">{{ object.resolved|display_resolved }}</td>
 

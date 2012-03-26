@@ -1,3 +1,4 @@
+{% load url from future %}
 <html>
 <head>
 <style>
@@ -32,7 +33,7 @@ body  {
         
     <ol class="resource-listing">
     {% for resource in curations %}
-        <li><p class="resource-listing-title"><a href="{% url resource resource.id %}">{{ resource.title }}</a></p>
+        <li><p class="resource-listing-title"><a href="{% url 'resource' resource.id %}">{{ resource.title }}</a></p>
 
             {% if resource.locations %}
                 <ol>
@@ -44,7 +45,7 @@ body  {
 
             <p>{{ resource.description|truncatewords:30 }}</p>
             <p class="resource-listing-meta">
-                <a class="resource-url" href="{% url resource resource.id %} target="_top"">more details...</a>
+                <a class="resource-url" href="{% url 'resource' resource.id %} target="_top"">more details...</a>
                 {% if resource.uri %} |
                     <a href="{{ resource.uri }}">external site...</a>
                 {% endif %}

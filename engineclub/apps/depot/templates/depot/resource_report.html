@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load url from future %}
+
 {#% load markup utils accounts_tags depot_tags %#}
 
 {% block title %}report {{ object.title }}{% endblock %}
@@ -7,8 +9,8 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url resource_find %}">Search</a></li>
-    <li><a href="{% url resource object.id %}">{{ object.title }}</a></li>
+    <li><a href="{% url 'resource_find' %}">Search</a></li>
+    <li><a href="{% url 'resource' object.id %}">{{ object.title }}</a></li>
     <li class="current"><a href="#">Report</a></li>
 </ul>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}Tickets{% endblock %}
 
@@ -8,7 +9,7 @@
     {% if issues %}
         <ul>
         {% for issue in issues %}
-            <li><a href="{% url issue_detail issue.id %}">
+            <li><a href="{% url 'issue_detail' issue.id %}">
                 {{ issue.message }}
                 {% if issue.related_document %} - {{ issue.related_document }} {% endif %}
                 {% if not issue.opened %}(unread){% else %}(read){% endif %}

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load url from future %}
 
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -35,12 +36,12 @@
     <div class="container site-header">
         <div id="site-header" class="row">
             <h1>aliss</h1>
-            <div class="nav-mobile">{% block nav_link %}<a href="{% url index %}">home</a>{% endblock %}</div>
+            <div class="nav-mobile">{% block nav_link %}<a href="{% url 'index' %}">home</a>{% endblock %}</div>
             
             <div class="nav">
-                <a href="{% url index %}">home</a> -
-                <a href="/info/">find out more</a> - <a href="{% url search %}">search</a> - <a href="{% url contact %}">contact us</a>
-                 - <a href="{% url youraliss %}">{% if not user.is_authenticated %}log in{% else %}your account{% endif %}</a>
+                <a href="{% url 'index' %}">home</a> -
+                <a href="/info/">find out more</a> - <a href="{% url 'search' %}">search</a> - <a href="{% url 'contact' %}">contact us</a>
+                 - <a href="{% url 'youraliss' %}">{% if not user.is_authenticated %}log in{% else %}your account{% endif %}</a>
             </div>
         </div>
     </div>
