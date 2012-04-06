@@ -15,82 +15,71 @@ from accounts.models import Account, Collection, Membership, \
 
 SEP = '**************'
 
-# import json
-# from mongoengine import base as mongobase
-# from pymongo import json_util
+# def _dump_collections(collection_names=None):
+#     if collection_names is None:
+#         collection_names = [coll for coll in get_db().collection_names() if coll != 'system.indexes']
+#     for coll in collection_names:
+#         subprocess.call([
+#             'mongoexport', 
+#             '-d', '%s' % get_db().name, 
+#             '-c', '%s' % coll, 
+#             '-o', 'output_%s.json' % coll])
 
-def _dump_collections(collection_names=None):
-    if collection_names is None:
-        collection_names = [coll for coll in get_db().collection_names() if coll != 'system.indexes']
-    for coll in collection_names:
-        subprocess.call([
-            'mongoexport', 
-            '-d', '%s' % get_db().name, 
-            '-c', '%s' % coll, 
-            '-o', 'output_%s.json' % coll])
+# def _load_collections(collection_names=None, drop='--drop'):
+#     if collection_names is None:
+#         collection_names = [coll for coll in get_db().collection_names() if coll != 'system.indexes']
+#     for coll in collection_names:
+#         subprocess.call([
+#             'mongoimport', 
+#             '-d', '%s' % get_db().name, 
+#             '-c', '%s' % coll, 
+#             '--file', 'output_%s.json' % coll, 
+#             '%s' % drop])
 
-def _load_collections(collection_names=None, drop='--drop'):
-    if collection_names is None:
-        collection_names = [coll for coll in get_db().collection_names() if coll != 'system.indexes']
-    for coll in collection_names:
-        subprocess.call([
-            'mongoimport', 
-            '-d', '%s' % get_db().name, 
-            '-c', '%s' % coll, 
-            '--file', 'output_%s.json' % coll, 
-            '%s' % drop])
-
-def _print_db_info():
-    """docstring for _print_db_info"""
-    print SEP
-    print 'Account: ', Account.objects.count()
-    print 'Membership: ', Membership.objects.count()
-    print 'Collection: ', Collection.objects.count()
-    print SEP
+# def _print_db_info():
+#     """docstring for _print_db_info"""
+#     print SEP
+#     print 'Account: ', Account.objects.count()
+#     print 'Membership: ', Membership.objects.count()
+#     print 'Collection: ', Collection.objects.count()
+#     print SEP
 
 def make_test_user_and_account(name):
     user = User.objects.create_user(name, email="%s@example.com" % name, password='password')
     acct = Account.objects.create(name=name, email="%s@example.com" % name, local_id=str(user.id))
     return user, acct
 
-class AccountsBaseTest(MongoTestCase):
-    def setUp(self):
-        # _print_db_info()
-        self.user_bob, self.bob = make_test_user_and_account('bob')
-        self.user_humph, self.humph = make_test_user_and_account('humph')
-        self.user_jorph, self.jorph = make_test_user_and_account('jorph')
-        self.user_group, self.group = make_test_user_and_account('group')
+def setUpAccounts(self):
 
-        # self.bob = Account.objects.create(name="Bob Hope", email="bob@example.com", local_id=str(self.user_bob.id))
-        # self.humph = Account.objects.create(name="Humph Floogerwhippel", email="humph@example.com", local_id=str(self.user_humph.id))
-        # self.jorph = Account.objects.create(name="Jorph Wheedjilli", email="jorph@example.com", local_id=str(self.user_jorph.id))
-        # self.group = Account.objects.create(
-        #     name="Flupping Baxters of Falkirk", 
-        #     email="group@example.com", 
-        #     local_id=str(self.user_group.id),
-        #     )
-        self.group.add_member(self.humph)
+        # Create normal contrib.auth users & their mongodb accounts
+        for name in ['alice', 'bob', 'emma', 'hugo', 'jorph','group']:
+            a, b =  make_test_user_and_account(name)
+            setattr(self, 'user_%s' % name, a)
+            setattr(self, name, b)
+
+        # Add alice to the group, so she is a "sub account"
+        self.group.add_member(self.alice)
         self.group.add_member(self.jorph, role=ADMIN_ROLE)
 
-    def tearDown(self):
-        # _print_db_info()
-        pass
+class AccountsBaseTest(MongoTestCase):
+
+    def setUp(self):
+        setUpAccounts(self)
 
 class CollectionsTest(AccountsBaseTest):
 
     def test_creation(self):
-
         coll1 = Collection.objects.create(name='Test Collection', owner=self.bob)
-        coll2 = Collection.objects.create(name='Test Collection 2', owner=self.humph)
+        coll2 = Collection.objects.create(name='Test Collection 2', owner=self.alice)
         self.assertEqual(1, Collection.objects(owner=self.bob).count())
 
-        coll1.add_accounts([self.humph, self.jorph])
-        coll1.add_accounts([self.humph])
+        coll1.add_accounts([self.alice, self.jorph])
+        coll1.add_accounts([self.alice])
         coll1.add_accounts([self.jorph])
         self.assertEqual(2, len(coll1.accounts))
 
-        self.assertEqual(1, len(self.humph.collections))
-        self.assertEqual(self.humph.collections[0].name, 'Test Collection')
+        self.assertEqual(1, len(self.alice.collections))
+        self.assertEqual(self.alice.collections[0].name, 'Test Collection')
 
         coll2.add_accounts([self.jorph])
         self.assertEqual(1, len(coll2.accounts))
@@ -98,14 +87,11 @@ class CollectionsTest(AccountsBaseTest):
         self.assertEqual(2, len(self.jorph.collections))
 
 class AccountsTest(AccountsBaseTest):
-    def test_account(self):
-        self.assertEqual(Account.objects.count(), 4)
-        _dump_collections()
 
     def test_load_accounts(self):
         """docstring for test_load_accounts"""
-        _load_collections()
-        self.assertEqual(Account.objects.count(), 4)
+        # _load_collections()
+        self.assertEqual(Account.objects.count(), 6)
 
         arthur, acct1 = make_test_user_and_account('arthur')
         # acct1 = Account.objects.create(name="Arthur Sixpence", email="arthur@example.com", local_id=str(arthur.id))

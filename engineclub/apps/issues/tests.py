@@ -1,6 +1,5 @@
 from mongoengine.django.tests import MongoTestCase
 
-
 class IssuesTestCase(MongoTestCase):
 
     def setUp(self):
@@ -8,29 +7,12 @@ class IssuesTestCase(MongoTestCase):
         Create two test accounts and a parent account with alice being a
         member.
         """
-
-        from django.contrib.auth.models import User
-
-        from accounts.models import Account, Membership
-        from accounts.tests import make_test_user_and_account
-        from depot.models import Resource
+        from accounts.tests import setUpAccounts
+        from depot.tests import setUpResources
 
         # Create normal contrib.auth users & their mongodb accounts
-        for name in ['alice', 'bob', 'emma', 'hugo', 'jorph','company']:
-            a, b =  make_test_user_and_account(name)
-            setattr(self, 'user_%s' % name, a)
-            setattr(self, name, b)
-
-        # Add alice to the company, so she is a "sub account"
-        Membership.objects.create(parent_account=self.company, member=self.alice)
-
-        self.resource1, created = Resource.objects.get_or_create(
-            title='title',
-            owner=self.alice)
-
-        self.resource2, created = Resource.objects.get_or_create(
-            title='title too',
-            owner=self.bob)
+        setUpAccounts(self)
+        setUpResources(self)
 
 class ApiTestCase(IssuesTestCase):
 
@@ -48,18 +30,18 @@ class ApiTestCase(IssuesTestCase):
             )
         issue.curators = [self.emma, self.hugo]
         issue.save()
-        self.assertEqual(issue.related_document.title, 'title')
+        self.assertEqual(issue.related_document.title, 'title 1')
         self.assertEqual(issue.resource_owner, self.alice)
 
         issue2, created = Issue.objects.get_or_create(
             message = 'more blah blah',
             severity = SEVERITY_MEDIUM,
             reporter = self.alice,
-            related_document=self.resource2
+            related_document=self.resource3
             )
         issue2.curators = [self.jorph, self.hugo]
         issue2.save()
-        self.assertEqual(issue2.related_document.title, 'title too')
+        self.assertEqual(issue2.related_document.title, 'title 3')
         self.assertEqual(issue2.resource_owner, self.bob)
 
         self.assertTrue(Issue.objects.count() == 2)

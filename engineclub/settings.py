@@ -2,9 +2,6 @@
 
 import os
 import sys
-
-_TESTING= 'test' in sys.argv
-
 import logging
 
 # logging.basicConfig(level=logging.WARNING,
