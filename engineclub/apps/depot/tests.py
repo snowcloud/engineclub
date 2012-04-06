@@ -100,11 +100,14 @@ def setUpResources(self):
     
     for idx, data in enumerate((
             {'title': 'title 0', 'owner': self.alice, 'tags': ['red', 'blue']},
-            {'title': 'title 1', 'owner': self.alice, 'tags': ['blue']},
-            {'title': 'title 2', 'owner': self.alice, 'tags': ['red', 'blue']},
+            {'title': 'title 1', 'owner': self.alice, 'tags': ['blue', 'green']},
+            {'title': 'title 2', 'owner': self.alice, 'tags': ['red', 'blue', 'green']},
             {'title': 'title 3', 'owner': self.bob, 'tags': ['red']},
-            {'title': 'title 4', 'owner': self.jorph, 'tags': ['blue']},
-            {'title': 'title 5', 'owner': self.jorph, 'tags': ['blue']},
+            {'title': 'title 4', 'owner': self.jorph, 'tags': ['blue', 'green']},
+            {'title': 'title 5', 'owner': self.jorph, 'tags': ['red', 'blue']},
+            {'title': 'title 6', 'owner': self.hugo, 'tags': ['blue']},
+            {'title': 'title 7', 'owner': self.group, 'tags': ['blue']},
+            {'title': 'title 8', 'owner': self.group, 'tags': ['blue']},
             )):
         res =  Resource.objects.create(**data)
         setattr(self, 'resource%s' % idx, res)
@@ -124,7 +127,7 @@ class ResourceTest(MongoTestCase):
         setUpResources(self)
 
     def test_resources(self):
-        self.assertEqual(Resource.objects.count(), 6)
+        self.assertEqual(Resource.objects.count(), 9)
         
     def test_newresource(self):
         """
@@ -144,13 +147,13 @@ class ResourceTest(MongoTestCase):
         """docstring for test_tags"""
 
         resources = Resource.objects(tags='red')
-        self.assertEqual(len(resources), 3)
+        self.assertEqual(len(resources), 4)
         # 6 tags contain blue OR red
         resources = Resource.objects(tags__in=['blue', 'red'])
-        self.assertEqual(len(resources), 6)
+        self.assertEqual(len(resources), 9)
         # 2 tags contain blue AND red
         resources = Resource.objects(tags__all=['blue', 'red'])
-        self.assertEqual(len(resources), 2)
+        self.assertEqual(len(resources), 3)
     
 #     def test_tagslist(self):
 #         """docstring for test_tagslist"""
