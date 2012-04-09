@@ -122,18 +122,21 @@ ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; border: none; }
 /* line 137, ../../compass/src/style.scss */
 .youraliss .module-content, .cab .module-content { float: right; width: 75%; }
 
+/* line 143, ../../compass/src/style.scss */
+dl.nice.tabs.vertical dd a.staff { color: #c74a14; }
+
 /* @end */
 /* @group presentation */
-/* line 145, ../../compass/src/style.scss */
+/* line 150, ../../compass/src/style.scss */
 .pres-slide { background-color: #eee; }
 
-/* line 148, ../../compass/src/style.scss */
+/* line 153, ../../compass/src/style.scss */
 .pres-media { float: left; width: 60%; border: none; padding: 1em; }
 
-/* line 154, ../../compass/src/style.scss */
+/* line 159, ../../compass/src/style.scss */
 .pres-text { margin-left: 63%; margin-top: 2.5em; }
 
-/* line 158, ../../compass/src/style.scss */
+/* line 163, ../../compass/src/style.scss */
 .pres-text p { font-size: 160%; }
 
 /* @end */
