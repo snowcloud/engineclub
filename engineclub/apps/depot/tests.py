@@ -112,17 +112,10 @@ def setUpResources(self):
         res =  Resource.objects.create(**data)
         setattr(self, 'resource%s' % idx, res)
 
-    # for idx, owner in enumerate(
-    #     (self.alice, self.alice, self.alice, self.bob, self.jorph, self.jorph)):
-
-    #     res =  makeResource('title %s' % idx, owner)
-    #     setattr(self, 'resource%s' % idx, res)
-
 class ResourceTest(MongoTestCase):
             
     def setUp(self):
         from accounts.tests import setUpAccounts
-
         setUpAccounts(self)
         setUpResources(self)
 
