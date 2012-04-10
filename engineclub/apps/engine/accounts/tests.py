@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from mongoengine.connection import _get_db as get_db
 from mongoengine.django.tests import MongoTestCase
 
-from resources.models import Resource
-from accounts.models import Account, Collection, Membership, \
+# from resources.models import Resource
+from accounts.models import Account, Collection, \
     MEMBER_ROLE, ADMIN_ROLE
 
 SEP = '**************'

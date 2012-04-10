@@ -3,10 +3,6 @@ from mongoengine.django.tests import MongoTestCase
 class IssuesTestCase(MongoTestCase):
 
     def setUp(self):
-        """
-        Create two test accounts and a parent account with alice being a
-        member.
-        """
         from accounts.tests import setUpAccounts
         from locations.tests import setUpLocations
         from resources.tests import setUpResources
