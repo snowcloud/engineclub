@@ -17,8 +17,9 @@ from pymongo.objectid import ObjectId
 
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
-from resources.models import Resource, Curation, Location, CalendarEvent,  \
-    STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
+from locations.models import Location, lookup_postcode
+from resources.models import Resource, Curation, CalendarEvent,  \
+    STATUS_OK, STATUS_BAD, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from resources.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm

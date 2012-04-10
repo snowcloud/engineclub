@@ -7,7 +7,7 @@ from ecengine import settings_test
 setup_environ(settings_test)
 
 
-from resources.models import Location, load_item_data
+from locations.models import Location
 
 def _load_data(self):
 	"""loads fixture data for test Resources"""

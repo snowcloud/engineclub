@@ -6,7 +6,8 @@ apps/depot/tests.py
 from django.conf import settings
 from mongoengine.django.tests import MongoTestCase
 
-from resources.models import Resource, Curation, Location, load_resource_data
+from locations.models import Location
+from resources.models import Resource, Curation, load_resource_data
 from resources.search import lat_lon_to_str
 from resources.forms import ShortResourceForm
 

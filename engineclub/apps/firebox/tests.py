@@ -9,7 +9,8 @@ from django.test import TestCase, TransactionTestCase
 from firebox.views import *
 
 from resources.forms import ShortResourceForm
-from resources.models import Resource, Location, load_resource_data
+from locations.models import Location
+from resources.models import Resource, load_resource_data
 from resources.search import lat_lon_to_str, get_location_for_postcode
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db

@@ -2,7 +2,8 @@
 from django import forms
 # import floppyforms as forms
 
-from resources.models import Resource, Curation, Location
+from locations.models import Location
+from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *

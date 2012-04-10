@@ -6,9 +6,6 @@ from django.template.defaultfilters import slugify
 
 from mongoengine import *
 
-# dependancy loop
-# from resources.models import Location
-
 MEMBER_ROLE = 'member'
 ADMIN_ROLE = 'admin'
 MENTOR_ROLE = 'mentor'
