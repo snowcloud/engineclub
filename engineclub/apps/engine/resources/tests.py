@@ -6,7 +6,6 @@ apps/depot/tests.py
 from django.conf import settings
 from mongoengine.django.tests import MongoTestCase
 
-from locations.models import Location
 from resources.models import Resource, Curation, load_resource_data
 from resources.search import lat_lon_to_str
 from resources.forms import ShortResourceForm
@@ -27,10 +26,6 @@ def makeResource(data):
     return Resource.objects.create(
         title=title,
         owner=owner)
-
-def setUpLocations(self):
-    data = { "id" : "EH151AR", "accuracy" : "6", "postcode" : "EH15 1AR", "district" : "City of Edinburgh", "loc_type" : "POSTCODE", "country_code" : "SCT", "lat_lon" : [ 55.9539, -3.1164 ], "place_name" : "Portobello/Craigmillar, City of Edinburgh" }
-    self.loc1 = Location.objects.create(**data)
 
 
 def setUpResources(self):
@@ -54,6 +49,7 @@ class ResourceTest(MongoTestCase):
             
     def setUp(self):
         from accounts.tests import setUpAccounts
+        from locations.tests import setUpLocations
         setUpAccounts(self)
         setUpLocations(self)
         setUpResources(self)
@@ -123,6 +119,7 @@ class SearchTest(MongoTestCase):
             
     def setUp(self):
         from accounts.tests import setUpAccounts
+        from locations.tests import setUpLocations
         from enginecab.views import reindex_resources
 
         setUpAccounts(self)

@@ -51,8 +51,10 @@ class TestBase(MongoTestCase):
 
     def setUp(self):
         from accounts.tests import setUpAccounts
+        from locations.tests import setUpLocations
         from resources.tests import setUpResources
         setUpAccounts(self)
+        setUpLocations(self)
         setUpResources(self)
 
         # # _print_db_info()
@@ -99,7 +101,7 @@ class CollectionsTest(TestBase):
 
         # TRY SOME SEARCHES
 
-        reindex_resources(self.db_name, printit=False)
+        reindex_resources()
         conn = Solr(settings.SOLR_URL)
         kw = {'rows': SOLR_ROWS, 'fl': '*,score', 'qt': 'resources'}
         

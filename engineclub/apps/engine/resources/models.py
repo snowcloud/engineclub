@@ -1,16 +1,18 @@
-# from django.db import models
+# resources.models
+
+from copy import deepcopy
+from datetime import datetime
 
 from django.conf import settings
 
 from mongoengine import *
 from mongoengine.connection import _get_db as get_db
-from datetime import datetime
+from pysolr import Solr
 
 from accounts.models import Account, get_account
 from ecutils.utils import lat_lon_to_str
 from locations.models import Location
 
-from copy import deepcopy
 
 COLL_STATUS_NEW = 'new'
 COLL_STATUS_LOC_CONF = 'location_confirm'

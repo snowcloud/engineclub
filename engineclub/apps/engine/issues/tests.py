@@ -8,10 +8,10 @@ class IssuesTestCase(MongoTestCase):
         member.
         """
         from accounts.tests import setUpAccounts
+        from locations.tests import setUpLocations
         from resources.tests import setUpResources
-
-        # Create normal contrib.auth users & their mongodb accounts
         setUpAccounts(self)
+        setUpLocations(self)
         setUpResources(self)
 
 class ApiTestCase(IssuesTestCase):
