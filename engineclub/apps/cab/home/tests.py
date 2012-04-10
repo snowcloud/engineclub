@@ -41,3 +41,22 @@ class ViewsTestCase(MongoTestCase):
             data={'kwords': 'green'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'title 1')
+
+    def test_contact(self):
+        from django.core.urlresolvers import reverse
+        from django.core import mail
+
+        response = self.client.post(reverse('contact'),
+            data={'name': 'green'})
+        self.assertContains(response, 'Please correct the errors below')
+
+        self.assertEqual(len(mail.outbox), 0)
+        response = self.client.post(reverse('contact'),
+            data={'name': 'green', 'email': 'bert@example.com', 'body': 'email body'})
+        self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, '[ALISS] Contact message from green')
+        self.assertTrue(mail.outbox[0].body.find('email body') > -1)
+
+        
