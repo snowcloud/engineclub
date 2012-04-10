@@ -2,7 +2,8 @@
 from django import forms
 # import floppyforms as forms
 
-from depot.models import Resource, Curation, Location, find_by_place_or_kwords
+from depot.models import Resource, Curation, Location
+from depot.search import find_by_place_or_kwords
 from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
 from firebox.views import *
 from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 
@@ -34,3 +35,12 @@ def dict_to_string_keys(d):
     for k,v in d.iteritems():
         result[str(k)] = v
     return result
+
+def lat_lon_to_str(loc):
+    """docstring for lat_lon_to_str"""
+    if loc:
+        if hasattr(loc, 'lat_lon'):
+            return (settings.LATLON_SEP).join([unicode(loc.lat_lon[0]), unicode(loc.lat_lon[1])])
+        return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
+    else:
+        return ''
