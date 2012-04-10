@@ -8,9 +8,9 @@ from django.core.management import setup_environ
 
 setup_environ(settings)
 
-# from firebox.views import load_postcodes, load_placenames, reindex_resources
+from engineclub.views import reindex_resources
 from firebox.views import bak_locations, load_locations, \
-    convert_to_newlocations, reindex_resources, fix_pcdistricts
+    convert_to_newlocations, fix_pcdistricts
 
 def temp():
     """docstring for temp"""

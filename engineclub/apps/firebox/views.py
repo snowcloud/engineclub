@@ -12,7 +12,6 @@ from BeautifulSoup import BeautifulSoup
 from django.conf import settings
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
-from pysolr import Solr
 from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from bson.dbref import DBRef
 
@@ -516,32 +515,6 @@ def make_corrections(coll):
 #             newlocs = [DBRef('newlocation', loc['os_id']) for loc in locs]
 #             db.resource.update({"_id": res['_id']}, {"$set": {"locations": newlocs}})
 
-
-
-
-def reindex_resources(dbname, url=settings.SOLR_URL, printit=False):
-    """docstring for reindex_resources"""
-    # logger.error("indexing resources:")
-
-    from depot.models import Resource
-
-    if printit:
-        print 'CLEARING SOLR INDEX: ', url
-    conn = Solr(url)
-    conn.delete(q='*:*')
-    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
-    if printit:
-        print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)
-    
-    docs = []
-    for i, res in enumerate(Resource.objects):
-        entry = res.index()
-        if entry:
-            docs.extend(entry)
-        if i % batch_size == 0:
-            conn.add(docs)
-            docs = []
-    conn.add(docs)
 
 ###############################################################
 

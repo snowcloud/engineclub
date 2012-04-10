@@ -73,7 +73,7 @@ class TestBase(MongoTestCase):
 class CollectionsTest(TestBase):
 
     def test_collection(self):
-        from firebox.views import reindex_resources
+        from enginecab.views import reindex_resources
 
         # MAKE A COLLECTION
         coll1 = Collection.objects.create(name='Test Collection', owner=self.bob)

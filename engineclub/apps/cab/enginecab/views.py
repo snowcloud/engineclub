@@ -7,15 +7,16 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
+from pymongo.objectid import ObjectId
+from pysolr import Solr
+
 from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
-from firebox.views import reindex_resources
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
     detail as account_detail, edit as account_edit, new as account_add
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
-from pymongo.objectid import ObjectId
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -77,6 +78,29 @@ def list_detail(request, object_id, template_name='enginecab/list_detail.html'):
     # context = {'object': object}
     # return render_to_response(template_name, RequestContext(request, context))
 
+def reindex_resources(url=settings.SOLR_URL, printit=False):
+    """docstring for reindex_resources"""
+    # logger.error("indexing resources:")
+
+    from depot.models import Resource
+
+    if printit:
+        print 'CLEARING SOLR INDEX: ', url
+    conn = Solr(url)
+    conn.delete(q='*:*')
+    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
+    if printit:
+        print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)
+    
+    docs = []
+    for i, res in enumerate(Resource.objects):
+        entry = res.index()
+        if entry:
+            docs.extend(entry)
+        if i % batch_size == 0:
+            conn.add(docs)
+            docs = []
+    conn.add(docs)
 
 
 # UTILITY FUNCTIONS
