@@ -6,9 +6,9 @@ apps/depot/tests.py
 from django.conf import settings
 from mongoengine.django.tests import MongoTestCase
 
-from depot.models import Resource, Curation, Location, load_resource_data
-from depot.search import lat_lon_to_str
-from depot.forms import ShortResourceForm
+from resources.models import Resource, Curation, Location, load_resource_data
+from resources.search import lat_lon_to_str
+from resources.forms import ShortResourceForm
 
 
 SOLR_URL = 'http://127.0.0.1:8983/solr'
@@ -130,7 +130,7 @@ class SearchTest(MongoTestCase):
         reindex_resources(url=SOLR_URL)
 
     def test_postcode(self):
-        from depot.search import find_by_place_or_kwords
+        from resources.search import find_by_place_or_kwords
 
         postcode = 'EH15 1AR'
         # [55.953899999999997, -3.1164000000000001]

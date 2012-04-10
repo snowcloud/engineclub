@@ -17,10 +17,10 @@ from pymongo.objectid import ObjectId
 
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
-from depot.models import Resource, Curation, Location, CalendarEvent,  \
+from resources.models import Resource, Curation, Location, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, lookup_postcode, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
-from depot.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
+from resources.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
 from ecutils.utils import get_one_or_404
 from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,

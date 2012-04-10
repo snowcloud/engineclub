@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 from mongoengine import *
 
 # dependancy loop
-# from depot.models import Location
+# from resources.models import Location
 
 MEMBER_ROLE = 'member'
 ADMIN_ROLE = 'admin'

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from mongoengine.connection import _get_db as get_db
 from mongoengine.django.tests import MongoTestCase
 
-from depot.models import Resource
+from resources.models import Resource
 from accounts.models import Account, Collection, Membership, \
     MEMBER_ROLE, ADMIN_ROLE
 

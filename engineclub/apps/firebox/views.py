@@ -15,7 +15,7 @@ from mongoengine.connection import _get_db as get_db
 from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from bson.dbref import DBRef
 
-from depot.models import Resource, Location, lookup_postcode, \
+from resources.models import Resource, Location, lookup_postcode, \
     POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME
 
 

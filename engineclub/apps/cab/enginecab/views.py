@@ -10,7 +10,7 @@ from django.template import RequestContext
 from pymongo.objectid import ObjectId
 from pysolr import Solr
 
-from depot.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
+from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
     detail as account_detail, edit as account_edit, new as account_add
@@ -82,7 +82,7 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_resources"""
     # logger.error("indexing resources:")
 
-    from depot.models import Resource
+    from resources.models import Resource
 
     if printit:
         print 'CLEARING SOLR INDEX: ', url

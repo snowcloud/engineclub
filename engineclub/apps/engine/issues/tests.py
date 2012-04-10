@@ -8,7 +8,7 @@ class IssuesTestCase(MongoTestCase):
         member.
         """
         from accounts.tests import setUpAccounts
-        from depot.tests import setUpResources
+        from resources.tests import setUpResources
 
         # Create normal contrib.auth users & their mongodb accounts
         setUpAccounts(self)
@@ -92,7 +92,7 @@ class ViewsTestCase(IssuesTestCase):
     def test_report(self):
 
         from django.core.urlresolvers import reverse
-        from depot.models import Resource
+        from resources.models import Resource
         from issues.models import Issue, \
             SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
@@ -317,7 +317,7 @@ class ViewsTestCase(IssuesTestCase):
 #     def setUp(self):
 #         super(ReportingTestCase, self).setUp()
 
-#         from depot.models import Resource
+#         from resources.models import Resource
 
 #         self.resource, _ = Resource.objects.get_or_create(
 #             __raw__={'_id': u'4d135708e999fb30d8000007'},

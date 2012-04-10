@@ -7,7 +7,7 @@ from django.template import RequestContext
 
 from accounts.models import Account
 from accounts.views import detail as account_detail, edit as account_edit
-from depot.models import Curation
+from resources.models import Curation
 from ecutils.utils import get_one_or_404
 from issues.context_processors import message_stats
 

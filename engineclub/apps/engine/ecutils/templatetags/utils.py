@@ -187,7 +187,7 @@ def get_lon(value):
 #     else:
 #         return pt
 
-# from depot.models import place_as_cb_value
+# from resources.models import place_as_cb_value
 
 # @register.filter
 # def place_values(place):
@@ -223,7 +223,7 @@ def get_latest(parser, token):
 get_latest = register.tag(get_latest)
 
 
-from depot.models import Curation
+from resources.models import Curation
 
 class LatestCurationsNode(Node):
     def __init__(self, owner, num, varname):

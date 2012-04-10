@@ -39,7 +39,7 @@ from operator import itemgetter
 from mongoengine.connection import _get_db as get_db
 from django.conf import settings
 
-from depot.models import Curation
+from resources.models import Curation
 from engine_groups.models import Account
 from analytics import pool
 

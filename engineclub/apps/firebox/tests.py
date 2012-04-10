@@ -8,9 +8,9 @@ from django.test import TestCase, TransactionTestCase
 #     OS_LABEL, OS_TYPE, OS_LAT, OS_LON, OS_WARD, OS_DISTRICT, OS_COUNTRY
 from firebox.views import *
 
-from depot.forms import ShortResourceForm
-from depot.models import Resource, Location, load_resource_data
-from depot.search import lat_lon_to_str, get_location_for_postcode
+from resources.forms import ShortResourceForm
+from resources.models import Resource, Location, load_resource_data
+from resources.search import lat_lon_to_str, get_location_for_postcode
 from mongoengine import connect
 from mongoengine.connection import _get_db as get_db
 

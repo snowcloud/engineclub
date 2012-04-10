@@ -11,7 +11,7 @@ from mongoengine.connection import _get_db as get_db
 from mongoengine.django.tests import MongoTestCase
 from pysolr import Solr
 
-from depot.models import Resource, Curation
+from resources.models import Resource, Curation
 from accounts.models import Account, Collection
 
 SEP = '**************'
@@ -51,7 +51,7 @@ class TestBase(MongoTestCase):
 
     def setUp(self):
         from accounts.tests import setUpAccounts
-        from depot.tests import setUpResources
+        from resources.tests import setUpResources
         setUpAccounts(self)
         setUpResources(self)
 
