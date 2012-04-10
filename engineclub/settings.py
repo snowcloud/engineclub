@@ -90,6 +90,9 @@ SITE_ID = 1
 PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/cab"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/engine"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/firebox"))
 # sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
