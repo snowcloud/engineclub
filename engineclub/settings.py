@@ -156,8 +156,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    # 'floppyforms',
-    'home',
     'accounts',
     'ecutils',
     'enginecab',
@@ -169,6 +167,7 @@ INSTALLED_APPS = (
     'sitedown',
     'issues',
     'invites',
+    'home',
 
 )
 # override any of the above in your own settings_local.py

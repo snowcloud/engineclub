@@ -58,7 +58,7 @@ if __name__ == "__main__":
         fix_pcdistricts(options.dbname or settings.MONGO_DATABASE_NAME)
     elif options.command == 'reindex':
         print("\nreindexing resources...")
-        reindex_resources(options.dbname or settings.MONGO_DATABASE_NAME, printit=True)
+        reindex_resources()
     elif options.command == 'temp':
         print("\ntemp...")
         temp()

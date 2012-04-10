@@ -11,11 +11,6 @@ from resources.search import lat_lon_to_str
 from resources.forms import ShortResourceForm
 
 
-SOLR_URL = 'http://127.0.0.1:8983/solr'
-# # SOLR_URL = settings.SOLR_URL
-# SOLR_ROWS = 5 # settings.SOLR_ROWS
-
-
 def _load_data(resources='resources', locations='locations'):
     """loads fixture data for test Resources"""
     resource_data = open('%s/apps/depot/fixtures/%s.json' % (settings.PROJECT_PATH, resources), 'rU')
@@ -26,7 +21,6 @@ def makeResource(data):
     return Resource.objects.create(
         title=title,
         owner=owner)
-
 
 def setUpResources(self):
     for idx, data in enumerate((
@@ -125,7 +119,7 @@ class SearchTest(MongoTestCase):
         setUpAccounts(self)
         setUpLocations(self)
         setUpResources(self)        
-        reindex_resources(url=SOLR_URL)
+        reindex_resources(url=settings.TEST_SOLR_URL)
 
     def test_postcode(self):
         from resources.search import find_by_place_or_kwords

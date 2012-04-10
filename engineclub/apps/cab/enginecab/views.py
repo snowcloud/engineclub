@@ -50,7 +50,7 @@ def user_add(request, template_name='enginecab/user_edit.html'):
 
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request, template_name=''):
-    reindex_resources(settings.MONGO_DATABASE_NAME, printit=False)
+    reindex_resources()
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab_resources'))
 
