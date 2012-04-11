@@ -36,8 +36,8 @@
 					<p><a href="#">{{ memb.name }}</a></p>
 				{% endfor %}				
 			</td></tr>
-			<tr><th>collections</th><td>
-				{% for coll in object.collections %}
+			<tr><th>in&nbsp;lists</th><td>
+				{% for coll in object.in_collections %}
 					<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
 				{% endfor %}
 			</td></tr>

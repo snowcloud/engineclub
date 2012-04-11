@@ -105,16 +105,24 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 
 # UTILITY FUNCTIONS
 
-# @user_passes_test(lambda u: u.is_staff)
-# def one_off_util(request):
-#     note = 'Nothing enabled.'
-#     # link_curations_to_resources()
-#     # make_newcurations()
-#     # note = remove_dud_curations()
-#     # note = fix_curationless_resources()
-#     messages.success(request, 'job done. %s' % note)
+@user_passes_test(lambda u: u.is_staff)
+def one_off_util(request):
+    # note = 'Nothing enabled.'
+    note = migrate_account_collections()
+    messages.success(request, 'job done. %s' % note)
     
-#     return HttpResponseRedirect(reverse('cab'))
+    return HttpResponseRedirect(reverse('cab_resources'))
+
+def migrate_account_collections():
+    # from accounts.models import Account
+    for acct in Account.objects.all():
+        if acct.in_collections:
+            print 'yup', acct.id
+            acct.in_collections = acct.collections
+            acct.collections = None
+            acct.save()
+    return 'migrated account collection'
+    
 
 # @user_passes_test(lambda u: u.is_staff)
 # def show_curationless_resources(request):

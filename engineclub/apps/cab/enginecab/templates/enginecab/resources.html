@@ -17,6 +17,9 @@
  	<dl class="sub-nav">
 	    <dt>Actions:</dt>
         <dd><a href="{% url 'cab_reindex' %}">Reindex</a></dd>
+        {% if user.username == 'derek' %}
+	        <dd><a href="{% url 'cab_one_off_util' %}">One-off util</a></dd>
+        {% endif %}
 	</dl>
 
 

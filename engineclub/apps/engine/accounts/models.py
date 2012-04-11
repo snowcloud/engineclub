@@ -54,6 +54,7 @@ class Account(Document):
     members = ListField(ReferenceField(Membership), default=list)
     status = StringField(max_length=12, default=STATUS_OK, required=True )
     collections = ListField(ReferenceField('Collection'), default=list)
+    in_collections = ListField(ReferenceField('Collection'), default=list)
     email_preference = StringField(choices=EMAIL_UPDATE_CHOICES, default=EMAIL_SINGLE, required=True)
     
     # FOR MOVE TO MONGOENGINE AUTH BACKEND
@@ -89,8 +90,8 @@ class Account(Document):
             self.members.append(m)
 
     def add_to_collection(self, coll):
-        if coll not in self.collections:
-            self.collections.append(coll)
+        if coll not in self.in_collections:
+            self.in_collections.append(coll)
             self.save()
 
     def _is_staff(self):

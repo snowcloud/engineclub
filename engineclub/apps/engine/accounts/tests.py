@@ -78,13 +78,13 @@ class CollectionsTest(AccountsBaseTest):
         coll1.add_accounts([self.jorph])
         self.assertEqual(2, len(coll1.accounts))
 
-        self.assertEqual(1, len(self.alice.collections))
-        self.assertEqual(self.alice.collections[0].name, 'Test Collection')
+        self.assertEqual(1, len(self.alice.in_collections))
+        self.assertEqual(self.alice.in_collections[0].name, 'Test Collection')
 
         coll2.add_accounts([self.jorph])
         self.assertEqual(1, len(coll2.accounts))
 
-        self.assertEqual(2, len(self.jorph.collections))
+        self.assertEqual(2, len(self.jorph.in_collections))
 
 class AccountsTest(AccountsBaseTest):
 

@@ -199,7 +199,7 @@ class Resource(Document):
             tags.extend(obj.tags)
             accounts.append(unicode(obj.owner.id))
             if hasattr(obj.owner, 'collections'):
-                collections.extend(obj.owner.collections)
+                collections.extend(obj.owner.in_collections)
             description.extend([obj.note or u'', unicode(obj.data) or u''])
 
         # except AttributeError:
