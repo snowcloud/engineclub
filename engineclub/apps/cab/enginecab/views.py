@@ -105,7 +105,7 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 
 # UTILITY FUNCTIONS
 
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: u.is_superuser)
 def one_off_util(request):
     # note = 'Nothing enabled.'
     note = migrate_account_collections()
@@ -116,12 +116,12 @@ def one_off_util(request):
 def migrate_account_collections():
     # from accounts.models import Account
     for acct in Account.objects.all():
-        if acct.in_collections:
+        if acct.collections:
             print 'yup', acct.id
             acct.in_collections = acct.collections
             acct.collections = None
             acct.save()
-    return 'migrated account collection'
+    return 'migrated account collection- now comment out account.collection field'
     
 
 # @user_passes_test(lambda u: u.is_staff)
