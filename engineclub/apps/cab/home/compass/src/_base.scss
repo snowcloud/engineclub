@@ -25,9 +25,11 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	background-color: #fff;
 }
 
-.container.site-header {
+.site-header {
 	background-color: black;
+	// padding: 0 20px;
 	border-bottom: 4px solid #c74a14;
+
 }
 #site-header {
 	color: #fffeff;
@@ -231,8 +233,8 @@ form .errorlist {
 	background-color: #C00000;
 	color: #fff;
 	font-size: 1.2em;
-	padding: 0.5em 1em;
-	margin-top: -9px;
+	padding: 0.8em 1em 0.6em 1em;
+	margin-top: 1em;
 }
 form.inline {
 	margin: 0;
