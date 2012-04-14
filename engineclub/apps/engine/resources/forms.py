@@ -121,19 +121,20 @@ class LocationUpdateForm(DocumentForm):
 
     def clean_new_location(self):
         data = self.cleaned_data['new_location']
-        loc_ids = data.split(',')
-        locs = list(Location.objects(id__in=loc_ids))
-        new_locs = [l for l in loc_ids if l not in [loc.id for loc in locs]]
-        new_locs_errors = []
-        for new_loc in new_locs:
-            loc = Location.create_from(new_loc)
-            if loc:
-                locs.append(loc)
-            else:
-                new_locs_errors.append(new_loc)
-        self.locations = locs
-        if new_locs_errors:
-            raise forms.ValidationError('Could not find these locations: %s' % ', '.join(new_locs_errors))
+        if data:
+            loc_ids = data.split(',')
+            locs = list(Location.objects(id__in=loc_ids))
+            new_locs = [l for l in loc_ids if l not in [loc.id for loc in locs]]
+            new_locs_errors = []
+            for new_loc in new_locs:
+                loc = Location.create_from(new_loc)
+                if loc:
+                    locs.append(loc)
+                else:
+                    new_locs_errors.append(new_loc)
+            self.locations = locs
+            if new_locs_errors:
+                raise forms.ValidationError('Could not find these locations: %s' % ', '.join(new_locs_errors))
         return data
 
 class MetadataForm(DocumentForm):
