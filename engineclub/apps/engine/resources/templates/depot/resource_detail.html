@@ -52,51 +52,49 @@
 
 <div class="row">
 
-<table class="metadata">
+    <table class="metadata">
 
-{% if object.calendar_event %}
-    <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
-{% endif %}
-{% for loc in object.locations %}
-    <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc }}</td></tr>
-{% empty %}
-    <tr><th>location</th><td>-</td></tr>
-{% endfor %}
-<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
-<tr><th>owner</th><td><a href="{% url 'account_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
-<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
-    <tr>
-        <th>{% ifchanged %}curation{% endifchanged %}</th>
-        <td><a href="{% url 'curation' object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
-    </tr>
-{% empty %}
-    <tr><th>curation</th><td>-</td></tr>
-{% endfor %}
-
-
-{% for mod in object.moderations  %}
-    <tr><td colspan="2">{{ mod.owner }} {{ mod.outcome }}</td> </tr>
-{% endfor %}
-
-
-
-{% if not user|is_owner:object %}
-<tr><th colspan="2">
-    {% if user.is_authenticated %} 
-        <a href="{% url 'resource_report' object.id %}">Report Resource</a>
-    {% else %}
-    <a href="{% url 'contact' %}">Report Resource</a>   
+    {% if object.calendar_event %}
+        <tr><th>event</th><td>{{ object.calendar_event|event_date }}</td></tr>
     {% endif %}
-</th></tr>
-{% endif %}
+    {% for loc in object.locations %}
+        <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc }}</td></tr>
+    {% empty %}
+        <tr><th>location</th><td>-</td></tr>
+    {% endfor %}
+    <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+    <tr><th>owner</th><td><a href="{% url 'account_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+    <tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
+        <tr>
+            <th>{% ifchanged %}curation{% endifchanged %}</th>
+            <td><a href="{% url 'curation' object.id forloop.counter0 %}">{{ curation.owner }} [{{ curation.outcome }}] {{ curation.tags|join:", " }}</a></td>
+        </tr>
+    {% empty %}
+        <tr><th>curation</th><td>-</td></tr>
+    {% endfor %}
 
-</table>
 
-<div id="map"></div>
+    {% for mod in object.moderations  %}
+        <tr><td colspan="2">{{ mod.owner }} {{ mod.outcome }}</td> </tr>
+    {% endfor %}
+
+
+
+    {% if not user|is_owner:object %}
+    <tr><th colspan="2">
+        {% if user.is_authenticated %} 
+            <a href="{% url 'resource_report' object.id %}">Report Resource</a>
+        {% else %}
+        <a href="{% url 'contact' %}">Report Resource</a>   
+        {% endif %}
+    </th></tr>
+    {% endif %}
+
+    </table>
+
+{% if object.locations %}<div id="map"></div>{% endif %}
 
 </div>
-
-
 
 {% endblock %}
 
