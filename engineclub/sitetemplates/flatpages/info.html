@@ -1,5 +1,5 @@
 {% extends "flatpages/default.html" %}
-
+{% load markup %}
 {% block nav_link %}<a href="/info/">back</a>{% endblock %}
 {% block body_class %}presentation{% endblock %}
 
@@ -16,6 +16,6 @@
 
 <h1>{{ flatpage.title }}</h1>
 
-{{ flatpage.content }}
+{{ flatpage.content|textile }}
 
 {% endblock %}

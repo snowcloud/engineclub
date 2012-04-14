@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}engine cab{% endblock %}
+{% block body_class %}cab{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'cab' %}">Engine Cab</a></li>
+    {% block breadcrumb-add %}{% endblock breadcrumb-add %}
+</ul>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Engine Cab</h1>
+
+<div class="row">
+
+	<div class="module-nav">
+		<dl class="nice tabs vertical">
+			<dd><a class="{% block mod-nav-users %}{% endblock %}" href="{% url 'cab' %}">Users</a></dd>
+			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url 'cab_issues' %}">Issues</a></dd>
+			<dd><a class="{% block mod-nav-lists %}{% endblock %}" href="{% url 'cab_lists' %}">Lists</a></dd>
+			<dd><a class="{% block mod-nav-resources %}{% endblock %}" href="{% url 'cab_resources' %}">Resources</a></dd>
+		</dl>
+	</div>
+	<div class="module-content">{% block module-content %}{% endblock %}</div>
+</div>
+
+{% endblock %}

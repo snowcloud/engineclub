@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load markup utils accounts_tags %}
+{% load url from future %}
+
+{% block title %}Curation{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'resource' resource.id %}">Resource</a></li>
+    <li class="current"><a href="#">Edit</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    {% if user|can_edit:object %}
+        <dd><a href="{% url 'curation_edit' resource.id index %}">edit curation</a></dd>
+    {% endif %}
+    {% if user|can_delete:object %}
+        <dd><a href="{% url 'curation_remove' resource.id index %}">delete curation</a></dd>
+    {% endif %}
+</dl>
+
+<h1>Curation for {{ resource.title }}</h1>
+
+<div class="group">
+{% if object.note or object.data %}
+    <table class="metadata owned-data">
+    <tr><th>note</th><td>{{ object.note|textile|default:' ' }}</td></tr>
+
+    {% for key, value in object.data.items %}
+    <tr><th>{{ key }}</th><td>{{ value|textile }}</td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p class="resource-description">No additional content in this curation.</p>
+{% endif %}
+</div>
+
+<div class="group">
+<table class="metadata">
+<tr><th>owner</th><td><a href="{% url 'group' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+<tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>
+<tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+</table>
+</div>
+
+
+{% endblock %}

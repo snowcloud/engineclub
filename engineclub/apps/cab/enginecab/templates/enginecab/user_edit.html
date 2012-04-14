@@ -1,0 +1,47 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}user edit{% endblock %}
+
+{% block breadcrumb-add %}
+    <li><a href="{% url 'cab_users' %}">Users</a></li>
+    {% if new %}
+	    <li class="current"><a href="#">New account</a></li>
+    {% else %} 
+	    <li><a href="{% url 'cab_user_detail' object.id %}">{{ object.name }}</a></li>
+	    <li class="current"><a href="#">Edit</a></li>
+    {% endif %}
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-users %}active{% endblock %}
+
+
+{% block module-content %}
+    {% if new %}
+		<h2>New user account</h2>
+		<p>Consider using an <a href="{% url 'invite' %}">invitation</a> instead!</p>
+    {% else %} 
+		<h2>Edit {{ object.name }}</h2>
+    {% endif %}
+
+
+	<form class="nice form" action="." method="POST">{% csrf_token %}
+	    <fieldset>
+	        <legend><span>Account details:</span></legend>
+	         {{ form.as_plain }}
+
+	         <hr>
+	        <input type="submit" name="result" value="Save changes">
+	    </fieldset>
+	</form>
+
+	<table class="metadata">
+		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
+		<tr><th>members</th><td>{{ object.members }}</td></tr>
+		<tr><th>status</th><td>{{ object.status }}</td></tr>
+		<tr><th>collections</th><td>{{ object.in_collections }}</td></tr>
+	</table>
+
+{% endblock %}
+

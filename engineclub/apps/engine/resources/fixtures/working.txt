@@ -1,0 +1,114 @@
+[
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000001",
+        "title": u"title 1", 
+        "resources": [{'type': u'web', 'url': u'http://test.example.com/1/', 'description': u'some stuff here...'}],
+        "locations": [u"21057"], 
+        "tags": [u"red", u"blue", u"sturg", u"nonsense"],
+        "index_keys": [u"red", u"blue"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 103000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 103000)
+        }
+    },
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000002",
+        "title": u"title 2", 
+        "resources": [{
+            "_types": ["Resource"], 
+            "_cls": "Resource", 
+            "resource_type": "web",
+            "url": u"http://test.example.com/2/",
+            "description": "description 2-1",
+            "metadata": {
+                "_types": ["ItemMetadata"], 
+                "last_modified": datetime(2010, 3, 4, 1, 0, 25, 101000), 
+                "author": u"1", 
+                "_cls": "ItemMetadata", 
+                "shelflife": datetime(2010, 3, 4, 1, 0, 25, 101000)
+            }
+        }],
+        
+        "locations": [], 
+        "tags": [u"green", u"blue", u"sturg", u"nonsense"],
+        "index_keys": [u"green", u"blue"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 105000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 105000)
+        }
+    },
+
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000003",
+        "title": u"title 3", 
+        "resources": [{'type': u'web', 'url': u'http://test.example.com/3/', 'description': u'some stuff here...'}],
+        "locations": [], 
+        "tags": [u"blue", u"red", u"yellow"],
+        "index_keys": [u"blue", u"red", u"yellow"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 109000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 109000)
+        }
+    },
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000004",
+        "title": u"title 4", 
+        "resources": [{'type': u'web', 'url': u'http://test.example.com/4/', 'description': u'some stuff here...'}],
+        "locations": [], 
+        "tags": [u"yellow", u"blue"],
+        "index_keys": [u"yellow", u"blue"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 110000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 110000)
+        }
+    },
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000005",
+        "title": u"title 5", 
+        "resources": [{'type': u'web', 'url': u'http://test.example.com/5/', 'description': u'some stuff here...'}],
+        "locations": [], 
+        "tags": [u"red", u"yellow"],
+        "index_keys": [u"red", u"yellow"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 110000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 110000)
+        }
+    },
+    {   "_types": ["Item"],
+        "_id": u"4d135708e999fb30d8000006",
+        "title": u"title 6", 
+        "resources": [{'type': u'web', 'url': u'http://test.example.com/6/', 'description': u'some stuff here...'}],
+        "locations": [], 
+        "tags": [u"green", u"blue"],
+        "index_keys": [u"green", u"blue"],
+        "_cls": "Item", 
+        "metadata": {
+            "_types": ["ItemMetadata"], 
+            "last_modified": datetime(2010, 3, 4, 1, 0, 25, 112000), 
+            "author": u"1", 
+            "_cls": "ItemMetadata", 
+            "shelflife": datetime(2010, 3, 4, 1, 0, 25, 112000)
+        }
+    },
+    
+]

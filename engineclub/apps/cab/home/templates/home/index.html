@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}home{% endblock %}
+{% block body_class %}home{% endblock %}
+{% block nav_link %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="welcome"><p>Welcome to ALISS: access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p></div>
+    </div>
+
+    <div class="row">
+        <div class="page-nav">
+            <p><a href="/info/" class="nice radius black button"><span>Find out more</span></a></p>
+            <p><a href="{% url 'search' %}" class="nice radius black button">Search</a></p>
+            <p><a href="{% url 'contact' %}" class="nice radius black button">Contact us</a></p>
+            <p><a href="{% url 'youraliss' %}" class="nice radius black button">your Aliss</a></p>
+
+            <div class="home-links">
+                <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
+                <p><a href="http://www.facebook.com/pages/Access-to-local-information-to-support-self-management-ALISS/330391253673253" class="action facebook">Facebook</a></p>
+                <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
+                <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
+            </div>
+
+        </div>
+
+
+        <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
+
+    </div>
+{% endblock %}

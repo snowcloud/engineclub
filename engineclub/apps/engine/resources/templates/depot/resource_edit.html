@@ -1,0 +1,104 @@
+{% extends template_info.base %}
+{% load utils %}
+{% load url from future %}
+
+{% block title %}edit resource{% endblock %}
+
+{% block breadcrumbs %}
+{% if object %}
+    <ul class="breadcrumbs">
+        <li><a href="{% url 'resource' object.id  %}">Resource</a></li>
+        <li class="current"><a href="#">Edit</a></li>
+    </ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if not template_info.popup %}<h1>{% if object %}Edit{% else %}Add new{% endif %} item</h1>{% endif %}
+
+<form class="nice form" id="main-form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Resource details:</span></legend>
+        {{ resourceform.as_plain }}
+    </fieldset>
+    {% if tagsform %}
+        <fieldset>
+            {{ tagsform.as_plain }}
+        </fieldset>
+    {% endif %}
+    
+    {% if locationform %}
+        <fieldset>
+            <legend><span>Locations:</span></legend>
+            {{ locationform.as_plain }}
+        </fieldset>
+    {% endif %}
+    {% if eventform %}
+        <fieldset>
+            <legend><span>Event details:</span></legend>
+             {{ eventform.as_plain }}
+        </fieldset>
+    {% endif %}
+    {% if shelflifeform %}
+        <fieldset>
+            <legend><span>Shelf life:</span></legend>
+             {{ shelflifeform.as_plain }}
+        </fieldset>
+    {% endif %}
+     <fieldset class="submit">
+        <input type="hidden" name="popup" value="{{ template_info.popup }}">
+        <input type="submit" name="result" value="Save item">
+        <input type="submit" name="result" value="Cancel">
+    </fieldset>
+</form>
+
+{% endblock %}
+
+{% block script-extra %}
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<link href="/static/css/token-input-aliss.css" type="text/css" rel="stylesheet">
+
+ <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/static/js/jquery.tokeninput.js" type="text/javascript"></script>
+{% endblock script-extra %}
+{% block document-ready %}
+$('#new_location_submit').replaceWith('<a href="#" class="add-link" id="new_location_link">add location</a>');
+//$('#new_location_link').click(function() {alert('blah');});
+$('#new_location_link').click(function() {$('#main-form').submit();});
+$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+
+$('#id_tags').tokenInput('{% url 'resources.api_handlers.tags' %}', {
+    minChars: 3,
+    onResult: function (results) {
+        var typedValue = $('#token-input-id_tags').val();
+        var r = [{id: typedValue, name: typedValue + ' (new)'}];
+        $.each(results.data, function (i, item) {
+            r.push({id: item, name: item});
+        });
+        return r;
+    },
+    prePopulate: [{% for t in object.tags %}{id: "{{ t|safe }}", name: "{{ t|safe }}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    queryParam: 'match',
+    theme: 'aliss'
+});
+{% if locationform %}
+    $('#id_new_location').tokenInput('{% url 'resources.api_handlers.locations' %}', {
+        minChars: 3,
+        onResult: function (results) {
+            var typedValue = $('#token-input-id_new_location').val();
+            var r = [{id: typedValue, name: typedValue + ' (new)'}];
+            //var r = [];
+            $.each(results.data, function (i, item) {
+                r.push({id: item.id, name: (item.postcode) ? 
+                    (item.postcode + ', ' + item.place_name) : 
+                    (item.place_name + ', ' + item.district)});
+            });
+            return r;
+        },
+        prePopulate: [{% for l in object.locations %}{id: '{{ l.id }}', name: '{{ l }}'}{% if not forloop.last %},{% endif %}{% endfor %}],
+        queryParam: 'match',
+        theme: 'aliss'
+    });
+{% endif %}
+{% endblock document-ready %}

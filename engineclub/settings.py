@@ -2,9 +2,6 @@
 
 import os
 import sys
-
-_TESTING= 'test' in sys.argv
-
 import logging
 
 # logging.basicConfig(level=logging.WARNING,
@@ -93,6 +90,9 @@ SITE_ID = 1
 PROJECT_PATH = os.path.abspath(os.path.split(__file__)[0])
 
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/cab"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/engine"))
+sys.path.insert(0, os.path.join(PROJECT_PATH, "apps/firebox"))
 # sys.path.insert(0, os.path.join(PROJECT_PATH, "libs"))
 
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
@@ -139,7 +139,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
-    "notifications.context_processors.notifications",
+    "issues.context_processors.message_stats",
 )
 
 ROOT_URLCONF = 'engineclub.urls'
@@ -156,18 +156,18 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    # 'floppyforms',
-    'home',
     'accounts',
-    'enginecab',
-    'depot',
-    'firebox',
     'ecutils',
+    'enginecab',
+    'firebox',
+    'locations',
+    'resources',
     'youraliss',
     'contact_form',
     'sitedown',
-    'notifications',
+    'issues',
     'invites',
+    'home',
 
 )
 # override any of the above in your own settings_local.py

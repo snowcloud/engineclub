@@ -1,0 +1,24 @@
+{% extends "youraliss/base.html" %}
+{% load url from future %}
+
+{% block title %}your aliss curations{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">curations</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-curations %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Curations</h2>
+
+	<h3>Recently curated resources</h3>
+
+	<ul>
+	{% for resource in curations %}
+		<li><a href="{% url 'resource' resource.id %}">{{ resource.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% endblock %}

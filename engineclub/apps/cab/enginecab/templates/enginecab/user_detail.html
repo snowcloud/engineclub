@@ -1,0 +1,49 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}user{% endblock %}
+
+{% block breadcrumb-add %}
+    <li><a href="{% url 'cab_users' %}">Users</a></li>
+    <li class="current"><a href="#">{{ object.name }}</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-users %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>{{ object.name }}</h2>
+
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="{% url 'cab_user_edit' object.id %}">Edit</a></dd>
+        <dd><a href="#">Reset password</a></dd>
+	</dl>
+
+
+    <table class="metadata">
+        <tbody>
+            <tr><th>name</th><td>{{ object.name }}</td></tr>
+            <tr><th>email</th><td><a href="mailto:{{ object.email }}">{{ object.email }}</a></td></tr>
+            <tr><th>description</th><td>{{ object.description|linebreaks }}</td></tr>
+            <tr><th>url</th><td>{{ object.url|default:"" }}</td></tr>
+			<tr><th>aliss id</th><td>{{ object.id }}</td></tr>
+			<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
+			<tr><th>status</th><td>{{ object.status }}</td></tr>
+			<tr><th>members</th><td>
+				{% for memb in object.members %}
+					<p><a href="#">{{ memb.name }}</a></p>
+				{% endfor %}				
+			</td></tr>
+			<tr><th>in&nbsp;lists</th><td>
+				{% for coll in object.in_collections %}
+					<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
+				{% endfor %}
+			</td></tr>
+            
+        </tbody>
+    </table>
+
+{% endblock %}
+

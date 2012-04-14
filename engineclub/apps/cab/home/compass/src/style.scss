@@ -1,0 +1,270 @@
+// style.scss
+
+@import "mixins";
+@import "ie";
+
+
+.home .page {
+	background: #ffffff url(../images/bg-main.jpg) no-repeat;
+}
+p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
+
+#site-header h1 {
+	float: left;
+	padding-right: 3em;
+}
+
+#site-header .nav {
+	//position: static;
+    //left: 0;
+   	@include un_hide_it;
+    position: static;
+	font-size: 150%;
+	margin-top: 1.65em;
+}
+
+
+#site-header .nav-mobile {
+	@include hide_it;
+    position: absolute; // uses no height
+}
+.main {
+	padding-top: 2em;
+	padding-bottom: 2em;
+}
+.welcome {
+	margin: 3em 0;
+	padding: 2em 6em;
+}
+.welcome p {
+	font-size: 200%;
+	line-height: 1.6em;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+}
+.page-nav {
+	float: left;
+	width: 33%;
+}
+.page-nav p {
+	margin-bottom: 1em;
+}
+.page-nav .button {
+	display: block;
+}
+.video {
+	@include un_hide_it;
+	float: right;
+	width: 66%;
+}
+.home-links {
+	padding-top: 1em;
+	//float: left;
+}
+.home-links .action {
+    margin-left: 30%;
+}
+.home-links p {
+	padding-top: 1em;
+	//display: inline;
+}
+.breadcrumbs {
+	// margin-top: 1em;
+	@include un_hide_it;	
+}
+ul.breadcrumbs {
+	padding: 0.5em 1em;
+	margin-bottom: 0;
+	border: none;
+}
+/* @group search */
+
+.search fieldset {
+	margin-top: 18px;
+}
+.contact form {
+	float: left;
+	width: 60%;
+}
+.contact .advice {
+	margin: 24px 0 0 65%;
+	padding: 1em;
+	p {
+		font-size: 1.6em;
+	}
+}
+
+.search-form {
+	float: left;
+	width: 30%;
+}
+#map {
+	float: right;
+	width: 64%;
+    height: 400px;
+}
+
+.search .results h3 {
+	display: inline;
+}
+.search .results h3 a {
+    border-bottom: none;
+}
+.search .results h3, .search .results p {
+	width: 64%;
+}
+.search .results h4 {
+	position: static;
+	padding-top: 0.3em;
+	color: #797979;
+}
+.search .results .location {
+	float: right;
+	width: 33%;
+}
+.search .results .location p {
+	width: auto;
+}
+.resource .metadata {
+	float: left;
+	width: 30%;
+}
+
+/* @end */
+/* @group youraliss */
+.youraliss, .cab {
+	.module-nav {
+		float: left;
+		width: 18%;
+	}
+	.module-content {
+		float: right;
+		width: 75%;
+	}
+}
+dl.nice.tabs.vertical {
+	dd a.staff {
+		color: #c74a14;
+	}
+}
+/* @end */
+
+/* @group presentation */
+.pres-slide {
+	background-color: #eee;
+}
+.pres-media {
+	// background-color: green;
+	float: left;
+	width: 56%;
+	border: none;
+	padding: 1em;
+}
+.pres-text {
+	margin-left: 63%;
+	margin-top: 2.5em;
+}
+.pres-text p {
+	font-size: 160%;
+
+}
+/* @end */
+
+.lt-ie8 {
+	#site-header .nav {
+		// background-color: green;
+		display: block !important;
+		// visibility: visible;
+		line-height: 1.2em;
+	}
+	.breadcrumbs {
+		display: block !important;
+		color: red;		
+	}
+	.pres-slide {
+		clear: both;
+		padding-bottom: 0;
+		// height: 100px;
+		hr {
+			visibility: none;
+			border-color: #eee;
+			height: 1px;
+			margin: 0;
+		}
+
+	}
+	.pres-media {
+		padding: 0.2em 0 0 0.8em;
+		margin-bottom: 0;
+	}
+	.pres-text {
+		// background-color: pink;
+		margin-left: 63%;
+	}
+
+}
+.lt-ie7 {
+	#site-header {
+		padding-left: 20px;
+		background-color: black;
+		border-bottom: 4px solid #c74a14;
+	}
+	form.nice, form.nice div.form-field input, form.nice input.input-text, form.nice textarea {
+		background: none;
+	}
+	form.nice {
+		border: none;
+	}
+	form.fieldset {
+		background-color: green;
+		//border: none;
+	}
+	form.nice input.input-text {
+		margin-left: .1em;
+		background-color: white;
+	}
+	.alert-box.error {
+		background-color: #EB511B;
+	}
+	.button.nice.black {
+		background: none;
+		background-color: black;
+	}
+	.container.site-header {
+		background: none;
+		background-color: black;
+	}
+	#site-header, .container.site-header {
+		background-color: black;
+	}
+	dl.nice.tabs.vertical {
+		border: none;
+		border-bottom: 1px solid #bbb;
+	}
+	.nice.tabs.vertical dd a.active {
+		background: none;
+		background-color: #00a6fc;
+	}
+	.cab {
+		.main {
+			background-color: white;
+			border: none;
+			h1 {
+				color: black;
+			}
+		}
+	}
+	.cab .main, .youraliss .main {
+		table {
+			margin-top: 3em;
+		}
+	}
+	#sitefooter, .container.site-footer {
+		// margin: 0;
+		padding-bottom: 0;
+	}
+	.pres-media img {
+		width: 100%;
+	}
+
+}
+
