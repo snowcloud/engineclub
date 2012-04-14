@@ -29,11 +29,21 @@ def event_date(value, arg=None):
     else:
         return ''
 
+def _event_date(value):
+    dt = parser.parse(value)
+    return date(dt).replace(', 00:00', '')
+
 @register.filter
-def idx_event_date(value, arg=None):
+def idx_event_start(value, arg=None):
     if value.get('event_start', None):
-        dt = parser.parse(value['event_start'])
-        return date(dt).replace(', 00:00', '')
+        return _event_date(value['event_start'])
+    else:
+        return ''
+
+@register.filter
+def idx_event_end(value, arg=None):
+    if value.get('event_end', None):
+        return _event_date(value['event_end'])
     else:
         return ''
 

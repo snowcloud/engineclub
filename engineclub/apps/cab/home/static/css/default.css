@@ -1732,119 +1732,122 @@ a.github { background: url(../images/icons/github_32.png) no-repeat left 10px; }
 /* line 197, ../../compass/src/_base.scss */
 a.top { background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom; padding-left: 30px; }
 
+/* line 201, ../../compass/src/_base.scss */
+p.event { background: url(../images/icons/clock.png) no-repeat left bottom; padding-left: 30px; }
+
 /* fix for foundation.css default 254px*/
-/* line 205, ../../compass/src/_base.scss */
+/* line 209, ../../compass/src/_base.scss */
 input[type=submit] { margin: 1.2em 0; }
 
-/* line 208, ../../compass/src/_base.scss */
+/* line 212, ../../compass/src/_base.scss */
 legend { font-size: 1.3em; }
 
-/* line 211, ../../compass/src/_base.scss */
+/* line 215, ../../compass/src/_base.scss */
 form label { font-size: 1.3em; line-height: 1.4em; }
 
-/* line 215, ../../compass/src/_base.scss */
+/* line 219, ../../compass/src/_base.scss */
 form .helptext { color: #444; font-style: italic; margin: -9px 0 0.6em 0.4em; display: block; }
 
-/* line 221, ../../compass/src/_base.scss */
+/* line 225, ../../compass/src/_base.scss */
 form .sublabel { width: 4em; display: inline-block; }
 
-/* line 225, ../../compass/src/_base.scss */
+/* line 229, ../../compass/src/_base.scss */
 .datepicker, .timepicker, .datetimepicker select { display: inline !important; }
 
-/* line 229, ../../compass/src/_base.scss */
+/* line 233, ../../compass/src/_base.scss */
 input.timepicker { width: 3em; }
 
-/* line 232, ../../compass/src/_base.scss */
+/* line 236, ../../compass/src/_base.scss */
 form .errorlist { background-color: #C00000; color: #fff; font-size: 1.2em; padding: 0.8em 1em 0.6em 1em; margin-top: 1em; }
 
-/* line 239, ../../compass/src/_base.scss */
+/* line 243, ../../compass/src/_base.scss */
 form.inline { margin: 0; padding: 0; }
-/* line 242, ../../compass/src/_base.scss */
+/* line 246, ../../compass/src/_base.scss */
 form.inline input[type="submit"] { margin: 0; }
 
 /* @group search */
-/* line 247, ../../compass/src/_base.scss */
+/* line 251, ../../compass/src/_base.scss */
 .search-form, .search-form-full { background-color: #eee; padding: 0 0.5em; }
 
-/* line 251, ../../compass/src/_base.scss */
+/* line 255, ../../compass/src/_base.scss */
 #map { border: 1px solid #a9a9a9; border-bottom: 3px solid #a9a9a9; height: 300px; }
 
-/* line 257, ../../compass/src/_base.scss */
+/* line 261, ../../compass/src/_base.scss */
 #map img { max-width: none; }
 
-/* line 259, ../../compass/src/_base.scss */
+/* line 263, ../../compass/src/_base.scss */
 .search fieldset { margin-top: 0; }
 
-/* line 262, ../../compass/src/_base.scss */
+/* line 266, ../../compass/src/_base.scss */
 .search .results { margin-top: 2em; }
 
-/* line 269, ../../compass/src/_base.scss */
+/* line 273, ../../compass/src/_base.scss */
 .search .results h4 { position: absolute; left: -999em; }
 
-/* line 275, ../../compass/src/_base.scss */
+/* line 279, ../../compass/src/_base.scss */
 .search .results li { border-bottom: 1px solid #dedffd; }
 
 /* @end */
-/* line 282, ../../compass/src/_base.scss */
+/* line 286, ../../compass/src/_base.scss */
 .metadata th { font-weight: bold; vertical-align: top; width: 22%; }
 
-/* line 288, ../../compass/src/_base.scss */
+/* line 292, ../../compass/src/_base.scss */
 .metadata th, .metadata td { border-bottom: 1px solid #E5E7E8; padding: 0.3em 2em 0.3em 0.6em; }
 
-/* line 292, ../../compass/src/_base.scss */
+/* line 296, ../../compass/src/_base.scss */
 td.yes { background-color: #ccff66; }
 
-/* line 295, ../../compass/src/_base.scss */
+/* line 299, ../../compass/src/_base.scss */
 td.no { background-color: #ff6666; }
 
-/* line 298, ../../compass/src/_base.scss */
+/* line 302, ../../compass/src/_base.scss */
 caption, th, td { font-weight: normal; text-align: left; vertical-align: middle; }
 
 /* @group youraliss */
-/* line 306, ../../compass/src/_base.scss */
+/* line 310, ../../compass/src/_base.scss */
 .youraliss .module-content, .cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 
-/* line 312, ../../compass/src/_base.scss */
+/* line 316, ../../compass/src/_base.scss */
 .issue-0 { background-color: #ffea99; color: #000; }
 
-/* line 313, ../../compass/src/_base.scss */
+/* line 317, ../../compass/src/_base.scss */
 .issue-1 { background-color: #ffb73c; color: #000; }
 
-/* line 314, ../../compass/src/_base.scss */
+/* line 318, ../../compass/src/_base.scss */
 .issue-2 { background-color: #ff796a; color: #000; }
 
-/* line 315, ../../compass/src/_base.scss */
+/* line 319, ../../compass/src/_base.scss */
 .issue-3 { font-weight: bold; background-color: red; }
 
-/* line 317, ../../compass/src/_base.scss */
+/* line 321, ../../compass/src/_base.scss */
 .panel.issue-0 { background: none; background-color: #ffea99; }
 
-/* line 321, ../../compass/src/_base.scss */
+/* line 325, ../../compass/src/_base.scss */
 .panel.issue-1 { background: none; background-color: #ffb73c; }
 
-/* line 325, ../../compass/src/_base.scss */
+/* line 329, ../../compass/src/_base.scss */
 .panel.issue-2 { background: none; background-color: #ff796a; }
 
-/* line 329, ../../compass/src/_base.scss */
+/* line 333, ../../compass/src/_base.scss */
 .panel.issue-3 { background: none; background-color: red; font-weight: bold; }
 
 /* @end */
 /* @group cab */
-/* line 340, ../../compass/src/_base.scss */
+/* line 344, ../../compass/src/_base.scss */
 .cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 
 /* @end */
 /* @group presentations */
-/* line 349, ../../compass/src/_base.scss */
+/* line 353, ../../compass/src/_base.scss */
 .presentation dt, .presentation h3 { visibility: hidden; height: 0.1em; padding: 0; margin: 0; }
 
-/* line 355, ../../compass/src/_base.scss */
+/* line 359, ../../compass/src/_base.scss */
 .pres-slide { border-top: 4px solid #eee; }
 
-/* line 358, ../../compass/src/_base.scss */
+/* line 362, ../../compass/src/_base.scss */
 .pres-media { border: 1px solid #dedffd; text-align: center; }
 
-/* line 362, ../../compass/src/_base.scss */
+/* line 366, ../../compass/src/_base.scss */
 .pres-text p { margin-bottom: 0.5em; }
 
 /* @end */
