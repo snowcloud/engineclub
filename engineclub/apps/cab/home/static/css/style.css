@@ -125,63 +125,66 @@ ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; border: none; }
 /* line 145, ../../compass/src/style.scss */
 dl.nice.tabs.vertical dd a.staff { color: #c74a14; }
 
+/* line 149, ../../compass/src/style.scss */
+dl.nice.tabs.vertical dd a:hover { background-color: #c4d3e3; }
+
 /* @end */
 /* @group presentation */
-/* line 152, ../../compass/src/style.scss */
+/* line 155, ../../compass/src/style.scss */
 .pres-slide { background-color: #eee; }
 
-/* line 155, ../../compass/src/style.scss */
+/* line 158, ../../compass/src/style.scss */
 .pres-media { float: left; width: 56%; border: none; padding: 1em; }
 
-/* line 162, ../../compass/src/style.scss */
+/* line 165, ../../compass/src/style.scss */
 .pres-text { margin-left: 63%; margin-top: 2.5em; }
 
-/* line 166, ../../compass/src/style.scss */
+/* line 169, ../../compass/src/style.scss */
 .pres-text p { font-size: 160%; }
 
 /* @end */
-/* line 173, ../../compass/src/style.scss */
+/* line 176, ../../compass/src/style.scss */
 .lt-ie8 #site-header .nav { display: block !important; line-height: 1.2em; }
-/* line 179, ../../compass/src/style.scss */
+/* line 182, ../../compass/src/style.scss */
 .lt-ie8 .breadcrumbs { display: block !important; color: red; }
-/* line 183, ../../compass/src/style.scss */
+/* line 186, ../../compass/src/style.scss */
 .lt-ie8 .pres-slide { clear: both; padding-bottom: 0; }
-/* line 187, ../../compass/src/style.scss */
+/* line 190, ../../compass/src/style.scss */
 .lt-ie8 .pres-slide hr { visibility: none; border-color: #eee; height: 1px; margin: 0; }
-/* line 195, ../../compass/src/style.scss */
+/* line 198, ../../compass/src/style.scss */
 .lt-ie8 .pres-media { padding: 0.2em 0 0 0.8em; margin-bottom: 0; }
-/* line 199, ../../compass/src/style.scss */
+/* line 202, ../../compass/src/style.scss */
 .lt-ie8 .pres-text { margin-left: 63%; }
 
-/* line 206, ../../compass/src/style.scss */
+/* line 209, ../../compass/src/style.scss */
 .lt-ie7 #site-header { padding-left: 20px; background-color: black; border-bottom: 4px solid #c74a14; }
-/* line 211, ../../compass/src/style.scss */
-.lt-ie7 form.nice, .lt-ie7 form.nice div.form-field input, .lt-ie7 form.nice input.input-text, .lt-ie7 form.nice textarea { background: none; }
 /* line 214, ../../compass/src/style.scss */
-.lt-ie7 form.nice { border: none; }
+.lt-ie7 form.nice, .lt-ie7 form.nice div.form-field input, .lt-ie7 form.nice input.input-text, .lt-ie7 form.nice textarea { background: none; }
 /* line 217, ../../compass/src/style.scss */
+.lt-ie7 form.nice { border: none; }
+/* line 220, ../../compass/src/style.scss */
 .lt-ie7 form.fieldset { background-color: green; }
-/* line 221, ../../compass/src/style.scss */
+/* line 224, ../../compass/src/style.scss */
 .lt-ie7 form.nice input.input-text { margin-left: .1em; background-color: white; }
-/* line 225, ../../compass/src/style.scss */
-.lt-ie7 .alert-box.error { background-color: #EB511B; }
 /* line 228, ../../compass/src/style.scss */
+.lt-ie7 .alert-box.error { background-color: #EB511B; }
+/* line 231, ../../compass/src/style.scss */
 .lt-ie7 .button.nice.black { background: none; background-color: black; }
-/* line 232, ../../compass/src/style.scss */
+/* line 235, ../../compass/src/style.scss */
 .lt-ie7 .container.site-header { background: none; background-color: black; }
-/* line 236, ../../compass/src/style.scss */
-.lt-ie7 #site-header, .lt-ie7 .container.site-header { background-color: black; }
 /* line 239, ../../compass/src/style.scss */
+.lt-ie7 #site-header, .lt-ie7 .container.site-header { background-color: black; }
+/* line 242, ../../compass/src/style.scss */
 .lt-ie7 dl.nice.tabs.vertical { border: none; border-bottom: 1px solid #bbb; }
-/* line 243, ../../compass/src/style.scss */
+/* line 246, ../../compass/src/style.scss */
 .lt-ie7 .nice.tabs.vertical dd a.active { background: none; background-color: #00a6fc; }
-/* line 248, ../../compass/src/style.scss */
-.lt-ie7 .cab .main { background-color: white; border: none; }
 /* line 251, ../../compass/src/style.scss */
+.lt-ie7 .cab .main { background-color: white; border: none; }
+/* line 254, ../../compass/src/style.scss */
 .lt-ie7 .cab .main h1 { color: black; }
-/* line 257, ../../compass/src/style.scss */
+/* line 260, ../../compass/src/style.scss */
 .lt-ie7 .cab .main table, .lt-ie7 .youraliss .main table { margin-top: 3em; }
-/* line 261, ../../compass/src/style.scss */
+/* line 264, ../../compass/src/style.scss */
 .lt-ie7 #sitefooter, .lt-ie7 .container.site-footer { padding-bottom: 0; }
-/* line 265, ../../compass/src/style.scss */
+/* line 268, ../../compass/src/style.scss */
 .lt-ie7 .pres-media img { width: 100%; }
