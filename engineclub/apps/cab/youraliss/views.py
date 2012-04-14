@@ -26,7 +26,8 @@ def profile(request, object_id=None, template_name='youraliss/profile.html'):
 @login_required
 def account(request, template_name='youraliss/account.html'):    
     object =  get_one_or_404(Account, local_id=str(request.user.id))
-    return account_edit(request, object.id, template_name)
+    print 'yes'
+    return account_edit(request, object.id, template_name, next='youraliss')
     
 @login_required
 def curations(request, template_name='youraliss/curations.html'):
