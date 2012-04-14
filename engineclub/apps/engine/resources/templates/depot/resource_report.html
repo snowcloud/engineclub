@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{#% load markup utils accounts_tags depot_tags %#}
+
+{% block title %}report {{ object.title }}{% endblock %}
+
+{% block body_class %}resource{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'resource_find' %}">Search</a></li>
+    <li><a href="{% url 'resource' object.id %}">{{ object.title }}</a></li>
+    <li class="current"><a href="#">Report</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ object.title }}</h1>
+
+    <form class="nice form" method="POST" action=".?next={{ next }}">
+        {% csrf_token %}
+        {{ form.as_plain }}
+        <input type="submit" value="Report" />
+    </form>
+
+</div>
+
+{% endblock %}

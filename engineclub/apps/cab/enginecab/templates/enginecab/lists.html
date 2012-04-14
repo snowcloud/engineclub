@@ -1,0 +1,30 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}lists{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">Lists</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-lists %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Lists</h2>
+
+<!--  	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="#">sdasdf</a></dd>
+	</dl>
+ -->
+
+{% for object in objects %}
+	<p><a href="{% url 'cab_list_detail' object.id %}">{{ object.name }}</a>: <a href="{% url 'cab_user_detail' object.owner.id %}">{{ object.owner }}</a></p>
+{% empty %}
+	<p>no lists found</p>
+{% endfor %}
+
+{% endblock %}
+

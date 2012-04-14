@@ -1,0 +1,59 @@
+{% extends "youraliss/base.html" %}
+{% load accounts_tags issues_tags %}
+{% load url from future %}
+
+{% block title %}your aliss issues{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">Issues</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-issues %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Issues</h2>
+
+	<p>This shows when people have reported a problem with a resource that you own or have curated.<br>
+		Use the 'view' link to see or add comments and help resolve the issue.</p>
+
+	{% if objects %} 	
+		<table>
+	        <thead>
+	            <tr>
+	                <th>Reported by</th>
+	                <th>Date</th>
+	                <th>Severity</th>
+	                <th class="hide-on-phones">Report</th>
+	                <th>Resource</th>
+	                <th class="hide-on-phones">Status</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            {% for object in objects  %}
+	            <tr>
+					<td>{% if user|account == object.reporter %}
+						<span class="blue radius label">You</span>
+					{% else %} {{ object.reporter }}{% endif %}<br>
+					<a href="{%url 'issue_detail' object.id %}">view</a>
+					</td>
+					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
+                    <td {% if not object.resolved %}class="issue-{{object.severity}}"{% endif %}>{{ object.severity|issue_severity }}
+                    <span class="show-on-phones"><br>{{ object.resolved|display_resolved }}</span></td>
+ 					<td class="hide-on-phones">{{ object.message|linebreaks }}</td>
+					<td>{% if object.related_document %}<a href="{% url 'resource' object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
+					<td class="hide-on-phones">{{ object.resolved|display_resolved }}</td>
+	            </tr>
+	            {% empty %}
+	            <tr>
+	                <td colspan="4">no issues</td>
+	            </tr>
+	            {% endfor %}
+	        </tbody>
+		</table>
+	{% else %}
+		<p>no alerts</p>
+	{% endif %}
+
+{% endblock %}

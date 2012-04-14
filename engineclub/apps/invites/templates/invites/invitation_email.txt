@@ -1,3 +1,0 @@
-You have been invited to create an account on ALISS.org by {{ sender }}.
-
-Visit http://aliss.org{{ accept_url }} to accept the invite.

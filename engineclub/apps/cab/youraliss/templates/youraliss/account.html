@@ -1,0 +1,47 @@
+{% extends "youraliss/base.html" %}
+{% load url from future %}
+
+{% block title %}your aliss account{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">your account</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-account %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Your account settings</h2>
+
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="{% url 'logout' %}">logout</a></dd>
+        <dd><a href="{% url 'password_change' %}">change password</a></dd>
+	</dl>
+
+
+	<form class="nice form" action="." method="POST">{% csrf_token %}
+	    <fieldset>
+	        <legend><span>Account details:</span></legend>
+	         {{ form.as_plain }}
+
+	         <hr>
+	        <input type="submit" name="result" value="Save changes">
+	    </fieldset>
+	</form>
+
+	<table class="metadata">
+		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
+		<tr><th>members</th><td>{{ object.members|default:"-" }}</td></tr>
+		<tr><th>status</th><td>{{ object.status }}</td></tr>
+		<tr><th>in&nbsp;lists</th><td>
+			{% for coll in object.in_collections %}
+				<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
+			{% empty %}-
+			{% endfor %}
+		</td></tr>
+	</table>
+
+
+{% endblock %}

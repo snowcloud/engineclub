@@ -1,0 +1,187 @@
+/* Foundation v2.2 http://foundation.zurb.com */
+/* This is for all IE specfific style less than IE9. We hate IE. */
+/* line 4, ../../compass/src/_ie.scss */
+div.panel { border: 1px solid #ccc; }
+
+/* line 5, ../../compass/src/_ie.scss */
+.lt-ie8 .nav-bar li.has-flyout a { padding-right: 20px; }
+
+/* line 6, ../../compass/src/_ie.scss */
+.lt-ie8 .nav-bar li.has-flyout a:after { border-top: none; }
+
+/* Correct IE7 button padding */
+/* line 9, ../../compass/src/_ie.scss */
+.lt-ie8 input[type=submit].nice.button { filter: chroma(color=black); position: relative; top: -2px; }
+
+/* line 10, ../../compass/src/_ie.scss */
+.lt-ie8 input[type=submit].tiny.button { padding: 5px 5px 7px; }
+
+/* line 11, ../../compass/src/_ie.scss */
+.lt-ie8 input[type=submit].small.button { padding: 8px 7px 9px; }
+
+/* line 12, ../../compass/src/_ie.scss */
+.lt-ie8 input[type=submit].medium.button { padding: 9px 13px 9px; }
+
+/* line 13, ../../compass/src/_ie.scss */
+.lt-ie8 input[type=submit].large.button { padding: 9px 18px 10px; }
+
+/* line 7, ../../compass/src/style.scss */
+.home .page { background: white url(../images/bg-main.jpg) no-repeat; }
+
+/* line 10, ../../compass/src/style.scss */
+p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
+
+/* line 12, ../../compass/src/style.scss */
+#site-header h1 { float: left; padding-right: 3em; }
+
+/* line 17, ../../compass/src/style.scss */
+#site-header .nav { display: inherit !important; visibility: visible; position: static; font-size: 150%; margin-top: 1.65em; }
+
+/* line 27, ../../compass/src/style.scss */
+#site-header .nav-mobile { display: none !important; visibility: hidden; position: absolute; }
+
+/* line 31, ../../compass/src/style.scss */
+.main { padding-top: 2em; padding-bottom: 2em; }
+
+/* line 35, ../../compass/src/style.scss */
+.welcome { margin: 3em 0; padding: 2em 6em; }
+
+/* line 39, ../../compass/src/style.scss */
+.welcome p { font-size: 200%; line-height: 1.6em; text-shadow: 0 -1px rgba(0, 0, 0, 0.5); }
+
+/* line 44, ../../compass/src/style.scss */
+.page-nav { float: left; width: 33%; }
+
+/* line 48, ../../compass/src/style.scss */
+.page-nav p { margin-bottom: 1em; }
+
+/* line 51, ../../compass/src/style.scss */
+.page-nav .button { display: block; }
+
+/* line 54, ../../compass/src/style.scss */
+.video { display: inherit !important; visibility: visible; float: right; width: 66%; }
+
+/* line 59, ../../compass/src/style.scss */
+.home-links { padding-top: 1em; }
+
+/* line 63, ../../compass/src/style.scss */
+.home-links .action { margin-left: 30%; }
+
+/* line 66, ../../compass/src/style.scss */
+.home-links p { padding-top: 1em; }
+
+/* line 70, ../../compass/src/style.scss */
+.breadcrumbs { display: inherit !important; visibility: visible; }
+
+/* line 74, ../../compass/src/style.scss */
+ul.breadcrumbs { padding: 0.5em 1em; margin-bottom: 0; border: none; }
+
+/* @group search */
+/* line 81, ../../compass/src/style.scss */
+.search fieldset { margin-top: 18px; }
+
+/* line 84, ../../compass/src/style.scss */
+.contact form { float: left; width: 60%; }
+
+/* line 88, ../../compass/src/style.scss */
+.contact .advice { margin: 24px 0 0 65%; padding: 1em; }
+/* line 91, ../../compass/src/style.scss */
+.contact .advice p { font-size: 1.6em; }
+
+/* line 96, ../../compass/src/style.scss */
+.search-form { float: left; width: 30%; }
+
+/* line 100, ../../compass/src/style.scss */
+#map { float: right; width: 64%; height: 400px; }
+
+/* line 106, ../../compass/src/style.scss */
+.search .results h3 { display: inline; }
+
+/* line 109, ../../compass/src/style.scss */
+.search .results h3 a { border-bottom: none; }
+
+/* line 112, ../../compass/src/style.scss */
+.search .results h3, .search .results p { width: 64%; }
+
+/* line 115, ../../compass/src/style.scss */
+.search .results h4 { position: static; padding-top: 0.3em; color: #797979; }
+
+/* line 120, ../../compass/src/style.scss */
+.search .results .location { float: right; width: 33%; }
+
+/* line 124, ../../compass/src/style.scss */
+.search .results .location p { width: auto; }
+
+/* line 127, ../../compass/src/style.scss */
+.resource .metadata { float: left; width: 30%; }
+
+/* @end */
+/* @group youraliss */
+/* line 135, ../../compass/src/style.scss */
+.youraliss .module-nav, .cab .module-nav { float: left; width: 18%; }
+/* line 139, ../../compass/src/style.scss */
+.youraliss .module-content, .cab .module-content { float: right; width: 75%; }
+
+/* line 145, ../../compass/src/style.scss */
+dl.nice.tabs.vertical dd a.staff { color: #c74a14; }
+
+/* @end */
+/* @group presentation */
+/* line 152, ../../compass/src/style.scss */
+.pres-slide { background-color: #eee; }
+
+/* line 155, ../../compass/src/style.scss */
+.pres-media { float: left; width: 56%; border: none; padding: 1em; }
+
+/* line 162, ../../compass/src/style.scss */
+.pres-text { margin-left: 63%; margin-top: 2.5em; }
+
+/* line 166, ../../compass/src/style.scss */
+.pres-text p { font-size: 160%; }
+
+/* @end */
+/* line 173, ../../compass/src/style.scss */
+.lt-ie8 #site-header .nav { display: block !important; line-height: 1.2em; }
+/* line 179, ../../compass/src/style.scss */
+.lt-ie8 .breadcrumbs { display: block !important; color: red; }
+/* line 183, ../../compass/src/style.scss */
+.lt-ie8 .pres-slide { clear: both; padding-bottom: 0; }
+/* line 187, ../../compass/src/style.scss */
+.lt-ie8 .pres-slide hr { visibility: none; border-color: #eee; height: 1px; margin: 0; }
+/* line 195, ../../compass/src/style.scss */
+.lt-ie8 .pres-media { padding: 0.2em 0 0 0.8em; margin-bottom: 0; }
+/* line 199, ../../compass/src/style.scss */
+.lt-ie8 .pres-text { margin-left: 63%; }
+
+/* line 206, ../../compass/src/style.scss */
+.lt-ie7 #site-header { padding-left: 20px; background-color: black; border-bottom: 4px solid #c74a14; }
+/* line 211, ../../compass/src/style.scss */
+.lt-ie7 form.nice, .lt-ie7 form.nice div.form-field input, .lt-ie7 form.nice input.input-text, .lt-ie7 form.nice textarea { background: none; }
+/* line 214, ../../compass/src/style.scss */
+.lt-ie7 form.nice { border: none; }
+/* line 217, ../../compass/src/style.scss */
+.lt-ie7 form.fieldset { background-color: green; }
+/* line 221, ../../compass/src/style.scss */
+.lt-ie7 form.nice input.input-text { margin-left: .1em; background-color: white; }
+/* line 225, ../../compass/src/style.scss */
+.lt-ie7 .alert-box.error { background-color: #EB511B; }
+/* line 228, ../../compass/src/style.scss */
+.lt-ie7 .button.nice.black { background: none; background-color: black; }
+/* line 232, ../../compass/src/style.scss */
+.lt-ie7 .container.site-header { background: none; background-color: black; }
+/* line 236, ../../compass/src/style.scss */
+.lt-ie7 #site-header, .lt-ie7 .container.site-header { background-color: black; }
+/* line 239, ../../compass/src/style.scss */
+.lt-ie7 dl.nice.tabs.vertical { border: none; border-bottom: 1px solid #bbb; }
+/* line 243, ../../compass/src/style.scss */
+.lt-ie7 .nice.tabs.vertical dd a.active { background: none; background-color: #00a6fc; }
+/* line 248, ../../compass/src/style.scss */
+.lt-ie7 .cab .main { background-color: white; border: none; }
+/* line 251, ../../compass/src/style.scss */
+.lt-ie7 .cab .main h1 { color: black; }
+/* line 257, ../../compass/src/style.scss */
+.lt-ie7 .cab .main table, .lt-ie7 .youraliss .main table { margin-top: 3em; }
+/* line 261, ../../compass/src/style.scss */
+.lt-ie7 #sitefooter, .lt-ie7 .container.site-footer { padding-bottom: 0; }
+/* line 265, ../../compass/src/style.scss */
+.lt-ie7 .pres-media img { width: 100%; }

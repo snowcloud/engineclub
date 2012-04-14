@@ -1,0 +1,3 @@
+{{ message }}
+
+Visit http://aliss.org{{ accept_url }} to accept the invite.

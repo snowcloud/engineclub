@@ -1,0 +1,72 @@
+{% extends "enginecab/base.html" %}
+{% load accounts_tags issues_tags %}
+{% load url from future %}
+
+{% block title %}cab- issue{% endblock %}
+
+{% block breadcrumb-add %}
+    <li><a href="{% url 'cab_issues' %}">Issues</a></li>
+    <li class="current"><a href="#">Issue detail</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-issues %}active{% endblock %}
+
+
+{% block module-content %}
+	<h2>Issue</h2>
+
+		<table>
+	        <thead>
+	            <tr>
+	                <th>Reported by</th>
+	                <th>Date</th>
+	                <th>Severity</th>
+	                <th>Report</th>
+	                <th>Resource</th>
+	                <th>Status</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr>
+					<td>{% if user|account == object.reporter %}
+						<span class="blue radius label">{{ object.reporter }}</span>
+					{% else %} {{ object.reporter }}{% endif %}
+					</td>
+					<td>{{ object.reported_at|date:"j/n/Y H:i" }}</td>
+					<td class="issue-{{object.severity}}">{{ object.severity|issue_severity }}</td>
+					<td>{{ object.message|linebreaks }}</td>
+					<td>{% if object.related_document %}<a href="{% url 'resource' object.related_document.id %}">{{ object.related_document.title }}</a>{% endif %}</td>
+					<td>{{ object.resolved|display_resolved }}</td>
+	            </tr>
+	        </tbody>
+		</table>
+
+	{% if object.comments %} 
+		<h3>Comments</h3>
+		{% for comment in object.comments  %}
+			<p><span class="blue label">{{comment.owner}}</span> <em>{{comment.created|date:"j M Y, H:i"}}</em></p>
+			<p>{{comment.message|linebreaksbr}}</p>
+			<hr>
+		{% endfor %}
+	{% endif %}
+
+	{% if not object.resolved %} 
+	    <form class="nice form" method="POST" action=".">
+	        {% csrf_token %}
+	        {{ commentform.as_plain }}
+	        <input type="submit" value="Add comment" />
+	    </form>	
+	{% endif %}
+
+	<hr>
+
+	{% if user|account|can_resolve:object and not object.resolved%} 
+	    <form class="nice form" method="POST" action=".">
+	        {% csrf_token %}
+	        {{ form.as_plain }}
+	        <input type="submit" value="Resolve this issue" />
+	    </form>	
+	{% endif %}
+
+{% endblock %}
