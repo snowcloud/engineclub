@@ -2,7 +2,6 @@
 
 {% block title %}resource added{% endblock %}
 
-{% block body_extra %}onLoad="setTimeout('self.close()',3000)"{% endblock body_extra %}
 {% block content %}
 <h1>Resource added</h1>
 
@@ -10,3 +9,5 @@
 
 <p><a href="javascript:window.close();">close this window</a></p>
 {% endblock %}
+
+{% block document-ready %}setTimeout('self.close()',3000);{% endblock document-ready %}

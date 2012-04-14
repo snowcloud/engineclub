@@ -1,67 +1,99 @@
-{% load utils %}<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="keywords" content="EngineClub, engine club, ALISS, NHS Scotland">
-	<meta name="description" content="Home of the EngineClub">
+<!DOCTYPE html>
+{% load utils %}
+{% load url from future %}
 
-	<title>engineclub- {% block title %}{% endblock %}</title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="/static/css/screen.css" />
-	<!--[if IE 6]>
-	  <link href="/static/css/ie6.css" media="screen, projection" rel="stylesheet" type="text/css" />
-	<![endif]-->
-	{% block head-extra %}{% endblock %}
-	<script type="text/javascript">
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="keywords" lang="en" content="ALISS, health, self-management, long-term conditions, Scotland, Access to Local Information to Support Self-management">
+
+<!-- Set the viewport width to device width for mobile -->
+<meta name="HandheldFriendly" content="True" />
+<meta name="viewport" content="width=device-width" />
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+
+<title>ALISS: {% block title %}{% endblock %}</title>
+<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
+
+<script type="text/javascript" src="http://use.typekit.com/amh5xxh.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+<link rel="stylesheet" href="/static/css/default.css">
+
+<link rel="stylesheet" href="/static/css/style.css" media="(min-width:768px)">
+
+<!--[if (lt IE 9) & (!IEMobile)]>
+<link rel="stylesheet" href="/static/css/style.css">
+<![endif]-->
+
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="page">
+    <!-- container -->
+    <div class="container site-header">
+        <div id="site-header" class="row">
+            <h1>aliss</h1>
+            <div class="nav-mobile">{% block nav_link %}<a href="{% url 'index' %}">home</a>{% endblock %}</div>
+            
+            <div class="nav">
+                <a href="{% url 'index' %}">home</a> -
+                <a href="/info/">find out more</a> - <a href="{% url 'search' %}">search</a> - <a href="{% url 'contact' %}">contact us</a>
+                 - <a href="{% url 'youraliss' %}">{% if not user.is_authenticated %}log in{% else %}your account{% endif %}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="top">
+        <div class="row breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
+
+        {% if messages %}
+            <div class="row usermessages">
+                {% for message in messages %} 
+                <div class="alert-box {{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="" class="close">&times;</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="main container">
+        <div class="row">{% block content %}&nbsp;{% endblock %}</div>
+    </div>
+
+    <div class="container site-footer">
+        <div id="site-footer" class="row">
+            <ul>
+                <li><a href="#">Long Term Conditions Alliance Scotland</a></li>
+                <li><a href="#"><a href="#">Terms &amp; conditions</a></a></li>
+            </ul>
+        </div>
+
+    </div>
+    <!-- container -->
+</div>
+    
+    <!-- Included JS Files -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script type='text/javascript' src='/static/js/modernizr.foundation.js'></script>
+    <script src="/static/js/foundation.js"></script>
+    <script src="/static/js/app.js"></script>
+    <!-- script src="scripts/app.js"></script -->
+
+  {% block script-extra %}{% endblock %}
+    <script type="text/javascript">
       $('document').ready(function(){
         {% block document-ready %}{% endblock %}
       });
     </script>
-</head>
-<body {% block body_extra %}{% endblock %}>
-<div id="wrap">
 <!-- 
-<div id="header" class="group">
-	<h1><a href="/">ALISS Engine</a></h1>
-</div>
+  <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
  -->
- <div id="usernav">  
- <ul>
-   {% if user.is_authenticated %}
-     <li>logged in as {{ user.username }}</li>
-     <li><a href="/logout/">log out</a></li>
-   {% else %}
-     <li><a href="/accounts/login/" id="login">log in</a></li>
-     <li><a href="/password_reset/">forgotten password</a></li>
-   {% endif %}
- </ul>
- </div>
- 
-<div id="main" class="group {% block main-content-class %}onecol{% endblock %}">
-	<div id="top" class="main-content">
-		{# <div id="breadcrumbs">{% block breadcrumbs %}{% endblock %}</div> #}
-		{% if messages %}
-		  <div class="message">
-		    <ul> 
-		        {% for message in messages %} 
-		            <li class="{{ message.tags }}">{{ message|safe }}</li>
-		        {% endfor %}
-		    </ul>
-		  </div>
-		{% endif %}
-		{% block content %}&nbsp;{% endblock %}
-	</div>
-	
-</div>
-{% comment %}
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-_uacct = "UA-563964-2";
-urchinTracker();
-</script>
-
-{% endcomment %}
 </body>
 </html>
