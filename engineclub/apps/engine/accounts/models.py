@@ -53,7 +53,7 @@ class Account(Document):
     api_password = StringField(max_length=64)
     members = ListField(ReferenceField(Membership), default=list)
     status = StringField(max_length=12, default=STATUS_OK, required=True )
-    collections = ListField(ReferenceField('Collection'), default=list)
+    # collections = ListField(ReferenceField('Collection'), default=list)
     in_collections = ListField(ReferenceField('Collection'), default=list)
     email_preference = StringField(choices=EMAIL_UPDATE_CHOICES, default=EMAIL_SINGLE, required=True)
     
