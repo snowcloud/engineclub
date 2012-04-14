@@ -312,7 +312,7 @@ caption, th, td {
 /* @group youraliss */
 .youraliss, .cab {
 	.module-content {
-		@include box(#555);
+		@include box(#999);
 		background-color: #fafeff;
 		padding: 1em;
 	}
@@ -339,8 +339,14 @@ caption, th, td {
 	background-color: red;
 	font-weight: bold;
 }
-
-
+#loading {
+	display: none;
+	text-align: center;
+	font-size: 160%;
+	font-style: italic;
+    background: url(../images/icons/wait30trans.gif) no-repeat 40% center;
+    line-height: 3em;
+}
 /* @end */
 
 /* @group cab */

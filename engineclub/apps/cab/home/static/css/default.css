@@ -1807,7 +1807,7 @@ caption, th, td { font-weight: normal; text-align: left; vertical-align: middle;
 
 /* @group youraliss */
 /* line 314, ../../compass/src/_base.scss */
-.youraliss .module-content, .cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
+.youraliss .module-content, .cab .module-content { box-shadow: 1px 1px 2px #999999; -moz-box-shadow: 1px 1px 2px #999999; -webkit-box-shadow: 1px 1px 2px #999999; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 
 /* line 320, ../../compass/src/_base.scss */
 .issue-0 { background-color: #ffea99; color: #000; }
@@ -1833,23 +1833,26 @@ caption, th, td { font-weight: normal; text-align: left; vertical-align: middle;
 /* line 337, ../../compass/src/_base.scss */
 .panel.issue-3 { background: none; background-color: red; font-weight: bold; }
 
+/* line 342, ../../compass/src/_base.scss */
+#loading { display: none; text-align: center; font-size: 160%; font-style: italic; background: url(../images/icons/wait30trans.gif) no-repeat 40% center; line-height: 3em; }
+
 /* @end */
 /* @group cab */
-/* line 348, ../../compass/src/_base.scss */
-.cab .module-content { box-shadow: 1px 1px 3px #555555; -moz-box-shadow: 1px 1px 3px #555555; -webkit-box-shadow: 1px 1px 3px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
+/* line 354, ../../compass/src/_base.scss */
+.cab .module-content { box-shadow: 1px 1px 2px #555555; -moz-box-shadow: 1px 1px 2px #555555; -webkit-box-shadow: 1px 1px 2px #555555; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-clip: padding-box; background-color: #fafeff; padding: 1em; }
 
 /* @end */
 /* @group presentations */
-/* line 357, ../../compass/src/_base.scss */
+/* line 363, ../../compass/src/_base.scss */
 .presentation dt, .presentation h3 { visibility: hidden; height: 0.1em; padding: 0; margin: 0; }
 
-/* line 363, ../../compass/src/_base.scss */
+/* line 369, ../../compass/src/_base.scss */
 .pres-slide { border-top: 4px solid #eee; }
 
-/* line 366, ../../compass/src/_base.scss */
+/* line 372, ../../compass/src/_base.scss */
 .pres-media { border: 1px solid #dedffd; text-align: center; }
 
-/* line 370, ../../compass/src/_base.scss */
+/* line 376, ../../compass/src/_base.scss */
 .pres-text p { margin-bottom: 0.5em; }
 
 /* @end */
