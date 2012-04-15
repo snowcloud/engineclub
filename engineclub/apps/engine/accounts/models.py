@@ -94,9 +94,9 @@ class Account(Document):
             self.in_collections.append(coll)
             self.save()
 
-    def _collections(self):
+    def _collections_owned(self):
         return Collection.objects(owner=self)
-    collections = property(_collections)
+    collections_owned = property(_collections_owned)
 
     def _is_staff(self):
         return User.objects.get(pk=self.local_id).is_staff

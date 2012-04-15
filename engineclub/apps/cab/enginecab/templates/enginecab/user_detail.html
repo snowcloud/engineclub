@@ -39,7 +39,7 @@
 				{% endfor %}				
 			</td></tr>
 			<tr><th>owns&nbsp;lists</th><td>
-				{% for coll in object.collections %}
+				{% for coll in object.collections_owned %}
 					<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
 				{% empty %}
 					-
