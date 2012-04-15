@@ -23,7 +23,6 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	margin-top: 1.65em;
 }
 
-
 #site-header .nav-mobile {
 	@include hide_it;
     position: absolute; // uses no height
