@@ -52,7 +52,7 @@
                 {% endwith %}
             {% empty %}
                 {% if not new_search %} 
-                    <li>no results found</li>
+                    <li>no results found for your area of interest. Would you like to <a href="{% url 'contact' %}">help us create some</a>?</li>
                 {% endif %}
             {% endfor %}
         </ul>

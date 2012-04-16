@@ -235,7 +235,6 @@ def resource_find(request, template_name='depot/resource_find.html'):
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource_list'))
         form = FindResourceForm(request.REQUEST)
-
         if form.is_valid():
             user = get_account(request.user.id)
 
@@ -272,7 +271,8 @@ def resource_find(request, template_name='depot/resource_find.html'):
         'results': results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': results and centre
+        'show_map': results and centre,
+        'new_search': new_search
     }
     return render_to_response(template_name, RequestContext(request, context))
 
