@@ -16,6 +16,11 @@
 
 	<h3>Recently curated resources</h3>
 
+	<dl class="sub-nav">
+	    <dt>Actions:</dt>
+        <dd><a href="{% url 'resource_add' %}">add a new resource</a></dd>
+	</dl>
+
 	<ul>
 	{% for resource in curations %}
 		<li><a href="{% url 'resource' resource.id %}">{{ resource.title }}</a></li>
