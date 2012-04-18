@@ -389,6 +389,7 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
 @login_required
 def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
+    user = get_account(request.user.id)
     resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     resource.curations[int(index)].delete()
     del resource.curations[int(index)]

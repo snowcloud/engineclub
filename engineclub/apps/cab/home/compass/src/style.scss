@@ -55,6 +55,28 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	float: right;
 	width: 66%;
 }
+.carousel {
+	@include un_hide_it;
+	@include box(#999);
+	float: right;
+	width: 500px;
+	.content {
+		background-color: #f76f54;
+		h1 {
+			margin-top: 150px;
+			a {
+				color: black;
+			}
+		}
+		p {
+			font-size: 170%;
+		}
+	}
+	.orbit-caption a {
+		color: white;
+	}
+}
+
 .home-links {
 	padding-top: 1em;
 	//float: left;

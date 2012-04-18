@@ -110,7 +110,7 @@ dl.nice.tabs.vertical {
 		color: #fff;
 	}
 }
-.video {
+.video, .carousel {
 	@include hide_it;
 	background-color: #fff;
 	margin-bottom: 3.5em;

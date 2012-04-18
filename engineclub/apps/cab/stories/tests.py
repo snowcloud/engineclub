@@ -18,21 +18,21 @@ class ViewsTestCase(MongoTestCase):
         setUpLocations(self)
         setUpResources(self)
 
-        curation = Curation(
+        self.curation1 = Curation(
             outcome='',
             tags=['#aliss-story'],
             note='This is my story, this is my song',
             owner=self.bob)
-        curation.item_metadata.update(author=self.bob)
-        self.resource6.add_curation(curation)
+        self.curation1.item_metadata.update(author=self.bob)
+        self.resource6.add_curation(self.curation1)
 
-        curation = Curation(
+        self.curation2 = Curation(
             outcome='',
             tags=['#aliss-story'],
             note='Follow the hearts and, you can\'t go wrong',
             owner=self.bob)
-        curation.item_metadata.update(author=self.bob)
-        self.resource7.add_curation(curation)
+        self.curation2.item_metadata.update(author=self.bob)
+        self.resource7.add_curation(self.curation2)
 
         reindex_resources(url=settings.TEST_SOLR_URL)
 
@@ -45,4 +45,12 @@ class ViewsTestCase(MongoTestCase):
         response = self.client.get(reverse('stories_list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Aliss stories")
+        self.assertContains(response, "title 6")
+
+    def test_stories_detail(self):
+        from django.core.urlresolvers import reverse
+
+        response = self.client.get(reverse('stories_detail', args=[self.curation1.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "title 6")
 
