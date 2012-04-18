@@ -308,3 +308,23 @@ def locations(request):
         data=data,
         callback=callback,
     )
+
+
+def savedsearches(request):
+
+    from accounts.models import AccountIPs, SavedSearches, dqn_to_int
+
+    callback = request.REQUEST.get('callback')
+    ip = request.META['REMOTE_ADDR']
+
+    int_ip = dqn_to_int(ip)
+
+    account = AccountIPs.objects.get(ipmin__lt=int_ip, ip_max__gt=int_ip)
+
+    searches = SavedSearches.objects.get(owner=account.owner)
+
+    return JsonResponse(
+        errors={},
+        data=searches,
+        callback=callback,
+    )
