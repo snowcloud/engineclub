@@ -126,6 +126,13 @@ class Resource(Document):
         self.reindex(remove=True)
         super(Resource, self).delete(*args, **kwargs)
 
+    def add_curation(self, curation, reindex=True):
+        """pass in new Curation, it will be linked and saved."""
+        curation.resource = self
+        curation.save()
+        self.curations.append(curation)
+        self.save(reindex=reindex)
+
     def _all_tags(self):
         tags = self.tags
         for c in self.curations:

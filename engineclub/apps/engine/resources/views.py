@@ -329,12 +329,9 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             curation = Curation(**form.cleaned_data)
             curation.owner = user
             curation.item_metadata.update(author=user)
-            curation.resource = resource
-            curation.save()
-
+            resource.add_curation(curation)
+            # TODO: move this into resource.add_curation
             increment_resource_crud('curation_add', account=user)
-            resource.curations.append(curation)
-            resource.save(reindex=True)
             index = len(resource.curations) - 1
 
             if 'next' in request.GET:
