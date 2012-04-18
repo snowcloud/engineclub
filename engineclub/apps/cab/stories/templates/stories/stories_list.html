@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load markup %}
+
+{% block title %}Aliss stories{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="#">Aliss Stories</a></li>
+</ul>
+{% endblock %}
+{% block content %}
+
+	<h1>Aliss stories</h1>
+
+    {% if objects %}
+
+    	{% for object in objects %}
+    		<h2><a href="{% url 'stories_detail' object.id %}">{{ object.resource.title }}</a></h2>
+    		<p>{{ object.note|truncatewords:30|textile }}</p>
+    	{% endfor %}
+    {% else %}
+
+        <p>No stories at the moment</p>
+
+    {% endif %}
+
+
+{% endblock %}
