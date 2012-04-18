@@ -4,7 +4,7 @@
 <div id="carousel">
 	<div class="content">
           <h1><a href="{% url 'stories_list' %}">Aliss stories</h1></a>
-          <p><a href="">Read more...</a></p>
+          <p><a href="{% url 'stories_list' %}">Read more...</a></p>
      </div>
      {% for object in objects %}
      	<img src="static/stories/{{object.id}}.jpg" alt="{{ object.note|truncatewords:10 }}"  data-caption="#htmlCaption{{forloop.counter}}" />
