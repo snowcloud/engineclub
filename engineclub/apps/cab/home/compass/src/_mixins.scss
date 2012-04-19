@@ -2,9 +2,9 @@
 
 
 @mixin box($col) {
-    box-shadow: 1px 1px 3px $col;
-    -moz-box-shadow: 1px 1px 3px $col;
-    -webkit-box-shadow: 1px 1px 3px $col;
+    box-shadow: 1px 1px 2px $col;
+    -moz-box-shadow: 1px 1px 2px $col;
+    -webkit-box-shadow: 1px 1px 2px $col;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;

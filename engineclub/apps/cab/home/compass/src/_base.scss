@@ -76,6 +76,10 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 			color: white;
 		}
 	}
+	.container#top {
+		background-color: #57659b;
+		border: none;
+	}
 }
 .welcome {
 	background-color: #eb511b;
@@ -106,7 +110,7 @@ dl.nice.tabs.vertical {
 		color: #fff;
 	}
 }
-.video {
+.video, .carousel {
 	@include hide_it;
 	background-color: #fff;
 	margin-bottom: 3.5em;
@@ -196,6 +200,10 @@ a.github {
 }
 a.top {
     background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom;
+    padding-left: 30px;
+}
+p.event {
+	background: url(../images/icons/clock.png) no-repeat left bottom;
     padding-left: 30px;
 }
 
@@ -304,7 +312,7 @@ caption, th, td {
 /* @group youraliss */
 .youraliss, .cab {
 	.module-content {
-		@include box(#555);
+		@include box(#999);
 		background-color: #fafeff;
 		padding: 1em;
 	}
@@ -331,8 +339,14 @@ caption, th, td {
 	background-color: red;
 	font-weight: bold;
 }
-
-
+#loading {
+	display: none;
+	text-align: center;
+	font-size: 160%;
+	font-style: italic;
+    background: url(../images/icons/wait30trans.gif) no-repeat 40% center;
+    line-height: 3em;
+}
 /* @end */
 
 /* @group cab */

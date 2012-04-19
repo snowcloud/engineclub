@@ -24,15 +24,15 @@ def makeResource(data):
 
 def setUpResources(self):
     for idx, data in enumerate((
-            {'title': 'title 0', 'owner': self.alice, 'tags': ['red', 'blue']},
-            {'title': 'title 1', 'owner': self.alice, 'tags': ['blue', 'green']},
-            {'title': 'title 2', 'owner': self.alice, 'tags': ['red', 'blue', 'green']},
-            {'title': 'title 3', 'owner': self.bob, 'tags': ['red']},
-            {'title': 'title 4', 'owner': self.jorph, 'tags': ['blue', 'green']},
-            {'title': 'title 5', 'owner': self.jorph, 'tags': ['red', 'blue']},
-            {'title': 'title 6', 'owner': self.hugo, 'tags': ['blue']},
-            {'title': 'title 7', 'owner': self.group, 'tags': ['blue']},
-            {'title': 'title 8', 'owner': self.group, 'tags': ['blue', 'pink']},
+            {'title': 'title 0', 'owner': self.alice, 'tags': ['red', 'blue'], 'description': 'This is title 0'},
+            {'title': 'title 1', 'owner': self.alice, 'tags': ['blue', 'green'], 'description': 'This is title 1'},
+            {'title': 'title 2', 'owner': self.alice, 'tags': ['red', 'blue', 'green'], 'description': 'This is title 2'},
+            {'title': 'title 3', 'owner': self.bob, 'tags': ['red'], 'description': 'This is title 3'},
+            {'title': 'title 4', 'owner': self.jorph, 'tags': ['blue', 'green'], 'description': 'This is title 4'},
+            {'title': 'title 5', 'owner': self.jorph, 'tags': ['red', 'blue'], 'description': 'This is title 5'},
+            {'title': 'title 6', 'owner': self.hugo, 'tags': ['blue'], 'description': 'This is title 6'},
+            {'title': 'title 7', 'owner': self.group, 'tags': ['blue'], 'description': 'This is title 7'},
+            {'title': 'title 8', 'owner': self.group, 'tags': ['blue', 'pink'], 'description': 'This is title 8'},
             )):
         res =  Resource.objects.create(**data)
         setattr(self, 'resource%s' % idx, res)
@@ -56,7 +56,7 @@ class ResourceTest(MongoTestCase):
         Tests create a new resource.
         """
         # uri = u'http://test.example.com/1/'
-        title = u'test title 7'
+        title = u'test title 99'
         author = self.emma
         resource, created = Resource.objects.get_or_create(__raw__={'_id': u'4d135708e999fb30d8000007'}, defaults={'title': title, 'owner': author})
         resource.item_metadata.author = author
@@ -65,6 +65,7 @@ class ResourceTest(MongoTestCase):
         self.assertEqual(resource.title, title)
         self.assertEqual(resource.item_metadata.author, author)
     
+
     def test_tags(self):
         """docstring for test_tags"""
 
@@ -138,6 +139,21 @@ class SearchTest(MongoTestCase):
         result = iter(results).next()
         self.assertEqual(result['title'], 'title 8')
 
+    def test_curation(self):
+        from resources.search import find_by_place_or_kwords
+
+        curation = Curation(
+            outcome='',
+            tags=['blah'],
+            note='bob curated this',
+            owner=self.bob)
+        curation.item_metadata.update(author=self.bob)
+        self.resource6.add_curation(curation)
+
+        lat_lon, results = find_by_place_or_kwords('', 'blah')
+        self.assertEqual(lat_lon, None)
+        result = iter(results).next()
+        self.assertEqual(result['title'], 'title 6')
 
 
 

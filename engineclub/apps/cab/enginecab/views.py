@@ -107,21 +107,21 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 
 @user_passes_test(lambda u: u.is_superuser)
 def one_off_util(request):
-    # note = 'Nothing enabled.'
-    note = migrate_account_collections()
+    note = 'Nothing enabled.'
+    # note = migrate_account_collections()
     messages.success(request, 'job done. %s' % note)
     
     return HttpResponseRedirect(reverse('cab_resources'))
 
-def migrate_account_collections():
-    # from accounts.models import Account
-    for acct in Account.objects.all():
-        if acct.collections:
-            print 'yup', acct.id
-            acct.in_collections = acct.collections
-            acct.collections = None
-            acct.save()
-    return 'migrated account collection- now comment out account.collection field'
+# def migrate_account_collections():
+#     # from accounts.models import Account
+#     for acct in Account.objects.all():
+#         if acct.collections:
+#             # print 'yup', acct.id
+#             acct.in_collections = acct.collections
+#             acct.collections = None
+#             acct.save()
+#     return 'migrated account collection- now comment out account.collection field'
     
 
 # @user_passes_test(lambda u: u.is_staff)

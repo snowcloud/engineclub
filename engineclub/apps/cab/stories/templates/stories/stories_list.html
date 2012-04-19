@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load markup %}
+
+{% block title %}Aliss stories{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="#">Aliss Stories</a></li>
+</ul>
+{% endblock %}
+{% block content %}
+
+	<h1>Aliss stories</h1>
+
+    <div class="row">
+    {% load stories_tags %}
+    {% carousel %}
+    </div>
+
+    {% if objects %}
+
+    	{% for object in objects %}
+    		<h2><a href="{% url 'stories_detail' object.id %}">{{ object.resource.title }}</a></h2>
+    		<p>{{ object.note|truncatewords:30|textile }}</p>
+    	{% endfor %}
+    {% else %}
+
+        <p>No stories at the moment</p>
+
+    {% endif %}
+
+
+{% endblock %}
+
+  {% block script-extra %}
+  <script type="text/javascript">
+     $(window).load(function() {
+         $('#carousel').orbit({
+            animation: 'fade',
+            animationSpeed: 1600,
+            pauseOnHover: true,
+            startClockOnMouseOut: true,
+            // directionalNav: true,
+            captions: true,
+            bullets: true,
+            // bulletThumbs: true
+         });
+     });
+</script>{% endblock %}
