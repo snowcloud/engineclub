@@ -310,7 +310,7 @@ def locations(request):
     )
 
 
-def savedsearches(request):
+def savedsearchesbyIP(request):
 
     from accounts.models import AccountIPRange, SavedSearch, dqn_to_int
 

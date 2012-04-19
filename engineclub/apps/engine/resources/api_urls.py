@@ -5,7 +5,7 @@ urlpatterns = patterns('resources.api_handlers',
     url(r'^resources/publishdata/$', 'publish_data', name='api_publish_data'),
     url(r'^resources/(?P<id>[^/]+)/$', 'resource_by_id', name='api_resource_by_id'),
 
-    url(r'^savedsearches/$', 'savedsearches', name='savedsearches'),
+    url(r'^savedsearchesbyIP/$', 'savedsearchesbyIP', name='savedsearchesbyIP'),
 
     url(r'^tags/$', 'tags'),
     url(r'^locations/$', 'locations'),
