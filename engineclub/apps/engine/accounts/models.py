@@ -5,6 +5,7 @@ from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
 from mongoengine import *
+from mongoengine.queryset import QuerySet
 
 MEMBER_ROLE = 'member'
 ADMIN_ROLE = 'admin'
@@ -152,3 +153,42 @@ class Collection(Document):
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.owner)
 
+
+def dqn_to_int(dqn):
+    """
+    Source: http://code.activestate.com/recipes/65219-ip-address-conversion-functions/
+    Convert dotted quad notation to integer
+    "127.0.0.1" => 2130706433
+    """
+    dqn = dqn.split(".")
+    return int("%02x%02x%02x%02x" % (int(dqn[0]), int(dqn[1]), int(dqn[2]), int(dqn[3])), 16)
+
+
+def int_to_dqn(i):
+    """
+    Source: http://code.activestate.com/recipes/65219-ip-address-conversion-functions/
+    Convert integer to dotted quad notation
+    """
+    i = "%08x" % (i)
+    ###
+    # The same issue as for `dqn_to_int()`
+    ###
+    return "%i.%i.%i.%i" % (int(i[0:2], 16), int(i[2:4], 16), int(i[4:6], 16), int(i[6:8], 16))
+
+
+class AccountIPRange(Document):
+    owner = ReferenceField('Account', required=True)
+    ip_min = IntField()
+    ip_max = IntField()
+
+    def __unicode__(self):
+        return "%s - %s - %s" % (self.owner, int_to_dqn(self.ip_min), int_to_dqn(self.ip_max))
+
+
+class SavedSearch(Document):
+
+    owner = ReferenceField('Account', required=True, unique=True)
+    terms = ListField(StringField(max_length=40))
+
+    def __unicode__(self):
+        return u"%s's saved searches" % self.owner
