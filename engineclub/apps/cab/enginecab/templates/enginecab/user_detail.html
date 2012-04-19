@@ -27,18 +27,29 @@
             <tr><th>name</th><td>{{ object.name }}</td></tr>
             <tr><th>email</th><td><a href="mailto:{{ object.email }}">{{ object.email }}</a></td></tr>
             <tr><th>description</th><td>{{ object.description|linebreaks }}</td></tr>
-            <tr><th>url</th><td>{{ object.url|default:"" }}</td></tr>
+            <tr><th>url</th><td>{{ object.url|default:"-" }}</td></tr>
 			<tr><th>aliss id</th><td>{{ object.id }}</td></tr>
 			<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
 			<tr><th>status</th><td>{{ object.status }}</td></tr>
 			<tr><th>members</th><td>
 				{% for memb in object.members %}
 					<p><a href="#">{{ memb.name }}</a></p>
+				{% empty %}
+					-
 				{% endfor %}				
+			</td></tr>
+			<tr><th>owns&nbsp;lists</th><td>
+				{% for coll in object.collections_owned %}
+					<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
+				{% empty %}
+					-
+				{% endfor %}
 			</td></tr>
 			<tr><th>in&nbsp;lists</th><td>
 				{% for coll in object.in_collections %}
 					<a href="{% url 'cab_list_detail' coll.id %}">{{ coll.name }}</a><br>
+				{% empty %}
+					-
 				{% endfor %}
 			</td></tr>
             

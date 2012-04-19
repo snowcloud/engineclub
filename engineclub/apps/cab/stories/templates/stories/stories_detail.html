@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load markup %}
+
+{% block title %}Aliss story{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'stories_list' %}">Aliss Stories</a></li>
+    <li class="current"><a href="#">{{ object.resource.title }}</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
+	<p>{{ object.note|textile }}</p>
+	<img src="/static/stories/{{object.id}}.jpg">
+
+	<p>This resource curated by <a href="{% url 'account_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
+{% endblock %}

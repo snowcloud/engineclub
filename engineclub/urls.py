@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     (r'^cab/', include('enginecab.urls')),
     (r'^depot/', include('resources.urls')),
     (r'^users/', include('accounts.urls')),
+    (r'^stories/', include('stories.urls')),
     url(r'^search/$', 'resources.views.resource_find', name='search'),
 
     url(r'^contact/$', contact_form, { 'form_class': SCContactForm }, name='contact'),

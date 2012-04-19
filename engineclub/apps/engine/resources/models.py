@@ -27,11 +27,6 @@ STATUS_CHOICES = (
     (STATUS_BAD, 'Bad')
     )
 
-POSTCODE = 'POSTCODE'
-POSTCODEDISTRICT = 'POSTCODEDISTRICT'
-OSM_PLACENAME = 'OSM_PLACENAME'
-GOOGLE_PLACENAME = 'GOOGLE_PLACENAME'
-
 import logging
 logger = logging.getLogger('aliss')
 
@@ -130,6 +125,13 @@ class Resource(Document):
             c.delete()
         self.reindex(remove=True)
         super(Resource, self).delete(*args, **kwargs)
+
+    def add_curation(self, curation, reindex=True):
+        """pass in new Curation, it will be linked and saved."""
+        curation.resource = self
+        curation.save()
+        self.curations.append(curation)
+        self.save(reindex=reindex)
 
     def _all_tags(self):
         tags = self.tags

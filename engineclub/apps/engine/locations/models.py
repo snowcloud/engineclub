@@ -2,6 +2,12 @@
 
 from mongoengine import *
 
+POSTCODE = 'POSTCODE'
+POSTCODEDISTRICT = 'POSTCODEDISTRICT'
+OSM_PLACENAME = 'OSM_PLACENAME'
+GOOGLE_PLACENAME = 'GOOGLE_PLACENAME'
+
+
 class Location(Document):
     """Location document, based on combined data sources, geonames + OSM
     loc_type = POSTCODE | POSTCODEDISTRICT | OSM_PLACENAME | GOOGLE_PLACENAME

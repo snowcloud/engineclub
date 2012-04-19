@@ -308,3 +308,37 @@ def locations(request):
         data=data,
         callback=callback,
     )
+
+
+def savedsearchesbyIP(request):
+
+    from accounts.models import AccountIPRange, SavedSearch, dqn_to_int
+
+    callback = request.REQUEST.get('callback')
+    ip = request.META['REMOTE_ADDR']
+
+    int_ip = dqn_to_int(ip)
+
+    data = []
+    errors = {}
+
+    try:
+        account = AccountIPRange.objects.get(ip_min__lt=int_ip, ip_max__gt=int_ip)
+        searches = SavedSearch.objects.get(owner=account.owner)
+        data = searches.terms
+    except AccountIPRange.DoesNotExist:
+        errors = {
+            'code': 404,
+            'message': 'No account was found for the given IP range.'
+        }
+    except SavedSearch.DoesNotExist:
+        errors = {
+            'code': 404,
+            'message': 'No saved searches were found for the account %s' % account.owner
+        }
+
+    return JsonResponse(
+        errors=errors,
+        data=data,
+        callback=callback,
+    )

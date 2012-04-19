@@ -79,6 +79,8 @@ SOLR_ROWS = 100
 SOLR_LOC_BOOST_DEFAULT = 30.0
 SOLR_LOC_BOOST_MAX = 100.0
 
+STORY_TAG = '#aliss-story'
+
 YAHOO_KEY = 'your_key_here...'
 
 TIME_ZONE = 'Europe/London'
@@ -168,6 +170,7 @@ INSTALLED_APPS = (
     'issues',
     'invites',
     'home',
+    'stories',
 
 )
 # override any of the above in your own settings_local.py

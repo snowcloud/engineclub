@@ -5,8 +5,8 @@ from django.template import RequestContext
 
 def index(request):
     # default access to aliss.org will redirect logged in user
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('youraliss'))
+    # if request.user.is_authenticated():
+    #     return HttpResponseRedirect(reverse('youraliss'))
     return home(request)
 
 def home(request):

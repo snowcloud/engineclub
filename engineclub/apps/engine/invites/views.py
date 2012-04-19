@@ -53,7 +53,8 @@ def invite(request):
 
     return render_to_response('invites/invite.html', {
         'account': account,
-        'form': form
+        'form': form,
+        'submit': 'Send invitation'
     }, RequestContext(request))
 
 
@@ -93,7 +94,8 @@ def accept(request, code):
 
     return render_to_response('invites/invite.html', {
         'account': account,
-        'form': form
+        'form': form,
+        'submit': 'Create your account'
     }, RequestContext(request))
 
 def remove(request, object_id):
