@@ -19,5 +19,5 @@ def carousel():
 def pic(value, size):
 	path = '%s/images/stories/%s.jpg' % (settings.MEDIA_ROOT, value)
 	if os.path.exists(path):
-		return '%simages/stories/%s.jpg' % (settings.MEDIA_URL, value)
+		return '%simages/stories/%s.jpgx' % (settings.MEDIA_URL, value)
 	return 'http://placekitten.com/%s' % '/'.join(size.split(','))
