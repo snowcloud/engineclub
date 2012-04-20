@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load stories_tags %}
 
 {% if objects %} 	
 	<div class="carousel">
@@ -8,7 +9,7 @@
 		          <p><a href="{% url 'stories_list' %}">Read more...</a></p>
 		     </div>
 		     {% for object in objects %}
-		     	<img src="/static/stories/{{object.id}}.jpg" alt="{{ object.note|truncatewords:10 }}"  data-caption="#htmlCaption{{forloop.counter}}" />
+		     	<img src="{{ object.id|pic:"500,400"}}" alt="{{ object.note|truncatewords:10 }}"  data-caption="#htmlCaption{{forloop.counter}}" />
 				<span class="orbit-caption" id="htmlCaption{{forloop.counter}}"><a href="{% url 'stories_detail' object.id %}">{{ object.note|truncatewords:10 }}</a></span>
 		     {% endfor %}
 		</div>

@@ -38,6 +38,9 @@ urlpatterns += patterns('django.contrib.auth.views',
     (r'^accounts/password_change/done/$', 'password_change_done' ),
 )
 
+# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+# urlpatterns += staticfiles_urlpatterns()
+
 if settings.DEBUG:
   urlpatterns += patterns('',
     (r'^media/(?P<path>.*)$',
