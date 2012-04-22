@@ -19,7 +19,7 @@ class SimpleTest(TestCase):
     	self.assertEqual(80, minmax(80, 9000, None, default=-18))
 
 
-from mongoengine import connect
+from mongoengine import connect, connection
 from mongoengine.connection import get_db
 
 class MongoTestCase(TestCase):
@@ -28,6 +28,7 @@ class MongoTestCase(TestCase):
     """
     db_name = 'test_%s' % settings.MONGO_DATABASE_NAME
     def __init__(self, methodName='runtest'):
+        connection.disconnect()
         self.db = connect(self.db_name)
         super(MongoTestCase, self).__init__(methodName)
 
