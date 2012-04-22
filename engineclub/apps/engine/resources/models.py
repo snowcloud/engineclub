@@ -127,11 +127,18 @@ class Resource(Document):
         super(Resource, self).delete(*args, **kwargs)
 
     def add_curation(self, curation, reindex=True):
-        """pass in new Curation, it will be linked and saved."""
-        curation.resource = self
-        curation.save()
-        self.curations.append(curation)
-        self.save(reindex=reindex)
+        """
+        pass in new Curation, it will be linked and saved.
+        Failed in 0.6.0, so disabled
+        """
+        raise Exception('Do not use resource.add_curation- mongoengine problem updating lists. Use add_curation function')
+        # curation.resource = self
+        # curation.save()
+        # c = deepcopy(self.curations)
+        # c.append(curation)
+        # self.curations = c
+        # # self.curations.append(curation)
+        # self.save(reindex=reindex)
 
     def _all_tags(self):
         tags = self.tags
@@ -255,6 +262,12 @@ class RelatedResource(Document):
     target = ReferenceField(Resource)
     rel_type = StringField()
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
+
+def add_curation(resource, curation, reindex=True):
+    curation.resource = resource
+    curation.save()
+    resource.curations.append(curation)
+    resource.save(reindex=reindex)
 
 def load_resource_data(document, resource_data):
     new_data = eval(resource_data.read())

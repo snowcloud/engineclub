@@ -15,7 +15,6 @@ from datetime import datetime
 
 def checktags(data, user):
     # data = self.cleaned_data['tags']
-    print user, data
     if '#' in data and not (user and user.is_staff):
         raise forms.ValidationError('You cannot use the # character in your tags.')
     return clean_csvtextinput(data)

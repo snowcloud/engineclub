@@ -4,7 +4,11 @@ enginecab/tests.py
 """
 
 from django.conf import settings
-from mongoengine.django.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
 
 class ViewsTestCase(MongoTestCase):
     def setUp(self):
