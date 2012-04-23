@@ -11,7 +11,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 #site-header h1 {
 	float: left;
-	padding-right: 3em;
+	padding-right: 15%;
 }
 
 #site-header .nav {
@@ -42,7 +42,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 }
 .page-nav {
 	float: left;
-	width: 33%;
+	width: 30%;
 }
 .page-nav p {
 	margin-bottom: 1em;
@@ -56,8 +56,10 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	width: 66%;
 }
 .carousel {
-	@include un_hide_it;
 	@include box(#999);
+	display: block !important;
+	// visibility: visible;
+
 	float: right;
 	width: 500px;
 	.content {
