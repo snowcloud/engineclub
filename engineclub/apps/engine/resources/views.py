@@ -103,6 +103,20 @@ def update_resource_metadata(self, resource, request):
 @login_required
 def resource_add(request, template_name='depot/resource_edit.html'):
     """adds a new resource"""
+
+    import urllib
+    data = {}
+    req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('||', '\n')
+    for i in req_path.split('/'):
+        item = i.split('|')
+        if len(item) > 1:
+            data[item[0]] = item[1].replace('http~~', 'http://')
+    dummy = [i for i in urllib.unquote(request.path).split('/') if i.find('|') > -1]
+    # print 'path', urllib.unquote(request.path)
+    print data
+    # print dummy
+
+
     template_info = _template_info(request.REQUEST.get('popup', ''))
     # formclass = ShortResourceForm
 
