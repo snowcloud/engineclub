@@ -1,6 +1,7 @@
 # Create your views here.
 
 from django.conf import settings
+# from django.contrib.flatpages.models import Flatpage
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from pymongo.objectid import ObjectId
@@ -10,6 +11,7 @@ from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
 
 def stories_list(request, template_name='stories/stories_list.html'):
+    # flatpages = Flatpage.objects.filter(id=1)
     objects = Curation.objects(tags=settings.STORY_TAG)
     template_context = {'objects': objects}
     # print 'stories:', len(objects)

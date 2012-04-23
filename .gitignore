@@ -28,3 +28,4 @@ ecengine/engineclub
 /engineclub/static/verticaltabs
 /engineclub/static/favicon.ico
 sql_data/dump.tgz
+engineclub/media/

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
-{% load markup %}
+{% load markup flatpages %}
 
 {% block title %}Aliss stories{% endblock %}
 
@@ -18,7 +18,14 @@
     {% carousel %}
     </div>
 
-    {% if objects %}
+{% get_flatpages '/story/' as story_pages %}
+
+    {% if objects or story_pages%}
+
+      {% for object in story_pages %}
+        <h2><a href="{{ object.url }}">{{ object.title }}</a></h2>
+        <p>{{ object.content|truncatewords:30|textile }}</p>
+      {% endfor %}
 
     	{% for object in objects %}
     		<h2><a href="{% url 'stories_detail' object.id %}">{{ object.resource.title }}</a></h2>

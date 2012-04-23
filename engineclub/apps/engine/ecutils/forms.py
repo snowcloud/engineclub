@@ -141,12 +141,16 @@ class DocumentForm(PlainForm):
             kwargs.setdefault('initial', {}).update(instance.to_mongo())
         super(DocumentForm, self).__init__(*args, **kwargs)
 
+    def is_valid(self, user=None):
+        self.req_user = user
+        return super(DocumentForm, self).is_valid()
+
     def save(self, do_save=True):
         if self.instance is None:
             raise FormHasNoInstanceException("Form cannot save- document instance is None.")
         for f in self.fields:
             try:
-                if self.cleaned_data[f]:
+                if self.cleaned_data[f] or self.instance[f]:
                     self.instance[f] = self.cleaned_data[f]
             except KeyError:
                 pass

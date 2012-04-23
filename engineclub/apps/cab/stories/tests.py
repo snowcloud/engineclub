@@ -4,8 +4,12 @@ stories/tests.py
 """
 
 from django.conf import settings
-from mongoengine.django.tests import MongoTestCase
-from resources.models import Curation
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from resources.models import Resource, Curation, add_curation
 
 class ViewsTestCase(MongoTestCase):
     def setUp(self):
@@ -18,13 +22,17 @@ class ViewsTestCase(MongoTestCase):
         setUpLocations(self)
         setUpResources(self)
 
+        # reload these to avoid errors.
+        self.resource6 = Resource.objects.get(id=self.resource6.id)
+        self.resource7 = Resource.objects.get(id=self.resource7.id)
+
         self.curation1 = Curation(
             outcome='',
             tags=['#aliss-story'],
             note='This is my story, this is my song',
             owner=self.bob)
         self.curation1.item_metadata.update(author=self.bob)
-        self.resource6.add_curation(self.curation1)
+        add_curation(self.resource6, self.curation1)
 
         self.curation2 = Curation(
             outcome='',
@@ -32,7 +40,7 @@ class ViewsTestCase(MongoTestCase):
             note='Follow the hearts and, you can\'t go wrong',
             owner=self.bob)
         self.curation2.item_metadata.update(author=self.bob)
-        self.resource7.add_curation(self.curation2)
+        add_curation(self.resource7, self.curation2)
 
         reindex_resources(url=settings.TEST_SOLR_URL)
 
