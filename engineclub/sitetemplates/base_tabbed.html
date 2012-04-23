@@ -1,9 +1,10 @@
 {% extends "site-base.html" %}
+{% load url from future %}
 
 
 {% block main %}
 
-<p>Resources | Users | Your account</p>
+<p><a href="{% url 'search' %}">Resources</a> | Users | <a href="{% url 'youraliss' %}">Your account</a></p>
 
 {% block content %}&nbsp;{% endblock content %}
 

@@ -43,7 +43,7 @@
                 - <a href="/info/">find out more</a>
                 - <a href="{% url 'search' %}">explore Aliss</a> 
                 - <a href="{% url 'contact' %}">contact us</a>
-                - <a href="{% url 'youraliss' %}">{% if not user.is_authenticated %}log in{% else %} your account{% endif %}</a>
+                {% if not user.is_authenticated %}- <a href="{% url 'youraliss' %}">log in</a>{% endif %}
                 {% if user.is_staff %}- <a href="{% url 'cab' %}">cab{% endif %}</a>
             </div>
         </div>
