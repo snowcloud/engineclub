@@ -105,19 +105,14 @@ def resource_add(request, template_name='depot/resource_edit.html'):
     """adds a new resource"""
 
     import urllib
-    data = {}
+    req_data = {}
     req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('||', '\n')
     for i in req_path.split('/'):
         item = i.split('|')
         if len(item) > 1:
-            data[item[0]] = item[1].replace('http~~', 'http://')
-    dummy = [i for i in urllib.unquote(request.path).split('/') if i.find('|') > -1]
-    # print 'path', urllib.unquote(request.path)
-    print data
-    # print dummy
+            req_data[item[0]] = item[1]
 
-
-    template_info = _template_info(request.REQUEST.get('popup', ''))
+    template_info = _template_info(req_data.get('popup', ''))
     # formclass = ShortResourceForm
 
     if request.method == 'POST':
@@ -142,10 +137,10 @@ def resource_add(request, template_name='depot/resource_edit.html'):
                 pass
 
     else:
-        description= request.GET.get('t', '').replace('||', '\n')
+        description= req_data.get('t', '')
         initial = {
-            'uri': request.GET.get('page', ''),
-            'title': request.GET.get('title', ''),
+            'uri': req_data.get('page', '').replace('http~~', 'http://'),
+            'title': req_data.get('title', ''),
             'description': description[:1250]
             }
         form = ShortResourceForm(initial=initial)
