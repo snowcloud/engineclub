@@ -1,4 +1,8 @@
-from mongoengine.django.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
 
 class IssuesTestCase(MongoTestCase):
 
@@ -16,6 +20,12 @@ class ApiTestCase(IssuesTestCase):
 
         from issues.models import Issue, \
             SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
+        from resources.models import Resource
+
+        # errors on save if these resources aren't reloaded.
+        # why ???
+        self.resource1 = Resource.objects.get(id=self.resource1.id)
+        self.resource3 = Resource.objects.get(id=self.resource3.id)
 
         # create issues
         issue, created = Issue.objects.get_or_create(

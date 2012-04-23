@@ -1,7 +1,11 @@
 """
 locations.tests
 """
-from mongoengine.django.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
 
 from locations.models import Location
 

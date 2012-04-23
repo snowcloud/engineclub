@@ -7,7 +7,7 @@ import subprocess
 
 from django.contrib.auth.models import User
 from mongoengine.connection import _get_db as get_db
-from mongoengine.django.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
 
 # from resources.models import Resource
 from accounts.models import Account, Collection, \
@@ -40,7 +40,7 @@ SEP = '**************'
 #     """docstring for _print_db_info"""
 #     print SEP
 #     print 'Account: ', Account.objects.count()
-#     print 'Membership: ', Membership.objects.count()
+#     # print 'Membership: ', Membership.objects.count()
 #     print 'Collection: ', Collection.objects.count()
 #     print SEP
 
@@ -76,12 +76,16 @@ class CollectionsTest(AccountsBaseTest):
         coll1.add_accounts([self.alice, self.jorph])
         coll1.add_accounts([self.alice])
         coll1.add_accounts([self.jorph])
+        coll1.save()
+        coll1 = Collection.objects.get(name='Test Collection')
         self.assertEqual(2, len(coll1.accounts))
 
         self.assertEqual(1, len(self.alice.in_collections))
         self.assertEqual(self.alice.in_collections[0].name, 'Test Collection')
 
         coll2.add_accounts([self.jorph])
+        coll2.save()
+        self.jorph.save()
         self.assertEqual(1, len(coll2.accounts))
 
         self.assertEqual(2, len(self.jorph.in_collections))

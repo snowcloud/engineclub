@@ -4,9 +4,13 @@ apps/depot/tests.py
 """
 
 from django.conf import settings
-from mongoengine.django.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
+from ecutils.tests import MongoTestCase
 
-from resources.models import Resource, Curation, load_resource_data
+from resources.models import Resource, Curation, add_curation, load_resource_data
 from resources.search import lat_lon_to_str
 from resources.forms import ShortResourceForm
 
@@ -142,13 +146,17 @@ class SearchTest(MongoTestCase):
     def test_curation(self):
         from resources.search import find_by_place_or_kwords
 
+        # setting resource failed - no idea why, seems a valid object
+        # reloading works
+        self.resource6 = Resource.objects.get(id=self.resource6.id)
         curation = Curation(
             outcome='',
             tags=['blah'],
             note='bob curated this',
-            owner=self.bob)
+            owner=self.bob,
+            )
         curation.item_metadata.update(author=self.bob)
-        self.resource6.add_curation(curation)
+        add_curation(self.resource6, curation)
 
         lat_lon, results = find_by_place_or_kwords('', 'blah')
         self.assertEqual(lat_lon, None)

@@ -20,7 +20,9 @@ requests
 # mongo stuff
 pymongo==2.1.1
 # mongoengine==0.5.2
-mongoengine==0.6.2
+# getattr prob on save with 
+mongoengine==0.6.5
+
 # reqd by mongoengine and not in python 2.5
 # multiprocessing
 

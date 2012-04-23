@@ -13,6 +13,12 @@ from mongoengine.queryset import DoesNotExist
 
 from datetime import datetime
 
+def checktags(data, user):
+    # data = self.cleaned_data['tags']
+    if '#' in data and not (user and user.is_staff):
+        raise forms.ValidationError('You cannot use the # character in your tags.')
+    return clean_csvtextinput(data)
+
 class FormHasNoInstanceException(Exception):
     pass
 
@@ -66,7 +72,7 @@ class ShortResourceForm(DocumentForm):
     tags = forms.CharField(widget=CSVTextInput(attrs={'class': 'input-text expand'}), label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
-        return clean_csvtextinput(self.cleaned_data['tags'])
+        return checktags(self.cleaned_data['tags'], self.req_user)
 
     def clean_uri(self):
         data = self.cleaned_data['uri']
@@ -150,7 +156,7 @@ class TagsForm(DocumentForm):
     tags = forms.CharField(widget=CSVTextInput, label='Tags (keywords)', help_text='separate words or phrases with commas', required=False)
 
     def clean_tags(self):
-        return clean_csvtextinput(self.cleaned_data['tags'])
+        return checktags(data, self.req_user)
     
 class ShelflifeForm(DocumentForm):
     """docstring for ShelflifeForm"""
@@ -166,7 +172,7 @@ class CurationForm(DocumentForm):
     # data = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean_tags(self):
-        return clean_csvtextinput(self.cleaned_data['tags'])
+        return checktags(self.cleaned_data['tags'], self.req_user)
 
 REPORT_CHOICES=(
     (SEVERITY_LOW, 'Not serious- a spelling mistake or some other small correction'), 

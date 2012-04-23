@@ -137,8 +137,8 @@ class Collection(Document):
 
     def add_accounts(self, accts, role=MEMBER_ROLE):
         for acct in accts:
-            self.add_account(acct)
-            acct.add_to_collection(self)
+            if self.add_account(acct):
+                acct.add_to_collection(self)
 
     def add_account(self, acct, role=MEMBER_ROLE):
         found = False
@@ -149,6 +149,7 @@ class Collection(Document):
         if not found:
             m = CollectionMember.objects.create(account=acct, collection=self, role=role)
             self.accounts.append(m)
+        return not found
 
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.owner)

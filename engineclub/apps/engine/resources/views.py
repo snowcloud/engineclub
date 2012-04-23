@@ -18,7 +18,7 @@ from pymongo.objectid import ObjectId
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
 from locations.models import Location, lookup_postcode
-from resources.models import Resource, Curation, CalendarEvent,  \
+from resources.models import Resource, Curation, add_curation, CalendarEvent,  \
     STATUS_OK, STATUS_BAD, Moderation
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from resources.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
@@ -110,7 +110,7 @@ def resource_add(request, template_name='depot/resource_edit.html'):
         if request.POST.get('result', '') == 'Cancel':
             return resource_edit_complete(request, None, template_info)
         form = ShortResourceForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(request.user):
             resource = Resource(**form.cleaned_data)
             # resource.metadata.author = str(request.user.id)
             try:
@@ -162,7 +162,7 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
         locationform = LocationUpdateForm(request.POST, instance=resource)
         # shelflifeform = ShelflifeForm(request.POST, instance=resource)
 
-        if resourceform.is_valid() and locationform.is_valid() and eventform.is_valid():
+        if resourceform.is_valid(request.user) and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
             resource.locations = locationform.locations
@@ -325,11 +325,11 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('resource', args=[resource.id]))
         form = CurationForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(request.user):
             curation = Curation(**form.cleaned_data)
             curation.owner = user
             curation.item_metadata.update(author=user)
-            resource.add_curation(curation)
+            add_curation(resource, curation)
             # TODO: move this into resource.add_curation
             increment_resource_crud('curation_add', account=user)
             index = len(resource.curations) - 1
@@ -367,12 +367,14 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
         if result == 'Cancel':
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
         form = CurationForm(request.POST, instance=object)
-        if form.is_valid():
+        if form.is_valid(request.user):
             user = get_account(request.user.id)
             curation = form.save(do_save=False)
             curation.item_metadata.update(author=user)
             curation.save()
             increment_resource_crud('curation_edit', account=user)
+            # reload the resource, don't know why, but needed for mongoengine 0.6
+            resource = Resource.objects.get(id=resource.id)
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:

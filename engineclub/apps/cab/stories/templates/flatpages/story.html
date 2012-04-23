@@ -1,0 +1,18 @@
+{% extends "stories/stories_detail.html" %}
+{% load url from future %}
+{% load markup stories_tags %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'stories_list' %}">Aliss Stories</a></li>
+    <li class="current"><a href="#">{{ flatpage.title }}</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<h1><a href="">{{ flatpage.title }}</a></h1>
+	<p>{{ flatpage.content|textile }}</p>
+	<img src="{{ flatpage.id|pic:"500,400"}}">
+
+{% endblock %}
