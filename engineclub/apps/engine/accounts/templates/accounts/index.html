@@ -1,15 +1,12 @@
-{% extends "base.html" %}
+{% extends "base_tabbed.html" %}
 {% load url from future %}
 
 {% block title %}groups{% endblock %}
 
 {% block content %}
 
-{% if user.is_staff %}
-<p><a href="{% url 'cab_user_add' %}">new group</a></p>
-{% endif %}
 
-<h1>Groups</h1>
+<h1>Aliss users</h1>
 
 <ol>
 {% for object in objects %}

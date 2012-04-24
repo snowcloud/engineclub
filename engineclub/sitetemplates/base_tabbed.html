@@ -4,7 +4,10 @@
 
 {% block main %}
 
-<p><a href="{% url 'search' %}">Resources</a> | Users | <a href="{% url 'youraliss' %}">Your account</a></p>
+<p><a href="{% url 'search' %}">Resources</a> | <a href="{% url 'accounts' %}">Users</a> | <a href="{% url 'youraliss' %}">Your account</a>
+{% if user.is_staff %} | <a href="{% url 'cab' %}">Caboose</a>	
+{% endif %}
+</p>
 
 {% block content %}&nbsp;{% endblock content %}
 
