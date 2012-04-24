@@ -7,7 +7,21 @@
 
 {% block body_class %}search resource{% endblock %}
 {% block content %}
-    <h1>Search</h1>
+
+{% if user.is_authenticated %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url 'resource_add' %}">Add a new resource</a></dd>
+    {% if user.is_staff %}
+        <dd><a href="{% url 'cab_reindex' %}" id="reindex">Reindex resources</a></dd>
+    {% endif %}
+</dl>
+
+<div id="loading">working...</div>
+
+{% endif %}
+
+    <h1>Search Aliss resources</h1>
 
     <div class="row">
 
@@ -104,6 +118,9 @@
         mapstraction.setCenterAndZoom(centre_pt, 12);
 
     {% endif %}
+    $('.sub-nav a').click(function() {
+        $('#loading').show();
+    })
 
 {% endblock document-ready %}
 

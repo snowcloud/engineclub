@@ -37,7 +37,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	padding-bottom: 2em;
 }
 .welcome {
-	margin: 3em 0;
+	margin: 0 0 3em;
 	padding: 2em 6em;
 }
 .welcome p {
@@ -95,9 +95,12 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	padding-top: 1em;
 	//display: inline;
 }
+#top {
+	margin-bottom: 1.8em;
+}
 .breadcrumbs {
 	// margin-top: 1em;
-	@include un_hide_it;	
+	@include un_hide_it;
 }
 ul.breadcrumbs {
 	padding: 0.5em 1em;
