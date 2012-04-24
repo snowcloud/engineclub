@@ -3,11 +3,27 @@
 
 
 {% block main %}
+<ul class="base-tabs">
+	<li class="resource-tab {% block resource-tab %}{% endblock resource-tab %}"><a href="{% url 'search' %}">Resources</a></li>
+	<li class="user-tab {% block user-tab %}{% endblock user-tab %}"><a href="{% url 'accounts' %}">Users</a></li>
+	<li class="account-tab {% block account-tab %}{% endblock account-tab %}"><a href="{% url 'youraliss' %}">Your account</a></li>
+	{% if user.is_staff %}<li class="cab-tab {% block cab-tab %}{% endblock cab-tab %}"><a href="{% url 'cab' %}">Caboose</a></li>{% endif %}
+</ul>
+    <div class="container" id="top">
+        <div class="row breadcrumbs">{% block breadcrumbs %}{% endblock %}</div>
 
-<p><a href="{% url 'search' %}">Resources</a> | <a href="{% url 'accounts' %}">Users</a> | <a href="{% url 'youraliss' %}">Your account</a>
-{% if user.is_staff %} | <a href="{% url 'cab' %}">Caboose</a>	
-{% endif %}
-</p>
+        {% if messages %}
+            <div class="row usermessages">
+                {% for message in messages %} 
+                <div class="alert-box {{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="" class="close">&times;</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
 
 {% block content %}&nbsp;{% endblock content %}
 
