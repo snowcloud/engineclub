@@ -218,6 +218,7 @@ class Resource(Document):
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
+            'res_type': settings.SOLR_RES,
             'title': self.title,
             'short_description': self.description,
             'description': u'\n'.join(description),
