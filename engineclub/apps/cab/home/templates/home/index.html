@@ -17,6 +17,7 @@
             <p><a href="{% url 'search' %}" class="nice radius black button">Explore Aliss</a></p>
             <p><a href="{% url 'contact' %}" class="nice radius black button">Contact us</a></p>
             <p><a href="{% url 'youraliss' %}" class="nice radius black button">Your account</a></p>
+            <p><a href="{% url 'resource_add' %}" class="nice radius black button">Add a new resource</a></p>
             {% if user.is_staff %}<p><a href="{% url 'cab' %}" class="nice radius blue button">Caboose</a></p>{% endif %}
 
             <div class="home-links">
