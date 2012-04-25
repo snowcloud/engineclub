@@ -202,8 +202,6 @@ class Resource(Document):
         collections = []
         description = [self.description]
 
-        # try:
-
         for obj in self.curations:
             tags.extend(obj.tags)
             accounts.append(unicode(obj.owner.id))
@@ -211,10 +209,6 @@ class Resource(Document):
                 collections.extend(obj.owner.in_collections)
             description.extend([obj.note or u'', unicode(obj.data) or u''])
 
-        # except AttributeError:
-        #     logger.error("fixed error in curations while indexing resource: %s, %s" % (self.id, self.title))
-        #     self.curations = []
-        #     self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
