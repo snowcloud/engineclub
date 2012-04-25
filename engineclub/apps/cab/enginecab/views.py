@@ -13,7 +13,7 @@ from pysolr import Solr
 from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
-    detail as account_detail, edit as account_edit, new as account_add
+    detail as accounts_detail, edit as account_edit, new as account_add
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
@@ -37,7 +37,7 @@ def users(request, template_name='enginecab/users.html'):
 @user_passes_test(lambda u: u.is_staff)
 def user_detail(request, object_id, template_name='enginecab/user_detail.html'):
     object = get_one_or_404(Account, id=ObjectId(object_id))
-    return account_detail(request, object.id, template_name)
+    return accounts_detail(request, object.id, template_name)
 
 @user_passes_test(lambda u: u.is_staff)
 def user_edit(request, object_id, template_name='enginecab/user_edit.html'):

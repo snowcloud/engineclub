@@ -94,7 +94,7 @@ def _template_info(popup):
     if popup:
         return {'popup': popup, 'base': 'base_popup.html'}
     else:
-        return {'popup': popup, 'base': 'base.html'}
+        return {'popup': popup, 'base': 'depot/resource_base.html'}
 
 def update_resource_metadata(self, resource, request):
     """docstring for update_resource_metadata"""
@@ -207,7 +207,7 @@ def resource_edit_complete(request, resource, template_info):
         url = reverse('resource', args=[resource.id])
     else: # resource_add cancelled
         popup_url = reverse('resource_popup_cancel')
-        url = reverse('resource_list')
+        url = reverse('resource_find')
 
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)

@@ -17,5 +17,5 @@
 	<p>{{ object.note|textile }}</p>
 	<img src="{{ object.id|pic:"500,400"}}">
 
-	<p>This resource curated by <a href="{% url 'account_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
+	<p>This resource curated by <a href="{% url 'accounts_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
 {% endblock %}

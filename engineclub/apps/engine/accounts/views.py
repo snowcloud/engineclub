@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
@@ -38,7 +39,62 @@ def detail(request, object_id, template_name='accounts/detail.html'):
         {'object': account},
         RequestContext(request)
     )
-    
+
+@cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
+def accounts_find(request, template_name='accounts/accounts_find.html'):
+    """docstring for accounts_find"""
+    results = []
+    centre = None
+    new_search = False
+
+    result = request.REQUEST.get('result', '')
+    # if request.method == 'POST' or result:
+    #     if result == 'Cancel':
+    #         return HttpResponseRedirect(reverse('resource_list'))
+    #     form = FindResourceForm(request.REQUEST)
+    #     if form.is_valid():
+    #         user = get_account(request.user.id)
+
+    #         increment_queries(form.cleaned_data['kwords'], account=user)
+    #         increment_locations(form.cleaned_data['post_code'], account=user)
+
+    #         for result in form.results:
+    #             resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
+
+    #             try:
+    #                 curation_index, curation = get_curation_for_user_resource(user, resource)
+    #             except TypeError:
+    #                 curation_index = curation = None
+
+    #             curation_form = CurationForm(
+    #                     initial={'outcome': STATUS_OK},
+    #                     instance=curation)
+    #             resource_report_form = ResourceReportForm()
+    #             results.append({
+    #                 'resource_result': result,
+    #                 'curation': curation,
+    #                 'curation_form': curation_form,
+    #                 'resource_report_form': resource_report_form,
+    #                 'curation_index': curation_index
+    #             })
+    #         centre = form.centre
+    # else:
+    #     form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+    #     new_search = True
+
+    context = {
+        # 'next': urlquote_plus(request.get_full_path()),
+        # 'form': form,
+        # 'results': results,
+        # 'centre': centre,
+        # 'google_key': settings.GOOGLE_KEY,
+        # 'show_map': results and centre,
+        # 'new_search': new_search
+    }
+    return render_to_response(template_name, RequestContext(request, context))
+
+
+ 
 @login_required
 def edit(request, object_id, template_name='accounts/edit.html', next='youraliss'):
 

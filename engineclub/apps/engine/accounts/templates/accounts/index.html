@@ -11,7 +11,7 @@
 <ol>
 {% for object in objects %}
 
-    <li><a href="{% url 'account_detail' object.id %}">{{ object.name }}</a></li>
+    <li><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></li>
 
 {% empty %}
     <li>no groups found.</li>
