@@ -3,6 +3,15 @@
 
 {% block title %}{% if new %}New group{% else %}Edit {{ form.instance.name }}{% endif %}{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
+    <li><a href="{% url 'accounts_find' %}">Search Aliss users</a></li>
+    <li><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></li>
+    <li class="current"><a href="#">Edit</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
  
@@ -11,9 +20,15 @@
 <form method="post" action=".">{% csrf_token %}
     {{ form.as_p }}
     
+    {% if locationform %}
+        <fieldset>
+            <legend><span>Locations:</span></legend>
+            {{ locationform.as_plain }}
+        </fieldset>
+    {% endif %}
+
     <input type="submit" value="Submit" id="" />
 </form>
-
 
 
 {% endblock %}

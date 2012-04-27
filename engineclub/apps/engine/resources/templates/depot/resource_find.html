@@ -6,6 +6,13 @@
 {% block title %}find resources{% endblock %}
 
 {% block body_class %}search resource{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li class="current"><a href="#">Search Aliss resources</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
 {% if user.is_authenticated %}

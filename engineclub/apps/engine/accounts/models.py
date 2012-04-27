@@ -1,3 +1,6 @@
+# accounts.models
+
+from copy import deepcopy
 import datetime
 
 from django.conf import settings
@@ -7,7 +10,9 @@ from django.template.defaultfilters import slugify
 
 from mongoengine import *
 from mongoengine.queryset import QuerySet
+from pysolr import Solr
 
+from ecutils.utils import lat_lon_to_str
 from locations.models import Location
 
 MEMBER_ROLE = 'member'
@@ -86,8 +91,8 @@ class Account(Document):
         return self.name
     
     def save(self, *args, **kwargs):
-        super(Account, self).save(*args, **kwargs)
         reindex = kwargs.pop('reindex', False)
+        super(Account, self).save(*args, **kwargs)
         if reindex:
             self.reindex()
 

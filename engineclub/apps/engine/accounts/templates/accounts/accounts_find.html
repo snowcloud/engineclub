@@ -96,7 +96,7 @@
         mapstraction.addMarker( new mxn.Marker(centre_pt));
 
         {% for res in results %}{% for loc in res.resource_result.pt_location %}
-            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url 'resource' res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
+            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url 'accounts_detail' res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
         {% endfor %}{% endfor %}
 
         function advancedMarker(lat, lon, info) {
