@@ -27,12 +27,10 @@ def index(request):
     return render_to_response('accounts/index.html',
         RequestContext( request, { 'objects': objects }))
 
-@login_required
+# @login_required
 def detail(request, object_id, template_name='accounts/detail.html'):
     account = get_one_or_404(Account, id=object_id)
     user = request.user
-    if not (user.is_staff or account.local_id == str(user.id)):
-        raise PermissionDenied()
     
     return render_to_response(
         template_name,
@@ -96,7 +94,7 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
 
  
 @login_required
-def edit(request, object_id, template_name='accounts/edit.html', next='youraliss'):
+def edit(request, object_id, template_name='accounts/edit.html', next='accounts_detail'):
 
     account = get_one_or_404(Account, id=object_id)
     user = request.user
@@ -120,7 +118,7 @@ def edit(request, object_id, template_name='accounts/edit.html', next='youraliss
     )
 
 @user_passes_test(lambda u: u.is_staff)
-def new(request, template_name='accounts/edit.html', next='cab_user_detail'):
+def add(request, template_name='accounts/edit.html', next='cab_user_detail'):
     
     if request.method == 'POST':
         form = NewAccountForm(request.POST)

@@ -1,22 +1,37 @@
 {% extends "accounts/accounts_base.html" %}
-{% load markup utils %}
+{% load markup utils accounts_tags %}
 {% load url from future %}
 
-{% block title %}account: {{ object.name }}{% endblock %}
+{% block title %}account for {{ object.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'accounts' %}">Search Aliss users</a></li>
+    <li class="current"><a href="#">{{ object.name }}</a></li>
+</ul>
+{% endblock %}
 
 {% block content %}
 
-<p><a href="{% url 'accounts' %}">browse Aliss users</a>
-{% if user.is_staff %} | 
-    <a href="{% url 'cab_user_edit' object.id %}">edit account</a>
+{% if user.is_authenticated %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    {% if user|can_edit:object %}
+        <dd><a href="{% url 'accounts_edit' object.id %}">Edit account</a></dd>
+    {% endif %}
+    {% if user.is_staff %}
+	    <dd><a href="{% url 'accounts_add' %}">New user</a></dd>
+    {% endif %}
+</dl>
 {% endif %}
-</p>
+
+
 
 <h1>{{ object.name }}</h1>
 
 <div>{{ object.description|textile }}</div>
 
-<p>Account ID: {{ object.id }}</p>
+<!-- <p>Account ID: {{ object.id }}</p> -->
 
 {% include "accounts/detail-add.html" %}
 
