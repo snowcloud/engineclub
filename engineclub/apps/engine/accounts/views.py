@@ -5,15 +5,18 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.http import urlquote_plus
 from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
 from pymongo.objectid import ObjectId
 
-from accounts.models import Account, Collection
+from accounts.models import Account, Collection, get_account
+from analytics.shortcuts import (increment_queries, increment_locations,
+    increment_resources, increment_resource_crud)
 from ecutils.utils import get_one_or_404
-from forms import AccountForm, NewAccountForm
+from forms import AccountForm, NewAccountForm, FindAccountForm
 
 # def get_one_or_404(**kwargs):
 #     try:
@@ -46,48 +49,39 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
     new_search = False
 
     result = request.REQUEST.get('result', '')
-    # if request.method == 'POST' or result:
-    #     if result == 'Cancel':
-    #         return HttpResponseRedirect(reverse('resource_list'))
-    #     form = FindResourceForm(request.REQUEST)
-    #     if form.is_valid():
-    #         user = get_account(request.user.id)
+    if request.method == 'POST' or result:
+        pass
+        if result == 'Cancel':
+            return HttpResponseRedirect(reverse('resource_list'))
+        form = FindAccountForm(request.REQUEST)
+        if form.is_valid():
+            user = get_account(request.user.id)
 
-    #         increment_queries(form.cleaned_data['kwords'], account=user)
-    #         increment_locations(form.cleaned_data['post_code'], account=user)
+            increment_queries(form.cleaned_data['kwords'], account=user)
+            increment_locations(form.cleaned_data['post_code'], account=user)
 
-    #         for result in form.results:
-    #             resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
+            for result in form.results:
+                resource = get_one_or_404(Account, id=ObjectId(result['res_id']))
 
-    #             try:
-    #                 curation_index, curation = get_curation_for_user_resource(user, resource)
-    #             except TypeError:
-    #                 curation_index = curation = None
+                results.append({
+                    'resource_result': result,
+                    # 'resource_report_form': resource_report_form,
+                })
+            centre = form.centre
+    else:
+        form = FindAccountForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
+        new_search = True
 
-    #             curation_form = CurationForm(
-    #                     initial={'outcome': STATUS_OK},
-    #                     instance=curation)
-    #             resource_report_form = ResourceReportForm()
-    #             results.append({
-    #                 'resource_result': result,
-    #                 'curation': curation,
-    #                 'curation_form': curation_form,
-    #                 'resource_report_form': resource_report_form,
-    #                 'curation_index': curation_index
-    #             })
-    #         centre = form.centre
-    # else:
-    #     form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
-    #     new_search = True
+    print form
 
     context = {
-        # 'next': urlquote_plus(request.get_full_path()),
-        # 'form': form,
-        # 'results': results,
-        # 'centre': centre,
-        # 'google_key': settings.GOOGLE_KEY,
-        # 'show_map': results and centre,
-        # 'new_search': new_search
+        'next': urlquote_plus(request.get_full_path()),
+        'form': form,
+        'results': results,
+        'centre': centre,
+        'google_key': settings.GOOGLE_KEY,
+        'show_map': results and centre,
+        'new_search': new_search
     }
     return render_to_response(template_name, RequestContext(request, context))
 

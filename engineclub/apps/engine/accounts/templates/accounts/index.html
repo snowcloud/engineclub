@@ -3,8 +3,18 @@
 
 {% block title %}groups{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li class="current"><a href="#">Browse Aliss users</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url 'accounts_find' %}">Search Aliss user accounts</a></dd>
+</dl>
 
 <h1>Aliss users</h1>
 

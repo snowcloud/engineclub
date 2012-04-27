@@ -116,6 +116,12 @@ def clean_csvtextinput(data):
     """docstring for _clean_tags"""
     return [t.strip() for t in data.split(',') if t]
 
+def checktags(data, user):
+    # data = self.cleaned_data['tags']
+    if '#' in data and not (user and user.is_staff):
+        raise forms.ValidationError('You cannot use the # character in your tags.')
+    return clean_csvtextinput(data)
+
 class CSVTextInput(forms.TextInput):
     """a widget that will display list of strings as CSV
         Use with clean_csvtextinput on formfield validation to convert CSV input to list
