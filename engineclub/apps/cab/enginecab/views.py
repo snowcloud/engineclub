@@ -13,7 +13,7 @@ from pysolr import Solr
 from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
-    detail as accounts_detail, edit as account_edit, new as account_add
+    detail as accounts_detail, edit as account_edit, add as account_add
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
