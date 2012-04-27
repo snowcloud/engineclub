@@ -114,6 +114,16 @@ class Account(Document):
         return User.objects.get(pk=self.local_id).is_staff
     is_staff = property(_is_staff)
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self == acct
+
+    # def perm_can_delete(self, user):
+    #     """docstring for perm_can_edit"""
+    #     acct = get_account(user.id)
+    #     return self.owner == acct
+
     def _last_login(self):
         return User.objects.get(pk=self.local_id).last_login
     last_login = property(_last_login)
@@ -204,6 +214,15 @@ class Collection(Document):
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.owner)
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
 
 def dqn_to_int(dqn):
     """
