@@ -7,15 +7,37 @@
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
     <li><a href="{% url 'stories_list' %}">Aliss Stories</a></li>
-    <li class="current"><a href="#">{{ object.resource.title }}</a></li>
+    <li class="current"><a href="#">{{ object.resource.title }}{{ object.name }}{{ object.title }}</a></li>
 </ul>
 {% endblock %}
 
 {% block content %}
 
-	<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
-	<p>{{ object.note|textile }}</p>
+	{# RESOURCE STORY #}
+	{% if obj_type == 'resource' %} 
+		<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
+		<p>{{ object.note|textile }}</p>
+	{% else %}
+
+	{# ACCOUNT STORY #}
+		{% if obj_type == 'account' %} 
+			<h1><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></h1>
+			<p>{{ object.description|textile }}</p>
+
+	{# FLATPAGE STORY #}
+		{% else %}	
+			<h1>{{ object.title }}</a></h1>
+			<p>{{ object.content|textile }}</p>
+		{% endif %}
+	{% endif %}
+
 	<img src="{{ object.id|pic:"500,400"}}">
 
-	<p>This resource curated by <a href="{% url 'accounts_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
+	{% if obj_type == 'resource' %} 
+		<p>This resource curated by <a href="{% url 'accounts_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
+	{% endif %}
+
+	{% if user.is_staff %} 
+		<p><em>pic uploader to go here...</em></p>
+	{% endif %}
 {% endblock %}
