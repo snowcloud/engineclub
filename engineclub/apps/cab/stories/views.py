@@ -13,37 +13,45 @@ from accounts.models import Account
 from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
 
-def get_stories():
-    objects = [{
+def get_story(obj, story_type):
+    if story_type == 'curation':
+        return {
+            'obj': obj,
             'id': obj.id,
             'type': 'curation',
             'title': obj.resource.title,
             'url': reverse('stories_detail', args=[obj.id]),
-            'content': obj.note } for obj in Curation.objects(tags=settings.STORY_TAG)]
-    objects.extend([{
+            'source_url': reverse('resource', args=[obj.resource.id]),
+            'content': obj.note }
+    elif story_type == 'account':
+        return {
             'id': obj.id,
             'type': 'account',
             'title': obj.name,
             'url': reverse('stories_detail', args=[obj.id]),
-            'content': obj.description } for obj in Account.objects(tags=settings.STORY_TAG)])
-    objects.extend([{
+            'source_url': reverse('accounts_detail', args=[obj.id]),
+            'content': obj.description }
+    elif story_type == 'flatpage':
+        return {
             'id': obj.id,
             'type': 'flatpage',
             'title': obj.title,
             'url': reverse('stories_detail', args=[obj.id]),
-            # 'url': obj.url,
-            'content': obj.content } for obj in FlatPage.objects.filter(url__startswith='/story/')])
-    return objects
+            'source_url': obj.url,
+            'content': obj.content }
+    else:
+        raise Exception('unknown story type')
 
+def get_stories():
+    objects = [get_story(obj, 'curation') for obj in Curation.objects(tags=settings.STORY_TAG)]
+    objects.extend([get_story(obj, 'account') for obj in Account.objects(tags=settings.STORY_TAG)])
+    objects.extend([get_story(obj, 'flatpage') for obj in FlatPage.objects.filter(url__startswith='/story/')])
+    return objects
 
 def stories_list(request, template_name='stories/stories_list.html'):
 
     # fetch all story objects: Curations, Accounts, Flatpages
     # populate list of dictionaries in objects
-
-    # TESTS !!!
-
-
 
     template_context = {'objects': get_stories()}
     return render_to_response(template_name, RequestContext(request, template_context))
@@ -74,7 +82,7 @@ def stories_detail(request, object_id, template_name='stories/stories_detail.htm
     else:
         form = FileUploadForm(initial={'picture_file': 'blah/de/blah.jpg'})
 
-    template_context = {'object': object, 'obj_type': obj_type, 'form': form}
+    template_context = {'object': get_story(object, obj_type), 'form': form}
     return render_to_response(template_name, RequestContext(request, template_context))
 
 

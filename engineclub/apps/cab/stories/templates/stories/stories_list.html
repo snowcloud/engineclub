@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
-{% load markup flatpages %}
+{% load markup flatpages stories_tags %}
 
 {% block title %}Aliss stories{% endblock %}
 
@@ -23,8 +23,11 @@
 
   {% if objects or story_pages%}
     {% for object in objects  %}
-      <h2><a href="{{ object.url }}">{{ object.title }}</a></h2>
-      <p>{{ object.content|truncatewords:30|textile }}</p>
+      <div class="row story">
+        <h2><a href="{{ object.url }}">{{ object.title }}</a></h2>
+        <img class="in-list" src="{{ object.id|pic:"100,60"}}">
+        <p>{{ object.content|truncatewords:30|textile }}</p>
+      </div>
     {% endfor %}
   {% else %}
 

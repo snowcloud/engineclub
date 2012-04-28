@@ -12,36 +12,24 @@
 {% endblock %}
 
 {% block content %}
+	
+	<div class="row story">
+		<h1><a href="{{ object.source_url }}">{{ object.title }}</a></h1>
 
-	{# RESOURCE STORY #}
-	{% if obj_type == 'curation' %} 
-		<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
-		<p>{{ object.note|textile }}</p>
-	{% else %}
+		<img src="{{ object.id|pic:"500,400"}}">
+		<p>{{ object.content|textile }}</p>
 
-	{# ACCOUNT STORY #}
-		{% if obj_type == 'account' %} 
-			<h1><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></h1>
-			<p>{{ object.description|textile }}</p>
-
-	{# FLATPAGE STORY #}
-		{% else %}	
-			<h1>{{ object.title }}</a></h1>
-			<p>{{ object.content|textile }}</p>
-		{% endif %}
+	{% if object.type == 'curation' %} 
+		<hr>
+		<p>This resource curated by <a href="{% url 'accounts_detail' object.obj.resource.owner.id %}">{{ object.obj.resource.owner }}</a></p>
 	{% endif %}
-
-	<img src="{{ object.id|pic:"500,400"}}">
-
-	{% if obj_type == 'curation' %} 
-		<p>This resource curated by <a href="{% url 'accounts_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
-	{% endif %}
+	</div>
 
 	{% if user.is_staff %} 
 		<form enctype="multipart/form-data" class="nice form" method="post" action=".">{% csrf_token %}
 
         <fieldset>
-            <legend><span>Upload a picture for your story:</span></legend>
+            <legend><span>Upload a picture for this story:</span></legend>
 
             {{ form.as_plain }}
 

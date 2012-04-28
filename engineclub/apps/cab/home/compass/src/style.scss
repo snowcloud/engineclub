@@ -262,6 +262,19 @@ dl.nice.tabs.vertical dd a:hover {
 }
 /* @end */
 
+.story {
+	img {
+		@include box(#999);
+		float: left;
+		width: 45%;
+		margin: 1em 1.5em 2em 0;
+		border: 10px solid #eee;
+	}
+	.in-list {
+		width: 20%;
+	}
+}
+
 .lt-ie8 {
 	#site-header .nav {
 		// background-color: green;
