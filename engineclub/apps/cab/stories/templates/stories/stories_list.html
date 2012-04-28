@@ -18,6 +18,19 @@
     {% carousel %}
     </div>
 
+  {% if objects or story_pages%}
+    {% for object in objects  %}
+      <h2><a href="{{ object.url }}">{{ object.title }}</a></h2>
+      <p>{{ object.content|truncatewords:30|textile }}</p>
+    {% endfor %}
+  {% else %}
+
+    <p>No stories at the moment</p>
+
+  {% endif %}
+  
+{% comment %}
+  
 {% get_flatpages '/story/' as story_pages %}
 
     {% if objects or story_pages%}
@@ -36,6 +49,7 @@
         <p>No stories at the moment</p>
 
     {% endif %}
+{% endcomment %}
 
 
 {% endblock %}
