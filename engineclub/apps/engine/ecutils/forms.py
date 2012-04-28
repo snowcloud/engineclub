@@ -177,4 +177,6 @@ class SCContactForm(ContactForm):
             raise forms.ValidationError("Please remove any links in your message.")
 
         return data
-    
+
+class FileUploadForm(PlainForm):
+    picture_file = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'input-text expand'}), help_text='Pic must be JPG, 500w x 400h')

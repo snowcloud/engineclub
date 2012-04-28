@@ -1,22 +1,17 @@
 {% load url from future %}
-{% load flatpages stories_tags %}
+{% load stories_tags %}
 
-{% get_flatpages '/story/' as story_pages %}
 
-{% if objects or story_pages %} 	
+{% if objects %} 	
 	<div class="carousel">
 		<div id="carousel">
 			<div class="content">
 		          <h1><a href="{% url 'stories_list' %}">Aliss stories</h1></a>
 		          <p><a href="{% url 'stories_list' %}">Read more...</a></p>
 		     </div>
-		     {% for fp in story_pages %}
-		     	<img src="{{ fp.id|pic:"500,400"}}" alt="{{ fp.content|truncatewords:10 }}"  data-caption="#htmlCaption1{{forloop.counter}}" />
-				<span class="orbit-caption" id="htmlCaption1{{forloop.counter}}"><a href="{{ fp.url }}">{{ fp.content|truncatewords:10 }}</a></span>
-		     {% endfor %}
 		     {% for object in objects %}
-		     	<img src="{{ object.id|pic:"500,400"}}" alt="{{ object.note|truncatewords:10 }}"  data-caption="#htmlCaption2{{forloop.counter}}" />
-				<span class="orbit-caption" id="htmlCaption2{{forloop.counter}}"><a href="{% url 'stories_detail' object.id %}">{{ object.note|truncatewords:10 }}</a></span>
+		     	<img src="{{ object.id|pic:"500,400"}}" alt="{{ object.content|truncatewords:10 }}"  data-caption="#htmlCaption2{{forloop.counter}}" />
+				<span class="orbit-caption" id="htmlCaption2{{forloop.counter}}"><a href="{% url 'stories_detail' object.id %}">{{ object.content|truncatewords:10 }}</a></span>
 		     {% endfor %}
 		</div>
 	</div>

@@ -7,18 +7,13 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from pymongo.objectid import InvalidId, ObjectId
 
+from ecutils.forms import FileUploadForm
 from ecutils.utils import get_one_or_404
 from accounts.models import Account
 from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
 
-def stories_list(request, template_name='stories/stories_list.html'):
-
-    # fetch all story objects: Curations, Accounts, Flatpages
-    # populate list of dictionaries in objects
-
-    # TESTS !!!
-
+def get_stories():
     objects = [{
             'id': obj.id,
             'type': 'curation',
@@ -38,8 +33,27 @@ def stories_list(request, template_name='stories/stories_list.html'):
             'url': reverse('stories_detail', args=[obj.id]),
             # 'url': obj.url,
             'content': obj.content } for obj in FlatPage.objects.filter(url__startswith='/story/')])
-    template_context = {'objects': objects}
+    return objects
+
+
+def stories_list(request, template_name='stories/stories_list.html'):
+
+    # fetch all story objects: Curations, Accounts, Flatpages
+    # populate list of dictionaries in objects
+
+    # TESTS !!!
+
+
+
+    template_context = {'objects': get_stories()}
     return render_to_response(template_name, RequestContext(request, template_context))
+
+def handle_uploaded_file(f, object_id):
+    f_name = '%s/images/stories/%s.jpg' % (settings.MEDIA_ROOT, object_id)
+    destination = open(f_name, 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
 
 def stories_detail(request, object_id, template_name='stories/stories_detail.html'):
 
@@ -52,5 +66,18 @@ def stories_detail(request, object_id, template_name='stories/stories_detail.htm
     except InvalidId:
         object = FlatPage.objects.get(pk=object_id)
         obj_type = 'flatpage'
-    template_context = {'object': object, 'obj_type': obj_type}
+
+    if request.method == 'POST':
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['picture_file'], object.id)
+    else:
+        form = FileUploadForm(initial={'picture_file': 'blah/de/blah.jpg'})
+
+    template_context = {'object': object, 'obj_type': obj_type, 'form': form}
     return render_to_response(template_name, RequestContext(request, template_context))
+
+
+
+
+

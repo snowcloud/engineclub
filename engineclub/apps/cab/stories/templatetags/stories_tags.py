@@ -6,14 +6,13 @@ from django.conf import settings
 from django.template import Library
 from django.utils.safestring import mark_safe
 
-from resources.models import Curation
+from stories.views import get_stories
 
 register = Library()
 
 @register.inclusion_tag('stories/stories_carousel.html')
 def carousel():
-    objects = Curation.objects(tags=settings.STORY_TAG)
-    return {'objects': objects}
+    return {'objects': get_stories()}
 
 @register.filter
 def pic(value, size):

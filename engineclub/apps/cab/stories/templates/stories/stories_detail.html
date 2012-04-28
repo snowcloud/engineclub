@@ -14,7 +14,7 @@
 {% block content %}
 
 	{# RESOURCE STORY #}
-	{% if obj_type == 'resource' %} 
+	{% if obj_type == 'curation' %} 
 		<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
 		<p>{{ object.note|textile }}</p>
 	{% else %}
@@ -33,11 +33,23 @@
 
 	<img src="{{ object.id|pic:"500,400"}}">
 
-	{% if obj_type == 'resource' %} 
+	{% if obj_type == 'curation' %} 
 		<p>This resource curated by <a href="{% url 'accounts_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
 	{% endif %}
 
 	{% if user.is_staff %} 
-		<p><em>pic uploader to go here...</em></p>
+		<form enctype="multipart/form-data" class="nice form" method="post" action=".">{% csrf_token %}
+
+        <fieldset>
+            <legend><span>Upload a picture for your story:</span></legend>
+
+            {{ form.as_plain }}
+
+            <input type="submit" name="result" value="Submit" id="submit_button">
+        </fieldset>
+		</form>
+
+
+
 	{% endif %}
 {% endblock %}
