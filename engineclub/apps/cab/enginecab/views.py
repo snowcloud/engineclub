@@ -13,7 +13,7 @@ from pysolr import Solr
 from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
-    detail as account_detail, edit as account_edit, new as account_add
+    detail as accounts_detail, edit as account_edit, add as account_add
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
@@ -37,7 +37,7 @@ def users(request, template_name='enginecab/users.html'):
 @user_passes_test(lambda u: u.is_staff)
 def user_detail(request, object_id, template_name='enginecab/user_detail.html'):
     object = get_one_or_404(Account, id=ObjectId(object_id))
-    return account_detail(request, object.id, template_name)
+    return accounts_detail(request, object.id, template_name)
 
 @user_passes_test(lambda u: u.is_staff)
 def user_edit(request, object_id, template_name='enginecab/user_edit.html'):
@@ -50,6 +50,8 @@ def user_add(request, template_name='enginecab/user_edit.html'):
 
 @user_passes_test(lambda u: u.is_staff)
 def reindex(request, template_name=''):
+    reindex_accounts()
+    messages.success(request, 'Accounts have been reindexed.')
     reindex_resources()
     messages.success(request, 'Resources have been reindexed.')
     return HttpResponseRedirect(reverse('cab_resources'))
@@ -78,6 +80,30 @@ def list_detail(request, object_id, template_name='enginecab/list_detail.html'):
     # context = {'object': object}
     # return render_to_response(template_name, RequestContext(request, context))
 
+def reindex_accounts(url=settings.SOLR_URL, printit=False):
+    """docstring for reindex_accounts"""
+    # logger.error("indexing accounts:")
+
+    from accounts.models import Account
+
+    if printit:
+        print 'CLEARING SOLR INDEX for Accounts: ', url
+    conn = Solr(url)
+    conn.delete(q='res_type:%s' % settings.SOLR_ACCT)
+    batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
+    if printit:
+        print 'Indexing %s Accounts... (batch: %s)' % (Account.objects.count(), batch_size)
+    
+    docs = []
+    for i, res in enumerate(Account.objects):
+        entry = res.index()
+        if entry:
+            docs.extend(entry)
+        if i % batch_size == 0:
+            conn.add(docs)
+            docs = []
+    conn.add(docs)
+
 def reindex_resources(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_resources"""
     # logger.error("indexing resources:")
@@ -85,9 +111,9 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
     from resources.models import Resource
 
     if printit:
-        print 'CLEARING SOLR INDEX: ', url
+        print 'CLEARING SOLR INDEX for Resources: ', url
     conn = Solr(url)
-    conn.delete(q='*:*')
+    conn.delete(q='res_type:%s' % settings.SOLR_RES)
     batch_size = getattr(settings, 'SOLR_BATCH_SIZE', 100)
     if printit:
         print 'Indexing %s Resources... (batch: %s)' % (Resource.objects.count(), batch_size)

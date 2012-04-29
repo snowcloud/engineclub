@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from accounts.models import Account
-from accounts.views import detail as account_detail, edit as account_edit
+from accounts.views import detail as accounts_detail, edit as account_edit
 from resources.models import Curation
 from ecutils.utils import get_one_or_404
 from issues.context_processors import message_stats
@@ -21,7 +21,7 @@ def index(request):
 @login_required
 def profile(request, object_id=None, template_name='youraliss/profile.html'):
     object =  get_one_or_404(Account, local_id=str(request.user.id))
-    return account_detail(request, object.id, template_name)
+    return accounts_detail(request, object.id, template_name)
 
 @login_required
 def account(request, template_name='youraliss/account.html'):    

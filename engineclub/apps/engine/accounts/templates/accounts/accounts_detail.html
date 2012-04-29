@@ -1,0 +1,97 @@
+{% extends "accounts/accounts_base.html" %}
+{% load markup utils accounts_tags %}
+{% load url from future %}
+
+{% block title %}account for {{ object.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
+    <li><a href="{% url 'accounts_find' %}">Search Aliss users</a></li>
+    <li class="current"><a href="#">{{ object.name }}</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+{% if user|can_edit:object or user.is_staff %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    {% if user|can_edit:object %}
+        <dd><a href="{% url 'accounts_edit' object.id %}">Edit account</a></dd>
+    {% endif %}
+    {% if user.is_staff %}
+	    <dd><a href="{% url 'accounts_add' %}">New user</a></dd>
+    {% endif %}
+</dl>
+{% endif %}
+
+
+
+<h1>{{ object.name }}</h1>
+
+<div class="resource-description">
+{{ object.description|textile }}
+</div>
+
+<div class="row">
+
+    <table class="metadata">
+
+    {% for loc in object.locations %}
+        <tr><th>{% ifchanged %}location{% endifchanged %}</th><td>{{ loc }}</td></tr>
+    {% empty %}
+        <tr><th>location</th><td>-</td></tr>
+    {% endfor %}
+    <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+
+
+    </table>
+
+{% if object.locations %}<div id="map"></div>{% endif %}
+
+</div>
+
+<!-- <p>Account ID: {{ object.id }}</p> -->
+<br>
+
+{% include "accounts/detail-add.html" %}
+
+</div>
+
+{% endblock %}
+
+{% block script-extra %}
+
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.google.core-min.js"></script>
+<!-- <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/mxn.openlayers.core-min.js"></script>
+ -->
+{% endblock %}
+
+{% block document-ready %}
+{% if object.locations %}
+    mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
+    mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}})));
+    {% for loc in object.locations %}
+        mapstraction.addMarker( new mxn.Marker( new mxn.LatLonPoint({{loc.lat_lon.0}}, {{loc.lat_lon.1}})));
+        //currentGeoPoint = new YGeoPoint( "{{loc.lat_lon.0}}" , "{{loc.lat_lon.1}}"  );  
+        //map.addMarker(currentGeoPoint);  
+    {% endfor %}
+    
+    mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true 
+    });
+    
+    //mapstraction.autoCenterAndZoom();
+    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 14);
+
+{% endif %}
+{% endblock %}
+​

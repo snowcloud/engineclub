@@ -3,7 +3,7 @@
 engine-groups/tests.py
 """
 
-import subprocess
+# import subprocess
 
 from django.contrib.auth.models import User
 from mongoengine.connection import _get_db as get_db
@@ -46,7 +46,11 @@ SEP = '**************'
 
 def make_test_user_and_account(name):
     user = User.objects.create_user(name, email="%s@example.com" % name, password='password')
-    acct = Account.objects.create(name=name, email="%s@example.com" % name, local_id=str(user.id))
+    acct = Account.objects.create(
+        name=name, 
+        email="%s@example.com" % name,
+        description="%s's account." % name,
+        local_id=str(user.id))
     return user, acct
 
 def setUpAccounts(self):
@@ -58,8 +62,8 @@ def setUpAccounts(self):
             setattr(self, name, b)
 
         # Add alice to the group, so she is a "sub account"
-        self.group.add_member(self.alice)
-        self.group.add_member(self.jorph, role=ADMIN_ROLE)
+        # self.group.add_member(self.alice)
+        # self.group.add_member(self.jorph, role=ADMIN_ROLE)
 
 class AccountsBaseTest(MongoTestCase):
 
@@ -102,7 +106,7 @@ class AccountsTest(AccountsBaseTest):
 
         self.group.add_member(acct1)
         self.group.save()
-        self.assertEqual(len(self.group.members), 3)
+        self.assertEqual(len(self.group.members), 1)
 
         
         

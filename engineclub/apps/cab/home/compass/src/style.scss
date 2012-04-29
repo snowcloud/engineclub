@@ -3,6 +3,11 @@
 @import "mixins";
 @import "ie";
 
+// main nav tabs
+$resource: #000074;
+$user: #c74a14;
+$tab_bg: red;
+$tab_link: #eee;
 
 .home .page {
 	background: #ffffff url(../images/bg-main.jpg) no-repeat;
@@ -11,7 +16,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 
 #site-header h1 {
 	float: left;
-	padding-right: 3em;
+	padding-right: 15%;
 }
 
 #site-header .nav {
@@ -32,7 +37,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	padding-bottom: 2em;
 }
 .welcome {
-	margin: 3em 0;
+	margin: 0 0 3em;
 	padding: 2em 6em;
 }
 .welcome p {
@@ -42,7 +47,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 }
 .page-nav {
 	float: left;
-	width: 33%;
+	width: 30%;
 }
 .page-nav p {
 	margin-bottom: 1em;
@@ -56,8 +61,10 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	width: 66%;
 }
 .carousel {
-	@include un_hide_it;
 	@include box(#999);
+	display: block !important;
+	// visibility: visible;
+
 	float: right;
 	width: 500px;
 	.content {
@@ -88,9 +95,12 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 	padding-top: 1em;
 	//display: inline;
 }
+#top {
+	margin-bottom: 1.8em;
+}
 .breadcrumbs {
 	// margin-top: 1em;
-	@include un_hide_it;	
+	@include un_hide_it;
 }
 ul.breadcrumbs {
 	padding: 0.5em 1em;
@@ -145,11 +155,70 @@ ul.breadcrumbs {
 .search .results .location p {
 	width: auto;
 }
-.resource .metadata {
+.resource .metadata, .user .metadata {
 	float: left;
 	width: 30%;
 }
+ul.base-tabs {
+	// background-color: pink;
+	border-bottom: 16px solid #c74a14;
+	padding: 0.6em 0 0.5em 0;
+	margin-bottom: 0;
+	li {
+	    border-radius: 3px;
+	    -moz-border-radius: 3px;
+	    -webkit-border-radius: 3px;
+    	border-top: 1px solid #ccc;
+    	border-right: 1px solid #ccc;
+		border-left: 1px solid #ccc;
 
+	    background-clip: padding-box;
+		display: inline;
+		padding: 0em 0em 0.2em;
+		margin: 0;
+		font-size: 1.8em;
+		a {
+			padding: 0.1em 2em;
+		}
+		a:hover {
+			background-color: $tab_bg;
+			color: white;
+		}
+	}
+	li.active {
+		border-left: none;
+
+		a {
+			color: $tab_link;
+		}
+	}
+}
+.resource {
+	.resource-tab {
+		background-color: $resource;
+	}
+	ul.base-tabs {
+		border-color: $resource;
+	}
+}
+.user {
+	.user-tab {
+		background-color: $user;
+	}
+	ul.base-tabs {
+		border-bottom-color: $user;
+	}
+}
+
+	// .user-tab {
+	// 	background-color: red;
+	// }
+	// .account-tab {
+	// 	background-color: yellow;
+	// }
+	// .cab-tab {
+	// 	background-color: green;
+	// }
 /* @end */
 /* @group youraliss */
 .youraliss, .cab {
@@ -192,6 +261,19 @@ dl.nice.tabs.vertical dd a:hover {
 
 }
 /* @end */
+
+.story {
+	img {
+		@include box(#999);
+		float: left;
+		width: 45%;
+		margin: 1em 1.5em 2em 0;
+		border: 10px solid #eee;
+	}
+	.in-list {
+		width: 20%;
+	}
+}
 
 .lt-ie8 {
 	#site-header .nav {
