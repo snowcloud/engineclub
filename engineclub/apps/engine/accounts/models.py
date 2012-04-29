@@ -144,7 +144,7 @@ class Account(Document):
     def index(self, conn=None):
         """conn is Solr connection"""
         # tags = list(self.tags)
-        description = [self.description]
+        description = [self.description or '']
 
         doc = {
             'id': unicode(self.id),
