@@ -10,11 +10,18 @@
     //mapstraction = new mxn.Mapstraction('map','openlayers');
     mapstraction.addMarker( new mxn.Marker(centre_pt));
 
+    {% for loc, results in pt_results.items %}
+        advancedMarker({{ loc.0 }}, {{ loc.1 }}, '{% for id, title in results %}<p><a href="{% url rev_url id %}">{{ title }}</a></p>{% endfor %}');
+    {% endfor %}
+
+{% comment %}
+  
     {% for res in results %}
       {% for loc in res.resource_result.pt_location %}
         advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url rev_url res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
       {% endfor %}
     {% endfor %}
+{% endcomment %}
 
     function advancedMarker(lat, lon, info) {
       mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{

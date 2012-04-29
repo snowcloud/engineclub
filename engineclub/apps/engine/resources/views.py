@@ -227,6 +227,7 @@ def resource_remove(request, object_id):
 def resource_find(request, template_name='depot/resource_find.html'):
     """docstring for resource_find"""
     results = []
+    pt_results = {}
     centre = None
     new_search = False
 
@@ -260,6 +261,8 @@ def resource_find(request, template_name='depot/resource_find.html'):
                     'resource_report_form': resource_report_form,
                     'curation_index': curation_index
                 })
+                if 'pt_location' in result:
+                    pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
             centre = form.centre
     else:
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
@@ -269,6 +272,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
+        'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
         'show_map': results and centre,

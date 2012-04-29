@@ -46,6 +46,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
 def accounts_find(request, template_name='accounts/accounts_find.html'):
     """docstring for accounts_find"""
     results = []
+    pt_results = {}
     centre = None
     new_search = False
 
@@ -63,22 +64,19 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
 
             for result in form.results:
                 resource = get_one_or_404(Account, id=ObjectId(result['res_id']))
-
-                results.append({
-                    'resource_result': result,
-                    # 'resource_report_form': resource_report_form,
-                })
+                results.append({'resource_result': result})
+                if 'pt_location' in result:
+                    pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
             centre = form.centre
     else:
         form = FindAccountForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
 
-    print form
-
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
+        'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
         'show_map': results and centre,
@@ -86,8 +84,6 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
     }
     return render_to_response(template_name, RequestContext(request, context))
 
-
- 
 @login_required
 def edit(request, object_id, template_name='accounts/accounts_edit.html', next='accounts_detail'):
 
