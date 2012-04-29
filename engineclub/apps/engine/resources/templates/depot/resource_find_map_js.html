@@ -1,0 +1,42 @@
+{# Just needs rev_url set to work for Resource or Account #}
+
+{% load utils depot_tags markup %}
+{% load url from future %}
+
+  {% if results and centre %}
+
+    var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
+    mapstraction = new mxn.Mapstraction('map','google');
+    //mapstraction = new mxn.Mapstraction('map','openlayers');
+    mapstraction.addMarker( new mxn.Marker(centre_pt));
+
+    {% for res in results %}
+      {% for loc in res.resource_result.pt_location %}
+        advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url rev_url res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
+      {% endfor %}
+    {% endfor %}
+
+    function advancedMarker(lat, lon, info) {
+      mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
+        infoBubble : info,
+        label : "tooltip",
+        marker : 3,
+        icon : "/static/images/misc/ymarker_or.png",
+        iconSize : [25,25],
+        draggable : false,
+        hover : true
+      });
+    };
+
+    mapstraction.addControls({
+      pan: true, 
+      zoom: 'small',
+      map_type: true 
+    });
+    
+    mapstraction.setCenterAndZoom(centre_pt, 12);
+
+  {% endif %}
+  $('.sub-nav a').click(function() {
+    $('#loading').show();
+  })

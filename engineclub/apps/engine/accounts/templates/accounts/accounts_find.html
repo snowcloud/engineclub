@@ -8,8 +8,8 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
-    <li class="current"><a href="#">Search user accounts</a></li>
+  <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
+  <li class="current"><a href="#">Search user accounts</a></li>
 </ul>
 {% endblock %}
 
@@ -18,62 +18,62 @@
 
 {% if user.is_staff %}
 <dl class="sub-nav">
-    <dt>Actions:</dt>
-    <dd><a href="{% url 'accounts_add' %}">Add a new account</a></dd>
+  <dt>Actions:</dt>
+  <dd><a href="{% url 'accounts_add' %}">Add a new account</a></dd>
 </dl>
 
 <div id="loading">working...</div>
 
 {% endif %}
 
-    <h1>Search Aliss users</h1>
+  <h1>Search Aliss users</h1>
 
-    <div class="row">
+  <div class="row">
 
-        <div class="search-form{% if not show_map %}-full{% endif %}">
-            <form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
-                <fieldset>
-                    <legend><span>Type in a place, post code, or words:</span></legend>
+    <div class="search-form{% if not show_map %}-full{% endif %}">
+      <form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
+        <fieldset>
+          <legend><span>Type in a place, post code, or words:</span></legend>
 
-                    {{ form.as_plain }}
+          {{ form.as_plain }}
 
-                    <input type="submit" name="result" value="Find items" id="submit_button">
-                </fieldset>
-            </form>
+          <input type="submit" name="result" value="Find items" id="submit_button">
+        </fieldset>
+      </form>
 
-        </div>      
-    {% if results and centre %}<div id="map"></div>{% endif %}
-    </div>
+    </div>      
+  {% if results and centre %}<div id="map"></div>{% endif %}
+  </div>
 
-    <div class="row results">
+  <div class="row results">
 
-        <ul class="resource-listing">
-            {% for result in results %}
-                {% with result.resource_result as resource %}
+    <ul class="resource-listing">
+      {% for result in results %}
+        {% with result.resource_result as resource %}
 
-                    <li>
-                        <div class="row">
-                        <h3><a href="{% url 'accounts_detail' object_id=resource.res_id %}">{{ resource.title }}</a></h3>
-                        <div class="location">
-                        {% if resource.loc_labels %}
-                            <h4>Location:</h4>
-                            {% for loc_label in resource.loc_labels %}
-                                <p>{{ loc_label }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        </div>
-                        {{ resource.short_description|truncatewords:30|textile }}
-                        <p><a href="#top" class="action top">top</a></p>
-                        </div>
-                    </li>
-                {% endwith %}
-            {% empty %}
-                {% if not new_search %} 
-                    <li>no user accounts found for your area of interest. Would you like to <a href="{% url 'contact' %}">open an account</a>?</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+          <li>
+            <div class="row">
+            <h3><a href="{% url 'accounts_detail' object_id=resource.res_id %}">{{ resource.title }}</a></h3>
+            <div class="location">
+            {% if resource.loc_labels %}
+              <h4>Location:</h4>
+              {% for loc_label in resource.loc_labels %}
+                <p>{{ loc_label }}</p>
+              {% endfor %}
+            {% endif %}
+            </div>
+            {{ resource.short_description|truncatewords:30|textile }}
+            <p><a href="#top" class="action top">top</a></p>
+            </div>
+          </li>
+        {% endwith %}
+      {% empty %}
+        {% if not new_search %} 
+          <li>no user accounts found for your area of interest. Would you like to <a href="{% url 'contact' %}">open an account</a>?</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
 
 {% endblock %}
 
@@ -87,42 +87,6 @@
 {% endblock script-extra %}
 
 {% block document-ready %}
-    
-    {% if results and centre %}
-
-        var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
-        mapstraction = new mxn.Mapstraction('map','google');
-        //mapstraction = new mxn.Mapstraction('map','openlayers');
-        mapstraction.addMarker( new mxn.Marker(centre_pt));
-
-        {% for res in results %}{% for loc in res.resource_result.pt_location %}
-            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url 'accounts_detail' res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
-        {% endfor %}{% endfor %}
-
-        function advancedMarker(lat, lon, info) {
-            mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
-                infoBubble : info,
-                label : "tooltip",
-                marker : 3,
-                icon : "/static/images/misc/ymarker_or.png",
-                iconSize : [25,25],
-                draggable : false,
-                hover : true
-            });
-        };
-
-        mapstraction.addControls({
-            pan: true, 
-            zoom: 'small',
-            map_type: true 
-        });
-        
-        mapstraction.setCenterAndZoom(centre_pt, 12);
-
-    {% endif %}
-    $('.sub-nav a').click(function() {
-        $('#loading').show();
-    })
-
+  {% include 'depot/resource_find_map_js.html' with res_type='account' rev_url='accounts_detail' %}
 {% endblock document-ready %}
 
