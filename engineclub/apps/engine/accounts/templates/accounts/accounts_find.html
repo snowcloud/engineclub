@@ -86,7 +86,5 @@
 
 {% endblock script-extra %}
 
-{% block document-ready %}
-  {% include 'depot/resource_find_map_js.html' with res_type='account' rev_url='accounts_detail' %}
-{% endblock document-ready %}
+{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='account' rev_url='accounts_detail' %}{% endblock document-ready %}
 

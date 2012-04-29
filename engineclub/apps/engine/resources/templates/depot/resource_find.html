@@ -82,7 +82,6 @@
 
 {% endblock %}
 
-
 {% block script-extra %}
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
@@ -91,9 +90,5 @@
 
 {% endblock script-extra %}
 
-{% block document-ready %}
-
-    {% include 'depot/resource_find_map_js.html' with res_type='resource' rev_url='resource' %}
-
-{% endblock document-ready %}
+{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='resource' rev_url='resource' %}{% endblock document-ready %}
 
