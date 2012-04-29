@@ -5,19 +5,13 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from locations.models import Location
 from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
-from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, clean_csvtextinput
+from ecutils.forms import DocumentForm, PlainForm, CSVTextInput, checktags
 from firebox.views import *
 from issues.models import SEVERITY_LOW, SEVERITY_MEDIUM, SEVERITY_HIGH, SEVERITY_CRITICAL
 
 from mongoengine.queryset import DoesNotExist
 
 from datetime import datetime
-
-def checktags(data, user):
-    # data = self.cleaned_data['tags']
-    if '#' in data and not (user and user.is_staff):
-        raise forms.ValidationError('You cannot use the # character in your tags.')
-    return clean_csvtextinput(data)
 
 class FormHasNoInstanceException(Exception):
     pass

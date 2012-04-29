@@ -7,15 +7,37 @@
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
     <li><a href="{% url 'stories_list' %}">Aliss Stories</a></li>
-    <li class="current"><a href="#">{{ object.resource.title }}</a></li>
+    <li class="current"><a href="#">{{ object.resource.title }}{{ object.name }}{{ object.title }}</a></li>
 </ul>
 {% endblock %}
 
 {% block content %}
+	
+	<div class="row story">
+		<h1><a href="{{ object.source_url }}">{{ object.title }}</a></h1>
 
-	<h1><a href="{% url 'resource' object.resource.id %}">{{ object.resource.title }}</a></h1>
-	<p>{{ object.note|textile }}</p>
-	<img src="{{ object.id|pic:"500,400"}}">
+		<img src="{{ object.id|pic:"500,400"}}">
+		<p>{{ object.content|textile }}</p>
 
-	<p>This resource curated by <a href="{% url 'account_detail' object.resource.owner.id %}">{{ object.resource.owner }}</a></p>
+	{% if object.type == 'curation' %} 
+		<hr>
+		<p>This resource curated by <a href="{% url 'accounts_detail' object.obj.resource.owner.id %}">{{ object.obj.resource.owner }}</a></p>
+	{% endif %}
+	</div>
+
+	{% if user.is_staff %} 
+		<form enctype="multipart/form-data" class="nice form" method="post" action=".">{% csrf_token %}
+
+        <fieldset>
+            <legend><span>Upload a picture for this story:</span></legend>
+
+            {{ form.as_plain }}
+
+            <input type="submit" name="result" value="Submit" id="submit_button">
+        </fieldset>
+		</form>
+
+
+
+	{% endif %}
 {% endblock %}

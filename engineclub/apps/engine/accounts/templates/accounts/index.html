@@ -1,20 +1,27 @@
-{% extends "base.html" %}
+{% extends "accounts/accounts_base.html" %}
 {% load url from future %}
 
 {% block title %}groups{% endblock %}
 
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li class="current"><a href="#">Browse Aliss users</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
-{% if user.is_staff %}
-<p><a href="{% url 'cab_user_add' %}">new group</a></p>
-{% endif %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url 'accounts_find' %}">Search Aliss user accounts</a></dd>
+</dl>
 
-<h1>Groups</h1>
+<h1>Aliss users</h1>
 
 <ol>
 {% for object in objects %}
 
-    <li><a href="{% url 'account_detail' object.id %}">{{ object.name }}</a></li>
+    <li><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></li>
 
 {% empty %}
     <li>no groups found.</li>

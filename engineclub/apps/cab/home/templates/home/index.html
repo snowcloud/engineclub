@@ -14,9 +14,11 @@
     <div class="row">
         <div class="page-nav">
             <p><a href="/info/" class="nice radius black button"><span>Find out more</span></a></p>
-            <p><a href="{% url 'search' %}" class="nice radius black button">Search</a></p>
+            <p><a href="{% url 'search' %}" class="nice radius black button">Explore Aliss</a></p>
             <p><a href="{% url 'contact' %}" class="nice radius black button">Contact us</a></p>
-            <p><a href="{% url 'youraliss' %}" class="nice radius black button">your Aliss</a></p>
+            <p><a href="{% url 'youraliss' %}" class="nice radius black button">Your account</a></p>
+            <p><a href="{% url 'resource_add' %}" class="nice radius black button">Add a new resource</a></p>
+            {% if user.is_staff %}<p><a href="{% url 'cab' %}" class="nice radius blue button">Caboose</a></p>{% endif %}
 
             <div class="home-links">
                 <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
@@ -25,26 +27,29 @@
                 <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
             </div>
 
-        </div>
-
-{# % carousel % #}
-
-        <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
-
     </div>
+
+    {% carousel %}
+
+    {% comment %}
+      <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
+    {% endcomment %}
+
+  </div>
 {% endblock %}
   {% block script-extra %}
   <script type="text/javascript">
-     $(window).load(function() {
-         $('#carousel').orbit({
-            animation: 'fade',
-            animationSpeed: 1600,
-            pauseOnHover: true,
-            startClockOnMouseOut: true,
-            // directionalNav: true,
-            captions: true,
-            bullets: true,
-            // bulletThumbs: true
-         });
+   $(window).load(function() {
+     $('#carousel').orbit({
+      animation: 'fade',
+      animationSpeed: 1600,
+      pauseOnHover: true,
+      startClockOnMouseOut: true,
+      // directionalNav: true,
+      captions: true,
+      bullets: true,
+      // bulletThumbs: true
      });
+     $('.carousel').css('visibility','visible');
+   });
 </script>{% endblock %}

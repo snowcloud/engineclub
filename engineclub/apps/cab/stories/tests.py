@@ -5,18 +5,15 @@ stories/tests.py
 
 from django.conf import settings
 from ecutils.tests import MongoTestCase
-from ecutils.tests import MongoTestCase
-from ecutils.tests import MongoTestCase
-from ecutils.tests import MongoTestCase
-from ecutils.tests import MongoTestCase
 from resources.models import Resource, Curation, add_curation
+
+from accounts.tests import setUpAccounts
+from locations.tests import setUpLocations
+from resources.tests import setUpResources
+from enginecab.views import reindex_accounts, reindex_resources
 
 class ViewsTestCase(MongoTestCase):
     def setUp(self):
-        from accounts.tests import setUpAccounts
-        from locations.tests import setUpLocations
-        from resources.tests import setUpResources
-        from enginecab.views import reindex_resources
 
         setUpAccounts(self)
         setUpLocations(self)
@@ -42,6 +39,10 @@ class ViewsTestCase(MongoTestCase):
         self.curation2.item_metadata.update(author=self.bob)
         add_curation(self.resource7, self.curation2)
 
+        self.jorph.tags = ['#aliss-story']
+        self.jorph.save()
+
+        reindex_accounts(url=settings.TEST_SOLR_URL)
         reindex_resources(url=settings.TEST_SOLR_URL)
 
         from django.test.client import Client
@@ -54,6 +55,7 @@ class ViewsTestCase(MongoTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Aliss stories")
         self.assertContains(response, "title 6")
+        self.assertContains(response, "jorph")
 
     def test_stories_detail(self):
         from django.core.urlresolvers import reverse
