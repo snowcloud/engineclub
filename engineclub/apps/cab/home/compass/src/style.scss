@@ -6,6 +6,8 @@
 // main nav tabs
 $resource: #000074;
 $user: #c74a14;
+$account: #00a6fc;
+$caboose: #57659b;
 $tab_bg: red;
 $tab_link: #eee;
 
@@ -209,6 +211,14 @@ ul.base-tabs {
 		border-bottom-color: $user;
 	}
 }
+.account {
+	.account-tab {
+		background-color: $account;
+	}
+	ul.base-tabs {
+		border-bottom-color: $account;
+	}
+}
 
 	// .user-tab {
 	// 	background-color: red;
@@ -221,7 +231,7 @@ ul.base-tabs {
 	// }
 /* @end */
 /* @group youraliss */
-.youraliss, .cab {
+.account, .cab {
 	.module-nav {
 		float: left;
 		width: 18%;
