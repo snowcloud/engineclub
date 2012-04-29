@@ -5,9 +5,14 @@
 
 // main nav tabs
 $resource: #000074;
+$resource_pale: #acadca;
 $user: #c74a14;
+$user_pale: #dcab98;
 $account: #00a6fc;
-$caboose: #57659b;
+$account_pale: #b5cbe3;
+$cab: #57659b;
+$cab_pale: #c7c4e4;
+$tab_bb: 1px;
 $tab_bg: red;
 $tab_link: #eee;
 
@@ -176,7 +181,7 @@ ul.base-tabs {
 
 	    background-clip: padding-box;
 		display: inline;
-		padding: 0em 0em 0.2em;
+		padding: 0em 0em 0.3em;
 		margin: 0;
 		font-size: 1.8em;
 		a {
@@ -202,6 +207,9 @@ ul.base-tabs {
 	ul.base-tabs {
 		border-color: $resource;
 	}
+	.container#top {
+		border-bottom: $tab_bb solid $resource_pale;
+	}
 }
 .user {
 	.user-tab {
@@ -210,6 +218,9 @@ ul.base-tabs {
 	ul.base-tabs {
 		border-bottom-color: $user;
 	}
+	.container#top {
+		border-bottom: $tab_bb solid $user_pale;
+	}
 }
 .account {
 	.account-tab {
@@ -217,6 +228,20 @@ ul.base-tabs {
 	}
 	ul.base-tabs {
 		border-bottom-color: $account;
+	}
+	.container#top {
+		border-bottom: $tab_bb solid $account_pale;
+	}
+}
+.cab {
+	.cab-tab {
+		background-color: $cab;
+	}
+	ul.base-tabs {
+		border-bottom-color: $cab;
+	}
+	.container#top {
+		border-bottom: $tab_bb solid $cab_pale;
 	}
 }
 
@@ -360,15 +385,15 @@ dl.nice.tabs.vertical dd a:hover {
 		background: none;
 		background-color: #00a6fc;
 	}
-	.cab {
-		.main {
-			background-color: white;
-			border: none;
-			h1 {
-				color: black;
-			}
-		}
-	}
+	// .cab {
+	// 	.main {
+	// 		background-color: white;
+	// 		border: none;
+	// 		h1 {
+	// 			color: black;
+	// 		}
+	// 	}
+	// }
 	.cab .main, .youraliss .main {
 		table {
 			margin-top: 3em;
