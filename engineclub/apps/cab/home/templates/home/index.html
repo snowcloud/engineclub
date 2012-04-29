@@ -27,15 +27,15 @@
                 <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
             </div>
 
-        </div>
-
-        {% carousel %}
-
-        {% comment %}
-            <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
-        {% endcomment %}
-
     </div>
+
+    {% carousel %}
+
+    {% comment %}
+      <div class="video"><iframe src="http://player.vimeo.com/video/28609164?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="478" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe><p><a href="http://vimeo.com/28609164">How does the ALISS Engine work?</a> </p></div>
+    {% endcomment %}
+
+  </div>
 {% endblock %}
   {% block script-extra %}
   <script type="text/javascript">
@@ -51,4 +51,6 @@
          });
          $('.carousel').css('visibility','visible');
      });
+     $('.carousel').css('visibility','visible');
+   });
 </script>{% endblock %}

@@ -3,12 +3,12 @@
 
 {% block title %}your aliss profile{% endblock %}
 
+
+{% block mod-nav-profile %}active{% endblock %}
+
 {% block breadcrumb-add %}
     <li class="current"><a href="#">your profile</a></li>
 {% endblock breadcrumb-add %}
-
-
-{% block mod-nav-profile %}active{% endblock %}
 
 
 {% block module-content %}
@@ -17,7 +17,7 @@
 	<dl class="sub-nav">
 	    <dt>Actions:</dt>
         <dd><a href="{% url 'logout' %}">logout</a></dd>
-        <dd><a href="{% url 'youraliss_account' %}">change account settings</a></dd>
+        <dd><a href="{% url 'youraliss_account' %}">edit your account details</a></dd>
         <dd><a href="{% url 'password_change' %}">change password</a></dd>
 	</dl>
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
-{% load markup flatpages %}
+{% load markup flatpages stories_tags %}
 
 {% block title %}Aliss stories{% endblock %}
 
@@ -13,33 +13,33 @@
 
 	<h1>Aliss stories</h1>
 
+{% comment %}
+  
     <div class="row">
     {% load stories_tags %}
     {% carousel %}
     </div>
+{% endcomment %}
 
-{% get_flatpages '/story/' as story_pages %}
-
-    {% if objects or story_pages%}
-
-      {% for object in story_pages %}
+  {% if objects or story_pages%}
+    {% for object in objects  %}
+      <div class="row story">
         <h2><a href="{{ object.url }}">{{ object.title }}</a></h2>
+        <img class="in-list" src="{{ object.id|pic:"100,60"}}">
         <p>{{ object.content|truncatewords:30|textile }}</p>
-      {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
 
-    	{% for object in objects %}
-    		<h2><a href="{% url 'stories_detail' object.id %}">{{ object.resource.title }}</a></h2>
-    		<p>{{ object.note|truncatewords:30|textile }}</p>
-    	{% endfor %}
-    {% else %}
+    <p>No stories at the moment</p>
 
-        <p>No stories at the moment</p>
-
-    {% endif %}
-
+  {% endif %}
+  
 
 {% endblock %}
 
+{% comment %}
+  
   {% block script-extra %}
   <script type="text/javascript">
      $(window).load(function() {
@@ -56,3 +56,4 @@
          $('.carousel').css('visibility','visible');
      });
 </script>{% endblock %}
+{% endcomment %}

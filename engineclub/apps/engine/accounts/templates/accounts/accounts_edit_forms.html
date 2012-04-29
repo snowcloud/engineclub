@@ -1,0 +1,13 @@
+<form class="nice form" method="post" action=".">{% csrf_token %}
+    
+    {{ form.as_plain }}
+    
+    {% if locationform %}
+        <fieldset>
+            <legend><span>Locations:</span></legend>
+            {{ locationform.as_plain }}
+        </fieldset>
+    {% endif %}
+
+    <input type="submit" value="Submit" id="" />
+</form>

@@ -41,8 +41,8 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
 ###############################################################
 # SEARCH STUFF
 
-def _make_fq(event, accounts, collections):
-    fq = []
+def _make_fq(event, accounts, collections, res_type):
+    fq = ['res_type:%s' % res_type]
     if event:
         fq.append('(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *])')
     if accounts:
@@ -54,7 +54,7 @@ def _make_fq(event, accounts, collections):
     return None
 
 
-def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None):
+def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None, res_type=settings.SOLR_RES):
     loc = get_location(name)
     if loc:
         kw = {
@@ -68,7 +68,7 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
             'bf': 'recip(geodist(),2,200,20)^%s' % (loc_boost or settings.SOLR_LOC_BOOST_DEFAULT),
             'sort': 'score desc',
         }
-        fq =  _make_fq(event, accounts, collections)
+        fq =  _make_fq(event, accounts, collections, res_type)
         if fq:
             kw['fq'] = fq
 
@@ -77,10 +77,10 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
     else:
         return None, None
 
-def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None):
+def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None, res_type=settings.SOLR_RES):
     """docstring for find_by_place_or_kwords"""
     if name:
-        return find_by_place(name, kwords, loc_boost, start, max, accounts, collections, event)
+        return find_by_place(name, kwords, loc_boost, start, max, accounts, collections, event, res_type)
     # keywords only
     kw = {
         'start': start,
@@ -88,7 +88,7 @@ def find_by_place_or_kwords(name, kwords, loc_boost=None, start=0, max=None, acc
         'fl': '*,score',
         'qt': 'resources',
     }
-    fq =  _make_fq(event, accounts, collections)
+    fq =  _make_fq(event, accounts, collections, res_type)
     # example 'fq': '(event_start:[NOW/DAY TO *] OR event_end:[NOW/DAY TO *]) AND accounts:4d9b99d889cb16665c000000'
     if fq:
         kw['fq'] = fq

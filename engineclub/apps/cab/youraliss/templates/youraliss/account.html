@@ -4,11 +4,11 @@
 {% block title %}your aliss account{% endblock %}
 
 {% block breadcrumb-add %}
-    <li class="current"><a href="#">your account</a></li>
+    <li class="current"><a href="#">edit</a></li>
 {% endblock breadcrumb-add %}
 
 
-{% block mod-nav-account %}active{% endblock %}
+{% block mod-nav-profile %}active{% endblock %}
 
 
 {% block module-content %}
@@ -21,15 +21,7 @@
 	</dl>
 
 
-	<form class="nice form" action="." method="POST">{% csrf_token %}
-	    <fieldset>
-	        <legend><span>Account details:</span></legend>
-	         {{ form.as_plain }}
-
-	         <hr>
-	        <input type="submit" name="result" value="Save changes">
-	    </fieldset>
-	</form>
+{% include 'accounts/accounts_edit_forms.html' %}
 
 	<table class="metadata">
 		<tr><th>local id</th><td>{{ object.local_id }}</td></tr>
@@ -43,5 +35,15 @@
 		</td></tr>
 	</table>
 
-
 {% endblock %}
+
+{% block script-extra %}
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<link href="/static/css/token-input-aliss.css" type="text/css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/static/js/jquery.tokeninput.js" type="text/javascript"></script>
+{% endblock script-extra %}
+
+{% block document-ready %}
+{% include 'accounts/accounts_edit_js.html' %}
+{% endblock document-ready %}

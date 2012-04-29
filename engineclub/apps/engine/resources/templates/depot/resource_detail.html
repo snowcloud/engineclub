@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "depot/resource_base.html" %}
 {% load markup utils accounts_tags depot_tags %}
 {% load url from future %}
 
@@ -8,7 +8,7 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url 'resource_find' %}">Search</a></li>
+    <li><a href="{% url 'resource_find' %}">Search Aliss resources</a></li>
     <li class="current"><a href="#">{{ object.title }}</a></li>
 </ul>
 {% endblock %}
@@ -64,7 +64,7 @@
         <tr><th>location</th><td>-</td></tr>
     {% endfor %}
     <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
-    <tr><th>owner</th><td><a href="{% url 'account_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
+    <tr><th>owner</th><td><a href="{% url 'accounts_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
     <tr><th>last changes</th><td>{{ object.item_metadata.author }}, {{ object.item_metadata.last_modified }}</td></tr>{% for curation in object.curations %}
         <tr>
             <th>{% ifchanged %}curation{% endifchanged %}</th>

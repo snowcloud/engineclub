@@ -1,11 +1,19 @@
+# accounts.models
+
+from copy import deepcopy
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
 from mongoengine import *
 from mongoengine.queryset import QuerySet
+from pysolr import Solr
+
+from ecutils.utils import lat_lon_to_str
+from locations.models import Location
 
 MEMBER_ROLE = 'member'
 ADMIN_ROLE = 'admin'
@@ -49,6 +57,8 @@ class Account(Document):
     email = EmailField(required=True)
     url = URLField(required=False)
     description = StringField(max_length=500)
+    tags = ListField(StringField(max_length=96), default=list)
+    locations = ListField(ReferenceField(Location), default=list)
     permissions = ListField(StringField(max_length=20))
     api_key = StringField(max_length=64)
     api_password = StringField(max_length=64)
@@ -80,6 +90,12 @@ class Account(Document):
     def __unicode__(self):
         return self.name
     
+    def save(self, *args, **kwargs):
+        reindex = kwargs.pop('reindex', False)
+        super(Account, self).save(*args, **kwargs)
+        if reindex:
+            self.reindex()
+
     def add_member(self, member, role=MEMBER_ROLE):
         found = False
         for obj in self.members:
@@ -103,9 +119,58 @@ class Account(Document):
         return User.objects.get(pk=self.local_id).is_staff
     is_staff = property(_is_staff)
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self == acct
+
+    # def perm_can_delete(self, user):
+    #     """docstring for perm_can_edit"""
+    #     acct = get_account(user.id)
+    #     return self.owner == acct
+
     def _last_login(self):
         return User.objects.get(pk=self.local_id).last_login
     last_login = property(_last_login)
+
+    def reindex(self, remove=False):
+        """docstring for reindex"""
+        conn = Solr(settings.SOLR_URL)
+        # needs wildcard to remove indexing for multiple locations: <id>_<n>
+        conn.delete(q='id:%s*' % self.id)
+        if not remove:
+            self.index(conn)
+
+    def index(self, conn=None):
+        """conn is Solr connection"""
+        # tags = list(self.tags)
+        description = [self.description]
+
+        doc = {
+            'id': unicode(self.id),
+            'res_id': unicode(self.id),
+            'res_type': settings.SOLR_ACCT,
+            'title': self.name,
+            'short_description': self.description,
+            'description': u'\n'.join(description),
+            'keywords': u', '.join(list(self.tags)),
+            'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
+        }
+
+        result = []
+        if self.locations:
+            for i, loc in enumerate(self.locations):
+                loc_doc = deepcopy(doc)
+                loc_doc['id'] = u'%s_%s' % (unicode(self.id), i)
+                loc_doc['pt_location'] = [lat_lon_to_str(loc)]
+                loc_doc['loc_labels'] = [unicode(loc)]
+                result.append(loc_doc)
+        else:
+            result = [doc]
+
+        if conn:
+            conn.add(result)
+        return result
 
 class CollectionMember(Document):
     account = ReferenceField('Account', required=True)
@@ -154,6 +219,15 @@ class Collection(Document):
     def __unicode__(self):
         return u'%s, %s' % (self.name, self.owner)
 
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
 
 def dqn_to_int(dqn):
     """

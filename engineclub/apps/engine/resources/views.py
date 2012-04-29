@@ -94,7 +94,7 @@ def _template_info(popup):
     if popup:
         return {'popup': popup, 'base': 'base_popup.html'}
     else:
-        return {'popup': popup, 'base': 'base.html'}
+        return {'popup': popup, 'base': 'depot/resource_base.html'}
 
 def update_resource_metadata(self, resource, request):
     """docstring for update_resource_metadata"""
@@ -147,7 +147,7 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
     UPDATE_LOCS = 'Update locations'
     UPDATE_TAGS = 'Update tags'
 
-    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
+    object = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
 
     # doc = ''
     # places = None
@@ -156,44 +156,44 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
     if request.method == 'POST':
         result = request.POST.get('result', '') # or request.POST.get('result', '')
         if result == 'Cancel':
-            return resource_edit_complete(request, resource, template_info)
-        resourceform = ShortResourceForm(request.POST, instance=resource)
-        eventform = EventForm(request.POST, instance=resource.calendar_event)
-        locationform = LocationUpdateForm(request.POST, instance=resource)
-        # shelflifeform = ShelflifeForm(request.POST, instance=resource)
+            return resource_edit_complete(request, object, template_info)
+        resourceform = ShortResourceForm(request.POST, instance=object)
+        eventform = EventForm(request.POST, instance=object.calendar_event)
+        locationform = LocationUpdateForm(request.POST, instance=object)
+        # shelflifeform = ShelflifeForm(request.POST, instance=object)
 
         if resourceform.is_valid(request.user) and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
 
-            resource.locations = locationform.locations
-            resource.save()
+            object.locations = locationform.locations
+            object.save()
 
             increment_resource_crud('resouce_edit', account=acct)
-            #resource.add_location_from_name(locationform.cleaned_data['new_location'])
-            #resource.save(author=acct, reindex=True)
+            #object.add_location_from_name(locationform.cleaned_data['new_location'])
+            #object.save(author=acct, reindex=True)
 
             # Event dates
             event_start = eventform.cleaned_data['start']
             if event_start:
-                resource.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
+                object.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
             else:
-                resource.calendar_event = None
-            resource = resourceform.save(do_save=False)
+                object.calendar_event = None
+            object = resourceform.save(do_save=False)
             
             try:
-                resource.save(author=acct, reindex=True)
-                return resource_edit_complete(request, resource, template_info)
+                object.save(author=acct, reindex=True)
+                return resource_edit_complete(request, object, template_info)
             except OperationError:
                 pass
 
     else:
-        resourceform = ShortResourceForm(instance=resource)
-        locationform = LocationUpdateForm(instance=resource)
-        eventform = EventForm(instance=resource.calendar_event)
-        # shelflifeform = ShelflifeForm(instance=resource)
+        resourceform = ShortResourceForm(instance=object)
+        locationform = LocationUpdateForm(instance=object)
+        eventform = EventForm(instance=object.calendar_event)
+        # shelflifeform = ShelflifeForm(instance=object)
 
     return render_to_response(template_name,
-        RequestContext( request, { 'template_info': template_info, 'object': resource,
+        RequestContext( request, { 'template_info': template_info, 'object': object,
             'resourceform': resourceform, 'locationform': locationform, 'eventform': eventform, #'places': places,
             # 'tagsform': tagsform, #'shelflifeform': shelflifeform,
             'UPDATE_LOCS': UPDATE_LOCS, 'UPDATE_TAGS': UPDATE_TAGS  }))
@@ -207,7 +207,7 @@ def resource_edit_complete(request, resource, template_info):
         url = reverse('resource', args=[resource.id])
     else: # resource_add cancelled
         popup_url = reverse('resource_popup_cancel')
-        url = reverse('resource_list')
+        url = reverse('resource_find')
 
     if template_info['popup']:
         return HttpResponseRedirect(popup_url)
@@ -227,6 +227,7 @@ def resource_remove(request, object_id):
 def resource_find(request, template_name='depot/resource_find.html'):
     """docstring for resource_find"""
     results = []
+    pt_results = {}
     centre = None
     new_search = False
 
@@ -260,6 +261,8 @@ def resource_find(request, template_name='depot/resource_find.html'):
                     'resource_report_form': resource_report_form,
                     'curation_index': curation_index
                 })
+                if 'pt_location' in result:
+                    pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
             centre = form.centre
     else:
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
@@ -269,6 +272,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
+        'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
         'show_map': results and centre,

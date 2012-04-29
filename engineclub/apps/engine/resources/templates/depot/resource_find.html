@@ -1,12 +1,35 @@
-{% extends "base.html" %}
+{% extends "depot/resource_base.html" %}
+
 {% load utils depot_tags markup %}
 {% load url from future %}
 
 {% block title %}find resources{% endblock %}
 
-{% block body_class %}search{% endblock %}
+{% block body_class %}search resource{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumbs">
+    <li class="current"><a href="#">Search Aliss resources</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
-    <h1>Search</h1>
+
+{% if user.is_authenticated %}
+<dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url 'resource_add' %}">Add a new resource</a></dd>
+    <dd><a href="{% url 'youraliss_curations' %}">Browse your curations</a></dd>
+    {% if user.is_staff %}
+        <dd><a href="{% url 'cab_reindex' %}" id="reindex">Reindex resources</a></dd>
+    {% endif %}
+</dl>
+
+<div id="loading">working...</div>
+
+{% endif %}
+
+    <h1>Search Aliss resources</h1>
 
     <div class="row">
 
@@ -60,7 +83,6 @@
 
 {% endblock %}
 
-
 {% block script-extra %}
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
@@ -69,40 +91,5 @@
 
 {% endblock script-extra %}
 
-{% block document-ready %}
-    
-    {% if results and centre %}
-
-        var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
-        mapstraction = new mxn.Mapstraction('map','google');
-        //mapstraction = new mxn.Mapstraction('map','openlayers');
-        mapstraction.addMarker( new mxn.Marker(centre_pt));
-
-        {% for res in results %}{% for loc in res.resource_result.pt_location %}
-            advancedMarker({{loc|get_lat}}, {{loc|get_lon}}, '<p><a href="{% url 'resource' res.resource_result.res_id %}">{{ res.resource_result.title }}</a></p>')
-        {% endfor %}{% endfor %}
-
-        function advancedMarker(lat, lon, info) {
-            mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
-                infoBubble : info,
-                label : "tooltip",
-                marker : 3,
-                icon : "/static/images/misc/ymarker_or.png",
-                iconSize : [25,25],
-                draggable : false,
-                hover : true
-            });
-        };
-
-        mapstraction.addControls({
-            pan: true, 
-            zoom: 'small',
-            map_type: true 
-        });
-        
-        mapstraction.setCenterAndZoom(centre_pt, 12);
-
-    {% endif %}
-
-{% endblock document-ready %}
+{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='resource' rev_url='resource' %}{% endblock document-ready %}
 
