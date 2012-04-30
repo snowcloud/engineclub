@@ -21,7 +21,7 @@
  -->
 
 {% for object in objects %}
-	<p><a href="{% url 'cab_list_detail' object.id %}">{{ object.name }}</a>: <a href="{% url 'cab_user_detail' object.owner.id %}">{{ object.owner }}</a></p>
+	<p><a href="{% url 'cab_list_detail' object.id %}">{{ object.name }}</a> ({{ object.owner }})</p>
 {% empty %}
 	<p>no lists found</p>
 {% endfor %}
