@@ -106,7 +106,9 @@ def resource_add(request, template_name='depot/resource_edit.html'):
 
     import urllib
     req_data = {}
-    req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('||', '\n')
+    # seems url becomes http:/ on server- no idea why
+    # defensive coding ftw.
+    req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('http:/', 'http~~').replace('||', '\n')
     debug_info = req_path
     for i in req_path.split('/'):
         item = i.split('|')
