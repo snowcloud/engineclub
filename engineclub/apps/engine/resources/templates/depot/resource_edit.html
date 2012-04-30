@@ -53,6 +53,10 @@
     </fieldset>
 </form>
 
+{% if user.is_superuser %}
+    <p>{{ debug_info }}</p> 
+    
+{% endif %}
 {% endblock %}
 
 {% block script-extra %}

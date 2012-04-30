@@ -107,6 +107,7 @@ def resource_add(request, template_name='depot/resource_edit.html'):
     import urllib
     req_data = {}
     req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('||', '\n')
+    debug_info = req_path
     for i in req_path.split('/'):
         item = i.split('|')
         if len(item) > 1:
@@ -146,7 +147,7 @@ def resource_add(request, template_name='depot/resource_edit.html'):
         form = ShortResourceForm(initial=initial)
 
     return render_to_response(template_name,
-        RequestContext( request, {'resourceform': form, 'template_info': template_info }))
+        RequestContext( request, {'resourceform': form, 'template_info': template_info, 'debug_info': debug_info }))
 
 @login_required
 def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
