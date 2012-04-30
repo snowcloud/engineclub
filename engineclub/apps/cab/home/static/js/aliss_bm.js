@@ -12,3 +12,4 @@ catch(e){ // access denied on https sites
 var x = new String(t);
 x = x.replace(/\n/g, "||");
 var w=window.open('http://www.aliss.org/depot/resource/add/?popup=true&title='+encodeURIComponent(document.title)+'&page='+encodeURIComponent(location.href)+'&t='+encodeURIComponent(x),'ALISS','scrollbars=1,status=0,resizable=1,location=0,toolbar=0,width=860,height=680');
+w.moveTo(0, 0);
