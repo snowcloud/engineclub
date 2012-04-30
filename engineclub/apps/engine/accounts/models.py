@@ -122,7 +122,7 @@ class Account(Document):
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        return self == acct
+        return self == acct or acct.is_staff
 
     # def perm_can_delete(self, user):
     #     """docstring for perm_can_edit"""
