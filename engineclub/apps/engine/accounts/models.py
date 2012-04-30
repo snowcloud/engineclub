@@ -56,7 +56,7 @@ class Account(Document):
     local_id = StringField(max_length=20, unique=True) # for demo, links to local user id
     email = EmailField(required=True)
     url = URLField(required=False)
-    description = StringField(max_length=500)
+    description = StringField(max_length=1500)
     tags = ListField(StringField(max_length=96), default=list)
     locations = ListField(ReferenceField(Location), default=list)
     permissions = ListField(StringField(max_length=20))
