@@ -100,23 +100,58 @@ def update_resource_metadata(self, resource, request):
     """docstring for update_resource_metadata"""
     resource.metadata.author = str(request.user.id)
 
+def get_req_data(req_path):
+    """
+    takes an input path like:
+    u'/depot/resource/add/popup|true/title|Inverclyde Globetrotters | Facebook/page|http~~www.facebook.com/InverclydeGlobetrotters/t|Having fun staying active by virtually walking around the world (and beyond!) without leaving Greenock'
+    and returns a dict like:
+    {u't': u'Having fun staying active by virtually walking around the world (and beyond!) without leaving Greenock', u'popup': u'true', u'page': u'http~~www.facebook.com/InverclydeGlobetrotters', u'title': u'Inverclyde Globetrotters | Facebook'})
+    """
+    result = {}
+
+    POPUP = u'popup'
+    LEN_POPUP = 7
+    TITLE = u'title'
+    LEN_TITLE = 7
+    PAGE = u'page'
+    LEN_PAGE = 6
+    TEXT = u't'
+    LEN_TEXT = 3
+
+    i_popup = req_path.find(u'/%s|' % POPUP)
+    i_title = req_path.find(u'/%s|' % TITLE)
+    i_page = req_path.find(u'/%s|' % PAGE)
+    i_text = req_path.find(u'/%s|' % TEXT)
+
+    print i_popup, i_title, i_page, i_text
+
+    if i_popup == -1 or i_title == -1 or i_page == -1 or i_text == -1:
+        for i in req_path.split('/'):
+            item = i.split('|')
+            if len(item) > 1:
+                result[item[0]] = item[1]
+        return result
+    else:
+        result[POPUP] = req_path[i_popup+LEN_POPUP:i_title]
+        result[TITLE] = req_path[i_title+LEN_TITLE:i_page]
+        result[PAGE] = req_path[i_page+LEN_PAGE:i_text]
+        result[TEXT] = req_path[i_text+LEN_TEXT:]
+
+    return result
+
 @login_required
 def resource_add(request, template_name='depot/resource_edit.html'):
     """adds a new resource"""
 
     import urllib
-    req_data = {}
+
     # seems url becomes http:/ on server- no idea why
     # defensive coding ftw.
     req_path = urllib.unquote(request.path).replace('http://', 'http~~').replace('http:/', 'http~~').replace('||', '\n')
-    debug_info = req_path
-    for i in req_path.split('/'):
-        item = i.split('|')
-        if len(item) > 1:
-            req_data[item[0]] = item[1]
+    req_data = get_req_data(req_path)
+    debug_info = (req_path, req_data)
 
     template_info = _template_info(req_data.get('popup', ''))
-    # formclass = ShortResourceForm
 
     if request.method == 'POST':
         if request.POST.get('result', '') == 'Cancel':
