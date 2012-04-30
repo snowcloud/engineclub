@@ -5,10 +5,14 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
-    <li><a href="{% url 'accounts_find' %}">Search Aliss users</a></li>
+  <li><a href="{% url 'accounts' %}">Browse Aliss users</a></li>
+  <li><a href="{% url 'accounts_find' %}">Search Aliss users</a></li>
+  {% if new %}
+    <li class="current"><a href="#">New user account</a></li>
+  {% else %}
     <li><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></li>
     <li class="current"><a href="#">Edit</a></li>
+  {% endif %}
 </ul>
 {% endblock %}
 
