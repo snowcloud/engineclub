@@ -47,6 +47,28 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
 ###############################################################
 # SEARCH STUFF
 
+"""
+from pysolr.py
+
+class Results(object):
+    def __init__(self, docs, hits, highlighting=None, facets=None, spellcheck=None, stats=None, qtime=None, debug=None):
+        self.docs = docs
+        self.hits = hits
+        self.highlighting = highlighting or {}
+        self.facets = facets or {}
+        self.spellcheck = spellcheck or {}
+        self.stats = stats or {}
+        self.qtime = qtime
+        self.debug = debug or {}
+
+    def __len__(self):
+        return len(self.docs)
+
+    def __iter__(self):
+        return iter(self.docs)
+
+"""
+
 def _make_fq(event, accounts, collections, res_type):
     fq = ['res_type:%s' % res_type]
     if event:
