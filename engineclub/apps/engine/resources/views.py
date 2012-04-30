@@ -102,8 +102,12 @@ def update_resource_metadata(self, resource, request):
 
 def get_req_data(req_path):
     """
-    takes an input path like:
+    given url like:
+    /depot/resource/add/popup|true/title|Inverclyde%20Globetrotters%20%7C%20Facebook/page|http%3A%2F%2Fwww.facebook.com%2FInverclydeGlobetrotters/t|Having%20fun%20staying%20active%20by%20virtually%20walking%20around%20the%20world%20(and%20beyond!)%20without%20leaving%20Greenock
+    
+    gets an input path like:
     u'/depot/resource/add/popup|true/title|Inverclyde Globetrotters | Facebook/page|http~~www.facebook.com/InverclydeGlobetrotters/t|Having fun staying active by virtually walking around the world (and beyond!) without leaving Greenock'
+    
     and returns a dict like:
     {u't': u'Having fun staying active by virtually walking around the world (and beyond!) without leaving Greenock', u'popup': u'true', u'page': u'http~~www.facebook.com/InverclydeGlobetrotters', u'title': u'Inverclyde Globetrotters | Facebook'})
     """
