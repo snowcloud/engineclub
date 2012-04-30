@@ -113,6 +113,16 @@ class ResourceTest(MongoTestCase):
 #         self.assertEqual(len(results[0]['resources']), 1)
 
 
+# class ViewTest(MongoTestCase):
+
+
+#     def test_popup(self):
+#         import urllib
+        
+#         url = '/depot/resource/add/%3Fpopup%3Dtrue%26title%3DALISS%253A%2520Password%2520reset%2520successful%26page%3Dhttp%253A%252F%252F127.0.0.1%253A8080%252Fpassword_reset%252Fdone%252F%26t%3DWe%27ve%2520e-mailed%2520you%2520instructions%2520for%2520setting%2520your%2520password%2520to%2520the%2520e-mail%2520address%2520you%2520submitted.%2520You%2520should%2520be%2520receiving%2520it%2520shortly.%257C%257C%257C%257C'
+#         print url
+#         print urllib.unquote(url)
+
 
 class SearchTest(MongoTestCase):
             
