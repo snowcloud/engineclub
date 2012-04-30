@@ -14,6 +14,12 @@ from ecutils.utils import minmax, lat_lon_to_str
 
 def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
 
+    # could do lat_lon search by testing namestr for '123.456, 123.456'
+    # split on ','
+    # check len=2
+    # check parts 1 and 2 (trimmed) convert to real
+    # return {'lat_lon': [real, real] }
+
     db = get_db()
     coll = db.location
     if len(namestr) > 2 and namestr[2].isdigit():
