@@ -154,8 +154,8 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="8%" />
-<col width="5%" />
-<col width="87%" />
+<col width="7%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">parameter name</th>
@@ -165,11 +165,11 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>location</td>
-<td>no</td>
+<td>no, if query</td>
 <td>A post code or place name.</td>
 </tr>
 <tr class="row-odd"><td>query</td>
-<td>yes</td>
+<td>no, if location</td>
 <td>Keywords, can be comma-separated.</td>
 </tr>
 <tr class="row-even"><td>start</td>
@@ -211,8 +211,8 @@
 <h3>Response<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="67%" />
+<col width="27%" />
+<col width="73%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">item name</th>
@@ -220,8 +220,96 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>to do</td>
-<td>to do</td>
+<tr class="row-even"><td>location</td>
+<td>list of strings, with lat/lon used in search</td>
+</tr>
+<tr class="row-odd"><td>query</td>
+<td>text used in search</td>
+</tr>
+<tr class="row-even"><td>start</td>
+<td>index of first document returned from result set</td>
+</tr>
+<tr class="row-odd"><td>max</td>
+<td>number of documents returned, if available</td>
+</tr>
+<tr class="row-even"><td>numfound</td>
+<td>number of documents in total result set</td>
+</tr>
+<tr class="row-odd"><td>boostlocation</td>
+<td>number used in search</td>
+</tr>
+<tr class="row-even"><td>accounts</td>
+<td>accounts used in search</td>
+</tr>
+<tr class="row-odd"><td>collections</td>
+<td>collections used in search</td>
+</tr>
+<tr class="row-even"><td>event</td>
+<td>event param used, or null</td>
+</tr>
+<tr class="row-odd"><td>output</td>
+<td>output format used</td>
+</tr>
+<tr class="row-even"><td>callback</td>
+<td>callback function name passed in search</td>
+</tr>
+<tr class="row-odd"><td>results</td>
+<td>list of results- see format below</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="result-format">
+<h3>Result format<a class="headerlink" href="#result-format" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>ObjectID *</td>
+</tr>
+<tr class="row-odd"><td>title</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>uri</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-even"><td>locations</td>
+<td>list of lat,lon as strings</td>
+</tr>
+<tr class="row-odd"><td>locationnames</td>
+<td>list location names as strings</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>accounts</td>
+<td>A list of ALISS.org account IDs, of accounts curating this resource</td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td>real number, higher numbers reflect better match with query</td>
+</tr>
+<tr class="row-odd"><td>event_start</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-even"><td>event_end</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-odd"><td>relatedresources</td>
+<td>not implemented</td>
+</tr>
+<tr class="row-even"><td>lastmodified</td>
+<td>not implemented</td>
 </tr>
 </tbody>
 </table>
@@ -236,37 +324,40 @@
 <p>method: GET</p>
 <p>access: public</p>
 <p><strong>Example of successful result</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&quot;data&quot;</span><span class="p">:</span>
-    <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s">&quot;boostlocation&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span>
-            <span class="s">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;55.935160000000003, -3.2425099999999998&quot;</span> <span class="p">],</span>
-            <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="s">&quot;100&quot;</span><span class="p">,</span>
-            <span class="s">&quot;query&quot;</span><span class="p">:</span> <span class="s">&quot;dance&quot;</span><span class="p">,</span>
-            <span class="s">&quot;results&quot;</span><span class="p">:</span>
-            <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s">&quot;score&quot;</span><span class="p">:</span> <span class="mf">9.6231939999999998</span><span class="p">,</span>
-                    <span class="s">&quot;accounts&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;4d9b99d889cb16665c000000&quot;</span> <span class="p">],</span>
-                    <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;8p.m., Sat 17 December 2011</span><span class="se">\n</span><span class="s">Doors open 7.30pm, dancing from 8pm to midnight.</span><span class="se">\n</span><span class="s">Tickets ordered online will be on the door for collection. </span><span class="se">\n</span><span class="s">As these are fundraising ceilidhs for Scots Music Group we do not offer a member price. </span><span class="se">\n</span><span class="s">Full-price tickets on the night are </span><span class="se">\u00a3</span><span class="s">10/</span><span class="se">\u00a3</span><span class="s">8 conc.</span><span class="se">\n</span><span class="s">Licensed bar. </span><span class="se">\n</span><span class="s">Please note </span><span class="se">\u2013</span><span class="s"> only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Scots Music Group- Ceilidh with Da Hooley&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;locations&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;55.9428121047, -3.22066131243&quot;</span> <span class="p">],</span>
-                    <span class="s">&quot;locationnames&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;EH11 2DZ, Sighthill/Gorgie, of Edinburgh&quot;</span> <span class="p">],</span>
-                    <span class="s">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;dance&quot;</span> <span class="p">],</span>
-                    <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;4eb95d2b3de074399b000000&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;event_start&quot;</span><span class="p">:</span> <span class="s">&quot;2011-12-17T20:00:00Z&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.scotsmusic.org/events/507/&quot;</span>
-                <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="s">&quot;event&quot;</span><span class="p">:</span> <span class="s">&quot;*&quot;</span><span class="p">,</span>
-            <span class="s">&quot;output&quot;</span><span class="p">:</span> <span class="s">&quot;json&quot;</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
+<div class="highlight-python"><pre>{
+    "errors": {},
+    "data":
+    [
+        {
+            "boostlocation": 30.0,
+            "location": [ "55.935160000000003, -3.2425099999999998" ],
+            "start": 200,
+            "max": "100",
+            "numfound": "654",
+            "query": "dance",
+            "accounts": "",
+            "collections": "",
+            "results":
+            [
+                {
+                    "score": 9.6231939999999998,
+                    "accounts": [ "4d9b99d889cb16665c000000" ],
+                    "description": "8p.m., Sat 17 December 2011\nDoors open 7.30pm, dancing from 8pm to midnight.\nTickets ordered online will be on the door for collection. \nAs these are fundraising ceilidhs for Scots Music Group we do not offer a member price. \nFull-price tickets on the night are \u00a310/\u00a38 conc.\nLicensed bar. \nPlease note \u2013 only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.",
+                    "title": "Scots Music Group- Ceilidh with Da Hooley",
+                    "locations": [ "55.9428121047, -3.22066131243" ],
+                    "locationnames": [ "EH11 2DZ, Sighthill/Gorgie, of Edinburgh" ],
+                    "tags": [ "dance" ],
+                    "id": "4eb95d2b3de074399b000000",
+                    "event_start": "2011-12-17T20:00:00Z",
+                    "uri": "http://www.scotsmusic.org/events/507/"
+                }
+                { ... other results ... }
+            ],
+            "event": "*",
+            "output": "json"
+        }
+    ]
+}</pre>
 </div>
 </div>
 </div>
@@ -509,6 +600,7 @@ could be done as an update, but also have as an alert as shortcut</p>
 <li><a class="reference internal" href="#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a><ul>
 <li><a class="reference internal" href="#id1">Parameters</a></li>
 <li><a class="reference internal" href="#id2">Response</a></li>
+<li><a class="reference internal" href="#result-format">Result format</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#retrieve-resources-by-batch">Retrieve resources by batch</a><ul>
@@ -537,7 +629,7 @@ could be done as an update, but also have as an alert as shortcut</p>
                         title="next chapter">Data model</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/depot/api.txt"
+    <li><a href="../_sources/engine/api.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">

@@ -25,17 +25,35 @@ See the:
 
 .. Contents:
 
-There are five applications:
+There are three groups of applications:
 
-home
+cab
 =========================
 
-the home page for engineclub.org which will host information, demos etc
+  * enginecab
+  * home
+  * stories
+  * youraliss
 
-`Code for home app`_
+engine
+=========================
+
+  * accounts
+  * analytics
+  * ecutils
+  * invites
+  * issues
+  * locations
+  * resources
+
+firebox
+=========================
+
+A single application for import of data. This section will be expanded shortly as bulk data import is developed.
 
 
-depot
+
+API and data model
 =========================
 
 storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).
@@ -43,34 +61,9 @@ storage of resource data, and services API, using a mix of mongodb and postgresq
 .. toctree::
    :maxdepth: 2
 
-   depot/api
-   depot/data-model
+   engine/api
+   engine/data-model
 
-`Code for depot app`_
-
-
-enginecab
-=========================
-
-admin app for the engineclub
-
-`Code for enginecab app`_
-
-
-firebox
-=========================
-
-for data collection code
-
-`Code for firebox app`_
-
-
-ecutils
-=========================
-
-for utility code
-
-`Code for ecutils app`_
 
 .. index:: installation
 
@@ -95,18 +88,11 @@ To customise settings, add your own file called settings_local.py. It will be im
 
 Following installation, make sure you are in the installation directory, then you can do::
 
-    cd ecengine
     ./manage.py syncdb --noinput
 
 This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
 You can then log in with username: admin and password: admin
 
-
-.. _Code for home app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home
-.. _Code for depot app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot
-.. _Code for enginecab app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab
-.. _Code for firebox app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox
-.. _Code for ecutils app: https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils
 
 .. _Django: http://djangoproject.com/
 .. _MongoDB: http://mongodb.org/
