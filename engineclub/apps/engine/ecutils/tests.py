@@ -20,7 +20,6 @@ class SimpleTest(TestCase):
 
 
 from mongoengine import connect, connection
-from mongoengine.connection import get_db
 
 class MongoTestCase(TestCase):
     """
@@ -34,7 +33,7 @@ class MongoTestCase(TestCase):
 
     def _post_teardown(self):
         super(MongoTestCase, self)._post_teardown()
-        for collection in get_db().collection_names():
+        for collection in connection.get_db().collection_names():
             if collection == 'system.indexes':
                 continue
-            get_db().drop_collection(collection)
+            connection.get_db().drop_collection(collection)
