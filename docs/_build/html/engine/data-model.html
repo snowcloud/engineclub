@@ -341,6 +341,12 @@ Data will be converted to required formats on client access (may be cached for p
 <tr class="row-odd"><td>description</td>
 <td>string</td>
 </tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
+</tr>
 <tr class="row-even"><td>permissions</td>
 <td>[not used]</td>
 </tr>
@@ -356,8 +362,11 @@ Data will be converted to required formats on client access (may be cached for p
 <tr class="row-even"><td>status</td>
 <td>string [&#8216;member&#8217;, &#8216;admin&#8217;, &#8216;mentor&#8217;, &#8216;ok&#8217;, &#8216;suspended&#8217;, &#8216;closed&#8217;]</td>
 </tr>
-<tr class="row-odd"><td>collections</td>
-<td><a class="reference internal" href="#collection"><em>Collection</em></a></td>
+<tr class="row-odd"><td>in_collections</td>
+<td>list of <a class="reference internal" href="#collection"><em>Collection</em></a> - Collections containing this account</td>
+</tr>
+<tr class="row-even"><td>email_preference</td>
+<td>string [&#8216;none&#8217;, &#8216;single&#8217;, &#8216;digest&#8217;]</td>
 </tr>
 </tbody>
 </table>
