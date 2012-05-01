@@ -13,7 +13,7 @@ from django.views.decorators.cache import cache_control
 
 from mongoengine.base import ValidationError
 from mongoengine.queryset import OperationError, MultipleObjectsReturned, DoesNotExist
-from pymongo.objectid import ObjectId
+from bson.objectid import ObjectId
 
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)

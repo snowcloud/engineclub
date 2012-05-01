@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from pymongo.objectid import ObjectId
+from bson.objectid import ObjectId
 from pysolr import Solr
 
 from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
