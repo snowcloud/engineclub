@@ -89,8 +89,8 @@ def resource_by_id(request, id):
         'uri': item.uri,
         'locations': ['%s, %s' % (loc.lat_lon[0], loc.lat_lon[1]) for loc in item.locations],
         'locationnames': [loc.place_name for loc in item.locations],
-        'event_start': item.calendar_event.start if item.calendar_event else ''
-        'event_end': item.calendar_event.end if item.calendar_event else ''
+        'event_start': (item.calendar_event.start or '') if item.calendar_event else '',
+        'event_end': (item.calendar_event.end or '') if item.calendar_event else '',
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
     }]
