@@ -296,6 +296,17 @@ dl.nice.tabs.vertical dd a:hover {
 
 }
 /* @end */
+/* @group flatpage */
+.flatpage {
+	.main {
+		padding: 3em;
+	}
+	h2 {
+		border-top: 1px solid #e6e6e6;
+		padding-top: 0.8em;
+	}
+}
+/* @end */
 
 .story {
 	img {

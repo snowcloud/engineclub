@@ -348,6 +348,17 @@ caption, th, td {
 	}
 }
 /* @end */
+/* @group flatpage */
+.flatpage .main {
+	ul {
+		list-style-type: disc;
+		list-style-position: inside;
+	}
+	li {
+		margin-bottom: 0.2em;
+	}
+}
+/* @end */
 
 /* @group presentations */
 .presentation dt, .presentation h3 {
