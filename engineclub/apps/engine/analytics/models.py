@@ -7,7 +7,7 @@ calculating stats from data store in MongoDB.
 
 Example usage, for incrementing the value of a tag. For a specific account.
 
-    from engine_groups.models import Account
+    from accounts.models import Account
     from analytics.shortcuts import increment_tags
     account = Account.objects[2]
     increment_tags(account, "Sport and fitness")
@@ -40,7 +40,7 @@ from mongoengine.connection import _get_db as get_db
 from django.conf import settings
 
 from resources.models import Curation
-from engine_groups.models import Account
+from accounts.models import Account
 from analytics import pool
 
 DATE_FORMAT = "%Y-%m-%d"

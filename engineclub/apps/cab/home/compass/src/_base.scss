@@ -68,6 +68,12 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	background-color: #f4f4f4;
 	border-bottom: 1px solid #DDDDDD;
 }
+.logged-in {
+	p {
+		padding: 0.4em 0 0.5em 0.3em;
+		margin-bottom: 0;		
+	}
+}
 .welcome {
 	background-color: #eb511b;
 	color: #fff;

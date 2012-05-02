@@ -49,7 +49,13 @@
         </div>
     </div>
 
-	{% block top %}{% endblock top %}
+	{% block top %}
+        {% if user.is_authenticated %}
+            <div class="logged-in container">
+                <div class="row"><p>logged in as: <a href="{% url 'youraliss' %}">{{ user.username }}</a></p></div>
+            </div>
+        {% endif %}
+    {% endblock top %}
 
     <div class="main container">
         <div class="row">{% block main %}{% block content %}&nbsp;{% endblock content %}{% endblock main %}</div>

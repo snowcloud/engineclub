@@ -6,6 +6,9 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
+    {% endif %}
     <li><a href="{% url 'stories_list' %}">Aliss Stories</a></li>
     <li class="current"><a href="#">{{ object.resource.title }}{{ object.name }}{{ object.title }}</a></li>
 </ul>
