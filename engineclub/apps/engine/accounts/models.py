@@ -105,6 +105,7 @@ class Account(Document):
         if not found:
             m = Membership.objects.create(member=member, parent_account=self, role=role)
             self.members.append(m)
+            m.save()
 
     def add_to_collection(self, coll):
         if coll not in self.in_collections:
