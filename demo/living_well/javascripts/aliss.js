@@ -83,7 +83,7 @@ function aliss_search(data, div_id, paginate, google_map, result_msg, no_result_
         'max':4,
         'start':0,
         'boostlocation': 10,
-        // 'collections': '4f2a74b2baa2b11356000000'
+        'collections': '4f2a74b2baa2b11356000000'
     };
 
     $.extend(defaults, data);
