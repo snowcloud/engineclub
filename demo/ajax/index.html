@@ -42,7 +42,7 @@
   <script src="javascripts/date.js"></script>
 	<script type="text/javascript">   
         show_results = function() {
-            host = "http://aliss.org";
+            host = "http://www.aliss.org";
     	    searchlocation = $('#searchlocation').attr('value');
             searchkeywords = $('#searchkeywords').attr('value');
             dict = {
@@ -82,7 +82,7 @@
                                event_start = '<p>' + d.toString('d MMM, yyyy') + timestr  + '</p>';
                              };
                              items.push('<li id="' + key + '">' + 
-                             '<a href="http://aliss.org/depot/resource/'+result['id']+'">'+result['title']+'</a>' + 
+                             '<a href="http://www.aliss.org/depot/resource/'+result['id']+'">'+result['title']+'</a>' + 
                              event_start +
                              '<p>' + result['description'] + '</p>' + '</li>');
                            });
@@ -133,7 +133,7 @@
         <div class="sixteen columns">
 			<h5><em>A maximum of 6 results will be returned by this example.</em></h5>
             <p>See <a href="http://engineclub.org/depot/api.html#retrieve-resources-by-search-parameters">API documentation</a> for details.</p>            
-            <p><a href="http://aliss.org">ALISS home page</a>.</p>
+            <p><a href="http://www.aliss.org">ALISS home page</a>.</p>
         </div>
     </div>
 
