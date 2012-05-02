@@ -1,10 +1,16 @@
 {% extends "flatpages/default.html" %}
 {% load markup %}
+{% load url from future %}
+
 {% block nav_link %}<a href="/info/">back</a>{% endblock %}
 {% block body_class %}presentation{% endblock %}
 
 {% block breadcrumbs %}
     <ul class="breadcrumbs">
+        {% if user.is_authenticated %}
+	        <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
+        {% endif %}
+
         <li><a href="/info/">Find out more</a></li>
         <li class="current"><a href="#">{{ flatpage.title }}</a></li>
     </ul>
