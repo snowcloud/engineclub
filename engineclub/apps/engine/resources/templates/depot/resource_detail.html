@@ -64,8 +64,8 @@
         <tr><th>location</th><td>-</td></tr>
     {% endfor %}
     <tr><th>owner</th><td><a href="{% url 'accounts_detail' object.owner.id %}">{{ object.owner.name }}</a></td></tr>
-    <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
-{% for curation in object.curations %}
+<!--     <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr> -->
+    {% for curation in object.curations %}
         <tr>
             <th>{% ifchanged %}curation{% endifchanged %}</th>
             <td><a href="{% url 'curation' object.id forloop.counter0 %}">{{ curation.owner }}'s tags: {{ curation.tags|join:", " }}</a></td>
