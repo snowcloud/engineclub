@@ -16,6 +16,7 @@ from accounts.models import Account, Collection, get_account
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
 from ecutils.utils import get_one_or_404
+from resources.models import Curation
 from resources.forms import LocationUpdateForm
 from forms import AccountForm, NewAccountForm, FindAccountForm
 
@@ -35,11 +36,26 @@ def index(request):
 def detail(request, object_id, template_name='accounts/accounts_detail.html'):
     account = get_one_or_404(Account, id=object_id)
     user = request.user
-    
+    pt_results = {}
+    centre = None
+
+    if account.locations:
+        centre = {'name': unicode(account.locations[0]), 'location': (account.locations[0].lat_lon) }
+    results = [c.resource for c in Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:20]]
+    for result in results:
+        for loc in result.locations:
+            pt_results.setdefault(tuple(loc.lat_lon), []).append((result.id, result.title))
+    context = {
+        'results': results,
+        'pt_results': pt_results,
+        'centre': centre,
+        'google_key': settings.GOOGLE_KEY,
+        'show_map': results and centre,
+    }
     return render_to_response(
         template_name,
         {'object': account},
-        RequestContext(request)
+        RequestContext(request, context)
     )
 
 @cache_control(no_cache=False, public=True, must_revalidate=False, proxy_revalidate=False, max_age=300)
@@ -63,7 +79,6 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
             increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
-                resource = get_one_or_404(Account, id=ObjectId(result['res_id']))
                 results.append({'resource_result': result})
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
