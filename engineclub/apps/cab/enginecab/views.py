@@ -133,10 +133,15 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 
 @user_passes_test(lambda u: u.is_superuser)
 def one_off_util(request):
-    note = 'Nothing enabled.'
-    # note = migrate_account_collections()
+    # note = 'Nothing enabled.'
+    note = move_res_tags_to_owner_curation()
     messages.success(request, 'job done. %s' % note)
-    
+
+    # note = show_curationless_resources()
+    # messages.success(request, 'job done. %s' % note)
+    # note = fix_curationless_resources()
+    # messages.success(request, 'job done. %s' % note)
+   
     return HttpResponseRedirect(reverse('cab_resources'))
 
 # def migrate_account_collections():
@@ -150,40 +155,45 @@ def one_off_util(request):
 #     return 'migrated account collection- now comment out account.collection field'
     
 
-# @user_passes_test(lambda u: u.is_staff)
-# def show_curationless_resources(request):
-#     i = 0
-#     r = []
-#     for res in Resource.objects.all():
-#         if not res.curations:
-#             r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
-#             i += 1
-#     note = 'found %s resources with no curations: %s' % (i, ', '.join(r))
-#     messages.success(request, 'job done. %s' % note)
-    
-#     return HttpResponseRedirect(reverse('cab'))
+def show_curationless_resources():
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
+    return 'found %s resources with no curations: %s' % (i, ', '.join(r))
 
-# @user_passes_test(lambda u: u.is_staff)
-# def fix_curationless_resources(request):
-#     i = 0
-#     r = []
-#     for res in Resource.objects.all():
-#         if not res.curations:
-#             obj = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
-#             obj.item_metadata.author = res.owner
-#             obj.resource = res
-#             obj.save()
-#             res.curations.append(obj)
-#             res.save(reindex=True)
+def fix_curationless_resources():
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            obj = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
+            obj.item_metadata.author = res.owner
+            obj.resource = res
+            obj.save()
+            res.curations.append(obj)
+            res.save(reindex=True)
             
-#             r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
-#             i += 1
+            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
             
-#     note = 'fixed %s resources with no curations: %s' % (i, ', '.join(r))
-#     messages.success(request, 'job done. %s' % note)
+    return 'fixed %s resources with no curations: %s' % (i, ', '.join(r))
+
+def move_res_tags_to_owner_curation():
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        curations = Curation.objects(owner=res.owner, resource=res)
+        if curations.count() != 1:
+            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+
+            i += 1
     
-#     return HttpResponseRedirect(reverse('cab'))
-    
+    return 'found %s resources: %s' % (i, ', '.join(r))
+
+
 # @user_passes_test(lambda u: u.is_staff)
 # def remove_dud_curations(request):
 #     """docstring for remove_dud_curations"""
