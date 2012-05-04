@@ -448,11 +448,16 @@ def curation_remove(request, object_id, index):
     """docstring for curation_remove"""
     user = get_account(request.user.id)
     resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
-    resource.curations[int(index)].delete()
-    del resource.curations[int(index)]
-    resource.save(reindex=True)
+    if resource.owner == resource.curations[int(index)].owner:
 
-    increment_resource_crud('curation_remove', account=user)
+        messages.warning(request, 'You cannot delete the curation by the resource owner.')
+        return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
+
+    # resource.curations[int(index)].delete()
+    # del resource.curations[int(index)]
+    # resource.save(reindex=True)
+
+    # increment_resource_crud('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required

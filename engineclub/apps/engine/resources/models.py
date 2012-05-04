@@ -73,7 +73,7 @@ class Curation(Document):
     def perm_can_delete(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        return self.owner == acct
+        return self.owner == acct and self.resource.owner != acct
 
 class Resource(Document):
     """ Main model for ALISS resource """
