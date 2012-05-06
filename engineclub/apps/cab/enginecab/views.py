@@ -203,10 +203,10 @@ def move_res_tags_to_owner_curation():
             print i, res.curations
             
             i += 1
-        else:
-            cur = curations[0]
-            cur.tags = list(set(cur.tags + res.tags))
-            cur.save()
+        # else:
+        #     cur = curations[0]
+        #     cur.tags = list(set(cur.tags + res.tags))
+        #     cur.save()
 
 
     # end = datetime.now()
