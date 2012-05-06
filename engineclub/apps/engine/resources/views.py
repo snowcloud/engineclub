@@ -215,13 +215,8 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
 
         if resourceform.is_valid(request.user) and locationform.is_valid() and eventform.is_valid():
             acct = get_account(request.user.id)
-
             object.locations = locationform.locations
-            object.save()
-
             increment_resource_crud('resouce_edit', account=acct)
-            #object.add_location_from_name(locationform.cleaned_data['new_location'])
-            #object.save(author=acct, reindex=True)
 
             # Event dates
             event_start = eventform.cleaned_data['start']
@@ -229,14 +224,12 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
                 object.calendar_event = CalendarEvent(start=event_start, end=eventform.cleaned_data['end'])
             else:
                 object.calendar_event = None
-            object = resourceform.save(do_save=False)
-            
+            object = resourceform.save(do_save=False)            
             try:
                 object.save(author=acct, reindex=True)
                 return resource_edit_complete(request, object, template_info)
             except OperationError:
                 pass
-
     else:
         resourceform = ShortResourceForm(instance=object)
         locationform = LocationUpdateForm(instance=object)
@@ -253,7 +246,12 @@ def resource_edit(request, object_id, template_name='depot/resource_edit.html'):
 def resource_edit_complete(request, resource, template_info):
     """docstring for resource_edit_complete"""
     if resource:
-        resource.save(author=str(request.user.id))
+        curations = Curation.objects(owner=resource.owner, resource=resource)
+        if curations.count() != 1:
+            raise Exception('Resource %s with %s owner Curations' % (resource.id, curations.count()))
+        cur = curations[0]
+        cur.tags = list(set(resource.tags))
+        cur.save()
         popup_url = reverse('resource_popup_close')
         url = reverse('resource', args=[resource.id])
     else: # resource_add cancelled
@@ -430,6 +428,8 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
             increment_resource_crud('curation_edit', account=user)
             # reload the resource, don't know why, but needed for mongoengine 0.6
             resource = Resource.objects.get(id=resource.id)
+            if curation.owner == resource.owner:
+                resource.tags = list(set(curation.tags))
             resource.save(reindex=True)
             return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
     else:
