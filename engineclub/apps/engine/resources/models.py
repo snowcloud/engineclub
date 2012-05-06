@@ -57,7 +57,7 @@ class Moderation(EmbeddedDocument):
 
 class Curation(Document):
     outcome = StringField()
-    tags = ListField(StringField(max_length=96), default=list)
+    tags = ListField(StringField(max_length=360), default=list)
     # rating - not used
     note = StringField()
     data = DictField()
@@ -115,7 +115,6 @@ class Resource(Document):
                 obj.save()
                 self.curations.append(obj)
             super(Resource, self).save(*args, **kwargs)
-
         if reindex:
             self.reindex()
 
