@@ -135,8 +135,8 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 
 @user_passes_test(lambda u: u.is_superuser)
 def one_off_util(request):
-    # note = 'Nothing enabled.'
-    note = move_res_tags_to_owner_curation()
+    note = 'Nothing enabled.'
+    # note = move_res_tags_to_owner_curation()
     messages.success(request, 'job done. %s' % note)
 
     # note = show_curationless_resources()
