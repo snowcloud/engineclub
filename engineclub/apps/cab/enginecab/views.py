@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -184,13 +186,32 @@ def fix_curationless_resources():
 def move_res_tags_to_owner_curation():
     i = 0
     r = []
+    # start = datetime.now()
+
     for res in Resource.objects.all():
         curations = Curation.objects(owner=res.owner, resource=res)
-        if curations.count() != 1:
+        cur = None
+        if curations.count() < 1:
             r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
 
+            cur = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
+            cur.item_metadata.author = res.owner
+            cur.resource = res
+            cur.save()
+            res.curations = [cur] + list(res.curations)
+            res.save(reindex=True)
+            print i, res.curations
+            
             i += 1
-    
+        else:
+            cur = curations[0]
+            cur.tags = list(set(cur.tags + res.tags))
+            cur.save()
+
+
+    # end = datetime.now()
+    # print end - start
+
     return 'found %s resources: %s' % (i, ', '.join(r))
 
 
