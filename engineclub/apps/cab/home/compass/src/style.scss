@@ -105,6 +105,7 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 #top {
 	margin-bottom: 1.8em;
 }
+/* @group breadcrumbs */
 .breadcrumbs {
 	// margin-top: 1em;
 	@include un_hide_it;
@@ -114,6 +115,7 @@ ul.breadcrumbs {
 	margin-bottom: 0;
 	border: none;
 }
+/* @end */
 /* @group search */
 
 .search fieldset {
