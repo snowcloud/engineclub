@@ -125,10 +125,13 @@ class Account(Document):
         acct = get_account(user.id)
         return self == acct or acct.is_staff
 
-    # def perm_can_delete(self, user):
-    #     """docstring for perm_can_edit"""
-    #     acct = get_account(user.id)
-    #     return self.owner == acct
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        # acct = get_account(user.id)
+        # return user.username == 'derek'
+
+        # only superusers can do it.
+        return False
 
     def _last_login(self):
         return User.objects.get(pk=self.local_id).last_login

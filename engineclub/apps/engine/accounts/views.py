@@ -135,6 +135,43 @@ def edit(request, object_id, template_name='accounts/accounts_edit.html', next='
         RequestContext(request)
     )
 
+@user_passes_test(lambda u: u.is_superuser)
+def remove(request, object_id, template_name='accounts/accounts_remove.html', next='accounts'):
+
+    print 'remove'
+    # object = get_one_or_404(Account, id=object_id)
+    object = get_one_or_404(Account, id=ObjectId(object_id), user=request.user, perm='can_edit')
+    user = request.user
+    if not (user.is_staff or object.local_id == str(user.id)):
+        raise PermissionDenied()
+    
+    if request.method == 'POST':
+        form = AccountForm(request.POST, instance=object)
+        locationform = LocationUpdateForm(request.POST, instance=object)
+        if form.is_valid(request.user) and locationform.is_valid():
+            acct = get_account(request.user.id)
+
+            object.locations = locationform.locations
+            object.save()
+
+            increment_resource_crud('account_edit', account=acct)
+            object = form.save(False)
+            object.save(reindex=True)
+            return HttpResponseRedirect(reverse(next, args=[object.id]))
+    else:
+        form = AccountForm(instance=object)
+        locationform = LocationUpdateForm(instance=object)
+    
+    template_context = {
+        'form': form, 'object': object, 
+        'locationform': locationform, 'new': False }
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+
 @user_passes_test(lambda u: u.is_staff)
 def add(request, template_name='accounts/accounts_edit.html', next='cab_user_detail'):
     

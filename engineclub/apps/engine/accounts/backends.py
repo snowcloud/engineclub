@@ -12,8 +12,9 @@ class EngineGroupsBackend(ModelBackend):
         
         if not user_obj.is_active:
             return False
-        if user_obj.is_superuser:
-            return True
+        # django will already have checked this and returned True
+        # if user_obj.is_superuser:
+        #     return True
         if obj:
             # print obj, perm
             result = getattr(obj, 'perm_%s' % perm, False)

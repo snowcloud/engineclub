@@ -20,12 +20,14 @@
     {% if user|can_edit:object %}
         <dd><a href="{% url 'accounts_edit' object.id %}">Edit account</a></dd>
     {% endif %}
+    {% if user|can_delete:object %}
+        <dd><a href="{% url 'accounts_remove' object.id %}">Delete account</a></dd>
+    {% endif %}
     {% if user.is_staff %}
 	    <dd><a href="{% url 'accounts_add' %}">New user</a></dd>
     {% endif %}
 </dl>
 {% endif %}
-
 
 
 <h1>{{ object.name }}</h1>
