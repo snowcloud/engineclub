@@ -154,6 +154,8 @@ class AccountsViewsTest(AccountsBaseTest):
         self.assertEqual(response.status_code, 200)
 
         name = self.alice.name
+        local_id = self.alice.local_id
+
         response = self.client.post(
                 reverse('accounts_remove',
                     kwargs={'object_id': self.alice.id}),
@@ -168,6 +170,7 @@ class AccountsViewsTest(AccountsBaseTest):
                     data={'object_name': name, 'result': 'Delete'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Account.objects(name=name).count(), 0)
+        self.assertEqual(User.objects.filter(pk=local_id).count(), 0)
 
 
 

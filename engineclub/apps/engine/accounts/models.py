@@ -163,6 +163,7 @@ class Account(Document):
             raise Exception('This account owns resources/curations.')
         Collection.objects(owner=self).delete()
         Issue.objects(reporter=self).delete()
+        User.objects.get(pk=self.local_id).delete()
         self.reindex(remove=True)
         super(Account, self).delete(*args, **kwargs)
 
