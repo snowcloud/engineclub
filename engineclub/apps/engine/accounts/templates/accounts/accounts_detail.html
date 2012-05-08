@@ -44,7 +44,8 @@
     {% empty %}
         <tr><th>location</th><td>-</td></tr>
     {% endfor %}
-    <tr><th>tags</th><td>{{ object.tags|join:", " }}</td></tr>
+    <tr><th>tags</th><td>{{ object.tags|join:", "|default:"-" }}</td></tr>
+    <tr><th>curations</th><td>{{ curations_count }}</td></tr>
 
     </table>
 
@@ -53,7 +54,6 @@
 </div>
 
 <br>
-{% pagination curations %}
 
 {% include "accounts/detail-add.html" %}
 

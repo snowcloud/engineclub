@@ -54,6 +54,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
             pt_results.setdefault(tuple(loc.lat_lon), []).append((curation.resource.id, curation.resource.title))
     context = {
         'curations': curations,
+        'curations_count': Curation.objects(owner=account).count(),
         'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,

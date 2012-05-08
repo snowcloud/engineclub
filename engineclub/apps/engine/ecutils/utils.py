@@ -79,10 +79,5 @@ def get_pages(request, queryset, num=10):
       paginator.p_end = range(paginator.num_pages-1, paginator.num_pages+1)
       paginator.show_ellipsis1 = objects.number - 2 > 3
       paginator.show_ellipsis2 = paginator.num_pages-1 > objects.number + 3
-      print paginator.num_pages-1, objects.number + 2
-      # print paginator.show_ellipsis2, paginator.num_pages-1 > objects.number + 2
 
-
-
-    # paginator.p_start, paginator.p_current, paginator.p_end = range(0,0), range(1,paginator.num_pages+1), range(0,0)
     return objects

@@ -9,10 +9,10 @@ has_next {{ objects.has_next }}<br>
 paginator.p_start {{ objects.paginator.p_start }}<br>
 paginator.p_current {{ objects.paginator.p_current }}<br>
 paginator.p_end {{ objects.paginator.p_end }}<br>
-{% endcomment %}
 paginator.show_ellipsis1 {{ objects.paginator.show_ellipsis1 }}<br>
 paginator.show_ellipsis2 {{ objects.paginator.show_ellipsis2 }}<br>
 <hr>
+{% endcomment %}
 
 
 {% if objects.has_other_pages %} 
@@ -65,23 +65,12 @@ paginator.show_ellipsis2 {{ objects.paginator.show_ellipsis2 }}<br>
 
   {% endif %}
 
-
-<!--   <li class="current"><a href="">1</a></li>
-  <li><a href="?page=2">2</a></li>
-  <li><a href="">3</a></li>
-  <li><a href="">4</a></li>
-  <li class="unavailable"><a href="">&hellip;</a></li>
-  <li><a href="">12</a></li>
-  <li><a href="">13</a></li>
- -->
-
-
-
   {% if objects.has_next %}
       <li class=""><a href="?page={{ objects.next_page_number }}">&raquo;</a></li>
   {% else %}
     <li class="unavailable"><a href="">&raquo;</a></li>
   {% endif %}
+    <li class="unavailable"><a href="">[{{ objects.paginator.count }} total]</a></li>
 </ul>
 
 {% endif %}
