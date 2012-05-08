@@ -45,7 +45,8 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
     if account.locations:
         centre = {'name': unicode(account.locations[0]), 'location': (account.locations[0].lat_lon) }
 
-    curations = Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:40]
+    # curations = Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:40]
+    curations = get_pages(request, Curation.objects(owner=account).order_by('-item_metadata__last_modified'), 20)
 
     # map has all curations
     for curation in Curation.objects(owner=account):

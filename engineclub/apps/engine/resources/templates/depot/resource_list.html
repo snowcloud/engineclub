@@ -7,19 +7,16 @@
 {% block content %}
 <h1>Resources</h1>
 
-{# % pagination objects % #}
+{% pagination objects %}
 
 
-<ol>
+<ul>
 	{% for object in objects %}
 		<li><a href="{% url 'resource' object.id %}">{{ object.title }}</a> </li>
 	{% empty %}
 		<li>no resources found</li>
 	{% endfor %}
-  
-      <li>...</li>
-
-</ol>
+</ul>
 
 <hr>
 <p><a href="{% url 'resource_add' %}">add new resource</a></p>

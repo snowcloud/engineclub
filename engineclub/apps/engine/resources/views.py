@@ -32,8 +32,7 @@ from accounts.models import Account, get_account
 
 def resource_index(request):
 
-    # objects, _ = get_pages(request, Resource.objects[:80], 80)
-    objects = Resource.objects[:80]
+    objects = get_pages(request, Resource.objects.order_by('title'), 30)
 
     return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
