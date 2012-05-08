@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -23,7 +23,7 @@ from resources.models import Resource, Curation, add_curation, CalendarEvent,  \
     # COLL_STATUS_NEW, COLL_STATUS_LOC_CONF, COLL_STATUS_TAGS_CONF, COLL_STATUS_COMPLETE #location_from_cb_value,
 from resources.forms import FindResourceForm, ShortResourceForm, LocationUpdateForm, EventForm, \
     TagsForm, ShelflifeForm, CurationForm, ResourceReportForm
-from ecutils.utils import get_one_or_404
+from ecutils.utils import get_one_or_404, get_pages
 from issues.models import (Issue, SEVERITY_LOW, SEVERITY_MEDIUM,
     SEVERITY_HIGH, SEVERITY_CRITICAL)
 
@@ -31,7 +31,10 @@ from accounts.models import Account, get_account
 
 
 def resource_index(request):
-    objects = Resource.objects
+
+    # objects, _ = get_pages(request, Resource.objects[:80], 80)
+    objects = Resource.objects[:80]
+
     return render_to_response('depot/resource_list.html',
         RequestContext( request, { 'objects': objects }))
 
@@ -263,7 +266,7 @@ def resource_edit_complete(request, resource, template_info):
     else:
         return HttpResponseRedirect(url)
 
-@login_required
+@user_passes_test(lambda u: u.is_staff)
 def resource_remove(request, object_id):
     object = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_delete')
     object.delete()

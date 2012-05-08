@@ -248,3 +248,7 @@ def get_latest_curations(parser, token):
 
 get_latest = register.tag(get_latest_curations)
 
+@register.inclusion_tag('ecutils/pagination.html')
+def pagination(objects):
+    return {'objects': objects}
+

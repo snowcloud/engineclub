@@ -7,11 +7,11 @@
 
 <div class="row results">
 
-    {% get_latest_curations object 20 as latest_curations %}
+    {# % get_latest_curations object 20 as latest_curations % #}
 
     <ul class="resource-listing">
-        {% for result in latest_curations %}
-            {% with result as resource %}
+        {% for result in curations %}
+            {% with result.resource as resource %}
 
                 <li>
                     <div class="row">

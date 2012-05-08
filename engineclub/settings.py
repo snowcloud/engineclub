@@ -133,7 +133,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'linaro_django_pagination.middleware.PaginationMiddleware',
     # "sitedown.middleware.SitedownMiddleware",
 )
 
@@ -162,7 +161,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'linaro_django_pagination',
     'accounts',
     'ecutils',
     'enginecab',

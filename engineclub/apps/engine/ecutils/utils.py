@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 
 from mongoengine.base import ValidationError
@@ -17,7 +18,6 @@ def get_one_or_404(obj_class, **kwargs):
        return object
     except (MultipleObjectsReturned, ValidationError, DoesNotExist):
         raise Http404
-
 
 def minmax(min, max, v, default=None):
     """ensure v is >= min and <= max"""
@@ -44,3 +44,17 @@ def lat_lon_to_str(loc):
         return (settings.LATLON_SEP).join([unicode(loc[0]), unicode(loc[1])])
     else:
         return ''
+
+def get_pages(request, queryset, num=10):
+    # all_objects = doc.objects.all()
+    paginator = Paginator(queryset, num)
+    page = request.GET.get('page')
+    try:
+        objects = paginator.page(page)
+    except PageNotAnInteger:
+        objects = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        objects = paginator.page(paginator.num_pages)
+
+    return objects, paginator

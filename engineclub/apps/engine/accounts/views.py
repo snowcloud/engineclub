@@ -17,7 +17,8 @@ from accounts.models import Account, Collection, get_account
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
 from ecutils.forms import ConfirmForm
-from ecutils.utils import get_one_or_404
+from ecutils.utils import get_one_or_404, get_pages
+
 from resources.models import Curation
 from resources.forms import LocationUpdateForm
 from forms import AccountForm, NewAccountForm, FindAccountForm
@@ -43,16 +44,19 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
 
     if account.locations:
         centre = {'name': unicode(account.locations[0]), 'location': (account.locations[0].lat_lon) }
-    results = [c.resource for c in Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:20]]
-    for result in results:
-        for loc in result.locations:
-            pt_results.setdefault(tuple(loc.lat_lon), []).append((result.id, result.title))
+
+    curations = Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:40]
+
+    # map has all curations
+    for curation in Curation.objects(owner=account):
+        for loc in curation.resource.locations:
+            pt_results.setdefault(tuple(loc.lat_lon), []).append((curation.resource.id, curation.resource.title))
     context = {
-        'results': results,
+        'curations': curations,
         'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': results and centre,
+        'show_map': curations and centre,
     }
     return render_to_response(
         template_name,

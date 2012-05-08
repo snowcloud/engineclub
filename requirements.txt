@@ -7,7 +7,6 @@ python-dateutil==1.5
 PIL
 psycopg2
 flup
-linaro-django-pagination
 
 -e git+git://github.com/snowcloud/django-sitedown.git#egg=django-sitedown
 -e hg+http://bitbucket.org/ubernostrum/django-contact-form/#egg=django-contact-form
