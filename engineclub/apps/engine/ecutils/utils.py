@@ -56,7 +56,7 @@ def get_pages(request, queryset, num=10):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         objects = paginator.page(paginator.num_pages)
-    if paginator.num_pages < 10:
+    if paginator.num_pages < 9:
       paginator.p_display = 0
       paginator.p_current = range(1,paginator.num_pages+1)
     elif objects.number < 5:
@@ -77,7 +77,10 @@ def get_pages(request, queryset, num=10):
           range(objects.number - 2, objects.number + 3) \
           # if objects.number != paginator.num_pages -3 else range(paginator.num_pages -4,paginator.num_pages+1)
       paginator.p_end = range(paginator.num_pages-1, paginator.num_pages+1)
-
+      paginator.show_ellipsis1 = objects.number - 2 > 3
+      paginator.show_ellipsis2 = paginator.num_pages-1 > objects.number + 3
+      print paginator.num_pages-1, objects.number + 2
+      # print paginator.show_ellipsis2, paginator.num_pages-1 > objects.number + 2
 
 
 

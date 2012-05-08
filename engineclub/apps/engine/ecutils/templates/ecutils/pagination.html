@@ -9,8 +9,11 @@ has_next {{ objects.has_next }}<br>
 paginator.p_start {{ objects.paginator.p_start }}<br>
 paginator.p_current {{ objects.paginator.p_current }}<br>
 paginator.p_end {{ objects.paginator.p_end }}<br>
-<hr>
 {% endcomment %}
+paginator.show_ellipsis1 {{ objects.paginator.show_ellipsis1 }}<br>
+paginator.show_ellipsis2 {{ objects.paginator.show_ellipsis2 }}<br>
+<hr>
+
 
 {% if objects.has_other_pages %} 
 <ul class="pagination">
@@ -42,15 +45,20 @@ paginator.p_end {{ objects.paginator.p_end }}<br>
     {% for i in objects.paginator.p_current %}
       <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
     {% endfor %}
+
   {% else %}
     {% for i in objects.paginator.p_start %}
       <li><a href="?page={{ i }}">{{ i }}</a></li>
     {% endfor %}
-    <li class="unavailable"><a href="">&hellip;</a></li>
+    {% if objects.paginator.show_ellipsis1 %} 
+      <li class="unavailable"><a href="">&hellip;</a></li>    
+    {% endif %}
     {% for i in objects.paginator.p_current %}
       <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
     {% endfor %}
-    <li class="unavailable"><a href="">&hellip;</a></li>
+    {% if objects.paginator.show_ellipsis2 %} 
+      <li class="unavailable"><a href="">&hellip;</a></li>    
+    {% endif %}
     {% for i in objects.paginator.p_end %}
       <li><a href="?page={{ i }}">{{ i }}</a></li>
     {% endfor %}
