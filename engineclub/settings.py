@@ -133,6 +133,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'linaro_django_pagination.middleware.PaginationMiddleware',
     # "sitedown.middleware.SitedownMiddleware",
 )
 
@@ -141,6 +142,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
+    "django.core.context_processors.request",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
     "issues.context_processors.message_stats",
@@ -160,6 +162,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'linaro_django_pagination',
     'accounts',
     'ecutils',
     'enginecab',

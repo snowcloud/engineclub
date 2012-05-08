@@ -1,5 +1,5 @@
 {% extends "accounts/accounts_base.html" %}
-{% load markup utils accounts_tags %}
+{% load markup utils accounts_tags pagination_tags %}
 {% load url from future %}
 
 {% block title %}account for {{ object.name }}{% endblock %}
@@ -33,9 +33,8 @@
 <h1>{{ object.name }}</h1>
 
 <div class="resource-description">
-{{ object.description|textile }}
+<p>n= {{ results|length }}</p>
 </div>
-
 <div class="row">
 
     <table class="metadata">
