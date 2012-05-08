@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -15,6 +16,7 @@ from bson.objectid import ObjectId
 from accounts.models import Account, Collection, get_account
 from analytics.shortcuts import (increment_queries, increment_locations,
     increment_resources, increment_resource_crud)
+from ecutils.forms import ConfirmForm
 from ecutils.utils import get_one_or_404
 from resources.models import Curation
 from resources.forms import LocationUpdateForm
@@ -136,41 +138,30 @@ def edit(request, object_id, template_name='accounts/accounts_edit.html', next='
     )
 
 @user_passes_test(lambda u: u.is_superuser)
-def remove(request, object_id, template_name='accounts/accounts_remove.html', next='accounts'):
-
-    print 'remove'
-    # object = get_one_or_404(Account, id=object_id)
-    object = get_one_or_404(Account, id=ObjectId(object_id), user=request.user, perm='can_edit')
+def remove(request, object_id, template_name='ecutils/confirm.html'):
+    """docstring for delete"""
+    object = get_one_or_404(Account, id=ObjectId(object_id), user=request.user, perm='can_delete')
     user = request.user
     if not (user.is_staff or object.local_id == str(user.id)):
         raise PermissionDenied()
-    
-    if request.method == 'POST':
-        form = AccountForm(request.POST, instance=object)
-        locationform = LocationUpdateForm(request.POST, instance=object)
-        if form.is_valid(request.user) and locationform.is_valid():
-            acct = get_account(request.user.id)
 
-            object.locations = locationform.locations
-            object.save()
-
-            increment_resource_crud('account_edit', account=acct)
-            object = form.save(False)
-            object.save(reindex=True)
-            return HttpResponseRedirect(reverse(next, args=[object.id]))
+    if request.POST:
+        if request.POST['result'] == 'Cancel':
+            return HttpResponseRedirect(reverse('accounts_detail', args=[object.id]))
+        else:
+            form = ConfirmForm(request.POST)
+            if form.is_valid():
+                object.delete()
+                messages.success(request, 'Account has been removed, with any Resources, Curations, Collections and Issues.')
+                return HttpResponseRedirect(reverse('accounts'))
     else:
-        form = AccountForm(instance=object)
-        locationform = LocationUpdateForm(instance=object)
-    
-    template_context = {
-        'form': form, 'object': object, 
-        'locationform': locationform, 'new': False }
-
-    return render_to_response(
-        template_name,
-        template_context,
-        RequestContext(request)
-    )
+        form = ConfirmForm(initial={ 'object_name': object.name })
+    return render_to_response('ecutils/confirm.html', 
+        RequestContext( request, 
+            {   'form': form,
+                'title': 'Delete this user account?'
+            })
+        )
 
 @user_passes_test(lambda u: u.is_staff)
 def add(request, template_name='accounts/accounts_edit.html', next='cab_user_detail'):

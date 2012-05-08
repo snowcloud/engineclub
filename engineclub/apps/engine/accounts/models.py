@@ -30,6 +30,63 @@ def get_account(local_id):
     except Account.DoesNotExist:
         return None
 
+class CollectionMember(Document):
+    account = ReferenceField('Account', required=True)
+    collection= ReferenceField('Collection', required=True)
+    role = StringField(max_length=20, required=True, default=MEMBER_ROLE)
+
+    meta = {
+        'allow_inheritance': False
+    }
+
+    def __unicode__(self):
+        return u'%s, %s' % (self.account.name, self.role)
+
+class Collection(Document):
+    """
+    An account can be held 
+    
+    """
+    name = StringField(max_length=100, required=True)
+    owner = ReferenceField('Account', required=True)
+    tags = ListField(StringField(max_length=96), default=list)
+    # locations = ListField(ReferenceField(Location), default=list)
+    accounts = ListField(ReferenceField(CollectionMember), default=list)
+
+    meta = {
+        'ordering': ['name'],
+        'allow_inheritance': False
+    }
+
+    def add_accounts(self, accts, role=MEMBER_ROLE):
+        for acct in accts:
+            if self.add_account(acct):
+                acct.add_to_collection(self)
+
+    def add_account(self, acct, role=MEMBER_ROLE):
+        found = False
+        for obj in self.accounts:
+            found = obj.account.id == acct.id
+            if found:
+                break
+        if not found:
+            m = CollectionMember.objects.create(account=acct, collection=self, role=role)
+            self.accounts.append(m)
+        return not found
+
+    def __unicode__(self):
+        return u'%s, %s' % (self.name, self.owner)
+
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        acct = get_account(user.id)
+        return self.owner == acct
+
 class Membership(Document):
     member = ReferenceField('Account', required=True)
     parent_account= ReferenceField('Account', required=True)
@@ -95,6 +152,19 @@ class Account(Document):
         super(Account, self).save(*args, **kwargs)
         if reindex:
             self.reindex()
+
+    def delete(self, *args, **kwargs):
+        """docstring for delete"""
+        from issues.models import Issue
+        from resources.models import Resource, Curation
+        res = Resource.objects(owner=self)
+        curs = Curation.objects(owner=self)
+        if curs.count() or res.count():
+            raise Exception('This account owns resources/curations.')
+        Collection.objects(owner=self).delete()
+        Issue.objects(reporter=self).delete()
+        self.reindex(remove=True)
+        super(Account, self).delete(*args, **kwargs)
 
     def add_member(self, member, role=MEMBER_ROLE):
         found = False
@@ -175,63 +245,6 @@ class Account(Document):
         if conn:
             conn.add(result)
         return result
-
-class CollectionMember(Document):
-    account = ReferenceField('Account', required=True)
-    collection= ReferenceField('Collection', required=True)
-    role = StringField(max_length=20, required=True, default=MEMBER_ROLE)
-
-    meta = {
-        'allow_inheritance': False
-    }
-
-    def __unicode__(self):
-        return u'%s, %s' % (self.account.name, self.role)
-
-class Collection(Document):
-    """
-    An account can be held 
-    
-    """
-    name = StringField(max_length=100, required=True)
-    owner = ReferenceField('Account', required=True)
-    tags = ListField(StringField(max_length=96), default=list)
-    # locations = ListField(ReferenceField(Location), default=list)
-    accounts = ListField(ReferenceField(CollectionMember), default=list)
-
-    meta = {
-        'ordering': ['name'],
-        'allow_inheritance': False
-    }
-
-    def add_accounts(self, accts, role=MEMBER_ROLE):
-        for acct in accts:
-            if self.add_account(acct):
-                acct.add_to_collection(self)
-
-    def add_account(self, acct, role=MEMBER_ROLE):
-        found = False
-        for obj in self.accounts:
-            found = obj.account.id == acct.id
-            if found:
-                break
-        if not found:
-            m = CollectionMember.objects.create(account=acct, collection=self, role=role)
-            self.accounts.append(m)
-        return not found
-
-    def __unicode__(self):
-        return u'%s, %s' % (self.name, self.owner)
-
-    def perm_can_edit(self, user):
-        """docstring for perm_can_edit"""
-        acct = get_account(user.id)
-        return self.owner == acct
-
-    def perm_can_delete(self, user):
-        """docstring for perm_can_edit"""
-        acct = get_account(user.id)
-        return self.owner == acct
 
 def dqn_to_int(dqn):
     """
