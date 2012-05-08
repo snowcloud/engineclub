@@ -180,3 +180,7 @@ class SCContactForm(ContactForm):
 
 class FileUploadForm(PlainForm):
     picture_file = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'input-text expand'}), help_text='Pic must be JPG, 500w x 400h')
+
+class ConfirmForm(PlainForm):
+    object_name = forms.CharField(label='Name', max_length=96,
+        widget=forms.TextInput(attrs={'readonly':'readonly'}))
