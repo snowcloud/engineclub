@@ -23,3 +23,8 @@ def can_delete(user, obj):
 def account(user):
 	return get_account(user.id)
 
+@register.filter
+def account_id(user):
+	acct = get_account(user.id)
+	return acct.id if acct else ''
+
