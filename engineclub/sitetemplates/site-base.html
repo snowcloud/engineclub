@@ -52,7 +52,8 @@
 	{% block top %}
         {% if user.is_authenticated %}
             <div class="logged-in container">
-                <div class="row"><p>logged in as: <a href="{% url 'youraliss' %}">{{ user.username }}</a></p></div>
+                <div class="row"><p>logged in as: <a href="{% url 'youraliss' %}">{{ user.username }}</a> |
+                    <a href="{% url 'logout' %}">log out</a></p></div>
             </div>
         {% endif %}
     {% endblock top %}
