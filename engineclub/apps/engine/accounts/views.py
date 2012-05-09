@@ -58,7 +58,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
         'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': curations and centre,
+        'show_map': pt_results,
     }
     return render_to_response(
         template_name,

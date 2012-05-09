@@ -1,11 +1,13 @@
 {# Just needs rev_url set to work for Resource or Account #}
 {% load utils depot_tags markup %}
 {% load url from future %}
-  {% if pt_results and centre %}
-    var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
+  {% if pt_results %}
     mapstraction = new mxn.Mapstraction('map','google');
     //mapstraction = new mxn.Mapstraction('map','openlayers');
-    mapstraction.addMarker( new mxn.Marker(centre_pt));
+    {% if centre %} 
+      var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
+      mapstraction.addMarker( new mxn.Marker(centre_pt));      
+    {% endif %}
 
     {% for loc, res_objs in pt_results.items %}
         advancedMarker({{ loc.0 }}, {{ loc.1 }}, '{% for id, title in res_objs %}<p><a href="{% url rev_url id %}">{{ title }}</a></p>{% endfor %}');
