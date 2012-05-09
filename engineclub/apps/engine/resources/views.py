@@ -295,23 +295,24 @@ def resource_find(request, template_name='depot/resource_find.html'):
 
             for result in form.results:
                 resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
+                result['resource'] = resource
+                # try:
+                #     curation_index, curation = get_curation_for_user_resource(user, resource)
+                #     print curation
+                # except TypeError:
+                #     curation_index = curation = None
 
-                try:
-                    curation_index, curation = get_curation_for_user_resource(user, resource)
-                except TypeError:
-                    curation_index = curation = None
-
-                curation_form = CurationForm(
-                        initial={'outcome': STATUS_OK},
-                        instance=curation)
-                resource_report_form = ResourceReportForm()
-                results.append({
-                    'resource_result': result,
-                    'curation': curation,
-                    'curation_form': curation_form,
-                    'resource_report_form': resource_report_form,
-                    'curation_index': curation_index
-                })
+                # curation_form = CurationForm(
+                #         initial={'outcome': STATUS_OK},
+                #         instance=curation)
+                # resource_report_form = ResourceReportForm()
+                # results.append({
+                #     'resource_result': result,
+                #     'curation': curation,
+                #     'curation_form': curation_form,
+                #     'resource_report_form': resource_report_form,
+                #     'curation_index': curation_index
+                # })
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
             centre = form.centre
@@ -322,7 +323,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
-        'results': results,
+        'results': form.results,
         'pt_results': pt_results,
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
@@ -369,7 +370,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     resource = get_one_or_404(Resource, id=ObjectId(object_id))
     user = get_account(request.user.id)
 
-    curation = get_curation_for_user_resource(user, resource)
+    curation = get_curation_for_acct_resource(user, resource)
     if curation:
         index, cur = curation
         messages.warning(request, 'You already have a curation for this resource- you can edit it if you need to make changes.')
@@ -394,7 +395,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             else:
                 url = reverse('curation', args=[resource.id, index])
 
-            return HttpResponseRedirect(url + '#resource%s_0' % resource.id)
+            return HttpResponseRedirect(url + '#res_%s' % resource.id)
 
     else:
         initial = { 'outcome': STATUS_OK}
@@ -455,11 +456,11 @@ def curation_remove(request, object_id, index):
         messages.warning(request, 'You cannot delete the curation by the resource owner.')
         return HttpResponseRedirect(reverse('curation', args=[resource.id, index]))
 
-    # resource.curations[int(index)].delete()
-    # del resource.curations[int(index)]
-    # resource.save(reindex=True)
+    resource.curations[int(index)].delete()
+    del resource.curations[int(index)]
+    resource.save(reindex=True)
 
-    # increment_resource_crud('curation_remove', account=user)
+    increment_resource_crud('curation_remove', account=user)
     return HttpResponseRedirect(reverse('resource', args=[resource.id]))
 
 @login_required
@@ -509,13 +510,13 @@ def curations_for_group_js(request, object_id, template_name='depot/curations_fo
     response.write(t.render(template_context))
     return response
 
-def get_curation_for_user_resource(user, resource):
+def get_curation_for_acct_resource(acct, resource):
     # check if user already has a curation for this resource
 
     # TODO use resource.get_curation_for_user instead
-    if user:
+    if acct:
         for index, cur in enumerate(resource.curations):
-            if cur.owner.id == user.id:
+            if cur.owner.id == acct.id:
                 return index, cur
     return None
 

@@ -6,6 +6,7 @@ from django.template.defaultfilters import date
 
 from accounts.models import get_account
 from issues.models import Issue
+from resources.views import get_curation_for_acct_resource
 
 register = Library()
 
@@ -62,3 +63,8 @@ def issue_status(resource):
 def status_text(resource):
     STATUSES = ['', '', 'serious', 'very serious']
     return STATUSES[issue_status(resource)]
+
+@register.filter
+def curation_for_user(resource, user):
+    acct = get_account(user.id)
+    return get_curation_for_acct_resource(acct, resource)

@@ -9,7 +9,7 @@
 
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li class="current"><a href="#">Search Aliss resources</a></li>
+  <li class="current"><a href="#">Search Aliss resources</a></li>
 </ul>
 {% endblock %}
 
@@ -17,69 +17,78 @@
 
 {% if user.is_authenticated %}
 <dl class="sub-nav">
-    <dt>Actions:</dt>
-    <dd><a href="{% url 'resource_add' %}">Add a new resource</a></dd>
-    <dd><a href="{% url 'accounts_detail' user|account_id %}">Browse your curations</a></dd>
-    {% if user.is_staff %}
-        <dd><a href="{% url 'cab_reindex' %}" id="reindex">Reindex resources</a></dd>
-    {% endif %}
+  <dt>Actions:</dt>
+  <dd><a href="{% url 'resource_add' %}">Add a new resource</a></dd>
+  <dd><a href="{% url 'accounts_detail' user|account_id %}">Browse your curations</a></dd>
+  {% if user.is_staff %}
+    <dd><a href="{% url 'cab_reindex' %}" id="reindex">Reindex resources</a></dd>
+  {% endif %}
 </dl>
 
 <div id="loading">working...</div>
 
 {% endif %}
 
-    <h1>Search Aliss resources</h1>
+  <h1>Search Aliss resources</h1>
 
-    <div class="row">
+  <div class="row">
 
-        <div class="search-form{% if not show_map %}-full{% endif %}">
-            <form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
-                <fieldset>
-                    <legend><span>Type in a place, post code, or words:</span></legend>
+    <div class="search-form{% if not show_map %}-full{% endif %}">
+      <form class="nice form" action="." method="GET" id="search_form">{% csrf_token %}
+        <fieldset>
+          <legend><span>Type in a place, post code, or words:</span></legend>
 
-                    {{ form.as_plain }}
+          {{ form.as_plain }}
 
-                    <input type="submit" name="result" value="Find items" id="submit_button">
-                </fieldset>
-            </form>
+          <input type="submit" name="result" value="Find items" id="submit_button">
+        </fieldset>
+      </form>
 
-        </div>      
-    {% if results and centre %}<div id="map"></div>{% endif %}
-    </div>
+    </div>      
+  {% if results and centre %}<div id="map"></div>{% endif %}
+  </div>
 
-    <div class="row results">
+  <div class="row results">
 
-        <ul class="resource-listing">
-            {% for result in results %}
-                {% with result.resource_result as resource %}
+    <ul class="resource-listing">
+      {% for resource in results %}
+        {#% with result.resource_result as resource %#}
 
-                    <li>
-                        <div class="row">
-                        <h3><a href="{% url 'resource' object_id=resource.res_id %}">{{ resource.title }}</a></h3>
-                        {% if resource.event_start %} 
-                            <p class="event">{{ resource|idx_event_start }}{% if resource.event_end %} - {{ resource|idx_event_end }}{% endif %}</p>
-                        {% endif %}
-                        <div class="location">
-                        {% if resource.loc_labels %}
-                            <h4>Location:</h4>
-                            {% for loc_label in resource.loc_labels %}
-                                <p>{{ loc_label }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        </div>
-                        {{ resource.short_description|truncatewords:30|textile }}
-                        <p><a href="#top" class="action top">top</a></p>
-                        </div>
-                    </li>
-                {% endwith %}
-            {% empty %}
-                {% if not new_search %} 
-                    <li>no results found for your area of interest. Would you like to <a href="{% url 'contact' %}">help us create some</a>?</li>
+          <li>
+            <div class="row">
+            <h3 id="res_{{ resource.res_id }}"><a href="{% url 'resource' object_id=resource.res_id %}">{{ resource.title }}</a></h3>
+            {% if resource.event_start %} 
+              <p class="event">{{ resource|idx_event_start }}{% if resource.event_end %} - {{ resource|idx_event_end }}{% endif %}</p>
+            {% endif %}
+            <div class="location">
+            {% if resource.loc_labels %}
+              <h4>Location:</h4>
+              {% for loc_label in resource.loc_labels %}
+                <p>{{ loc_label }}</p>
+              {% endfor %}
+            {% endif %}
+            </div>
+            {{ resource.short_description|truncatewords:30|textile }}
+            <p><a href="#top" class="action top">top</a>
+            {% if user.is_authenticated %}
+              {% with curation=resource.resource|curation_for_user:user  %}
+                {% if curation %} 
+                  <!-- <a href="">edit your curation</a> -->
+                {% else %}
+                  | <a href="{% url 'curation_add' resource.res_id %}?next={{next}}">add to your curations </a>
                 {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+              {% endwith %}</p>
+            {% endif %}
+            </div>
+          </li>
+        {#% endwith %#}
+      {% empty %}
+        {% if not new_search %} 
+          <li>no results found for your area of interest. Would you like to <a href="{% url 'contact' %}">help us create some</a>?</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
 
 {% endblock %}
 
