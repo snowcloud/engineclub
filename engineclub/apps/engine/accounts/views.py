@@ -36,7 +36,7 @@ def index(request):
         RequestContext( request, { 'objects': objects }))
 
 # @login_required
-def detail(request, object_id, template_name='accounts/accounts_detail.html'):
+def detail(request, object_id, template_name='accounts/accounts_detail.html', next=None):
     account = get_one_or_404(Account, id=object_id)
     user = request.user
     pt_results = {}
@@ -59,6 +59,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html'):
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
         'show_map': pt_results,
+        'next': next or reverse('accounts_detail', args=[account.id])
     }
     return render_to_response(
         template_name,
