@@ -26,7 +26,7 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
         name = namestr.upper().replace(' ', '').strip()
         field = '_id'
     else:
-        name = namestr.capitalize().strip()
+        name = namestr.strip()
         field = 'place_name'
         coll.ensure_index([
             ('place_name', ASCENDING),
@@ -34,8 +34,9 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
             ('accuracy', DESCENDING)
             ])
 
-    if starts_with:
-        name = re.compile('^%s' % name, re.IGNORECASE)
+    # print namestr, name, field
+    # if starts_with:
+    name = re.compile('^%s' % name, re.IGNORECASE)
     result = coll.find_one({field: name}) if just_one else coll.find({field: name}).limit(20)
     if result and (type(result) == dict or result.count() > 0):
 
