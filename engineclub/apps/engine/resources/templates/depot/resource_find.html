@@ -57,6 +57,9 @@
           <li>
             <div class="row">
             <h3 id="res_{{ resource.res_id }}"><a href="{% url 'resource' object_id=resource.res_id %}">{{ resource.title }}</a></h3>
+            {% if user.username in 'derek' %} 
+                <p>{{resource.score}}</p>
+             {% endif %}
             {% if resource.event_start %} 
               <p class="event">{{ resource|idx_event_start }}{% if resource.event_end %} - {{ resource|idx_event_end }}{% endif %}</p>
             {% endif %}
