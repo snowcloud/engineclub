@@ -378,8 +378,12 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 
     if request.method == 'POST':
         result = request.POST.get('result', '')
+        if 'next' in request.GET:
+            url = '%s#res_%s' % (request.GET['next'], resource.id)
+        else:
+            url = ''
         if result == 'Cancel':
-            return HttpResponseRedirect(reverse('resource', args=[resource.id]))
+            return HttpResponseRedirect(url or reverse('resource', args=[resource.id]))
         form = CurationForm(request.POST)
         if form.is_valid(request.user):
             curation = Curation(**form.cleaned_data)
@@ -389,14 +393,7 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
             # TODO: move this into resource.add_curation
             increment_resource_crud('curation_add', account=user)
             index = len(resource.curations) - 1
-
-            if 'next' in request.GET:
-                url = request.GET['next']
-            else:
-                url = reverse('curation', args=[resource.id, index])
-
-            return HttpResponseRedirect(url + '#res_%s' % resource.id)
-
+            return HttpResponseRedirect(url or reverse('curation', args=[resource.id, index]))
     else:
         initial = { 'outcome': STATUS_OK}
         form = CurationForm(initial=initial)
