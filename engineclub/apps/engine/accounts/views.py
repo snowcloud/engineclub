@@ -59,7 +59,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html', ne
         'centre': centre,
         'google_key': settings.GOOGLE_KEY,
         'show_map': pt_results,
-        'next': next or reverse('accounts_detail', args=[account.id])
+        'next': next or '%s?page=%s' % (reverse('accounts_detail', args=[account.id]), curations.number)
     }
     return render_to_response(
         template_name,
