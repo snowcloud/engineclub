@@ -401,6 +401,8 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
     template_context = {
         'next': urlquote_plus(request.GET.get('next', '')),
         'form': form,
+        'resource': resource,
+        'new': True
     }
 
     return render_to_response(
@@ -435,7 +437,12 @@ def curation_edit(request, object_id, index, template_name='depot/curation_edit.
     else:
         form = CurationForm(instance=object)
 
-    template_context = {'form': form, 'object': object}
+    template_context = {
+        'form': form,
+        'object': object,
+        'resource': resource,
+        'new': False
+    }
 
     return render_to_response(
         template_name,
