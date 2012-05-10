@@ -378,8 +378,9 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 
     if request.method == 'POST':
         result = request.POST.get('result', '')
-        if 'next' in request.GET:
-            url = '%s#res_%s' % (request.GET['next'], resource.id)
+        next = request.GET.get('next', '')
+        if next:
+            url = '%s#res_%s' % (next, resource.id)
         else:
             url = ''
         if result == 'Cancel':
