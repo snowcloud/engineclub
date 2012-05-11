@@ -115,5 +115,25 @@ $( "#id_post_code" ).autocomplete({
   },
   minLength: 3
 });
+$( "#id_kwords" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "{% url 'resources.api_handlers.tags' %}",
+      dataType: "jsonp",
+      data: {
+        match: request.term
+      },
+      success: function( results ) {
+        response( $.map( results.data, function( item ) {
+          return {
+            value: item
+          }
+        }));
+      }
+    });
+  },
+  minLength: 3
+});
+
 {% endblock document-ready %}
 

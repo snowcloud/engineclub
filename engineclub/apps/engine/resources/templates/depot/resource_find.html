@@ -112,9 +112,6 @@ $( "#id_post_code" ).autocomplete({
       url: "{% url 'resources.api_handlers.locations' %}",
       dataType: "jsonp",
       data: {
-        //featureClass: "P",
-        //style: "full",
-        //maxRows: 12,
         match: request.term
       },
       success: function( results ) {
@@ -123,6 +120,25 @@ $( "#id_post_code" ).autocomplete({
             value: (item.postcode) ? 
                     (item.postcode) : 
                     (item.place_name)
+          }
+        }));
+      }
+    });
+  },
+  minLength: 3
+});
+$( "#id_kwords" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "{% url 'resources.api_handlers.tags' %}",
+      dataType: "jsonp",
+      data: {
+        match: request.term
+      },
+      success: function( results ) {
+        response( $.map( results.data, function( item ) {
+          return {
+            value: item
           }
         }));
       }
