@@ -183,11 +183,11 @@ ul.base-tabs {
 
 	    background-clip: padding-box;
 		display: inline;
-		padding: 0em 0em 0.26em;
+		padding: 0em 0em 0.22em;
 		margin: 0;
 		font-size: 1.8em;
 		a {
-			padding: 0.1em 1.8em;
+			padding: 0em 1.8em 0.2em;
 		}
 		a:hover {
 			background-color: $tab_bg;
@@ -333,6 +333,14 @@ dl.nice.tabs.vertical dd a:hover {
 	.breadcrumbs {
 		display: block !important;
 		color: red;		
+	}
+	ul.base-tabs {
+		li {
+			padding: 0;
+			a {
+				padding: 0em 1.8em 0em;
+			}
+		}
 	}
 	.pres-slide {
 		clear: both;
