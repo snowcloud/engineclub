@@ -21,6 +21,7 @@ class Location(Document):
     accuracy = IntField()
     district = StringField()
     country_code = StringField()
+    edited = BooleanField(default=False)
 
     meta = {
         'indexes': [('place_name', 'country_code', '-accuracy')],

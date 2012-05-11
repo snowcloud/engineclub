@@ -1,0 +1,31 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}{% if new %}Add location{% else %}Edit location{% endif %}{% endblock %}
+
+{% block breadcrumb-add %}
+  <li><a href="{% url 'cab_locations' %}">Locations</a></li>
+  <li class="current"><a href="#">Location</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-locations %}active{% endblock %}
+
+
+{% block module-content %}
+{% if new %}<h2>Add location</h2>{% else %}<h2>Edit location</h2>{% endif %}
+
+<form class="nice form" action="." method="POST">{% csrf_token %}
+    <fieldset>
+        <legend><span>Location details:</span></legend>
+         {{ form.as_plain }}
+    </fieldset>
+     <fieldset class="submit">
+        <input type="submit" name="result" value="Save item">
+        <input type="submit" name="result" value="Cancel">
+    </fieldset>
+</form>
+
+
+{% endblock %}
+

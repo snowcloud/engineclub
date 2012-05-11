@@ -19,6 +19,8 @@ from accounts.views import list_detail as def_list_detail, \
 from ecutils.utils import get_one_or_404
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
+from locations.forms import LocationSearchForm, LocationEditForm
+from locations.models import Location
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -81,6 +83,51 @@ def list_detail(request, object_id, template_name='enginecab/list_detail.html'):
     # object = get_one_or_404(Collection, id=ObjectId(object_id))
     # context = {'object': object}
     # return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_index(request, template_name='enginecab/locations_index.html'):
+
+    if request.method == 'POST':
+        form = LocationSearchForm(request.REQUEST)
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('cab_locations_detail', args=[form.loc_found['_id']]))
+    else:
+        form = LocationSearchForm()
+
+    context = { 'form': form }
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_detail(request, object_id, template_name='enginecab/locations_detail.html'):
+    object = get_one_or_404(Location, id=object_id)
+    context = {'object': object}
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_add(request, template_name='enginecab/locations_edit.html'):
+
+    if request.method == 'POST':
+        result = request.POST.get('result', '')
+        if result == 'Cancel':
+            return HttpResponseRedirect(reverse('cab_locations'))
+        form = LocationEditForm(request.POST)
+        if form.is_valid(request.user):
+            pass
+            # return HttpResponseRedirect(url or reverse('curation', args=[resource.id, index]))
+    else:
+        initial = {}
+        form = LocationEditForm(initial=initial)
+
+    template_context = {
+        'form': form,
+        'new': True
+    }
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
 
 def reindex_accounts(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_accounts"""
