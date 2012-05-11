@@ -415,8 +415,10 @@ def curation_add(request, object_id, template_name='depot/curation_edit.html'):
 @login_required
 def curation_edit(request, object_id, index, template_name='depot/curation_edit.html'):
     """Curation is an EmbeddedDocument, so can't be saved, needs to be edited, then Resource saved."""
-    resource = get_one_or_404(Resource, id=ObjectId(object_id), user=request.user, perm='can_edit')
+    resource = get_one_or_404(Resource, id=ObjectId(object_id))
     object = resource.curations[int(index)]
+    if not request.user.has_perm('can_edit', object):
+        raise PermissionDenied()
 
     if request.method == 'POST':
         result = request.POST.get('result', '')
