@@ -136,6 +136,18 @@ class SearchTest(MongoTestCase):
         setUpResources(self)        
         reindex_resources(url=settings.TEST_SOLR_URL)
 
+    def test_location(self):
+        from resources.search import get_location
+
+        loc = get_location('muirhouse')
+        self.assertEqual(loc['district'], 'North Lanarkshire')
+
+        loc = get_location('muirhouse, City of Edinburgh')
+        self.assertFalse(loc)
+
+        loc = get_location('muirhouse:  City of Edinburgh')
+        self.assertEqual(loc['district'], 'City of Edinburgh')
+
     def test_postcode(self):
         from resources.search import find_by_place_or_kwords
 

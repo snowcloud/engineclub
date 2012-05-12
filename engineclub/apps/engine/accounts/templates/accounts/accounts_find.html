@@ -107,7 +107,7 @@ $( "#id_post_code" ).autocomplete({
           return {
             value: (item.postcode) ? 
                     (item.postcode) : 
-                    (item.place_name)
+                    (item.place_name) + ': ' + item.district
           }
         }));
       }

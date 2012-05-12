@@ -51,9 +51,12 @@ $( "#id_location" ).autocomplete({
       success: function( results ) {
         response( $.map( results.data, function( item ) {
           return {
+            //label: (item.postcode) ? 
+            //        (item.postcode) : 
+            //        (item.place_name) + ', ' + item.district,
             value: (item.postcode) ? 
                     (item.postcode) : 
-                    (item.place_name)
+                    (item.place_name) + ': ' + item.district
           }
         }));
       }

@@ -16,7 +16,7 @@ class LocationSearchForm(PlainForm):
         # if errors in data, cleaned_data may be wiped, and/or fields not available
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('location', '').strip()
-        self. loc_found = get_location(data)
+        self.loc_found = get_location(data)
         return cleaned_data
 
 class LocationEditForm(DocumentForm):
