@@ -6,6 +6,7 @@ POSTCODE = 'POSTCODE'
 POSTCODEDISTRICT = 'POSTCODEDISTRICT'
 OSM_PLACENAME = 'OSM_PLACENAME'
 GOOGLE_PLACENAME = 'GOOGLE_PLACENAME'
+ALISS_LOCATION = 'ALISS_LOCATION'
 
 
 class Location(Document):
@@ -58,6 +59,16 @@ class Location(Document):
             result = Location(**attrs)
             result.save()
         return result
+
+    def perm_can_edit(self, user):
+        """docstring for perm_can_edit"""
+        # superuser only
+        return False
+
+    def perm_can_delete(self, user):
+        """docstring for perm_can_edit"""
+        # superuser only
+        return False
 
 def lookup_postcode(pc):
     from googlegeocoder import GoogleGeocoder

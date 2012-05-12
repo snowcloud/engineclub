@@ -1,6 +1,8 @@
 # forms.py
 
+from bson.objectid import ObjectId
 from django import forms
+
 from ecutils.forms import DocumentForm, PlainForm
 from resources.search import get_location
 
@@ -17,16 +19,30 @@ class LocationSearchForm(PlainForm):
         cleaned_data = self.cleaned_data
         data = cleaned_data.get('location', '').strip()
         self.loc_found = get_location(data)
+        if not self.loc_found:
+            raise forms.ValidationError("Location not found.")
         return cleaned_data
 
 class LocationEditForm(DocumentForm):
     # id = StringField(primary_key=True)
-    postcode = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    postcode = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}), required=False)
     place_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     lat = forms.FloatField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     lon = forms.FloatField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
+    accuracy = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     loc_type = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
-    # accuracy = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     district = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     country_code = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-text expand'}))
     # edited = BooleanField(default=False)
+
+    def clean(self):
+        # if errors in data, cleaned_data may be wiped, and/or fields not available
+        cleaned_data = self.cleaned_data
+        cleaned_data['lat_lon'] = [cleaned_data.get('lat'), cleaned_data.get('lon')]
+        postcode = cleaned_data['postcode']
+        if postcode:
+            cleaned_data['id'] = postcode.upper().replace(' ', '')
+        else:
+            cleaned_data['id'] = str(ObjectId())
+        cleaned_data['edited'] = True
+        return cleaned_data

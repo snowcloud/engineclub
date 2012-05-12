@@ -1,11 +1,12 @@
 {% extends "enginecab/base.html" %}
 {% load url from future %}
+{% load accounts_tags %}
 
-{% block title %}Location: {% endblock %}
+{% block title %}Location: {{ object }}{% endblock %}
 
 {% block breadcrumb-add %}
   <li><a href="{% url 'cab_locations' %}">Locations</a></li>
-  <li class="current"><a href="#">Location</a></li>
+  <li class="current"><a href="#">{{ object }}</a></li>
 {% endblock breadcrumb-add %}
 
 
@@ -13,13 +14,17 @@
 
 
 {% block module-content %}
-  <h2>Location</h2>
+  <h2>{{ object }}</h2>
 
 <dl class="sub-nav">
     <dt>Actions:</dt>
     <dd><a href="#">Edit location</a></dd>
-    <dd><a href="#">Add new location</a></dd>
-  </dl>
+    {% if user|can_edit:object %}
+      <dd><a href="{% url 'cab_locations_remove' object.id %}">Delete location</a></dd>
+    {% endif %}
+
+    <dd><a href="{% url 'cab_locations_add' %}">Add new location</a></dd>
+</dl>
 
 <table>
     <tr><td>id</td><td>{{ object.id }}</td></tr>

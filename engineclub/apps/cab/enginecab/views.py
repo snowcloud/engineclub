@@ -92,7 +92,7 @@ def locations_index(request, template_name='enginecab/locations_index.html'):
         if form.is_valid():
             return HttpResponseRedirect(reverse('cab_locations_detail', args=[form.loc_found['_id']]))
     else:
-        form = LocationSearchForm(initial={'location': 'muirhous'})
+        form = LocationSearchForm(initial={})
 
     context = { 'form': form }
     return render_to_response(template_name, RequestContext(request, context))
@@ -105,6 +105,7 @@ def locations_detail(request, object_id, template_name='enginecab/locations_deta
 
 @user_passes_test(lambda u: u.is_superuser)
 def locations_add(request, template_name='enginecab/locations_edit.html'):
+    from locations.models import ALISS_LOCATION
 
     if request.method == 'POST':
         result = request.POST.get('result', '')
@@ -112,11 +113,17 @@ def locations_add(request, template_name='enginecab/locations_edit.html'):
             return HttpResponseRedirect(reverse('cab_locations'))
         form = LocationEditForm(request.POST)
         if form.is_valid(request.user):
-            pass
-            # return HttpResponseRedirect(url or reverse('curation', args=[resource.id, index]))
+            location = Location(**form.cleaned_data).save()
+            return HttpResponseRedirect(reverse('cab_locations_detail', args=[location.id]))
     else:
         initial = {
-
+            'place_name': 'Craigroyston',
+            'lat': 55.9736,
+            'lon': -3.2541,
+            'accuracy': 6,
+            'loc_type': ALISS_LOCATION,
+            'district': 'City of Edinburgh',
+            'country_code': 'SCT'
         }
         form = LocationEditForm(initial=initial)
 
@@ -130,6 +137,24 @@ def locations_add(request, template_name='enginecab/locations_edit.html'):
         template_context,
         RequestContext(request)
     )
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_remove(request, object_id):
+    """docstring for location_remove"""
+    object = get_one_or_404(Location, id=object_id, user=request.user, perm='can_delete')
+
+    resources = Resource.objects(locations=object)
+    accounts = Account.objects(locations=object)
+    if resources or accounts:
+        res_str = ','.join([res.name for res in resources])
+        acct_str = ','.join(['<a href="%s">%s</a>' % (reverse('accounts_edit', args=[acct.id]), acct.name) for acct in accounts])
+        messages.error(
+            request, 
+            'Resources/Accounts using this location:<br>%s<br>%s.' % (res_str, acct_str))
+        return HttpResponseRedirect(reverse('cab_locations_detail', args=[object.id]))
+    object.delete()
+    messages.success(request, 'Location removed')
+    return HttpResponseRedirect(reverse('cab_locations'))
 
 def reindex_accounts(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_accounts"""
