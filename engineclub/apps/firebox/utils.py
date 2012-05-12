@@ -8,7 +8,7 @@ from django.core.management import setup_environ
 
 setup_environ(settings)
 
-from engineclub.views import reindex_resources
+from cab.enginecab.views import reindex_resources
 from firebox.views import bak_locations, load_locations, \
     convert_to_newlocations, fix_pcdistricts
 
