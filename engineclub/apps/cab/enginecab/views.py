@@ -92,7 +92,7 @@ def locations_index(request, template_name='enginecab/locations_index.html'):
         if form.is_valid():
             return HttpResponseRedirect(reverse('cab_locations_detail', args=[form.loc_found['_id']]))
     else:
-        form = LocationSearchForm()
+        form = LocationSearchForm(initial={'location': 'muirhous'})
 
     context = { 'form': form }
     return render_to_response(template_name, RequestContext(request, context))
@@ -115,7 +115,9 @@ def locations_add(request, template_name='enginecab/locations_edit.html'):
             pass
             # return HttpResponseRedirect(url or reverse('curation', args=[resource.id, index]))
     else:
-        initial = {}
+        initial = {
+
+        }
         form = LocationEditForm(initial=initial)
 
     template_context = {
