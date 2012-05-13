@@ -196,7 +196,7 @@ class Resource(Document):
         """conn is Solr connection"""
         if self.status == STATUS_BAD:
             return None
-        tags = list(self.tags)
+        tags = []
         accounts = []
         collections = []
         description = [self.description]
@@ -207,7 +207,10 @@ class Resource(Document):
             if hasattr(obj.owner, 'in_collections'):
                 collections.extend(obj.owner.in_collections)
             description.extend([obj.note or u'', unicode(obj.data) or u''])
-
+            if obj.owner == self.owner:
+                if self.tags != obj.tags:
+                    self.tags = obj.tags
+                    self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
