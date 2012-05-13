@@ -27,6 +27,11 @@
           {% endif %}
           </div>
           {{ resource.description|truncatewords:30|textile }}
+          <p>
+            {% for tag in resource.all_tags %}
+              <span class="white label"><a href="{{ resource|search_url:tag }}">{{ tag }}</a></span>
+            {% endfor %}
+          </p>
           <p><a href="#top" class="action top">top</a>
             {% if user.is_authenticated %}
               {% with curation=resource|curation_for_user:user  %}

@@ -220,7 +220,9 @@ class Account(Document):
         """conn is Solr connection"""
         # tags = list(self.tags)
         description = [self.description or '']
-
+        if self.tags and self.tags != list(set(self.tags)):
+            self.tags = list(set(self.tags))
+            self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
@@ -231,7 +233,6 @@ class Account(Document):
             'keywords': u', '.join(list(self.tags)),
             'loc_labels': [] # [', '.join([loc.label, loc.place_name]) for loc in self.locations]
         }
-
         result = []
         if self.locations:
             for i, loc in enumerate(self.locations):
@@ -242,7 +243,6 @@ class Account(Document):
                 result.append(loc_doc)
         else:
             result = [doc]
-
         if conn:
             conn.add(result)
         return result
