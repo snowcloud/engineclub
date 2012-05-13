@@ -8,6 +8,7 @@ urlpatterns = patterns('resources.api_handlers',
     url(r'^savedsearchesbyIP/$', 'savedsearchesbyIP', name='savedsearchesbyIP'),
 
     url(r'^tags/$', 'tags'),
+    url(r'^tagsforwordle/$', 'tagsforwordle'),
     url(r'^locations/$', 'locations'),
 
     # url(r'^other/(?P<username>[^/]+)/(?P<data>.+)/$', arbitrary_resource),
