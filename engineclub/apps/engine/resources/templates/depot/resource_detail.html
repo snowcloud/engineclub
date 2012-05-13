@@ -49,6 +49,11 @@
 
 <div class="resource-description">
 {{ object.description|textile }}
+<p>
+  {% for tag in object.all_tags %}
+    <span class="white label"><a href="{{ object|search_url:tag }}">{{ tag }}</a></span>
+  {% endfor %}
+</p>
 </div>
 
 <div class="row">

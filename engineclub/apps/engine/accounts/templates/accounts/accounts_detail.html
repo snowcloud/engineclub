@@ -1,5 +1,5 @@
 {% extends "accounts/accounts_base.html" %}
-{% load markup utils accounts_tags %}
+{% load markup utils accounts_tags depot_tags %}
 {% load url from future %}
 
 {% block title %}account for {{ object.name }}{% endblock %}
@@ -34,6 +34,13 @@
 
 <div class="resource-description">
     {{ object.description|textile }}
+
+<p>
+  {% for tag in object.tags %}
+    <span class="white label"><a href="{{ object|search_url:tag }}">{{ tag }}</a></span>
+  {% endfor %}
+</p>
+
 </div>
 <div class="row">
 

@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^resource/popup_close/$', TemplateView.as_view(template_name='depot/resource_popup_done.html'), name='resource_popup_close' ),
     url(r'^resource/(?P<object_id>\w+)/$', 'resources.views.resource_detail', name='resource'),
     url(r'^resource/(?P<object_id>\w+)/report/$', 'resources.views.resource_report', name='resource_report'),
+    url(r'^resource/tagged/(?P<object_id>[^/]+)/$', 'resources.views.resource_tagged', name='resource_tagged'),
 
     url(r'^curation/(?P<object_id>\w+)/$', 'resources.views.curation_detail', name='curation_by_id'),
     url(r'^curation/(?P<object_id>\w+)/add/$', 'resources.views.curation_add', name='curation_add'),

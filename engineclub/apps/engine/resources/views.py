@@ -339,7 +339,9 @@ def resource_find(request, template_name='depot/resource_find.html'):
     }
     return render_to_response(template_name, RequestContext(request, context))
 
-
+def resource_tagged(request, object_id, template_name=''):
+    pass
+    
 def curation_detail(request, object_id, index=None, template_name='depot/curation_detail.html'):
     """docstring for curation_detail"""
     if index:

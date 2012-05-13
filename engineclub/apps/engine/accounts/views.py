@@ -88,6 +88,8 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
             increment_locations(form.cleaned_data['post_code'], account=user)
 
             for result in form.results:
+                acct = get_one_or_404(Account, id=ObjectId(result['res_id']))
+                result['resource'] = acct
                 results.append({'resource_result': result})
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))

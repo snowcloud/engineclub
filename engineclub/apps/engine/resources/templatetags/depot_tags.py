@@ -1,6 +1,7 @@
 from datetime import datetime
 from dateutil import parser
 
+from django.core.urlresolvers import reverse
 from django.template import Library, Node, Variable
 from django.template.defaultfilters import date
 
@@ -68,3 +69,16 @@ def status_text(resource):
 def curation_for_user(resource, user):
     acct = get_account(user.id)
     return get_curation_for_acct_resource(acct, resource)
+
+@register.filter
+def search_url(obj, tag):
+    if obj.locations:
+        loc = obj.locations[0].postcode or obj.locations[0].place_name
+    else:
+        loc = ''
+    if hasattr(obj, 'owner'):
+        url_name = 'resource_find'
+    else:
+        url_name = 'accounts_find'
+    return '%s?kwords=%s&post_code=%s&result=Find+items' % (reverse(url_name), tag, loc)
+

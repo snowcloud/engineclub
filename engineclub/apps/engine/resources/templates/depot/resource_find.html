@@ -69,6 +69,11 @@
             {% endif %}
             </div>
             {{ resource.short_description|truncatewords:30|textile }}
+            <p>
+              {% for tag in resource.resource.all_tags %}
+                <span class="white label"><a href="{{ resource.resource|search_url:tag }}">{{ tag }}</a></span>
+              {% endfor %}
+            </p>
             <p>{% if user.username in 'derek' %}{{resource.score}}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
             <a href="#top" class="action top">top</a>
             {% if user.is_authenticated %}
