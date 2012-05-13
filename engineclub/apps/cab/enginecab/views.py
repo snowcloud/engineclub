@@ -197,8 +197,9 @@ def tags_process(request, options):
         exceptions = setting.value.get('data', [])
         for curation in Curation.objects():
             tp = TagProcessor(curation.tags)
-            curation.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
-            curation.save()
+            new_tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            if new_tags != curation.tags:
+                curation.save()
     results.append('done') 
     messages.success(request, '<br>'.join(results))
 
