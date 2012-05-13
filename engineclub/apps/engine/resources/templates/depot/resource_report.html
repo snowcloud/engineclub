@@ -19,6 +19,8 @@
 
 <h1>{{ object.title }}</h1>
 
+<div class="panel"><p>We want to get every resource on ALISS to be as good as it can be. Thanks for your help.</p></div>
+
     <form class="nice form" method="POST" action=".?next={{ next }}">
         {% csrf_token %}
         {{ form.as_plain }}

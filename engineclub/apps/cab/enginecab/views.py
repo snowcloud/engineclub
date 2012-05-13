@@ -1,3 +1,6 @@
+from datetime import datetime
+from urllib import unquote
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -7,16 +10,21 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from pymongo.objectid import ObjectId
+from bson.objectid import ObjectId
 from pysolr import Solr
 
 from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, TempCuration
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
     detail as accounts_detail, edit as account_edit, add as account_add
+from ecutils.models import Setting
 from ecutils.utils import get_one_or_404
+from enginecab.forms import TagsFixerForm, UPPERCASE
+from enginecab.models import TagProcessor
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
+from locations.forms import LocationSearchForm, LocationEditForm
+from locations.models import Location
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -80,6 +88,180 @@ def list_detail(request, object_id, template_name='enginecab/list_detail.html'):
     # context = {'object': object}
     # return render_to_response(template_name, RequestContext(request, context))
 
+@user_passes_test(lambda u: u.is_superuser)
+def locations_index(request, template_name='enginecab/locations_index.html'):
+
+    if request.method == 'POST':
+        form = LocationSearchForm(request.REQUEST)
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('cab_locations_detail', args=[form.loc_found['_id']]))
+    else:
+        form = LocationSearchForm(initial={})
+
+    context = { 'form': form }
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_detail(request, object_id, template_name='enginecab/locations_detail.html'):
+    object = get_one_or_404(Location, id=object_id)
+    context = {'object': object}
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_add(request, template_name='enginecab/locations_edit.html'):
+    from locations.models import ALISS_LOCATION
+
+    if request.method == 'POST':
+        result = request.POST.get('result', '')
+        if result == 'Cancel':
+            return HttpResponseRedirect(reverse('cab_locations'))
+        form = LocationEditForm(request.POST)
+        if form.is_valid(request.user):
+            location = Location(**form.cleaned_data).save()
+            return HttpResponseRedirect(reverse('cab_locations_detail', args=[location.id]))
+    else:
+        initial = {
+            'place_name': 'Craigroyston',
+            'lat': 55.9736,
+            'lon': -3.2541,
+            'accuracy': 6,
+            'loc_type': ALISS_LOCATION,
+            'district': 'City of Edinburgh',
+            'country_code': 'SCT'
+        }
+        form = LocationEditForm(initial=initial)
+
+    template_context = {
+        'form': form,
+        'new': True
+    }
+
+    return render_to_response(
+        template_name,
+        template_context,
+        RequestContext(request)
+    )
+
+@user_passes_test(lambda u: u.is_superuser)
+def locations_remove(request, object_id):
+    """docstring for location_remove"""
+    object = get_one_or_404(Location, id=object_id, user=request.user, perm='can_delete')
+
+    resources = Resource.objects(locations=object)
+    accounts = Account.objects(locations=object)
+    if resources or accounts:
+        res_str = ','.join([res.name for res in resources])
+        acct_str = ','.join(['<a href="%s">%s</a>' % (reverse('accounts_edit', args=[acct.id]), acct.name) for acct in accounts])
+        messages.error(
+            request, 
+            'Resources/Accounts using this location:<br>%s<br>%s.' % (res_str, acct_str))
+        return HttpResponseRedirect(reverse('cab_locations_detail', args=[object.id]))
+    object.delete()
+    messages.success(request, 'Location removed')
+    return HttpResponseRedirect(reverse('cab_locations'))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_index(request, template_name='enginecab/tags_index.html'):
+    if request.method == 'POST':
+        result = request.POST.get('result')
+        tag_process = request.POST.get('tag_process')
+        form = TagsFixerForm(request.REQUEST)
+        if result and form.is_valid():
+            tags_process(request, form.cleaned_data)
+            return HttpResponseRedirect(reverse('cab_tags'))
+        elif tag_process:
+            change_tag = request.POST.get('change_tag')
+            tag_id = request.POST.get('tag_id')[10:]
+            if tag_process == 'upper':
+                return tags_upper(request, tag_id)
+            elif tag_process == 'lower':
+                return tags_lower(request, tag_id)
+            elif tag_process == 'remove':
+                return tags_remove(request, tag_id)
+            elif tag_process == 'change':
+                return tags_change(request, tag_id, change_tag)
+    else:
+        form = TagsFixerForm(initial={})
+
+    context = {
+        'objects': sorted(set(
+            list(Curation.objects.ensure_index("tags").distinct("tags")) + 
+            list(Account.objects.ensure_index("tags").distinct("tags")))),
+        'form': form,
+        }
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_process(request, options):
+    results = []
+    if options['split'] or options['lower_case']:
+        setting, _ = Setting.objects.get_or_create(key=UPPERCASE)
+        exceptions = setting.value.get('data', [])
+        for obj in Curation.objects():
+            tp = TagProcessor(obj.tags)
+            new_tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            if new_tags != obj.tags:
+                obj.tags = new_tags
+                obj.save()
+        for obj in Account.objects():
+            tp = TagProcessor(obj.tags)
+            new_tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            if new_tags != obj.tags:
+                obj.tags = new_tags
+                obj.save()
+    results.append('done') 
+    messages.success(request, '<br>'.join(results))
+
+def alpha_id(object_id):
+    return '#alpha_%s' % object_id[0]
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_upper(request, object_id):
+    object_id = unquote(object_id)
+    if object_id != object_id.upper():
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=object_id.upper())
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Account.objects.filter(tags=object_id).update(push__tags=object_id.upper())
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Made %s - %s' % (object_id, object_id.upper()))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_lower(request, object_id):
+    object_id = unquote(object_id)
+    if object_id != object_id.lower():
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=object_id.lower())
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Account.objects.filter(tags=object_id).update(push__tags=object_id.lower())
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Made %s - %s' % (object_id, object_id.lower()))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_change(request, object_id, change_id):
+    object_id = unquote(object_id)
+    change_id = unquote(change_id)
+    if change_id and object_id != change_id:
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=change_id)
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        for obj in Curation.objects.filter(tags=change_id):
+            obj.resource.reindex()
+        objects = Account.objects.filter(tags=object_id).update(push__tags=change_id)
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
+        for obj in Account.objects.filter(tags=change_id):
+            obj.reindex()
+
+    messages.success(request, 'Changed %s to %s' % (object_id, change_id))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_remove(request, object_id):
+    object_id = unquote(object_id)
+    objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Removed - %s' % object_id)
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
 def reindex_accounts(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_accounts"""
     # logger.error("indexing accounts:")
@@ -134,9 +316,14 @@ def reindex_resources(url=settings.SOLR_URL, printit=False):
 @user_passes_test(lambda u: u.is_superuser)
 def one_off_util(request):
     note = 'Nothing enabled.'
-    # note = migrate_account_collections()
+    # note = move_res_tags_to_owner_curation()
     messages.success(request, 'job done. %s' % note)
-    
+
+    # note = show_curationless_resources()
+    # messages.success(request, 'job done. %s' % note)
+    # note = fix_curationless_resources()
+    # messages.success(request, 'job done. %s' % note)
+   
     return HttpResponseRedirect(reverse('cab_resources'))
 
 # def migrate_account_collections():
@@ -150,40 +337,64 @@ def one_off_util(request):
 #     return 'migrated account collection- now comment out account.collection field'
     
 
-# @user_passes_test(lambda u: u.is_staff)
-# def show_curationless_resources(request):
-#     i = 0
-#     r = []
-#     for res in Resource.objects.all():
-#         if not res.curations:
-#             r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
-#             i += 1
-#     note = 'found %s resources with no curations: %s' % (i, ', '.join(r))
-#     messages.success(request, 'job done. %s' % note)
-    
-#     return HttpResponseRedirect(reverse('cab'))
+def show_curationless_resources():
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            r.append('<a href="/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
+    return 'found %s resources with no curations: %s' % (i, ', '.join(r))
 
-# @user_passes_test(lambda u: u.is_staff)
-# def fix_curationless_resources(request):
-#     i = 0
-#     r = []
-#     for res in Resource.objects.all():
-#         if not res.curations:
-#             obj = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
-#             obj.item_metadata.author = res.owner
-#             obj.resource = res
-#             obj.save()
-#             res.curations.append(obj)
-#             res.save(reindex=True)
+def fix_curationless_resources():
+    i = 0
+    r = []
+    for res in Resource.objects.all():
+        if not res.curations:
+            obj = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
+            obj.item_metadata.author = res.owner
+            obj.resource = res
+            obj.save()
+            res.curations.append(obj)
+            res.save(reindex=True)
             
-#             r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
-#             i += 1
+            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+            i += 1
             
-#     note = 'fixed %s resources with no curations: %s' % (i, ', '.join(r))
-#     messages.success(request, 'job done. %s' % note)
-    
-#     return HttpResponseRedirect(reverse('cab'))
-    
+    return 'fixed %s resources with no curations: %s' % (i, ', '.join(r))
+
+def move_res_tags_to_owner_curation():
+    i = 0
+    r = []
+    # start = datetime.now()
+
+    for res in Resource.objects.all():
+        curations = Curation.objects(owner=res.owner, resource=res)
+        cur = None
+        if curations.count() < 1:
+            r.append('<a href="http://127.0.0.1:8080/depot/resource/%s">%s</a>' % (res._id, res.title))
+
+            cur = Curation(outcome=STATUS_OK, tags=res.tags, owner=res.owner)
+            cur.item_metadata.author = res.owner
+            cur.resource = res
+            cur.save()
+            res.curations = [cur] + list(res.curations)
+            res.save(reindex=True)
+            print i, res.curations
+            
+            i += 1
+        # else:
+        #     cur = curations[0]
+        #     cur.tags = list(set(cur.tags + res.tags))
+        #     cur.save()
+
+
+    # end = datetime.now()
+    # print end - start
+
+    return 'found %s resources: %s' % (i, ', '.join(r))
+
+
 # @user_passes_test(lambda u: u.is_staff)
 # def remove_dud_curations(request):
 #     """docstring for remove_dud_curations"""

@@ -14,6 +14,12 @@ from django.conf import settings
 
 class PlainForm(forms.Form):
     """docstring for ClassName"""
+
+    def __init__(self, *args, **kwargs):
+        if 'label_suffix' not in kwargs:
+            kwargs['label_suffix'] = ''
+        super(PlainForm, self).__init__(*args, **kwargs)
+
     def _html_output(self, normal_row, error_row, row_ender, help_text_html, errors_on_separate_row, checkbox_row=''):
         """
         Helper function for outputting HTML. Used by as_table(), as_ul(), as_p().
@@ -180,3 +186,7 @@ class SCContactForm(ContactForm):
 
 class FileUploadForm(PlainForm):
     picture_file = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'input-text expand'}), help_text='Pic must be JPG, 500w x 400h')
+
+class ConfirmForm(PlainForm):
+    object_name = forms.CharField(label='Name', max_length=96,
+        widget=forms.TextInput(attrs={'readonly':'readonly'}))

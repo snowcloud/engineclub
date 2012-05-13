@@ -4,7 +4,7 @@ function validate_location(location_name){
     $.ajax({
         data: {location: location_name, max: 1},
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: function(response){
 
             if(!response.errors.length && response.data.length > 0){
@@ -27,7 +27,7 @@ function aliss_query(defaults, handler){
     $.ajax({
         data: defaults,
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: handler
     });
 }
@@ -52,7 +52,7 @@ function aliss_search(div_id, google_map){
 
         data: defaults,
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: function(response){
 
             var count = response.data[0].results.length;
@@ -82,7 +82,7 @@ function aliss_search(div_id, google_map){
 
                     var url = value.uri;
                     if (!url){
-                        url = 'http://aliss.org';
+                        url = 'http://www.aliss.org';
                     }
                     html += '<li><a href="' + value.uri + '">' + value.title + '</a> - ' + value.locationnames[0];
                     if (value.locations[0]){

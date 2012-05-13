@@ -1,4 +1,5 @@
 {% extends "youraliss/base.html" %}
+{% load url from future %}
 
 {% block title %}your aliss lists{% endblock %}
 
@@ -12,6 +13,13 @@
 {% block module-content %}
 	<h2>Lists</h2>
 
-<p>TO DO. This section is where you'll manage your lists of accounts that you use.</p>
+	<p>You can create lists of user accounts that you are interested in, which can then be used to filter results in Aliss searches.</p>
+	
+	{% for object in objects %}
+		<p><a href="{% url 'youraliss_lists_detail' object.id %}">{{object.name}}</a></p>
+	{% empty %}
+		<p>You have no lists at the moment.</p>
+	{% endfor %}
+
 
 {% endblock %}

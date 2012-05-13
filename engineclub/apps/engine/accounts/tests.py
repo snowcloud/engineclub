@@ -108,7 +108,73 @@ class AccountsTest(AccountsBaseTest):
         self.group.save()
         self.assertEqual(len(self.group.members), 1)
 
-        
+class AccountsViewsTest(AccountsBaseTest):
+
+    def setUp(self):
+        super(AccountsViewsTest, self).setUp()
+
+        from django.test.client import Client
+
+        self.client = Client()
+
+    def test_accounts(self):
+        from django.core.urlresolvers import reverse
+
+        # Can't access when we are not logged in.
+        response = self.client.get(reverse('accounts'))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(
+                reverse('accounts_detail', kwargs={'object_id': self.bob.id}))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(
+                reverse('accounts_edit', kwargs={'object_id': self.bob.id}))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.login(username='bob', password='password')
+        response = self.client.get(
+                reverse('accounts_edit', kwargs={'object_id': self.bob.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "%s" % self.bob.name)
+
+        response = self.client.get(
+                reverse('accounts_remove', kwargs={'object_id': self.alice.id}))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.logout()
+        self.user_bob.is_staff = True
+        self.user_bob.is_superuser = True
+        self.user_bob.save()
+        self.assertTrue(self.user_bob.is_superuser)
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(
+                reverse('accounts_remove', kwargs={'object_id': self.alice.id}))
+        self.assertEqual(response.status_code, 200)
+
+        name = self.alice.name
+        local_id = self.alice.local_id
+
+        response = self.client.post(
+                reverse('accounts_remove',
+                    kwargs={'object_id': self.alice.id}),
+                    data={'object_name': name, 'result': 'Cancel'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Account.objects(name=name).count(), 1)
+
+        # no Resources in setup so delete works
+        response = self.client.post(
+                reverse('accounts_remove',
+                    kwargs={'object_id': self.alice.id}),
+                    data={'object_name': name, 'result': 'Delete'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Account.objects(name=name).count(), 0)
+        self.assertEqual(User.objects.filter(pk=local_id).count(), 0)
+
+
+
+
         
         
         

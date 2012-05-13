@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from pymongo.objectid import ObjectId
+from bson.objectid import ObjectId
 
 from accounts.models import get_account
 from ecutils.utils import get_one_or_404

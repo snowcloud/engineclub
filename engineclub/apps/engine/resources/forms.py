@@ -27,8 +27,6 @@ class FindResourceForm(PlainForm):
         self.locations = []
         self.results = []
         self.centre = None
-        if 'label_suffix' not in kwargs:
-            kwargs['label_suffix'] = ''
         super(FindResourceForm, self).__init__(*args, **kwargs)
 
     def clean_boost_location(self):

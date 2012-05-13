@@ -6,9 +6,9 @@ from fabric.api import *
 # BUT THEY WON'T WORK WITH STANDARD REPO.
 
 
-# def reload_locations():
-#     # local('python engineclub/apps/firebox/utils.py -c loadlocations -d test_db -p engineclub/apps/firebox/sources', capture=False)
-#     local('python engineclub/apps/firebox/utils.py -c loadlocations -d aliss -p engineclub/apps/firebox/sources', capture=False)
+def reload_locations():
+    # local('python engineclub/apps/firebox/utils.py -c loadlocations -d test_db -p engineclub/apps/firebox/sources', capture=False)
+    local('python engineclub/apps/firebox/utils.py -c loadlocations -d aliss -p engineclub/apps/firebox/sources', capture=False)
 
 # def convert_to_newlocations():
 #     # local('python engineclub/apps/firebox/utils.py -c convert_to_newlocations -d test_db', capture=False)

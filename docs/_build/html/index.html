@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Engineclub &mdash; Engineclub 0.5.0 documentation</title>
+    <title>Engineclub &mdash; Engineclub 0.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Engineclub 0.5.0 documentation" href="#" />
-    <link rel="next" title="Engineclub API" href="depot/api.html" /> 
+    <link rel="top" title="Engineclub 0.6.0 documentation" href="#" />
+    <link rel="next" title="Engineclub API" href="engine/api.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="depot/api.html" title="Engineclub API"
+          <a href="engine/api.html" title="Engineclub API"
              accesskey="N">next</a> |</li>
-        <li><a href="#">Engineclub 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Engineclub 0.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,62 +58,70 @@
 <li>Twitter <a class="reference external" href="http://twitter.com/alissproject">&#64;ALISSproject</a></li>
 <li><a class="reference external" href="http://github.com/snowcloud/engineclub/">Github</a></li>
 </ul>
-<p>There are five applications:</p>
-<div class="section" id="home">
-<h2>home<a class="headerlink" href="#home" title="Permalink to this headline">¶</a></h2>
-<p>the home page for engineclub.org which will host information, demos etc</p>
-<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/home">Code for home app</a></p>
-</div>
-<div class="section" id="depot">
-<h2>depot<a class="headerlink" href="#depot" title="Permalink to this headline">¶</a></h2>
-<p>storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="depot/api.html">Engineclub API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#authentication">Authentication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-a-resource-by-id">Retrieve a resource by id</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-resources-by-batch">Retrieve resources by batch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-item">Submit an item</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#update-an-item">Update an item</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-a-moderation">Submit a moderation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/api.html#retrieve-tags-in-use">Retrieve tags in use</a></li>
+<p>There are three groups of applications:</p>
+<div class="section" id="cab">
+<h2>cab<a class="headerlink" href="#cab" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>enginecab</li>
+<li>home</li>
+<li>stories</li>
+<li>youraliss</li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="depot/data-model.html">Data model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#resource">Resource</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#relatedresource">RelatedResource</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#location">Location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#calendarevent">CalendarEvent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#calendarrepeatrule">CalendarRepeatRule</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#moderation">Moderation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#curation">Curation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#itemmetadata">ItemMetadata</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#account">Account</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#membership">Membership</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#collectionmember">CollectionMember</a></li>
-<li class="toctree-l2"><a class="reference internal" href="depot/data-model.html#collection">Collection</a></li>
-</ul>
-</li>
-</ul>
+</div></blockquote>
 </div>
-<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/depot">Code for depot app</a></p>
-</div>
-<div class="section" id="enginecab">
-<h2>enginecab<a class="headerlink" href="#enginecab" title="Permalink to this headline">¶</a></h2>
-<p>admin app for the engineclub</p>
-<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/enginecab">Code for enginecab app</a></p>
+<div class="section" id="engine">
+<h2>engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>accounts</li>
+<li>analytics</li>
+<li>ecutils</li>
+<li>invites</li>
+<li>issues</li>
+<li>locations</li>
+<li>resources</li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="firebox">
 <h2>firebox<a class="headerlink" href="#firebox" title="Permalink to this headline">¶</a></h2>
-<p>for data collection code</p>
-<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/firebox">Code for firebox app</a></p>
+<p>A single application for import of data. This section will be expanded shortly as bulk data import is developed.</p>
 </div>
-<div class="section" id="ecutils">
-<h2>ecutils<a class="headerlink" href="#ecutils" title="Permalink to this headline">¶</a></h2>
-<p>for utility code</p>
-<p><a class="reference external" href="https://github.com/snowcloud/engineclub/tree/master/engineclub/apps/ecutils">Code for ecutils app</a></p>
+<div class="section" id="api-and-data-model">
+<h2>API and data model<a class="headerlink" href="#api-and-data-model" title="Permalink to this headline">¶</a></h2>
+<p>storage of resource data, and services API, using a mix of mongodb and postgresql (for geoDjango location stuff).</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="engine/api.html">Engineclub API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#retrieve-a-resource-by-id">Retrieve a resource by id</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#retrieve-resources-by-batch">Retrieve resources by batch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#submit-an-item">Submit an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#update-an-item">Update an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#submit-a-moderation">Submit a moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/api.html#retrieve-tags-in-use">Retrieve tags in use</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="engine/data-model.html">Data model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#resource">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#relatedresource">RelatedResource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#location">Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#calendarevent">CalendarEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#calendarrepeatrule">CalendarRepeatRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#moderation">Moderation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#curation">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#itemmetadata">ItemMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#account">Account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#membership">Membership</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#collectionmember">CollectionMember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine/data-model.html#collection">Collection</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="section" id="installation-instructions">
@@ -129,8 +137,7 @@ or better is to use Git to create a local repository so you can keep up to date 
 </div>
 <p>To customise settings, add your own file called settings_local.py. It will be imported at the end of settings.py on system startup.</p>
 <p>Following installation, make sure you are in the installation directory, then you can do:</p>
-<div class="highlight-python"><pre>cd ecengine
-./manage.py syncdb --noinput</pre>
+<div class="highlight-python"><pre>./manage.py syncdb --noinput</pre>
 </div>
 <p>This will create the initial database and load an admin user from apps/aliss/fixtures/initial_data.json
 You can then log in with username: admin and password: admin</p>
@@ -154,13 +161,12 @@ You can then log in with username: admin and password: admin</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Engineclub</a><ul>
-<li><a class="reference internal" href="#home">home</a></li>
-<li><a class="reference internal" href="#depot">depot</a><ul>
+<li><a class="reference internal" href="#cab">cab</a></li>
+<li><a class="reference internal" href="#engine">engine</a></li>
+<li><a class="reference internal" href="#firebox">firebox</a></li>
+<li><a class="reference internal" href="#api-and-data-model">API and data model</a><ul>
 </ul>
 </li>
-<li><a class="reference internal" href="#enginecab">enginecab</a></li>
-<li><a class="reference internal" href="#firebox">firebox</a></li>
-<li><a class="reference internal" href="#ecutils">ecutils</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#installation-instructions">Installation instructions</a><ul>
@@ -170,7 +176,7 @@ You can then log in with username: admin and password: admin</p>
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="depot/api.html"
+  <p class="topless"><a href="engine/api.html"
                         title="next chapter">Engineclub API</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -201,9 +207,9 @@ You can then log in with username: admin and password: admin</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="depot/api.html" title="Engineclub API"
+          <a href="engine/api.html" title="Engineclub API"
              >next</a> |</li>
-        <li><a href="#">Engineclub 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Engineclub 0.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

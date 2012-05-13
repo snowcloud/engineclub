@@ -68,17 +68,10 @@ h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; f
 	background-color: #f4f4f4;
 	border-bottom: 1px solid #DDDDDD;
 }
-.cab {
-	.main {
-		background-color: #57659b;
-		border: none;
-		h1 {
-			color: white;
-		}
-	}
-	.container#top {
-		background-color: #57659b;
-		border: none;
+.logged-in {
+	p {
+		padding: 0.4em 0 0.5em 0.3em;
+		margin-bottom: 0;		
 	}
 }
 .welcome {
@@ -358,6 +351,17 @@ caption, th, td {
 		@include box(#555);
 		background-color: #fafeff;
 		padding: 1em;
+	}
+}
+/* @end */
+/* @group flatpage */
+.flatpage .main {
+	ul {
+		list-style-type: disc;
+		list-style-position: inside;
+	}
+	li {
+		margin-bottom: 0.2em;
 	}
 }
 /* @end */

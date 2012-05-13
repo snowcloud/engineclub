@@ -1,0 +1,69 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}Locations{% endblock %}
+
+{% block breadcrumb-add %}
+  <li class="current"><a href="#">Locations</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-locations %}active{% endblock %}
+
+
+{% block module-content %}
+  <h2>Locations</h2>
+
+  <dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="{% url 'cab_locations_add' %}">Add new location</a></dd>
+  </dl>
+
+  <form class="nice form" action=".?next={{ next }}" method="POST">{% csrf_token %}
+      <fieldset>
+          <legend><span>Location details:</span></legend>
+           {{ form.as_plain }}
+      </fieldset>
+       <fieldset class="submit">
+          <input type="submit" name="result" value="Find">
+      </fieldset>
+  </form>
+
+{% endblock %}
+
+{% block script-extra %}
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+
+
+{% endblock script-extra %}
+
+{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='resource' rev_url='resource' %}
+
+$( "#id_location" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "{% url 'resources.api_handlers.locations' %}",
+      dataType: "jsonp",
+      data: {
+        match: request.term
+      },
+      success: function( results ) {
+        response( $.map( results.data, function( item ) {
+          return {
+            //label: (item.postcode) ? 
+            //        (item.postcode) : 
+            //        (item.place_name) + ', ' + item.district,
+            value: (item.postcode) ? 
+                    (item.postcode) : 
+                    (item.place_name) + ': ' + item.district
+          }
+        }));
+      }
+    });
+  },
+  minLength: 3
+});
+
+{% endblock document-ready %}
+

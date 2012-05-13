@@ -2,10 +2,13 @@
 {% load utils %}
 {% load url from future %}
 
-{% block title %}edit curation{% endblock %}
+{% block title %}{% if new %}Add curation{% else %}Edit curation{% endif %}{% endblock %}
 
 {% block content %}
 
+{% if new %}<h1>Add curation</h1>{% else %}<h1>Edit curation</h1>{% endif %}
+
+<h2>{{ resource.title }}</h2>
 
 <form class="nice form" action=".?next={{ next }}" method="POST">{% csrf_token %}
     <fieldset>

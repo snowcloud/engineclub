@@ -63,12 +63,18 @@
             {% endif %}
             </div>
             {{ resource.short_description|truncatewords:30|textile }}
-            <p><a href="#top" class="action top">top</a></p>
+            <p>
+              {% for tag in resource.resource.tags %}
+                <span class="white label"><a href="{{ resource.resource|search_url:tag }}">{{ tag }}</a></span>
+              {% endfor %}
+            </p>
+            <p>{% if user.username in 'derek' %}{{resource.score}}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
+            <a href="#top" class="action top">top</a></p>
             </div>
           </li>
         {% endwith %}
       {% empty %}
-        {% if not new_search %} 
+        {% if not new_search %}
           <li>no user accounts found for your area of interest. Would you like to <a href="{% url 'contact' %}">open an account</a>?</li>
         {% endif %}
       {% endfor %}
@@ -79,6 +85,9 @@
 
 
 {% block script-extra %}
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css" type="text/css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript"></script>
+
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key={{ google_key }}"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/mxn.core-min.js"></script>
@@ -86,5 +95,50 @@
 
 {% endblock script-extra %}
 
-{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='account' rev_url='accounts_detail' %}{% endblock document-ready %}
+{% block document-ready %}{% include 'depot/resource_find_map_js.html' with res_type='account' rev_url='accounts_detail' %}
+$( "#id_post_code" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "{% url 'resources.api_handlers.locations' %}",
+      dataType: "jsonp",
+      data: {
+        //featureClass: "P",
+        //style: "full",
+        //maxRows: 12,
+        match: request.term
+      },
+      success: function( results ) {
+        response( $.map( results.data, function( item ) {
+          return {
+            value: (item.postcode) ? 
+                    (item.postcode) : 
+                    (item.place_name) + ': ' + item.district
+          }
+        }));
+      }
+    });
+  },
+  minLength: 3
+});
+$( "#id_kwords" ).autocomplete({
+  source: function( request, response ) {
+    $.ajax({
+      url: "{% url 'resources.api_handlers.tags' %}",
+      dataType: "jsonp",
+      data: {
+        match: request.term
+      },
+      success: function( results ) {
+        response( $.map( results.data, function( item ) {
+          return {
+            value: item
+          }
+        }));
+      }
+    });
+  },
+  minLength: 3
+});
+
+{% endblock document-ready %}
 

@@ -160,12 +160,15 @@ name                   	string
 email                  	string [email address format]
 url                    	string [web URI format]
 description			   	string
+tags                    list of string
+locations               list of :ref:`location`
 permissions				[not used]
 api_key					[not used]
 api_password			[not used]
 members                 list of :ref:`Membership`
 status					string ['member', 'admin', 'mentor', 'ok', 'suspended', 'closed']
-collections				:ref:`Collection`
+in_collections			list of :ref:`Collection` - Collections containing this account
+email_preference		string ['none', 'single', 'digest']
 ==================      =========================================================================
 
 .. _Membership:

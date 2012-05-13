@@ -13,14 +13,25 @@ from ecutils.utils import minmax, lat_lon_to_str
 # LOCATION STUFF - PUBLIC
 
 def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False):
+    """
+    namestr can be postcode, placename, or 'placename: district' for places with same name
+    """
+    # could do lat_lon search by testing namestr for '123.456, 123.456'
+    # split on ','
+    # check len=2
+    # check parts 1 and 2 (trimmed) convert to real
+    # return {'lat_lon': [real, real] }
 
     db = get_db()
     coll = db.location
+    district =None
     if len(namestr) > 2 and namestr[2].isdigit():
         name = namestr.upper().replace(' ', '').strip()
         field = '_id'
     else:
-        name = namestr.capitalize().strip()
+        names = [n.strip() for n in namestr.split(':')]
+        name = names[0]
+        district = names[1] if len(names) > 1 else None
         field = 'place_name'
         coll.ensure_index([
             ('place_name', ASCENDING),
@@ -28,9 +39,14 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
             ('accuracy', DESCENDING)
             ])
 
-    if starts_with:
-        name = re.compile('^%s' % name, re.IGNORECASE)
-    result = coll.find_one({field: name}) if just_one else coll.find({field: name}).limit(20)
+    # removed this- supposed to be slow cos index not used
+    # but seems ok, and improves usability
+    # if starts_with:
+    name = re.compile('^%s' % name, re.IGNORECASE)
+    find_dict = {field: name}
+    if district:
+        find_dict['district'] = district
+    result = coll.find_one(find_dict) if just_one else coll.find(find_dict).limit(20)
     if result and (type(result) == dict or result.count() > 0):
 
         return result
@@ -40,6 +56,28 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
 
 ###############################################################
 # SEARCH STUFF
+
+"""
+from pysolr.py
+
+class Results(object):
+    def __init__(self, docs, hits, highlighting=None, facets=None, spellcheck=None, stats=None, qtime=None, debug=None):
+        self.docs = docs
+        self.hits = hits
+        self.highlighting = highlighting or {}
+        self.facets = facets or {}
+        self.spellcheck = spellcheck or {}
+        self.stats = stats or {}
+        self.qtime = qtime
+        self.debug = debug or {}
+
+    def __len__(self):
+        return len(self.docs)
+
+    def __iter__(self):
+        return iter(self.docs)
+
+"""
 
 def _make_fq(event, accounts, collections, res_type):
     fq = ['res_type:%s' % res_type]

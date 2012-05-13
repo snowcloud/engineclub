@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{%load i18n  %}
+
+{% block title %}{% trans 'Please Confirm' %}{% endblock %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+    {% if note %}
+        <div class="panel">{{ note|safe }}</div> 
+    {% endif %}
+
+    <div class="alert-box error">{% trans 'This action cannot be undone.' %}</div>
+    
+    <form class="nice form" name="checkprofile" action="" method="post">{% csrf_token %}
+
+        <fieldset>
+            <legend><span>{% trans 'Please confirm' %}</span></legend>
+            {{ form.as_plain }}
+        </fieldset>
+
+        <fieldset class="submit">
+            <input type="submit" name="result" value="{% trans 'Delete' %}">&nbsp;&nbsp;
+            <input type="submit" name="result" value="{% trans 'Cancel' %}">
+        </fieldset>
+        
+    </form>
+
+
+{% endblock %}

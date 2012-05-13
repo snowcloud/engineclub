@@ -1,0 +1,218 @@
+======================================
+Data model
+======================================
+
+This data model is under rapid development at the moment, and is not stable.
+
+.. _resource:
+
+Resource
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+id                      ObjectID *
+title                   string
+description             string
+resource_type           string ['web', 'group', ...]
+uri                     string [web URI format]
+locations               list of :ref:`location`
+service_area            list of :ref:`location`
+calendar_event          :ref:`calendarEvent`
+moderations             list of :ref:`moderation` 
+curations               list of :ref:`curation` 
+tags                    list of string
+related_resources       list of :ref:`relatedResource`
+owner                   :ref:`account`
+item_metadata           :ref:`itemMetadata`
+==================      =========================================================================
+
+\* `BSON ObjectID Specification`_
+
+? item_type organisation, class, one-off event,  
+event scheduling
+
+.. _relatedResource:
+
+RelatedResource
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+source                  :ref:`resource`
+target                  :ref:`resource`
+rel_type                string ['provider', 'about']
+item_metadata           :ref:`itemMetadata`
+==================      =========================================================================
+
+.. _location:
+
+Location
+=========================
+*Revised to use Ordnance Survey data.*
+
+*Current fields support post code- more fields to be added for higher level units.*
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+id                      string
+postcode                string
+place_name              string
+lat_lon                 list of float [float, float]
+loc_type                string [POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME, GOOGLE_PLACENAME]
+accuracy				int [1-6] 1=approximate, 6=accurate 
+district				string
+country_code			string [ SCT, ENG, WLS, NIR, GB ]
+==================      =========================================================================
+
+ref source + URI
+
+.. _calendarEvent:
+
+CalendarEvent
+=========================
+
+Adds event data to Resource. Subset of W3C Calendar API: `<http://www.w3.org/TR/calendar-api/>`_
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+start                   datetime (day required, time optional) *
+end                     datetime (optional day and time) *
+status                  string ['provisional', 'confirmed', 'cancelled']
+recurrence              not used- will be :ref:`calendarRepeatRule`
+==================      =========================================================================
+
+\* a CalendarEvent must have a start date, but an end date is optional. Times are optional for both. Where no time is set, the datetime will be for midnight of the date, for example if start is set to 24 Sep 2011, the Engine will store "2011-09-24T00:00:00Z"
+
+.. _calendarRepeatRule:
+
+CalendarRepeatRule
+=========================
+
+Not implemented. Will be subset of W3C Calendar API: `<http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface>`_
+
+.. _moderation:
+
+Moderation
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+outcome                 string ['OK', 'BAD']
+note                    string
+item_metadata           :ref:`itemMetadata`
+==================      =========================================================================
+
+.. _curation:
+
+Curation
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+outcome                 string ['OK for my group', 'not for my group']
+tags                    list of string
+rating                  [not used]
+note                    string
+data                    dict (dictionary with field names as keys) *
+resource                :ref:`Resource`
+owner                   :ref:`Account`
+item_metadata           :ref:`itemMetadata`
+==================      =========================================================================
+
+\* This will be used to allow trusted accounts to add their own metadata using their own schema.
+Data will be converted to required formats on client access (may be cached for performance)
+
+.. _itemMetadata:
+
+ItemMetadata 
+=========================
+
+*To be updated with Dublin core.*
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+last_modified           datetime 
+author                  ObjectID
+shelflife               datetime
+status                  string
+note                    string
+==================      =========================================================================
+
+.. _Account:
+
+
+Account 
+=========================
+See code in `engine-groups app`_
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+name                   	string 
+email                  	string [email address format]
+url                    	string [web URI format]
+description			   	string
+tags                    list of string
+locations               list of :ref:`location`
+permissions				[not used]
+api_key					[not used]
+api_password			[not used]
+members                 list of :ref:`Membership`
+status					string ['member', 'admin', 'mentor', 'ok', 'suspended', 'closed']
+in_collections			list of :ref:`Collection` - Collections containing this account
+email_preference		string ['none', 'single', 'digest']
+==================      =========================================================================
+
+.. _Membership:
+
+Membership
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+account                 :ref:`Account`
+role                    string
+==================      =========================================================================
+
+.. _CollectionMember:
+
+CollectionMember
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+account                 :ref:`Account`
+collection 				:ref:`Collection`
+role                    string
+==================      =========================================================================
+
+
+.. _Collection:
+
+Collection
+=========================
+
+==================      =========================================================================
+field name              type
+==================      =========================================================================
+name					string
+owner					:ref:`Account`
+tags					list of string
+locations				[not used]
+accounts				list of :ref:`Account`
+==================      =========================================================================
+
+
+.. _BSON ObjectID Specification:   http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification
+.. _engine-groups app: http://github.com/snowcloud/engine-groups
+

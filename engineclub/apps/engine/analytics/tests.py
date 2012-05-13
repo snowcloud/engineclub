@@ -134,14 +134,14 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
 
         self.assertEqual(self.analytics.top_tags(), expected)
 
-        from engine_groups.models import Account
+        from accounts.models import Account
         account = Account.objects[2]
 
         self.analytics.tag_report(account=account)
 
     def test_account_activity(self):
 
-        from engine_groups.models import Account
+        from accounts.models import Account
         account = Account.objects[0]
 
         self.assertEqual(self.analytics.account_usage(account), 65)
@@ -215,7 +215,7 @@ class AccountStatsTestCase(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
-        from engine_groups.models import Account
+        from accounts.models import Account
 
         account = Account.objects[2]
         account2 = Account.objects[3]
@@ -323,7 +323,7 @@ class ShortcutsTestCase(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
-        from engine_groups.models import Account
+        from accounts.models import Account
 
         self.account = Account.objects[2]
 
@@ -378,7 +378,7 @@ class TestSearchStats(unittest.TestCase):
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
-        from engine_groups.models import Account
+        from accounts.models import Account
 
         self.account = Account.objects[2]
 

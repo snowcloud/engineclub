@@ -84,20 +84,20 @@ Retrieve resources by search parameters
 Parameters
 ----------
 
-==================      ==========    ==========================
-parameter name          required      value
-==================      ==========    ==========================
-location                no            A post code or place name.
-query	                yes           Keywords, can be comma-separated.
-start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.
-max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
-boostlocation           no            An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
-accounts                no            A list of ALISS.org account IDs, separated a '+'. Ignored if collections parameter is used.
-collections             no            A list of ALISS.org collection IDs, separated a '+'. If collections parameter is present, accounts parameter will be ignored.
-event                   no            Only '*' is implemented- return only events, and only those that start and/or end today or in the future.
-output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
-callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
-==================      ==========    ==========================
+==================      ================  ==========================
+parameter name          required          value
+==================      ================  ==========================
+location                no, if query      A post code or place name.
+query	                no, if location   Keywords, can be comma-separated.
+start                   no                This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.
+max                     no                This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
+boostlocation           no                An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
+accounts                no                A list of ALISS.org account IDs, separated a '+'. Ignored if collections parameter is used.
+collections             no                A list of ALISS.org collection IDs, separated a '+'. If collections parameter is present, accounts parameter will be ignored.
+event                   no                Only '*' is implemented- return only events, and only those that start and/or end today or in the future.
+output                  no                Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no                User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ================  ==========================
 
 Response
 --------
@@ -105,7 +105,40 @@ Response
 ==================      =====================================
 item name               type
 ==================      =====================================
-to do                   to do
+location                list of strings, with lat/lon used in search
+query                   text used in search
+start                   index of first document returned from result set
+max                     number of documents returned, if available
+numfound                number of documents in total result set
+boostlocation           number used in search
+accounts                accounts used in search
+collections             collections used in search
+event                   event param used, or null
+output                  output format used
+callback                callback function name passed in search
+results                 list of results- see format below
+
+==================      =====================================
+
+Result format
+-------------
+
+==================      =====================================
+item name               type
+==================      =====================================
+id                      ObjectID *
+title                   string
+description             string
+uri                     string [web URI format]
+locations               list of lat,lon as strings
+locationnames           list location names as strings
+tags                    list of string
+accounts                A list of ALISS.org account IDs, of accounts curating this resource
+score                   real number, higher numbers reflect better match with query
+event_start             date time as string, "2011-09-24T19:30:00Z"
+event_end               date time as string, "2011-09-24T19:30:00Z"
+relatedresources        not implemented
+lastmodified            not implemented
 ==================      =====================================
 
 
@@ -131,10 +164,13 @@ access: public
         [
             {
                 "boostlocation": 30.0, 
-                "start": 0, 
                 "location": [ "55.935160000000003, -3.2425099999999998" ], 
+                "start": 200, 
                 "max": "100", 
+                "numfound": "654",
                 "query": "dance", 
+                "accounts": "",
+                "collections": "",
                 "results": 
                 [
                     {
@@ -148,7 +184,8 @@ access: public
                         "id": "4eb95d2b3de074399b000000", 
                         "event_start": "2011-12-17T20:00:00Z", 
                         "uri": "http://www.scotsmusic.org/events/507/"
-                    }
+                    },
+                    { ... other results ... }
                 ], 
                 "event": "*",
                 "output": "json"
