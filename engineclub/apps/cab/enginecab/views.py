@@ -199,12 +199,16 @@ def tags_process(request, options):
         exceptions = setting.value.get('data', [])
         for obj in Curation.objects():
             tp = TagProcessor(obj.tags)
-            obj.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
-            obj.save()
+            new_tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            if new_tags != obj.tags:
+                obj.tags = new_tags
+                obj.save()
         for obj in Account.objects():
             tp = TagProcessor(obj.tags)
-            obj.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
-            obj.save()
+            new_tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            if new_tags != obj.tags:
+                obj.tags = new_tags
+                obj.save()
     results.append('done') 
     messages.success(request, '<br>'.join(results))
 
@@ -212,15 +216,13 @@ def alpha_id(object_id):
     return '#alpha_%s' % object_id[0]
 
 @user_passes_test(lambda u: u.is_superuser)
-def tags_edit(request, object_id):
-    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
-
-@user_passes_test(lambda u: u.is_superuser)
 def tags_upper(request, object_id):
     object_id = unquote(object_id)
     if object_id != object_id.upper():
-        curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.upper())
-        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=object_id.upper())
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Account.objects.filter(tags=object_id).update(push__tags=object_id.upper())
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
     messages.success(request, 'Made %s - %s' % (object_id, object_id.upper()))
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
 
@@ -228,8 +230,10 @@ def tags_upper(request, object_id):
 def tags_lower(request, object_id):
     object_id = unquote(object_id)
     if object_id != object_id.lower():
-        curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.lower())
-        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=object_id.lower())
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        objects = Account.objects.filter(tags=object_id).update(push__tags=object_id.lower())
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
     messages.success(request, 'Made %s - %s' % (object_id, object_id.lower()))
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
 
@@ -238,10 +242,14 @@ def tags_change(request, object_id, change_id):
     object_id = unquote(object_id)
     change_id = unquote(change_id)
     if change_id and object_id != change_id:
-        curations = Curation.objects.filter(tags=object_id).update(push__tags=change_id)
-        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
-        for cur in Curation.objects.filter(tags=change_id):
-            cur.resource.reindex()
+        objects = Curation.objects.filter(tags=object_id).update(push__tags=change_id)
+        objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        for obj in Curation.objects.filter(tags=change_id):
+            obj.resource.reindex()
+        objects = Account.objects.filter(tags=object_id).update(push__tags=change_id)
+        objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
+        for obj in Account.objects.filter(tags=change_id):
+            obj.reindex()
 
     messages.success(request, 'Changed %s to %s' % (object_id, change_id))
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
@@ -249,7 +257,8 @@ def tags_change(request, object_id, change_id):
 @user_passes_test(lambda u: u.is_superuser)
 def tags_remove(request, object_id):
     object_id = unquote(object_id)
-    curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    objects = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    objects = Account.objects.filter(tags=object_id).update(pull__tags=object_id)
     messages.success(request, 'Removed - %s' % object_id)
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
 

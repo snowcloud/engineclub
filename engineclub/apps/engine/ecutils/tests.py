@@ -37,3 +37,27 @@ class MongoTestCase(TestCase):
             if collection == 'system.indexes':
                 continue
             connection.get_db().drop_collection(collection)
+
+class SettingTest(MongoTestCase):
+    """docstring for SettingTest"""
+
+    def test_setting(self):
+        from models import Setting
+
+        TESTKEY = 'test'
+        TESTVALUE = 'wabbit'
+        TESTVALUE_DICT = {'one': 'potato', 'two': 'potatoes'}
+
+        setting, created = Setting.objects.get_or_create(key=TESTKEY)
+        self.assertTrue(created)
+        setting.value['data'] = TESTVALUE
+        setting.save()
+
+        setting.reload()
+        self.assertEqual(setting.value['data'], TESTVALUE)
+
+        setting.value['data'] = TESTVALUE_DICT
+        setting.save()
+
+        setting.reload()
+        self.assertEqual(setting.value['data'], TESTVALUE_DICT)
