@@ -14,6 +14,12 @@ from django.conf import settings
 
 class PlainForm(forms.Form):
     """docstring for ClassName"""
+
+    def __init__(self, *args, **kwargs):
+        if 'label_suffix' not in kwargs:
+            kwargs['label_suffix'] = ''
+        super(PlainForm, self).__init__(*args, **kwargs)
+
     def _html_output(self, normal_row, error_row, row_ender, help_text_html, errors_on_separate_row, checkbox_row=''):
         """
         Helper function for outputting HTML. Used by as_table(), as_ul(), as_p().
