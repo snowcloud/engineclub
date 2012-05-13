@@ -1,0 +1,82 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}Tags{% endblock %}
+
+{% block breadcrumb-add %}
+  <li class="current"><a href="#">Tags</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-tags %}active{% endblock %}
+
+
+{% block module-content %}
+  <h2>Tags central</h2>
+
+<!--    <dl class="sub-nav">
+    <dt>Actions:</dt>
+    <dd><a href="#">sdasdf</a></dd>
+  </dl>
+ -->
+  <div id="loading">working...</div>
+
+  <form class="nice form" action="." method="POST" id="fixform">{% csrf_token %}
+  <fieldset>
+    <legend><span>Choose your fix options:</span></legend>
+
+    {{ form.as_plain }}
+
+    <input type="submit" name="result" value="Fix them now" id="submit_button">
+  </fieldset>
+  </form>
+
+<hr>
+
+<table>
+{% for object in objects %}
+  {% ifchanged %}<tr><td colspan="3"><h3 id="alpha_{{ object.0 }}" class="alpha">{{ object.0 }}</h3></td></tr>{% endifchanged %}
+  <tr>
+    <td>&nbsp;</td>
+    <td>"{{ object }}"</td>
+    <td>
+      <form class="inline" action="." method="POST" id="tagupdate|{{object|urlencode|default:'_'}}">{% csrf_token %}
+        <input type="hidden" name="tag_id" value="tagupdate|{{object|urlencode|default:'_'}}">
+        <input type="submit" name="tag_process" value="remove">
+        <input type="submit" name="tag_process" value="upper">
+        <input type="submit" name="tag_process" value="lower">
+        <input type="text" class="" name="change_tag">
+        <input type="submit" name="tag_process" value="change">
+      </form>
+    </td>
+  </tr>
+{% empty %}
+  <tr>no tags found</tr>
+{% endfor %}
+  
+  
+</table>
+{% comment %}
+  
+<ul>
+{% for object in objects %}
+  <li>{% ifchanged %}<h3 id="alpha_{{ object.0 }}" class="alpha">{{ object.0 }}</h3>{% endifchanged %} "{{ object }}" &nbsp;&nbsp;&nbsp;
+     <a href="{% url 'cab_tags_remove' object|urlencode %}">remove</a> 
+    | <a href="{% url 'cab_tags_upper' object|urlencode %}">upper</a> 
+    | <a href="{% url 'cab_tags_lower' object|urlencode %}">lower</a> 
+    | <a href="{% url 'cab_tags_edit' object|urlencode %}">change...</a>
+  </li>
+{% empty %}
+  <li>no tags found</li>
+{% endfor %}
+</ul>
+{% endcomment %}
+
+{% endblock %}
+
+{% block document-ready %}
+  $('#submit_button').click(function() {
+    $('#loading').show();
+  })
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% comment %}
+has_other_pages {{ objects.has_other_pages }}<br>
+has_previous {{ objects.has_previous }}<br>
+previous_page_number {{ objects.previous_page_number }}<br>
+number {{ objects.number }}<br>
+num_pages {{ objects.paginator.num_pages }}<br>
+next_page_number {{ objects.next_page_number }}<br>
+has_next {{ objects.has_next }}<br>
+paginator.p_start {{ objects.paginator.p_start }}<br>
+paginator.p_current {{ objects.paginator.p_current }}<br>
+paginator.p_end {{ objects.paginator.p_end }}<br>
+paginator.show_ellipsis1 {{ objects.paginator.show_ellipsis1 }}<br>
+paginator.show_ellipsis2 {{ objects.paginator.show_ellipsis2 }}<br>
+<hr>
+{% endcomment %}
+
+
+{% if objects.has_other_pages %} 
+<ul class="pagination">
+  {% if objects.has_previous %}
+      <li class=""><a href="?page={{ objects.previous_page_number }}">&laquo;</a></li>
+  {% else %}
+    <li class="unavailable"><a href="">&laquo;</a></li>
+  {% endif %}
+
+  {% if objects.paginator.p_display == 0 %} 
+  	{% for i in objects.paginator.p_current %}
+      <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
+    {% endfor %}
+
+  {% elif objects.paginator.p_display == 1 %}
+    {% for i in objects.paginator.p_current %}
+      <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
+    {% endfor %}
+    <li class="unavailable"><a href="">&hellip;</a></li>
+    {% for i in objects.paginator.p_end %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endfor %}
+
+  {% elif objects.paginator.p_display == 2 %}
+    {% for i in objects.paginator.p_start %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endfor %}
+    <li class="unavailable"><a href="">&hellip;</a></li>
+    {% for i in objects.paginator.p_current %}
+      <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
+    {% endfor %}
+
+  {% else %}
+    {% for i in objects.paginator.p_start %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endfor %}
+    {% if objects.paginator.show_ellipsis1 %} 
+      <li class="unavailable"><a href="">&hellip;</a></li>    
+    {% endif %}
+    {% for i in objects.paginator.p_current %}
+      <li {% if i == objects.number  %}class="current"><a href="">{% else %}><a href="?page={{ i }}">{% endif %}{{ i }}</a></li>
+    {% endfor %}
+    {% if objects.paginator.show_ellipsis2 %} 
+      <li class="unavailable"><a href="">&hellip;</a></li>    
+    {% endif %}
+    {% for i in objects.paginator.p_end %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endfor %}
+
+  {% endif %}
+
+  {% if objects.has_next %}
+      <li class=""><a href="?page={{ objects.next_page_number }}">&raquo;</a></li>
+  {% else %}
+    <li class="unavailable"><a href="">&raquo;</a></li>
+  {% endif %}
+</ul>
+
+{% endif %}

@@ -37,19 +37,20 @@
 
   </div>
 {% endblock %}
-  {% block script-extra %}
+{% block script-extra %}
   <script type="text/javascript">
-   $(window).load(function() {
-     $('#carousel').orbit({
-      animation: 'fade',
-      animationSpeed: 1600,
-      pauseOnHover: true,
-      startClockOnMouseOut: true,
-      // directionalNav: true,
-      captions: true,
-      bullets: true,
-      // bulletThumbs: true
+     $(window).load(function() {
+         $('#carousel').orbit({
+            animation: 'fade',
+            animationSpeed: 1600,
+            pauseOnHover: true,
+            startClockOnMouseOut: true,
+            // directionalNav: true,
+            captions: true,
+            bullets: true
+         });
+         $('.carousel').css('visibility','visible');
      });
      $('.carousel').css('visibility','visible');
-   });
+
 </script>{% endblock %}

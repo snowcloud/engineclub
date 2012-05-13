@@ -22,7 +22,7 @@ from resources.models import Resource
 import logging
 logger = logging.getLogger('aliss')
 
-def load_locations(path, dbname):
+def load_locations(path, dbname, drop=False):
 
     print '... from %s:%s' % (dbname, path)
     connection = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
@@ -62,7 +62,8 @@ def load_locations(path, dbname):
 
     coll = db.location
 
-    coll.drop()
+    if drop:
+        coll.drop()
 
     # load_os_gb(path, coll)
     load_os_gb_full(path, coll, sct=True)
@@ -417,7 +418,7 @@ class ParserTarget:
         elif tag == 'tag':
             self.current_node.tags[attrib['k']] = unicode(attrib['v']).encode('utf-8')
     def end(self, tag):
-        if tag == 'node' and (self.current_node.tags.get('place') in ['suburb', 'village', 'hamlet', 'locality', 'town', 'city']):
+        if tag == 'node' and (self.current_node.tags.get('place') in ['suburb', 'village', 'hamlet', 'locality', 'town', 'city', 'county']):
             if self.current_node.name == '':
                 print 'discarding %s - no name in %s' % (self.current_node.id, self.current_node.tags)
             else:

@@ -1,0 +1,333 @@
+======================================
+Engineclub API
+======================================
+
+.. rubric:: This API is under rapid development at the moment, and is not stable.
+
+
+
+.. Authentication
+
+Authentication
+=========================
+Authentication is not used yet- the API is currently read-only and provides public data.
+
+.. Retrieve an item by id
+
+Retrieve a resource by id
+=========================
+
+Parameters
+----------
+
+An optional callback parameter can be added to provide a user defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+
+Response
+--------
+
+json response is dict::
+
+    { 'data': [{'item': data, 'item': data, ...}], 'error': "string message if error..." }
+
+==================      =====================================
+item name               type
+==================      =====================================
+id                      ObjectID *
+title                   string
+description             string
+resourcetype            string ['web', 'group', ...]
+uri                     string [web URI format]
+locations               list of lat,lon as strings
+locationnames           list location names as strings
+service_area            not implemented
+tags                    list of string
+event_start             date time as string, "2011-09-24T19:30:00Z"
+event_end               date time as string, "2011-09-24T19:30:00Z"
+relatedresources        not implemented
+lastmodified            date time as string, "2011-09-24T19:30:00Z"
+==================      =====================================
+
+url: /api/resources/[resource id]/
+
+example: `<http://www.aliss.org/api/resources/4d93d88c3de074fca600031e/>`_
+
+method: GET
+
+access: public
+
+**Example of successful result**::
+
+    {
+        "data": [
+            {
+                "last_modified": "2011-04-06 15:58:23",
+                "description": "Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... ",
+                "title": "Womens Mental Health Project",
+                "locations": [ [55.9428121047, -3.22066131243] ], 
+                "locationnames": [ "EH11 2DZ, Sighthill/Gorgie, of Edinburgh" ], 
+                "tags": [ "women", "mental health", "depression", "sexual abuse" ],
+                "id": "4d964f2489cb161ac5000000",
+                "resource_type": "",
+                "uri": "http://www.gilmerton.btik.com/WomensMentalHealthProject"
+            }
+        ],
+        "errors": [{}]
+    }
+
+If there has been an error, data will be an empty array, and errors will be an array holding a dict [{ 'code': xx, 'message': 'error message(s) here...'}]. Error codes are not currently defined. 
+
+.. Search resources
+
+Retrieve resources by search parameters
+=======================================
+
+Parameters
+----------
+
+==================      ================  ==========================
+parameter name          required          value
+==================      ================  ==========================
+location                no, if query      A post code or place name.
+query	                no, if location   Keywords, can be comma-separated.
+start                   no                This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.
+max                     no                This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
+boostlocation           no                An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.
+accounts                no                A list of ALISS.org account IDs, separated a '+'. Ignored if collections parameter is used.
+collections             no                A list of ALISS.org collection IDs, separated a '+'. If collections parameter is present, accounts parameter will be ignored.
+event                   no                Only '*' is implemented- return only events, and only those that start and/or end today or in the future.
+output                  no                Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no                User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ================  ==========================
+
+Response
+--------
+
+==================      =====================================
+item name               type
+==================      =====================================
+location                list of strings, with lat/lon used in search
+query                   text used in search
+start                   index of first document returned from result set
+max                     number of documents returned, if available
+numfound                number of documents in total result set
+boostlocation           number used in search
+accounts                accounts used in search
+collections             collections used in search
+event                   event param used, or null
+output                  output format used
+callback                callback function name passed in search
+results                 list of results- see format below
+
+==================      =====================================
+
+Result format
+-------------
+
+==================      =====================================
+item name               type
+==================      =====================================
+id                      ObjectID *
+title                   string
+description             string
+uri                     string [web URI format]
+locations               list of lat,lon as strings
+locationnames           list location names as strings
+tags                    list of string
+accounts                A list of ALISS.org account IDs, of accounts curating this resource
+score                   real number, higher numbers reflect better match with query
+event_start             date time as string, "2011-09-24T19:30:00Z"
+event_end               date time as string, "2011-09-24T19:30:00Z"
+relatedresources        not implemented
+lastmodified            not implemented
+==================      =====================================
+
+
+
+url: /api/resources/search/
+
+examples:
+
+* `<http://www.aliss.org/api/resources/search/?location=paisley&query=mental%20health&max=10&start=0&boostlocation=50>`_
+* `<http://www.aliss.org/api/resources/search/?location=edinburgh&query=mental%20health&max=10&start=0&boostlocation=10&accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000>`_
+* `<http://www.aliss.org/api/resources/search/?location=gorgie&query=dance&event=*>`_
+* AJAX form example: `<http://demo.aliss.org/ajax/>`_
+
+method: GET
+
+access: public
+
+**Example of successful result**::
+    
+    {
+        "errors": {},
+        "data":
+        [
+            {
+                "boostlocation": 30.0, 
+                "location": [ "55.935160000000003, -3.2425099999999998" ], 
+                "start": 200, 
+                "max": "100", 
+                "numfound": "654",
+                "query": "dance", 
+                "accounts": "",
+                "collections": "",
+                "results": 
+                [
+                    {
+                        "score": 9.6231939999999998, 
+                        "accounts": [ "4d9b99d889cb16665c000000" ], 
+                        "description": "8p.m., Sat 17 December 2011\nDoors open 7.30pm, dancing from 8pm to midnight.\nTickets ordered online will be on the door for collection. \nAs these are fundraising ceilidhs for Scots Music Group we do not offer a member price. \nFull-price tickets on the night are \u00a310/\u00a38 conc.\nLicensed bar. \nPlease note \u2013 only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.", 
+                        "title": "Scots Music Group- Ceilidh with Da Hooley", 
+                        "locations": [ "55.9428121047, -3.22066131243" ], 
+                        "locationnames": [ "EH11 2DZ, Sighthill/Gorgie, of Edinburgh" ], 
+                        "tags": [ "dance" ], 
+                        "id": "4eb95d2b3de074399b000000", 
+                        "event_start": "2011-12-17T20:00:00Z", 
+                        "uri": "http://www.scotsmusic.org/events/507/"
+                    },
+                    { ... other results ... }
+                ], 
+                "event": "*",
+                "output": "json"
+            }
+        ]
+    }
+
+.. publish data
+
+Retrieve resources by batch
+=======================================
+
+Parameters
+----------
+
+==================      ==========    ==========================
+parameter name          required      value
+==================      ==========    ==========================
+start                   no            This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results. Default is 0.
+max                     no            This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.
+since                   no            Return resources modified since this date/time [not implemented]
+output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ==========    ==========================
+
+Response
+--------
+
+==================      =====================================
+item name               type
+==================      =====================================
+to do                   to do
+==================      =====================================
+
+
+
+url: /api/resources/publish-data/
+
+examples:
+
+* `<http://www.aliss.org/api/resources/publishdata/?start=0&max=10>`_
+* `<http://www.aliss.org/api/resources/publishdata/>`_
+
+method: GET
+
+access: public
+
+
+.. Submit an item
+
+Submit an item
+=========================
+
+==================      =====================================
+field name              type
+==================      =====================================
+==================      =====================================
+
+
+.. Update an item
+
+Update an item
+=========================
+
+==================      =====================================
+field name              type
+==================      =====================================
+==================      =====================================
+
+.. Submit a moderation
+
+Submit a moderation
+=========================
+
+==================      =====================================
+field name              type
+==================      =====================================
+==================      =====================================
+
+
+.. Submit an alert for an item
+
+Submit an alert for an item
+===========================
+
+**THIS NEEDS ALIGNED WITH MODERATION**
+ 
+include alerts over errors, inappropriate content
+could be done as an update, with attributes indicating a problem, but
+more obvious if an alert, and signifies importance.
+could be done as an update, but also have as an alert as shortcut
+
+==================      =====================================
+field name              type
+==================      =====================================
+==================      =====================================
+
+.. Retrieve tags in use
+
+Retrieve tags in use
+===========================
+
+Parameters
+----------
+
+==================      ==========    ==========================
+parameter name          required      value
+==================      ==========    ==========================
+match                   no            Text to match, case-insensitive, will match any tags in use which begin with string, eg 'men' will match 'mental health, Mental Health, mentoring'). Must be 3 characters or more if used. If not used, all tags will be returned.
+output                  no            Short name for desired response format- default is 'json', and only json is supported at the moment.
+callback                no            User defined jsonp callback function name- the json result will be wrapped in a function with the name of the 'callback' parameter.
+==================      ==========    ==========================
+
+Response
+--------
+
+==================      =====================================
+item name               type
+==================      =====================================
+data                    List of strings, alphabetically sorted.
+==================      =====================================
+
+json response is dict::
+
+    { "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }
+
+url: /api/tags/
+
+examples:
+
+* `<http://www.aliss.org/api/tags/>`_
+* `<http://www.aliss.org/api/tags/?match=dan>`_
+
+method: GET
+
+access: public
+
+**Example of successful result**::
+    
+    {
+        "errors": {},
+        "data": ["Dance", "Dance Classes", "Dance classes", "dance"]
+    }
+
+

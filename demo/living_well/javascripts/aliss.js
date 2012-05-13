@@ -4,7 +4,7 @@ function validate_location(location_name){
     $.ajax({
         data: {location: location_name, max: 1},
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: function(response){
 
             if(!response.errors.length && response.data.length > 0){
@@ -27,7 +27,7 @@ function aliss_query(defaults, handler){
     $.ajax({
         data: defaults,
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: handler
     });
 }
@@ -96,7 +96,7 @@ function aliss_search(data, div_id, paginate, google_map, result_msg, no_result_
 
         data: defaults,
         dataType: 'jsonp',
-        url: 'http://aliss.org/api/resources/search/',
+        url: 'http://www.aliss.org/api/resources/search/',
         success: function(response){
 
             var count = response.data[0].results.length;
@@ -126,9 +126,9 @@ function aliss_search(data, div_id, paginate, google_map, result_msg, no_result_
                 $.each(response.data[0].results, function(index, value){
                     var url = value.uri;
                     if (!url || url === ''){
-                        url = 'http://aliss.org/depot/resource/' + value.id;
+                        url = 'http://www.aliss.org/depot/resource/' + value.id;
                     }
-                    items.push('<dt><a href="' + url + '">' + value.title + '</a></dt><dd><p>' + value.description.replace(/\n+/g,"</p><p>") + '</p></dd>'); //<a class="report" href="http://aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
+                    items.push('<dt><a href="' + url + '">' + value.title + '</a></dt><dd><p>' + value.description.replace(/\n+/g,"</p><p>") + '</p></dd>'); //<a class="report" href="http://www.aliss.org/depot/resource/' + value.id + '/report/">Report resource</a></li><hr/>');
                     if (value.locations[0]){
                         var latlng = value.locations[0].split(', ');
                         var glatlng = new google.maps.LatLng(latlng[0], latlng[1]);

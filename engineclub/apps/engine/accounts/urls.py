@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     url(r'^find/$', 'accounts.views.accounts_find', name='accounts_find'),
     url(r'^(?P<object_id>\w+)/$', 'accounts.views.detail', name='accounts_detail'),
     url(r'^(?P<object_id>\w+)/edit/$', 'accounts.views.edit', name='accounts_edit'),
+    url(r'^(?P<object_id>\w+)/remove/$', 'accounts.views.remove', name='accounts_remove'),
 
     )

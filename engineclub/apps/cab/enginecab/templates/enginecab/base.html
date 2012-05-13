@@ -1,13 +1,15 @@
-{% extends "base.html" %}
+{% extends "base_tabbed.html" %}
 {% load url from future %}
 
 {% block title %}engine cab{% endblock %}
 {% block body_class %}cab{% endblock %}
 
+{% block cab-tab %}active{% endblock cab-tab %}
+
 {% block breadcrumbs %}
 <ul class="breadcrumbs">
-    <li><a href="{% url 'cab' %}">Engine Cab</a></li>
-    {% block breadcrumb-add %}{% endblock breadcrumb-add %}
+  <li><a href="{% url 'cab' %}">Engine Cab</a></li>
+  {% block breadcrumb-add %}{% endblock breadcrumb-add %}
 </ul>
 {% endblock %}
 
@@ -18,15 +20,23 @@
 
 <div class="row">
 
-	<div class="module-nav">
-		<dl class="nice tabs vertical">
-			<dd><a class="{% block mod-nav-users %}{% endblock %}" href="{% url 'cab' %}">Users</a></dd>
-			<dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url 'cab_issues' %}">Issues</a></dd>
-			<dd><a class="{% block mod-nav-lists %}{% endblock %}" href="{% url 'cab_lists' %}">Lists</a></dd>
-			<dd><a class="{% block mod-nav-resources %}{% endblock %}" href="{% url 'cab_resources' %}">Resources</a></dd>
-		</dl>
-	</div>
-	<div class="module-content">{% block module-content %}{% endblock %}</div>
+  <div class="module-nav">
+    <dl class="nice tabs vertical">
+      <dd><a class="{% block mod-nav-users %}{% endblock %}" href="{% url 'cab' %}">Users</a></dd>
+      <dd><a class="{% block mod-nav-issues %}{% endblock %}" href="{% url 'cab_issues' %}">Issues</a></dd>
+      <dd><a class="{% block mod-nav-lists %}{% endblock %}" href="{% url 'cab_lists' %}">Lists</a></dd>
+      <dd><a class="{% block mod-nav-resources %}{% endblock %}" href="{% url 'cab_resources' %}">Resources</a></dd>
+      <dd><a class="{% block mod-nav-flatpages %}{% endblock %}" href="/admin/flatpages/flatpage/">Flatpages</a></dd>
+      <dd><a class="{% block mod-nav-help %}{% endblock %}" href="/admin/help/">Help</a></dd>
+      {% if user.username == 'derek' %} 
+        <dd><a class="{% block mod-nav-locations %}{% endblock %}" href="{% url 'cab_locations' %}">Locations</a></dd>  
+      {% endif %}
+      {% if user.is_superuser %} 
+        <dd><a class="{% block mod-nav-tags %}{% endblock %}" href="{% url 'cab_tags' %}">Tags</a></dd>  
+      {% endif %}
+    </dl>
+  </div>
+  <div class="module-content">{% block module-content %}{% endblock %}</div>
 </div>
 
 {% endblock %}

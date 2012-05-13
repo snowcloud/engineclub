@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Engineclub API &mdash; Engineclub 0.6.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Engineclub 0.6.0 documentation" href="../index.html" />
+    <link rel="next" title="Data model" href="data-model.html" />
+    <link rel="prev" title="Engineclub" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="data-model.html" title="Data model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Engineclub"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Engineclub 0.6.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="engineclub-api">
+<h1>Engineclub API<a class="headerlink" href="#engineclub-api" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">This API is under rapid development at the moment, and is not stable.</p>
+<div class="section" id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>Authentication is not used yet- the API is currently read-only and provides public data.</p>
+</div>
+<div class="section" id="retrieve-a-resource-by-id">
+<h2>Retrieve a resource by id<a class="headerlink" href="#retrieve-a-resource-by-id" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p>An optional callback parameter can be added to provide a user defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</p>
+</div>
+<div class="section" id="response">
+<h3>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h3>
+<p>json response is dict:</p>
+<div class="highlight-python"><pre>{ 'data': [{'item': data, 'item': data, ...}], 'error': "string message if error..." }</pre>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>ObjectID *</td>
+</tr>
+<tr class="row-odd"><td>title</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>resourcetype</td>
+<td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
+</tr>
+<tr class="row-even"><td>uri</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>list of lat,lon as strings</td>
+</tr>
+<tr class="row-even"><td>locationnames</td>
+<td>list location names as strings</td>
+</tr>
+<tr class="row-odd"><td>service_area</td>
+<td>not implemented</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>event_start</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-even"><td>event_end</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-odd"><td>relatedresources</td>
+<td>not implemented</td>
+</tr>
+<tr class="row-even"><td>lastmodified</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p>url: /api/resources/[resource id]/</p>
+<p>example: <a class="reference external" href="http://www.aliss.org/api/resources/4d93d88c3de074fca600031e/">http://www.aliss.org/api/resources/4d93d88c3de074fca600031e/</a></p>
+<p>method: GET</p>
+<p>access: public</p>
+<p><strong>Example of successful result</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s">&quot;last_modified&quot;</span><span class="p">:</span> <span class="s">&quot;2011-04-06 15:58:23&quot;</span><span class="p">,</span>
+            <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;Womens Mental Health Project - 0131 666 1606 (Part of Health in Mind) Oasis is a project for women from South Edinburgh who have mental health difficulties ... &quot;</span><span class="p">,</span>
+            <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Womens Mental Health Project&quot;</span><span class="p">,</span>
+            <span class="s">&quot;locations&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mf">55.9428121047</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.22066131243</span><span class="p">]</span> <span class="p">],</span>
+            <span class="s">&quot;locationnames&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;EH11 2DZ, Sighthill/Gorgie, of Edinburgh&quot;</span> <span class="p">],</span>
+            <span class="s">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;women&quot;</span><span class="p">,</span> <span class="s">&quot;mental health&quot;</span><span class="p">,</span> <span class="s">&quot;depression&quot;</span><span class="p">,</span> <span class="s">&quot;sexual abuse&quot;</span> <span class="p">],</span>
+            <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;4d964f2489cb161ac5000000&quot;</span><span class="p">,</span>
+            <span class="s">&quot;resource_type&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+            <span class="s">&quot;uri&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.gilmerton.btik.com/WomensMentalHealthProject&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[{}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If there has been an error, data will be an empty array, and errors will be an array holding a dict [{ &#8216;code&#8217;: xx, &#8216;message&#8217;: &#8216;error message(s) here...&#8217;}]. Error codes are not currently defined.</p>
+</div>
+</div>
+<div class="section" id="retrieve-resources-by-search-parameters">
+<h2>Retrieve resources by search parameters<a class="headerlink" href="#retrieve-resources-by-search-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="7%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>location</td>
+<td>no, if query</td>
+<td>A post code or place name.</td>
+</tr>
+<tr class="row-odd"><td>query</td>
+<td>no, if location</td>
+<td>Keywords, can be comma-separated.</td>
+</tr>
+<tr class="row-even"><td>start</td>
+<td>no</td>
+<td>This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results Default is 0.</td>
+</tr>
+<tr class="row-odd"><td>max</td>
+<td>no</td>
+<td>This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.</td>
+</tr>
+<tr class="row-even"><td>boostlocation</td>
+<td>no</td>
+<td>An integer number between 0 and 100. Default is 30. Higher values will favour results close to the location, but they may be less relevant to query.</td>
+</tr>
+<tr class="row-odd"><td>accounts</td>
+<td>no</td>
+<td>A list of ALISS.org account IDs, separated a &#8216;+&#8217;. Ignored if collections parameter is used.</td>
+</tr>
+<tr class="row-even"><td>collections</td>
+<td>no</td>
+<td>A list of ALISS.org collection IDs, separated a &#8216;+&#8217;. If collections parameter is present, accounts parameter will be ignored.</td>
+</tr>
+<tr class="row-odd"><td>event</td>
+<td>no</td>
+<td>Only &#8216;*&#8217; is implemented- return only events, and only those that start and/or end today or in the future.</td>
+</tr>
+<tr class="row-even"><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr class="row-odd"><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h3>Response<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>location</td>
+<td>list of strings, with lat/lon used in search</td>
+</tr>
+<tr class="row-odd"><td>query</td>
+<td>text used in search</td>
+</tr>
+<tr class="row-even"><td>start</td>
+<td>index of first document returned from result set</td>
+</tr>
+<tr class="row-odd"><td>max</td>
+<td>number of documents returned, if available</td>
+</tr>
+<tr class="row-even"><td>numfound</td>
+<td>number of documents in total result set</td>
+</tr>
+<tr class="row-odd"><td>boostlocation</td>
+<td>number used in search</td>
+</tr>
+<tr class="row-even"><td>accounts</td>
+<td>accounts used in search</td>
+</tr>
+<tr class="row-odd"><td>collections</td>
+<td>collections used in search</td>
+</tr>
+<tr class="row-even"><td>event</td>
+<td>event param used, or null</td>
+</tr>
+<tr class="row-odd"><td>output</td>
+<td>output format used</td>
+</tr>
+<tr class="row-even"><td>callback</td>
+<td>callback function name passed in search</td>
+</tr>
+<tr class="row-odd"><td>results</td>
+<td>list of results- see format below</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="result-format">
+<h3>Result format<a class="headerlink" href="#result-format" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>ObjectID *</td>
+</tr>
+<tr class="row-odd"><td>title</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>uri</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-even"><td>locations</td>
+<td>list of lat,lon as strings</td>
+</tr>
+<tr class="row-odd"><td>locationnames</td>
+<td>list location names as strings</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>accounts</td>
+<td>A list of ALISS.org account IDs, of accounts curating this resource</td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td>real number, higher numbers reflect better match with query</td>
+</tr>
+<tr class="row-odd"><td>event_start</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-even"><td>event_end</td>
+<td>date time as string, &#8220;2011-09-24T19:30:00Z&#8221;</td>
+</tr>
+<tr class="row-odd"><td>relatedresources</td>
+<td>not implemented</td>
+</tr>
+<tr class="row-even"><td>lastmodified</td>
+<td>not implemented</td>
+</tr>
+</tbody>
+</table>
+<p>url: /api/resources/search/</p>
+<p>examples:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=paisley&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=50">http://www.aliss.org/api/resources/search/?location=paisley&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=50</a></li>
+<li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=edinburgh&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=10&amp;accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000">http://www.aliss.org/api/resources/search/?location=edinburgh&amp;query=mental%20health&amp;max=10&amp;start=0&amp;boostlocation=10&amp;accounts=4d9b99d889cb16665c000000+4d9c3ced89cb162e5e000000</a></li>
+<li><a class="reference external" href="http://www.aliss.org/api/resources/search/?location=gorgie&amp;query=dance&amp;event=*">http://www.aliss.org/api/resources/search/?location=gorgie&amp;query=dance&amp;event=*</a></li>
+<li>AJAX form example: <a class="reference external" href="http://demo.aliss.org/ajax/">http://demo.aliss.org/ajax/</a></li>
+</ul>
+<p>method: GET</p>
+<p>access: public</p>
+<p><strong>Example of successful result</strong>:</p>
+<div class="highlight-python"><pre>{
+    "errors": {},
+    "data":
+    [
+        {
+            "boostlocation": 30.0,
+            "location": [ "55.935160000000003, -3.2425099999999998" ],
+            "start": 200,
+            "max": "100",
+            "numfound": "654",
+            "query": "dance",
+            "accounts": "",
+            "collections": "",
+            "results":
+            [
+                {
+                    "score": 9.6231939999999998,
+                    "accounts": [ "4d9b99d889cb16665c000000" ],
+                    "description": "8p.m., Sat 17 December 2011\nDoors open 7.30pm, dancing from 8pm to midnight.\nTickets ordered online will be on the door for collection. \nAs these are fundraising ceilidhs for Scots Music Group we do not offer a member price. \nFull-price tickets on the night are \u00a310/\u00a38 conc.\nLicensed bar. \nPlease note \u2013 only alcohol purchased from the bar may be consumed on the premises. Water is available free of charge.",
+                    "title": "Scots Music Group- Ceilidh with Da Hooley",
+                    "locations": [ "55.9428121047, -3.22066131243" ],
+                    "locationnames": [ "EH11 2DZ, Sighthill/Gorgie, of Edinburgh" ],
+                    "tags": [ "dance" ],
+                    "id": "4eb95d2b3de074399b000000",
+                    "event_start": "2011-12-17T20:00:00Z",
+                    "uri": "http://www.scotsmusic.org/events/507/"
+                },
+                { ... other results ... }
+            ],
+            "event": "*",
+            "output": "json"
+        }
+    ]
+}</pre>
+</div>
+</div>
+</div>
+<div class="section" id="retrieve-resources-by-batch">
+<h2>Retrieve resources by batch<a class="headerlink" href="#retrieve-resources-by-batch" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="5%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>start</td>
+<td>no</td>
+<td>This is the zero based index of the first document to be returned from the result set. Use with max to implement paging, eg max=10, start=10 would give second page of results. Default is 0.</td>
+</tr>
+<tr class="row-odd"><td>max</td>
+<td>no</td>
+<td>This is the number of documents to be returned starting at index start, up to a maximum of 100. Default is 100.</td>
+</tr>
+<tr class="row-even"><td>since</td>
+<td>no</td>
+<td>Return resources modified since this date/time [not implemented]</td>
+</tr>
+<tr class="row-odd"><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr class="row-even"><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h3>Response<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>to do</td>
+<td>to do</td>
+</tr>
+</tbody>
+</table>
+<p>url: /api/resources/publish-data/</p>
+<p>examples:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/resources/publishdata/?start=0&amp;max=10">http://www.aliss.org/api/resources/publishdata/?start=0&amp;max=10</a></li>
+<li><a class="reference external" href="http://www.aliss.org/api/resources/publishdata/">http://www.aliss.org/api/resources/publishdata/</a></li>
+</ul>
+<p>method: GET</p>
+<p>access: public</p>
+</div>
+</div>
+<div class="section" id="submit-an-item">
+<h2>Submit an item<a class="headerlink" href="#submit-an-item" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="update-an-item">
+<h2>Update an item<a class="headerlink" href="#update-an-item" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="submit-a-moderation">
+<h2>Submit a moderation<a class="headerlink" href="#submit-a-moderation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="submit-an-alert-for-an-item">
+<h2>Submit an alert for an item<a class="headerlink" href="#submit-an-alert-for-an-item" title="Permalink to this headline">¶</a></h2>
+<p><strong>THIS NEEDS ALIGNED WITH MODERATION</strong></p>
+<p>include alerts over errors, inappropriate content
+could be done as an update, with attributes indicating a problem, but
+more obvious if an alert, and signifies importance.
+could be done as an update, but also have as an alert as shortcut</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="retrieve-tags-in-use">
+<h2>Retrieve tags in use<a class="headerlink" href="#retrieve-tags-in-use" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="4%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">parameter name</th>
+<th class="head">required</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>match</td>
+<td>no</td>
+<td>Text to match, case-insensitive, will match any tags in use which begin with string, eg &#8216;men&#8217; will match &#8216;mental health, Mental Health, mentoring&#8217;). Must be 3 characters or more if used. If not used, all tags will be returned.</td>
+</tr>
+<tr class="row-odd"><td>output</td>
+<td>no</td>
+<td>Short name for desired response format- default is &#8216;json&#8217;, and only json is supported at the moment.</td>
+</tr>
+<tr class="row-even"><td>callback</td>
+<td>no</td>
+<td>User defined jsonp callback function name- the json result will be wrapped in a function with the name of the &#8216;callback&#8217; parameter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id6">
+<h3>Response<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">item name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data</td>
+<td>List of strings, alphabetically sorted.</td>
+</tr>
+</tbody>
+</table>
+<p>json response is dict:</p>
+<div class="highlight-python"><pre>{ "data": ["string", "string", "string"...], "errors": {"code": "string message", ...} }</pre>
+</div>
+<p>url: /api/tags/</p>
+<p>examples:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aliss.org/api/tags/">http://www.aliss.org/api/tags/</a></li>
+<li><a class="reference external" href="http://www.aliss.org/api/tags/?match=dan">http://www.aliss.org/api/tags/?match=dan</a></li>
+</ul>
+<p>method: GET</p>
+<p>access: public</p>
+<p><strong>Example of successful result</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Dance&quot;</span><span class="p">,</span> <span class="s">&quot;Dance Classes&quot;</span><span class="p">,</span> <span class="s">&quot;Dance classes&quot;</span><span class="p">,</span> <span class="s">&quot;dance&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Engineclub API</a><ul>
+<li><a class="reference internal" href="#authentication">Authentication</a></li>
+<li><a class="reference internal" href="#retrieve-a-resource-by-id">Retrieve a resource by id</a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#response">Response</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#retrieve-resources-by-search-parameters">Retrieve resources by search parameters</a><ul>
+<li><a class="reference internal" href="#id1">Parameters</a></li>
+<li><a class="reference internal" href="#id2">Response</a></li>
+<li><a class="reference internal" href="#result-format">Result format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#retrieve-resources-by-batch">Retrieve resources by batch</a><ul>
+<li><a class="reference internal" href="#id3">Parameters</a></li>
+<li><a class="reference internal" href="#id4">Response</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#submit-an-item">Submit an item</a></li>
+<li><a class="reference internal" href="#update-an-item">Update an item</a></li>
+<li><a class="reference internal" href="#submit-a-moderation">Submit a moderation</a></li>
+<li><a class="reference internal" href="#submit-an-alert-for-an-item">Submit an alert for an item</a></li>
+<li><a class="reference internal" href="#retrieve-tags-in-use">Retrieve tags in use</a><ul>
+<li><a class="reference internal" href="#id5">Parameters</a></li>
+<li><a class="reference internal" href="#id6">Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Engineclub</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data-model.html"
+                        title="next chapter">Data model</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/engine/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="data-model.html" title="Data model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Engineclub"
+             >previous</a> |</li>
+        <li><a href="../index.html">Engineclub 0.6.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

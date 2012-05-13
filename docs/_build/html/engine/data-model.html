@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data model &mdash; Engineclub 0.6.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Engineclub 0.6.0 documentation" href="../index.html" />
+    <link rel="prev" title="Engineclub API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api.html" title="Engineclub API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Engineclub 0.6.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="data-model">
+<h1>Data model<a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h1>
+<p>This data model is under rapid development at the moment, and is not stable.</p>
+<div class="section" id="resource">
+<span id="id1"></span><h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>ObjectID *</td>
+</tr>
+<tr class="row-odd"><td>title</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>resource_type</td>
+<td>string [&#8216;web&#8217;, &#8216;group&#8217;, ...]</td>
+</tr>
+<tr class="row-even"><td>uri</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
+</tr>
+<tr class="row-even"><td>service_area</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
+</tr>
+<tr class="row-odd"><td>calendar_event</td>
+<td><a class="reference internal" href="#calendarevent"><em>CalendarEvent</em></a></td>
+</tr>
+<tr class="row-even"><td>moderations</td>
+<td>list of <a class="reference internal" href="#moderation"><em>Moderation</em></a></td>
+</tr>
+<tr class="row-odd"><td>curations</td>
+<td>list of <a class="reference internal" href="#curation"><em>Curation</em></a></td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>related_resources</td>
+<td>list of <a class="reference internal" href="#relatedresource"><em>RelatedResource</em></a></td>
+</tr>
+<tr class="row-even"><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>item_metadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
+</tr>
+</tbody>
+</table>
+<p>* <a class="reference external" href="http://www.mongodb.org/display/DOCS/Object+IDs#ObjectIDs-BSONObjectIDSpecification">BSON ObjectID Specification</a></p>
+<p>? item_type organisation, class, one-off event,
+event scheduling</p>
+</div>
+<div class="section" id="relatedresource">
+<span id="id2"></span><h2>RelatedResource<a class="headerlink" href="#relatedresource" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>source</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
+</tr>
+<tr class="row-odd"><td>target</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
+</tr>
+<tr class="row-even"><td>rel_type</td>
+<td>string [&#8216;provider&#8217;, &#8216;about&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>item_metadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="location">
+<span id="id3"></span><h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
+<p><em>Revised to use Ordnance Survey data.</em></p>
+<p><em>Current fields support post code- more fields to be added for higher level units.</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>postcode</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>place_name</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>lat_lon</td>
+<td>list of float [float, float]</td>
+</tr>
+<tr class="row-even"><td>loc_type</td>
+<td>string [POSTCODE, POSTCODEDISTRICT, OSM_PLACENAME, GOOGLE_PLACENAME]</td>
+</tr>
+<tr class="row-odd"><td>accuracy</td>
+<td>int [1-6] 1=approximate, 6=accurate</td>
+</tr>
+<tr class="row-even"><td>district</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>country_code</td>
+<td>string [ SCT, ENG, WLS, NIR, GB ]</td>
+</tr>
+</tbody>
+</table>
+<p>ref source + URI</p>
+</div>
+<div class="section" id="calendarevent">
+<span id="id4"></span><h2>CalendarEvent<a class="headerlink" href="#calendarevent" title="Permalink to this headline">¶</a></h2>
+<p>Adds event data to Resource. Subset of W3C Calendar API: <a class="reference external" href="http://www.w3.org/TR/calendar-api/">http://www.w3.org/TR/calendar-api/</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>start</td>
+<td>datetime (day required, time optional) *</td>
+</tr>
+<tr class="row-odd"><td>end</td>
+<td>datetime (optional day and time) *</td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>string [&#8216;provisional&#8217;, &#8216;confirmed&#8217;, &#8216;cancelled&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>recurrence</td>
+<td>not used- will be <a class="reference internal" href="#calendarrepeatrule"><em>CalendarRepeatRule</em></a></td>
+</tr>
+</tbody>
+</table>
+<p>* a CalendarEvent must have a start date, but an end date is optional. Times are optional for both. Where no time is set, the datetime will be for midnight of the date, for example if start is set to 24 Sep 2011, the Engine will store &#8220;2011-09-24T00:00:00Z&#8221;</p>
+</div>
+<div class="section" id="calendarrepeatrule">
+<span id="id5"></span><h2>CalendarRepeatRule<a class="headerlink" href="#calendarrepeatrule" title="Permalink to this headline">¶</a></h2>
+<p>Not implemented. Will be subset of W3C Calendar API: <a class="reference external" href="http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface">http://www.w3.org/TR/calendar-api/#calendarrepeatrule-interface</a></p>
+</div>
+<div class="section" id="moderation">
+<span id="id6"></span><h2>Moderation<a class="headerlink" href="#moderation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>outcome</td>
+<td>string [&#8216;OK&#8217;, &#8216;BAD&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>note</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>item_metadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="curation">
+<span id="id7"></span><h2>Curation<a class="headerlink" href="#curation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>outcome</td>
+<td>string [&#8216;OK for my group&#8217;, &#8216;not for my group&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-even"><td>rating</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>note</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>data</td>
+<td>dict (dictionary with field names as keys) *</td>
+</tr>
+<tr class="row-odd"><td>resource</td>
+<td><a class="reference internal" href="#resource"><em>Resource</em></a></td>
+</tr>
+<tr class="row-even"><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>item_metadata</td>
+<td><a class="reference internal" href="#itemmetadata"><em>ItemMetadata</em></a></td>
+</tr>
+</tbody>
+</table>
+<p>* This will be used to allow trusted accounts to add their own metadata using their own schema.
+Data will be converted to required formats on client access (may be cached for performance)</p>
+</div>
+<div class="section" id="itemmetadata">
+<span id="id8"></span><h2>ItemMetadata<a class="headerlink" href="#itemmetadata" title="Permalink to this headline">¶</a></h2>
+<p><em>To be updated with Dublin core.</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>last_modified</td>
+<td>datetime</td>
+</tr>
+<tr class="row-odd"><td>author</td>
+<td>ObjectID</td>
+</tr>
+<tr class="row-even"><td>shelflife</td>
+<td>datetime</td>
+</tr>
+<tr class="row-odd"><td>status</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>note</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="account">
+<span id="id9"></span><h2>Account<a class="headerlink" href="#account" title="Permalink to this headline">¶</a></h2>
+<p>See code in <a class="reference external" href="http://github.com/snowcloud/engine-groups">engine-groups app</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>email</td>
+<td>string [email address format]</td>
+</tr>
+<tr class="row-even"><td>url</td>
+<td>string [web URI format]</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>string</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>list of <a class="reference internal" href="#location"><em>Location</em></a></td>
+</tr>
+<tr class="row-even"><td>permissions</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>api_key</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-even"><td>api_password</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-odd"><td>members</td>
+<td>list of <a class="reference internal" href="#membership"><em>Membership</em></a></td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>string [&#8216;member&#8217;, &#8216;admin&#8217;, &#8216;mentor&#8217;, &#8216;ok&#8217;, &#8216;suspended&#8217;, &#8216;closed&#8217;]</td>
+</tr>
+<tr class="row-odd"><td>in_collections</td>
+<td>list of <a class="reference internal" href="#collection"><em>Collection</em></a> - Collections containing this account</td>
+</tr>
+<tr class="row-even"><td>email_preference</td>
+<td>string [&#8216;none&#8217;, &#8216;single&#8217;, &#8216;digest&#8217;]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="membership">
+<span id="id10"></span><h2>Membership<a class="headerlink" href="#membership" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>account</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>role</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="collectionmember">
+<span id="id11"></span><h2>CollectionMember<a class="headerlink" href="#collectionmember" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>account</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-odd"><td>collection</td>
+<td><a class="reference internal" href="#collection"><em>Collection</em></a></td>
+</tr>
+<tr class="row-even"><td>role</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="collection">
+<span id="id12"></span><h2>Collection<a class="headerlink" href="#collection" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">field name</th>
+<th class="head">type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>string</td>
+</tr>
+<tr class="row-odd"><td>owner</td>
+<td><a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>list of string</td>
+</tr>
+<tr class="row-odd"><td>locations</td>
+<td>[not used]</td>
+</tr>
+<tr class="row-even"><td>accounts</td>
+<td>list of <a class="reference internal" href="#account"><em>Account</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Data model</a><ul>
+<li><a class="reference internal" href="#resource">Resource</a></li>
+<li><a class="reference internal" href="#relatedresource">RelatedResource</a></li>
+<li><a class="reference internal" href="#location">Location</a></li>
+<li><a class="reference internal" href="#calendarevent">CalendarEvent</a></li>
+<li><a class="reference internal" href="#calendarrepeatrule">CalendarRepeatRule</a></li>
+<li><a class="reference internal" href="#moderation">Moderation</a></li>
+<li><a class="reference internal" href="#curation">Curation</a></li>
+<li><a class="reference internal" href="#itemmetadata">ItemMetadata</a></li>
+<li><a class="reference internal" href="#account">Account</a></li>
+<li><a class="reference internal" href="#membership">Membership</a></li>
+<li><a class="reference internal" href="#collectionmember">CollectionMember</a></li>
+<li><a class="reference internal" href="#collection">Collection</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Engineclub API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/engine/data-model.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="api.html" title="Engineclub API"
+             >previous</a> |</li>
+        <li><a href="../index.html">Engineclub 0.6.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Derek Hoy, SnowCloud.co.uk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

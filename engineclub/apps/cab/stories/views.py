@@ -5,7 +5,7 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from pymongo.objectid import InvalidId, ObjectId
+from bson.objectid import InvalidId, ObjectId
 
 from ecutils.forms import FileUploadForm
 from ecutils.utils import get_one_or_404

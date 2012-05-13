@@ -89,7 +89,8 @@ def resource_by_id(request, id):
         'uri': item.uri,
         'locations': ['%s, %s' % (loc.lat_lon[0], loc.lat_lon[1]) for loc in item.locations],
         'locationnames': [loc.place_name for loc in item.locations],
-        # 'event_start': 
+        'event_start': (item.calendar_event.start or '') if item.calendar_event else '',
+        'event_end': (item.calendar_event.end or '') if item.calendar_event else '',
         'tags': item.tags,
         'lastmodified': item.item_metadata.last_modified,
     }]
@@ -183,7 +184,7 @@ def resource_search(request):
         return JsonResponse(errors=[{ 'code': result_code, 'message': '. '.join(errors)}], callback=callback)
     else:
         results = [_resource_result(r) for r in resources]
-        data = [ { 'query': query, 'max': max, 'start': start, 'output': output,
+        data = [ { 'query': query, 'max': max, 'start': start, 'numfound': resources.hits, 'output': output,
             'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
             'accounts': accounts, 'collections': collections,
             'results': results } ]
@@ -272,12 +273,12 @@ def tags(request):
     return JsonResponse(data=sorted(results), callback=callback)
 
 def locations(request):
-    def _location_context(location):
+    def _location_context(loc):
         return {
-            'id': str(location['_id']),
-            'place_name': l['place_name'],
-            'postcode': l.get('postcode', ''),
-            'district': l.get('district', '')}
+            'id': str(loc['_id']),
+            'place_name': loc['place_name'],
+            'postcode': loc.get('postcode', ''),
+            'district': loc.get('district', '')}
     errors = []
     data = []
     response_code = 200
@@ -285,30 +286,17 @@ def locations(request):
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
 
-    # check match for digit
-    # search pc_search (not case insens- will use index) or place_name + SCT
-    # use /^Match/  no i, no *
-
-    if match is not None:
-        if len(match) > 2:
-            # SLOW- REPLACE WITH CALL TO get_location(namestr, just_one=False, starts_with=True)
-            data = [_location_context(l)
-                for l in get_location(match, just_one=False, starts_with=True)]
-            # data = [_location_context(l)
-            #     for l in Location.objects.filter(Q(place_name__icontains=match) | Q(postcode__startswith=match))]
-        else:
-            response_code = 10
-            errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
-    else:
+    if match and len(match) > 2:
         data = [_location_context(l)
-            for l in Location.objects()]
-
+            for l in get_location(match, just_one=False, starts_with=True)]
+    else:
+        response_code = 10
+        errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
     return JsonResponse(
         errors=errors and {'code': response_code, 'message': '. '.join(errors)} or {},
         data=data,
         callback=callback,
     )
-
 
 def savedsearchesbyIP(request):
 

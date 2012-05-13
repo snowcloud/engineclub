@@ -1,5 +1,6 @@
 {% extends "accounts/accounts_base.html" %}
 {% load url from future %}
+{% load markup %}
 
 {% block title %}groups{% endblock %}
 
@@ -18,13 +19,15 @@
 
 <h1>Aliss users</h1>
 
-<ol>
+<dl>
 {% for object in objects %}
 
-    <li><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></li>
+    <dt><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></dt>
+    	<dd>{{ object.description|truncatewords:20 }}</dd>
+    
 
 {% empty %}
-    <li>no groups found.</li>
+    <dt>no user accounts found. There's probably something wrong here.</t>
 {% endfor %}
-</ol>
+</dl>
 {% endblock %}

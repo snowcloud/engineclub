@@ -57,7 +57,7 @@ class Moderation(EmbeddedDocument):
 
 class Curation(Document):
     outcome = StringField()
-    tags = ListField(StringField(max_length=96), default=list)
+    tags = ListField(StringField(max_length=360), default=list)
     # rating - not used
     note = StringField()
     data = DictField()
@@ -73,7 +73,7 @@ class Curation(Document):
     def perm_can_delete(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
-        return self.owner == acct
+        return self.owner == acct and self.resource.owner != acct
 
 class Resource(Document):
     """ Main model for ALISS resource """
@@ -115,7 +115,6 @@ class Resource(Document):
                 obj.save()
                 self.curations.append(obj)
             super(Resource, self).save(*args, **kwargs)
-
         if reindex:
             self.reindex()
 
@@ -197,7 +196,7 @@ class Resource(Document):
         """conn is Solr connection"""
         if self.status == STATUS_BAD:
             return None
-        tags = list(self.tags)
+        tags = []
         accounts = []
         collections = []
         description = [self.description]
@@ -205,10 +204,13 @@ class Resource(Document):
         for obj in self.curations:
             tags.extend(obj.tags)
             accounts.append(unicode(obj.owner.id))
-            if hasattr(obj.owner, 'collections'):
+            if hasattr(obj.owner, 'in_collections'):
                 collections.extend(obj.owner.in_collections)
             description.extend([obj.note or u'', unicode(obj.data) or u''])
-
+            if obj.owner == self.owner:
+                if self.tags != obj.tags:
+                    self.tags = obj.tags
+                    self.save()
         doc = {
             'id': unicode(self.id),
             'res_id': unicode(self.id),
