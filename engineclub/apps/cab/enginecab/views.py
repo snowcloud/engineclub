@@ -184,7 +184,9 @@ def tags_index(request, template_name='enginecab/tags_index.html'):
         form = TagsFixerForm(initial={})
 
     context = {
-        'objects': sorted(Curation.objects.ensure_index("tags").distinct("tags")),
+        'objects': sorted(set(
+            list(Curation.objects.ensure_index("tags").distinct("tags")) + 
+            list(Account.objects.ensure_index("tags").distinct("tags")))),
         'form': form,
         }
     return render_to_response(template_name, RequestContext(request, context))
@@ -195,10 +197,14 @@ def tags_process(request, options):
     if options['split'] or options['lower_case']:
         setting, _ = Setting.objects.get_or_create(key=UPPERCASE)
         exceptions = setting.value.get('data', [])
-        for curation in Curation.objects():
-            tp = TagProcessor(curation.tags)
-            curation.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
-            curation.save()
+        for obj in Curation.objects():
+            tp = TagProcessor(obj.tags)
+            obj.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            obj.save()
+        for obj in Account.objects():
+            tp = TagProcessor(obj.tags)
+            obj.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            obj.save()
     results.append('done') 
     messages.success(request, '<br>'.join(results))
 

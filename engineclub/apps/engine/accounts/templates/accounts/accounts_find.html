@@ -74,7 +74,7 @@
           </li>
         {% endwith %}
       {% empty %}
-        {% if not new_search %} 
+        {% if not new_search %}
           <li>no user accounts found for your area of interest. Would you like to <a href="{% url 'contact' %}">open an account</a>?</li>
         {% endif %}
       {% endfor %}
