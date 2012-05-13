@@ -16,7 +16,10 @@ from resources.models import Resource, Curation, ItemMetadata, STATUS_OK #, Temp
 from accounts.models import Account, Collection
 from accounts.views import list_detail as def_list_detail, \
     detail as accounts_detail, edit as account_edit, add as account_add
+from ecutils.models import Setting
 from ecutils.utils import get_one_or_404
+from enginecab.forms import TagsFixerForm, UPPERCASE
+from enginecab.models import TagProcessor
 from issues.models import Issue
 from issues.views import issue_detail as def_issue_detail
 from locations.forms import LocationSearchForm, LocationEditForm
@@ -155,6 +158,82 @@ def locations_remove(request, object_id):
     object.delete()
     messages.success(request, 'Location removed')
     return HttpResponseRedirect(reverse('cab_locations'))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_index(request, template_name='enginecab/tags_index.html'):
+    if request.method == 'POST':
+        form = TagsFixerForm(request.REQUEST)
+        if form.is_valid():
+            tags_process(request, form.cleaned_data)
+            return HttpResponseRedirect(reverse('cab_tags'))
+    else:
+        form = TagsFixerForm(initial={})
+    context = {
+        'objects': sorted(Curation.objects.ensure_index("tags").distinct("tags")),
+        'form': form
+        }
+    return render_to_response(template_name, RequestContext(request, context))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_process(request, options):
+    results = []
+    # print options
+    if options['split'] or options['lower_case']:
+        setting, _ = Setting.objects.get_or_create(key=UPPERCASE)
+        exceptions = setting.value.get('data', [])
+        for curation in Curation.objects():
+            tp = TagProcessor(curation.tags)
+
+            curation.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
+            curation.save()
+
+            # new_tags = []
+            # for tag in curation.tags:
+            #     if tag.strip():
+            #         if options['split']:
+            #             tag = tag.replace(';', ',')
+            #             new_tags.extend([t.strip() for t in tag.split(',')])
+            #         else:
+            #             new_tags.append(tag)
+            # if options['lower_case']:
+            #     lower_tags = []
+            #     for t in new_tags:
+            #         lower_tags.append(t if t in exceptions else t.lower())
+            #     new_tags = lower_tags
+            # curation.tags = new_tags
+            # curation.save()
+
+    results.append('done') 
+    messages.success(request, '<br>'.join(results))
+
+def alpha_id(object_id):
+    return '#alpha_%s' % object_id[0]
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_edit(request, object_id):
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_upper(request, object_id):
+    if object_id != object_id.upper():
+        curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.upper())
+        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Made %s - %s' % (object_id, object_id.upper()))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_lower(request, object_id):
+    if object_id != object_id.lower():
+        curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.lower())
+        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Made %s - %s' % (object_id, object_id.lower()))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
+def tags_remove(request, object_id):
+    curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+    messages.success(request, 'Removed - %s' % object_id)
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
 
 def reindex_accounts(url=settings.SOLR_URL, printit=False):
     """docstring for reindex_accounts"""
