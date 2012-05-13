@@ -320,14 +320,21 @@ def resource_find(request, template_name='depot/resource_find.html'):
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
 
+    # hack cos map not showing if no centre point
+    # map should show if pt_results anyway, but not happening
+    # see also accounts.view.accounts_find
+
+    # just north of Perth
+    default_centre = {'location': ('56.5', '-3.5')}
+
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': form.results,
         'pt_results': pt_results,
-        'centre': centre,
+        'centre': centre or default_centre if pt_results else None,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': results and centre,
+        'show_map': pt_results,
         'new_search': new_search
     }
     return render_to_response(template_name, RequestContext(request, context))
