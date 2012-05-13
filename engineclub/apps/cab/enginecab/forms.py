@@ -40,6 +40,3 @@ class TagsFixerForm(PlainForm):
         setting.save()
         self.exceptions = setting.value['data']
         return cleaned_data
-
-class TagsUpdateForm(PlainForm):
-    options = forms.BooleanField(label='Split on commas/semicolons', required=False)

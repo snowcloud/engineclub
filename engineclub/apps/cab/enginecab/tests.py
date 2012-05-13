@@ -85,6 +85,10 @@ class ViewsTestCase(MongoTestCase):
         UPPERTAG = LOWERTAG.upper()
         self.assertContains(response, LOWERTAG)
 
+        # cab_tags will have a user message after each process, with tag in it
+        # so can't just test for presence/absence of tag
+        # tags in list are in quotes, so using that
+        
         response = self.client.get(reverse('cab_tags_upper', args=[LOWERTAG]))
         self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse('cab_tags'))
@@ -102,10 +106,3 @@ class ViewsTestCase(MongoTestCase):
         response = self.client.get(reverse('cab_tags'))
         self.assertNotContains(response, '"%s"' % UPPERTAG)
         self.assertNotContains(response, '"%s"' % LOWERTAG)
-
-
-
-        # print response
-
-
-

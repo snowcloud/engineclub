@@ -1,4 +1,5 @@
 from datetime import datetime
+from urllib import unquote
 
 from django.conf import settings
 from django.contrib import messages
@@ -162,47 +163,42 @@ def locations_remove(request, object_id):
 @user_passes_test(lambda u: u.is_superuser)
 def tags_index(request, template_name='enginecab/tags_index.html'):
     if request.method == 'POST':
+        result = request.POST.get('result')
+        tag_process = request.POST.get('tag_process')
         form = TagsFixerForm(request.REQUEST)
-        if form.is_valid():
+        if result and form.is_valid():
             tags_process(request, form.cleaned_data)
             return HttpResponseRedirect(reverse('cab_tags'))
+        elif tag_process:
+            change_tag = request.POST.get('change_tag')
+            tag_id = request.POST.get('tag_id')[10:]
+            if tag_process == 'upper':
+                return tags_upper(request, tag_id)
+            elif tag_process == 'lower':
+                return tags_lower(request, tag_id)
+            elif tag_process == 'remove':
+                return tags_remove(request, tag_id)
+            elif tag_process == 'change':
+                return tags_change(request, tag_id, change_tag)
     else:
         form = TagsFixerForm(initial={})
+
     context = {
         'objects': sorted(Curation.objects.ensure_index("tags").distinct("tags")),
-        'form': form
+        'form': form,
         }
     return render_to_response(template_name, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_superuser)
 def tags_process(request, options):
     results = []
-    # print options
     if options['split'] or options['lower_case']:
         setting, _ = Setting.objects.get_or_create(key=UPPERCASE)
         exceptions = setting.value.get('data', [])
         for curation in Curation.objects():
             tp = TagProcessor(curation.tags)
-
             curation.tags = tp.split(options['split']).lower(options['lower_case'], exceptions).tags
             curation.save()
-
-            # new_tags = []
-            # for tag in curation.tags:
-            #     if tag.strip():
-            #         if options['split']:
-            #             tag = tag.replace(';', ',')
-            #             new_tags.extend([t.strip() for t in tag.split(',')])
-            #         else:
-            #             new_tags.append(tag)
-            # if options['lower_case']:
-            #     lower_tags = []
-            #     for t in new_tags:
-            #         lower_tags.append(t if t in exceptions else t.lower())
-            #     new_tags = lower_tags
-            # curation.tags = new_tags
-            # curation.save()
-
     results.append('done') 
     messages.success(request, '<br>'.join(results))
 
@@ -215,6 +211,7 @@ def tags_edit(request, object_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def tags_upper(request, object_id):
+    object_id = unquote(object_id)
     if object_id != object_id.upper():
         curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.upper())
         curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
@@ -223,6 +220,7 @@ def tags_upper(request, object_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def tags_lower(request, object_id):
+    object_id = unquote(object_id)
     if object_id != object_id.lower():
         curations = Curation.objects.filter(tags=object_id).update(push__tags=object_id.lower())
         curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
@@ -230,7 +228,21 @@ def tags_lower(request, object_id):
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
 
 @user_passes_test(lambda u: u.is_superuser)
+def tags_change(request, object_id, change_id):
+    object_id = unquote(object_id)
+    change_id = unquote(change_id)
+    if change_id and object_id != change_id:
+        curations = Curation.objects.filter(tags=object_id).update(push__tags=change_id)
+        curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
+        for cur in Curation.objects.filter(tags=change_id):
+            cur.resource.reindex()
+
+    messages.success(request, 'Changed %s to %s' % (object_id, change_id))
+    return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
+
+@user_passes_test(lambda u: u.is_superuser)
 def tags_remove(request, object_id):
+    object_id = unquote(object_id)
     curations = Curation.objects.filter(tags=object_id).update(pull__tags=object_id)
     messages.success(request, 'Removed - %s' % object_id)
     return HttpResponseRedirect('%s%s' % (reverse('cab_tags'), alpha_id(object_id)))
