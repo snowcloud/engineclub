@@ -272,6 +272,17 @@ def tags(request):
 
     return JsonResponse(data=sorted(results), callback=callback)
 
+def tagsforwordle(request):
+    """
+        returns dump of all tags for use in wordle
+        todo: wordle accepts ~ to join words
+    """
+    result = []
+    for res in Resource.objects:
+        result.extend([tag.replace(' ', '~') for tag in res.tags])
+
+    return HttpResponse(' '.join(result))
+
 def locations(request):
     def _location_context(loc):
         return {
