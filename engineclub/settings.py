@@ -81,6 +81,8 @@ SOLR_LOC_BOOST_MAX = 100.0
 SOLR_RES = u'RES'
 SOLR_ACCT = u'ACCT'
 
+REDIS_ANALYTICS_DATABASE = 3
+
 STORY_TAG = '#aliss-story'
 
 YAHOO_KEY = 'your_key_here...'
@@ -162,6 +164,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'accounts',
+    'analytics',
     'ecutils',
     'enginecab',
     'firebox',

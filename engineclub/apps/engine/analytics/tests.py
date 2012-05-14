@@ -1,7 +1,8 @@
 from django.utils import unittest
+from ecutils.tests import MongoTestCase
 
 
-class RedisAnalyticsTestCase(unittest.TestCase):
+class RedisAnalyticsTestCase(MongoTestCase):
 
     def setUp(self):
 
@@ -114,7 +115,7 @@ class RedisAnalyticsTestCase(unittest.TestCase):
         self.assertEqual(list(self.analytics.flat_list(stat, start, end, user)), expected)
 
 
-class OverallMongoAnalyticsTestCase(unittest.TestCase):
+class OverallMongoAnalyticsTestCase(MongoTestCase):
 
     def setUp(self):
 
@@ -210,7 +211,7 @@ class OverallMongoAnalyticsTestCase(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-class AccountStatsTestCase(unittest.TestCase):
+class AccountStatsTestCase(MongoTestCase):
 
     def setUp(self):
 
@@ -318,7 +319,7 @@ class AccountStatsTestCase(unittest.TestCase):
         self.assertEqual(overall_expected, overall_result)
 
 
-class ShortcutsTestCase(unittest.TestCase):
+class ShortcutsTestCase(MongoTestCase):
 
     def setUp(self):
 
@@ -373,12 +374,15 @@ class ShortcutsTestCase(unittest.TestCase):
         increment_api_locations("Edinburgh")
 
 
-class TestSearchStats(unittest.TestCase):
+class TestSearchStats(MongoTestCase):
 
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
         from accounts.models import Account
+        from accounts.tests import setUpAccounts
+
+        setUpAccounts(self)
 
         self.account = Account.objects[2]
 
@@ -417,7 +421,7 @@ class TestSearchStats(unittest.TestCase):
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
 
         result = self.client.get(url, {
-            'post_code': 'aberdeen',
+            'post_code': 'Aberdeen',
             'kwords': '',
             'result': 1,  # any result value being present triggers the search
         })
@@ -425,7 +429,7 @@ class TestSearchStats(unittest.TestCase):
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
-            ('aberdeen', 1)
+            ('Aberdeen', 1)
         ])
 
         # Reapeat a search query twice.
