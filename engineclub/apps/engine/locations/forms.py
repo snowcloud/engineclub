@@ -44,5 +44,7 @@ class LocationEditForm(DocumentForm):
             cleaned_data['id'] = postcode.upper().replace(' ', '')
         else:
             cleaned_data['id'] = str(ObjectId())
+            # remove this or mongo will create a postcode of ''
+            del cleaned_data['postcode']
         cleaned_data['edited'] = True
         return cleaned_data
