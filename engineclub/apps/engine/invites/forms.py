@@ -56,6 +56,11 @@ class InvitationAcceptForm(PlainForm):
         widget=forms.PasswordInput(attrs={'class': 'input-text large'}),
         label='Password (repeated)',
         help_text='Please make this identical to the password above.')
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'input-text expand'}),
+        help_text='Tell us a little about yourself or your organisation- this will be seen by anyone using Aliss.org.',
+        max_length=1500,
+        required=False)
 
     def clean_username(self):
         try:
