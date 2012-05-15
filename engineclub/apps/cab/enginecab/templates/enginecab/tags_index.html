@@ -42,7 +42,7 @@
     <td>
       <form class="inline" action="." method="POST" id="tagupdate|{{object|urlencode|default:'_'}}">{% csrf_token %}
         <input type="hidden" name="tag_id" value="tagupdate|{{object|urlencode|default:'_'}}">
-        <input type="submit" name="tag_process" value="remove">
+        <!-- input type="submit" name="tag_process" value="remove" -->
         <input type="submit" name="tag_process" value="upper">
         <input type="submit" name="tag_process" value="lower">
         <input type="text" class="" name="change_tag">
