@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils import unittest
 from ecutils.tests import MongoTestCase
 
@@ -115,100 +116,108 @@ class RedisAnalyticsTestCase(MongoTestCase):
         self.assertEqual(list(self.analytics.flat_list(stat, start, end, user)), expected)
 
 
+###############################################################
+# THIS NEEDS FIXTURES
+###############################################################
+
 class OverallMongoAnalyticsTestCase(MongoTestCase):
 
     def setUp(self):
+
+        from accounts.tests import setUpAccounts
+        setUpAccounts(self)
 
         from analytics.models import OverallMongoAnalytics
         self.analytics = OverallMongoAnalytics(redis_db=15)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
-    def test_tags(self):
+    # def test_tags(self):
 
-        self.assertEqual(self.analytics.tag_usage("advice"), 50)
+    #     self.assertEqual(self.analytics.tag_usage("advice"), 50)
 
-        expected = [('support', 96.0), ('advice', 52.0), ('information', 45.0),
-            ('cafe', 45.0), ('mental health', 39.0), ('exercise', 34.0),
-            ('counselling', 34.0), ('Sport and fitness', 32.0),
-            ('young people', 32.0), ('', 31.0)]
+    #     expected = [('support', 96.0), ('advice', 52.0), ('information', 45.0),
+    #         ('cafe', 45.0), ('mental health', 39.0), ('exercise', 34.0),
+    #         ('counselling', 34.0), ('Sport and fitness', 32.0),
+    #         ('young people', 32.0), ('', 31.0)]
 
-        self.assertEqual(self.analytics.top_tags(), expected)
+    #     self.assertEqual(self.analytics.top_tags(), expected)
 
-        from accounts.models import Account
-        account = Account.objects[2]
+    #     from accounts.models import Account
+    #     account = self.bob
 
-        self.analytics.tag_report(account=account)
+    #     self.analytics.tag_report(account=account)
 
-    def test_account_activity(self):
+    # def test_account_activity(self):
 
-        from accounts.models import Account
-        account = Account.objects[0]
+    #     from accounts.models import Account
+    #     account = self.bob
 
-        self.assertEqual(self.analytics.account_usage(account), 65)
+    #     self.assertEqual(self.analytics.account_usage(account), 65)
 
-        self.analytics.top_accounts()
+    #     self.analytics.top_accounts()
 
-    def test_report_by_date(self):
+    # def test_report_by_date(self):
 
-        from datetime import datetime, timedelta
+    #     from datetime import datetime, timedelta
 
-        start_date = datetime(2011, 5, 1)
-        end_date = datetime(2011, 8, 21)
-        granularity = timedelta(weeks=4)
+    #     start_date = datetime(2011, 5, 1)
+    #     end_date = datetime(2011, 8, 21)
+    #     granularity = timedelta(weeks=4)
 
-        result = self.analytics.curations_between(start_date, end_date, granularity)
+    #     result = self.analytics.curations_between(start_date, end_date, granularity)
 
-        expected = [
-           (datetime(2011, 5, 1),  42),
-           (datetime(2011, 5, 29), 62),
-           (datetime(2011, 6, 26), 33),
-           (datetime(2011, 7, 24), 72),
-        ]
+    #     expected = [
+    #        (datetime(2011, 5, 1),  42),
+    #        (datetime(2011, 5, 29), 62),
+    #        (datetime(2011, 6, 26), 33),
+    #        (datetime(2011, 7, 24), 72),
+    #     ]
 
-        self.assertEqual(result, expected)
+    #     self.assertEqual(result, expected)
 
-        start_date = datetime(2015, 5, 1)
-        end_date = datetime(2015, 8, 21)
-        granularity = timedelta(weeks=4)
+    #     start_date = datetime(2015, 5, 1)
+    #     end_date = datetime(2015, 8, 21)
+    #     granularity = timedelta(weeks=4)
 
-        result = self.analytics.curations_between(start_date, end_date, granularity)
+    #     result = self.analytics.curations_between(start_date, end_date, granularity)
 
-        expected = [
-           (datetime(2015, 5, 1),  0),
-           (datetime(2015, 5, 29), 0),
-           (datetime(2015, 6, 26), 0),
-           (datetime(2015, 7, 24), 0),
-        ]
+    #     expected = [
+    #        (datetime(2015, 5, 1),  0),
+    #        (datetime(2015, 5, 29), 0),
+    #        (datetime(2015, 6, 26), 0),
+    #        (datetime(2015, 7, 24), 0),
+    #     ]
 
-        self.assertEqual(result, expected)
+    #     self.assertEqual(result, expected)
 
-    def test_report_by_previous(self):
+    # def test_report_by_previous(self):
 
-        from datetime import timedelta
+    #     from datetime import timedelta
 
-        result = self.analytics.curations_in_last(timedelta(weeks=52),
-            granularity=timedelta(weeks=4))
+    #     result = self.analytics.curations_in_last(timedelta(weeks=52),
+    #         granularity=timedelta(weeks=4))
 
-        self.assertEqual(len(result), 13)
+    #     self.assertEqual(len(result), 13)
 
-    def test_curations_by_postcode(self):
+    # def test_curations_by_postcode(self):
 
-        result = self.analytics.curations_by_postcode()[:10]
+    #     result = self.analytics.curations_by_postcode()[:10]
 
-        expected = [('AB10', 170),
-            ('IV30', 110),
-            ('AB11', 109),
-            ('PA1', 98),
-            ('AB25', 98),
-            ('AB51', 78),
-            ('AB24', 71),
-            ('G66', 55),
-            ('AB15', 55),
-            ('PA3', 54),
-        ]
+    #     expected = [('AB10', 170),
+    #         ('IV30', 110),
+    #         ('AB11', 109),
+    #         ('PA1', 98),
+    #         ('AB25', 98),
+    #         ('AB51', 78),
+    #         ('AB24', 71),
+    #         ('G66', 55),
+    #         ('AB15', 55),
+    #         ('PA3', 54),
+    #     ]
 
-        self.assertEqual(result, expected)
+    #     self.assertEqual(result, expected)
+
 
 
 class AccountStatsTestCase(MongoTestCase):
@@ -216,10 +225,11 @@ class AccountStatsTestCase(MongoTestCase):
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
-        from accounts.models import Account
+        from accounts.tests import setUpAccounts
+        setUpAccounts(self)
 
-        account = Account.objects[2]
-        account2 = Account.objects[3]
+        account = self.bob
+        account2 = self.alice
         self.analytics = AccountAnalytics(account, redis_db=15)
         self.analytics2 = AccountAnalytics(account2, redis_db=15)
         self.overall_analytics = OverallAnalytics(redis_db=15)
@@ -324,9 +334,10 @@ class ShortcutsTestCase(MongoTestCase):
     def setUp(self):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
-        from accounts.models import Account
+        from accounts.tests import setUpAccounts
+        setUpAccounts(self)
 
-        self.account = Account.objects[2]
+        self.account = self.alice
 
         self.account_analytics = AccountAnalytics(self.account, redis_db=15)
         self.overall_analytics = OverallAnalytics(redis_db=15)
@@ -380,9 +391,16 @@ class TestSearchStats(MongoTestCase):
 
         from analytics.models import AccountAnalytics, OverallAnalytics
         from accounts.models import Account
+
         from accounts.tests import setUpAccounts
+        from locations.tests import setUpLocations
+        from resources.tests import setUpResources
+        from enginecab.views import reindex_resources
 
         setUpAccounts(self)
+        setUpLocations(self)
+        setUpResources(self)        
+        reindex_resources(url=settings.TEST_SOLR_URL)
 
         self.account = Account.objects[2]
 
@@ -421,7 +439,7 @@ class TestSearchStats(MongoTestCase):
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
 
         result = self.client.get(url, {
-            'post_code': 'Aberdeen',
+            'post_code': 'EH15 1AR',
             'kwords': '',
             'result': 1,  # any result value being present triggers the search
         })
@@ -429,24 +447,24 @@ class TestSearchStats(MongoTestCase):
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
-            ('Aberdeen', 1)
+            ('EH15 1AR', 1)
         ])
 
         # Reapeat a search query twice.
         for i in range(2):
             result = self.client.get(url, {
-                'post_code': 'Glasgow',
-                'kwords': 'health',
+                'post_code': 'Muirhouse',
+                'kwords': 'green',
                 'result': 1,
             })
             self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [
-            ('health', 2),
+            ('green', 2),
         ])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
-            ('Glasgow', 2),
-            ('aberdeen', 1)
+            ('Muirhouse', 2),
+            ('EH15 1AR', 1)
         ])
 
     def test_api_search(self):
@@ -458,22 +476,22 @@ class TestSearchStats(MongoTestCase):
         yesterday = date.today() - timedelta(days=1)
         tomorrow = date.today() + timedelta(days=1)
 
-        url = reverse('api-resource-search')
+        url = reverse('api_resource_search')
 
         self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [])
 
         result = self.client.get(url, {
-            'location': 'Glasgow',
-            'query': 'health',
+            'location': 'Muirhouse',
+            'query': 'green',
         })
         self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.top_api_queries(yesterday, tomorrow), [
-            ('health', 1),
+            ('green', 1),
         ])
         self.assertEqual(analytics.top_api_locations(yesterday, tomorrow), [
-            ('Glasgow', 1),
+            ('Muirhouse', 1),
         ])
 
     def test_resource_access(self):
@@ -485,18 +503,19 @@ class TestSearchStats(MongoTestCase):
         yesterday = date.today() - timedelta(days=1)
         tomorrow = date.today() + timedelta(days=1)
 
-        oid = '4f181deabaa2b12978000000'
+        oid = str(self.resource1.id)
 
         self.assertEqual(analytics.top_resources(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [])
 
-        url = reverse('api-resource-by-id', args=[oid, ])
+        url = reverse('api_resource_by_id', args=[oid, ])
         result = self.client.get(url)
-        self.assertEqual(result.status_code, 200)
+        self.assertContains(result, '"errors": {}')
+        # self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.top_resources(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [
-            ('4f181deabaa2b12978000000', 1),
+            (oid, 1),
         ])
 
         url = reverse('resource', args=[oid, ])
@@ -504,8 +523,8 @@ class TestSearchStats(MongoTestCase):
         self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.top_resources(yesterday, tomorrow), [
-            ('4f181deabaa2b12978000000', 1),
+            (oid, 1),
         ])
         self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [
-            ('4f181deabaa2b12978000000', 1),
+            (oid, 1),
         ])
