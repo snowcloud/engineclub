@@ -102,10 +102,8 @@ $( "#id_post_code" ).autocomplete({
       url: "{% url 'resources.api_handlers.locations' %}",
       dataType: "jsonp",
       data: {
-        //featureClass: "P",
-        //style: "full",
-        //maxRows: 12,
-        match: request.term
+        match: request.term,
+        postcodes: 0
       },
       success: function( results ) {
         response( $.map( results.data, function( item ) {

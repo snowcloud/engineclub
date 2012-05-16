@@ -4,9 +4,11 @@
   {% if pt_results %}
     mapstraction = new mxn.Mapstraction('map','google');
     //mapstraction = new mxn.Mapstraction('map','openlayers');
-    {% if centre %} 
-      var centre_pt = new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}})
-      mapstraction.addMarker( new mxn.Marker(centre_pt));      
+    {% if centre %}
+      var centre_pin =  new mxn.Marker(new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}}))
+      centre_pin.setIcon("/static/images/misc/blue-pin.png", [21,34], [10,34]);
+      centre_pin.setShadowIcon('/static/images/misc/pin-shadow50.png')     
+      mapstraction.addMarker(centre_pin);      
     {% endif %}
 
     {% for loc, res_objs in pt_results.items %}
@@ -17,9 +19,10 @@
       mapstraction.addMarkerWithData(new mxn.Marker( new mxn.LatLonPoint(lat, lon)),{
         infoBubble : info,
         label : "",
-        marker : 3,
+        // marker : 3,
         icon : "/static/images/misc/ymarker_or.png",
         iconSize : [25,25],
+        iconAnchor: [0,25],
         draggable : false,
         hover : true
       });

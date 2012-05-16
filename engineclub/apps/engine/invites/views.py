@@ -95,7 +95,8 @@ def accept(request, code):
     return render_to_response('invites/invite.html', {
         'account': account,
         'form': form,
-        'submit': 'Create your account'
+        'submit': 'Create your account',
+        'accept': True
     }, RequestContext(request))
 
 def remove(request, object_id):

@@ -10,6 +10,12 @@
     <fieldset>
     {{ form.as_plain }}
 
+    {% if accept %} 	
+	    <div class="panel error">
+	    	<h5>By clicking this button to create your account, you are agreeing to the Aliss&nbsp;<a href="/terms-and-conditions/">terms&nbsp;&amp;&nbsp;conditions</a>.</h5>
+	    </div>
+    {% endif %}
+
     <input type="submit" value="{{ submit }}" />
 	</fieldset>
 </form>

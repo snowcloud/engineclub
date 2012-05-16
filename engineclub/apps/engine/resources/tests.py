@@ -148,6 +148,10 @@ class SearchTest(MongoTestCase):
         loc = get_location('muirhouse:  City of Edinburgh')
         self.assertEqual(loc['district'], 'City of Edinburgh')
 
+        # test for autosuggest matches, postcodes etc.
+        # def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True):
+
+
     def test_postcode(self):
         from resources.search import find_by_place_or_kwords
 
@@ -186,5 +190,6 @@ class SearchTest(MongoTestCase):
         self.assertEqual(result['title'], 'title 6')
 
 
+# API tests to do
 
 

@@ -101,8 +101,18 @@ def _check_int(i):
         int(i)
         return True
     except ValueError:
-        print i
         return None
+
+def _check_api_bool(value, default=False):
+    """ returns a boolean value for value
+        False if 0, True if any other int
+        returns default if value is None or not an int
+    """
+    try: 
+        result = int(value)
+    except (ValueError, TypeError):
+        result = default
+    return bool(result)
 
 def _loc_to_str(loc):
     if loc:
@@ -296,10 +306,12 @@ def locations(request):
 
     match = request.REQUEST.get('match')
     callback = request.REQUEST.get('callback')
+    # postcodes True unless param exists and is 0
+    postcodes = _check_api_bool(request.REQUEST.get('postcodes'), True)
 
     if match and len(match) > 2:
         data = [_location_context(l)
-            for l in get_location(match, just_one=False, starts_with=True)]
+            for l in get_location(match, just_one=False, starts_with=True, postcodes=postcodes)]
     else:
         response_code = 10
         errors.append('Param \'match\' must be greater than 2 characters. You sent \'%s\'' % match)
