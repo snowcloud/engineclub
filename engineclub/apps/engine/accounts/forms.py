@@ -98,7 +98,7 @@ class FindAccountForm(PlainForm):
 
         loc, self.results = find_by_place_or_kwords(data, kwords, boost_location, res_type=settings.SOLR_ACCT)
         if loc:
-            self.centre = {'name': data, 'location': loc }
+            self.centre = {'name': data, 'location': loc['lat_lon'] }
         elif data:
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
             

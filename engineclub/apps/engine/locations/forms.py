@@ -3,6 +3,7 @@
 from bson.objectid import ObjectId
 from django import forms
 
+from analytics.shortcuts import increment_failed_locations
 from ecutils.forms import DocumentForm, PlainForm
 from resources.search import get_location
 
@@ -20,6 +21,7 @@ class LocationSearchForm(PlainForm):
         data = cleaned_data.get('location', '').strip()
         self.loc_found = get_location(data)
         if not self.loc_found:
+            increment_failed_locations(data)
             raise forms.ValidationError("Location not found.")
         return cleaned_data
 

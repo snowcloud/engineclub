@@ -15,6 +15,13 @@ def increment_queries(query, account=None):
     AccountAnalytics(account).increment_queries(query)
 
 
+def increment_failed_locations(location, account=None):
+    # return
+    if not location:
+        return
+    AccountAnalytics(account).increment_failed_locations(location)
+
+
 def increment_locations(location, account=None):
     # return
     if not location:

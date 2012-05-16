@@ -11,7 +11,6 @@ from ecutils.forms import FileUploadForm
 from ecutils.utils import get_one_or_404
 from accounts.models import Account
 from resources.models import Resource, Curation
-from resources.search import find_by_place_or_kwords
 
 def get_story(obj, story_type):
     if story_type == 'curation':

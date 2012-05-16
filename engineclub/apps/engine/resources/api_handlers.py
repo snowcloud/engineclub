@@ -185,7 +185,7 @@ def resource_search(request):
     else:
         results = [_resource_result(r) for r in resources]
         data = [ { 'query': query, 'max': max, 'start': start, 'numfound': resources.hits, 'output': output,
-            'location': _loc_to_str(loc), 'event': event, 'boostlocation': boost_location,
+            'location': _loc_to_str(loc['lat_lon']), 'event': event, 'boostlocation': boost_location,
             'accounts': accounts, 'collections': collections,
             'results': results } ]
         return JsonResponse(data=data, callback=callback)

@@ -111,7 +111,7 @@ def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None
             kw['fq'] = fq
 
         conn = Solr(settings.SOLR_URL)
-        return loc['lat_lon'], conn.search(kwords.strip() if kwords else '', **kw)
+        return loc, conn.search(kwords.strip() if kwords else '', **kw)
     else:
         return None, None
 

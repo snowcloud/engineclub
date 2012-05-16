@@ -439,7 +439,7 @@ class TestSearchStats(MongoTestCase):
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [])
 
         result = self.client.get(url, {
-            'post_code': 'EH15 1AR',
+            'post_code': self.loc1.postcode,
             'kwords': '',
             'result': 1,  # any result value being present triggers the search
         })
@@ -447,13 +447,13 @@ class TestSearchStats(MongoTestCase):
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
-            ('EH15 1AR', 1)
+            (str(self.loc1), 1)
         ])
 
         # Reapeat a search query twice.
         for i in range(2):
             result = self.client.get(url, {
-                'post_code': 'Muirhouse',
+                'post_code': self.loc2.place_name, # Muirhouse
                 'kwords': 'green',
                 'result': 1,
             })
@@ -463,8 +463,8 @@ class TestSearchStats(MongoTestCase):
             ('green', 2),
         ])
         self.assertEqual(analytics.top_locations(yesterday, tomorrow), [
-            ('Muirhouse', 2),
-            ('EH15 1AR', 1)
+            (str(self.loc2), 2),
+            (str(self.loc1), 1)
         ])
 
     def test_api_search(self):

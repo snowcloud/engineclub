@@ -154,14 +154,14 @@ class SearchTest(MongoTestCase):
         postcode = 'EH15 1AR'
         # [55.953899999999997, -3.1164000000000001]
 
-        lat_lon, results = find_by_place_or_kwords(postcode, '')
+        loc, results = find_by_place_or_kwords(postcode, '')
         result = iter(results).next()
         self.assertEqual(result['title'], 'title 0')
-        lat_lon, results = find_by_place_or_kwords(postcode, 'green')
+        loc, results = find_by_place_or_kwords(postcode, 'green')
         result = iter(results).next()
         self.assertEqual(result['title'], 'title 1')
-        lat_lon, results = find_by_place_or_kwords('', 'pink')
-        self.assertEqual(lat_lon, None)
+        loc, results = find_by_place_or_kwords('', 'pink')
+        self.assertEqual(loc, None)
         result = iter(results).next()
         self.assertEqual(result['title'], 'title 8')
 
@@ -180,8 +180,8 @@ class SearchTest(MongoTestCase):
         curation.item_metadata.update(author=self.bob)
         add_curation(self.resource6, curation)
 
-        lat_lon, results = find_by_place_or_kwords('', 'blah')
-        self.assertEqual(lat_lon, None)
+        loc, results = find_by_place_or_kwords('', 'blah')
+        self.assertEqual(loc, None)
         result = iter(results).next()
         self.assertEqual(result['title'], 'title 6')
 

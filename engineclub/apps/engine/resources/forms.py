@@ -2,6 +2,7 @@
 from django import forms
 # import floppyforms as forms
 
+from analytics.shortcuts import increment_failed_locations
 from locations.models import Location
 from resources.models import Resource, Curation
 from resources.search import find_by_place_or_kwords
@@ -50,8 +51,9 @@ class FindResourceForm(PlainForm):
 
         loc, self.results = find_by_place_or_kwords(data, kwords, boost_location, event='*' if event else None)
         if loc:
-            self.centre = {'name': data, 'location': loc }
+            self.centre = {'loc': Location.objects.get(id=loc['_id']), 'location': loc['lat_lon'] }
         elif data:
+            increment_failed_locations(data)
             raise forms.ValidationError("Could not find a location from what you've typed- try again?")
             
         return cleaned_data
@@ -129,6 +131,7 @@ class LocationUpdateForm(DocumentForm):
                 if loc:
                     locs.append(loc)
                 else:
+                    increment_failed_locations(new_loc)
                     new_locs_errors.append(new_loc)
             self.locations = locs
             if new_locs_errors:

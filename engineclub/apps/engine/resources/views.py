@@ -291,7 +291,8 @@ def resource_find(request, template_name='depot/resource_find.html'):
             user = get_account(request.user.id)
 
             increment_queries(form.cleaned_data['kwords'], account=user)
-            increment_locations(form.cleaned_data['post_code'], account=user)
+            # print form.centre['loc'] if form.centre else None
+            increment_locations(unicode(form.centre['loc']) if form.centre else None, account=user)
 
             for result in form.results:
                 resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))

@@ -198,6 +198,7 @@ try:
 
             self.tags_key = 'search_tags'
             self.queries_key = 'search_queries'
+            self.failed_locations_key = 'failed_search_locations'
             self.locations_key = 'search_locations'
             self.api_queries_key = 'search_api_queries'
             self.api_locations_key = 'search_api_locations'
@@ -234,6 +235,9 @@ try:
 
         def queries(self, *args, **kwargs):
             return self.flat_data(self.queries_key, *args, **kwargs)
+
+        def failed_locations(self, *args, **kwargs):
+            return self.flat_data(self.failed_locations_key, *args, **kwargs)
 
         def locations(self, *args, **kwargs):
             return self.flat_data(self.locations_key, *args, **kwargs)
@@ -320,6 +324,11 @@ try:
 
             return super(AccountAnalytics, self).increment(self.queries_key,
                 account=self.account, field=query, **kwargs)
+
+        def increment_failed_locations(self, location, **kwargs):
+
+            return super(AccountAnalytics, self).increment(self.failed_locations_key,
+                account=self.account, field=location, **kwargs)
 
         def increment_locations(self, location, **kwargs):
 
