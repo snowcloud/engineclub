@@ -164,6 +164,8 @@ class SearchTest(MongoTestCase):
         self.assertFalse(matcher.match('g'))
         self.assertFalse(matcher.match('   '))
         self.assertFalse(matcher.match('  g4 '))
+        self.assertFalse(matcher.match('Grand'))
+        self.assertFalse(matcher.match('portob'))
         self.assertTrue(matcher.match('g4  '))
 
     def test_location(self):

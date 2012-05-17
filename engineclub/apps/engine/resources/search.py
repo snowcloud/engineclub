@@ -8,7 +8,7 @@ from pysolr import Solr
 
 from ecutils.utils import minmax, lat_lon_to_str
 
-POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9Rr]'
+POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9]'
 
 ###############################################################
 # LOCATION STUFF - PUBLIC
