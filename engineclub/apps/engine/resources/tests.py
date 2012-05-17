@@ -136,6 +136,36 @@ class SearchTest(MongoTestCase):
         setUpResources(self)        
         reindex_resources(url=settings.TEST_SOLR_URL)
 
+    def test_regex(self):
+        import re
+        from search import POSTCODE_START_REGEX
+
+        # s="123 Some Road Name\nTown, City\nCounty\nPA23 6NH\n123 Some Road Name\nTown, City"\
+        #     "County\nPA2 6NH\n123 Some Road Name\nTown, City\nCounty\nPA2Q 6NH"
+
+        # #custom                                                                                                                                               
+        # print re.findall(r'[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}', s)
+
+        # http://en.wikipedia.org/wiki/UK_postcodes#Validation
+        # pattern = r'^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$'
+
+        # modified short regex to find strings which might be start of postcodes
+        # POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9Rr]'
+        matcher = re.compile(POSTCODE_START_REGEX)
+
+        self.assertTrue(matcher.match('G4'))
+        self.assertTrue(matcher.match('EH1'))
+        self.assertTrue(matcher.match('EH15 2QR'))
+        self.assertTrue(matcher.match('EH152QR'))
+        self.assertTrue(matcher.match('g4'))
+        self.assertTrue(matcher.match('Eh1'))
+        self.assertTrue(matcher.match('eh15 2qr'))
+        self.assertTrue(matcher.match('EH152qr'))
+        self.assertFalse(matcher.match('g'))
+        self.assertFalse(matcher.match('   '))
+        self.assertFalse(matcher.match('  g4 '))
+        self.assertTrue(matcher.match('g4  '))
+
     def test_location(self):
         from resources.search import get_location
 
@@ -148,8 +178,12 @@ class SearchTest(MongoTestCase):
         loc = get_location('muirhouse:  City of Edinburgh')
         self.assertEqual(loc['district'], 'City of Edinburgh')
 
-        loc = get_location('G4 0QR')
+        loc = get_location('G4 0qr')
         self.assertEqual(loc['place_name'], 'Anderston/City, Glasgow City')
+
+        loc = get_location('g5')
+        self.assertEqual(loc['place_name'], 'Glasgow')
+        self.assertEqual(loc['postcode'], 'G5')
 
         # test for autosuggest matches, postcodes etc.
         # def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True):

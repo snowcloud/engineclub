@@ -8,6 +8,7 @@ from pysolr import Solr
 
 from ecutils.utils import minmax, lat_lon_to_str
 
+POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9Rr]'
 
 ###############################################################
 # LOCATION STUFF - PUBLIC
@@ -26,8 +27,9 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
     coll = db.location
     district =None
     pc = False
+    pc_matcher = re.compile(POSTCODE_START_REGEX)
 
-    if len(namestr.replace(' ', '').strip()) > 2 and namestr.replace(' ', '').strip()[2].isdigit():
+    if pc_matcher.match(namestr.strip()):
         name = namestr.upper().replace(' ', '').strip()
         field = '_id'
         pc = True
