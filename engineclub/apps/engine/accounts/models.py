@@ -150,6 +150,9 @@ class Account(Document):
     def save(self, *args, **kwargs):
         reindex = kwargs.pop('reindex', False)
         super(Account, self).save(*args, **kwargs)
+        local_user = self.local_user
+        local_user.email = self.email
+        local_user.save()
         if reindex:
             self.reindex()
 
@@ -188,8 +191,12 @@ class Account(Document):
     collections_owned = property(_collections_owned)
 
     def _is_staff(self):
-        return User.objects.get(pk=self.local_id).is_staff
+        return self.local_user.is_staff
     is_staff = property(_is_staff)
+
+    def _local_user(self):
+        return User.objects.get(pk=self.local_id)
+    local_user = property(_local_user)
 
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
