@@ -108,6 +108,11 @@ class AccountsTest(AccountsBaseTest):
         self.group.save()
         self.assertEqual(len(self.group.members), 1)
 
+        # test local user email is updated
+        acct1.email = 'dafty@daft.com'
+        acct1.save()
+        self.assertEqual(acct1.local_user.email, 'dafty@daft.com')
+
 class AccountsViewsTest(AccountsBaseTest):
 
     def setUp(self):
@@ -171,10 +176,3 @@ class AccountsViewsTest(AccountsBaseTest):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Account.objects(name=name).count(), 0)
         self.assertEqual(User.objects.filter(pk=local_id).count(), 0)
-
-
-
-
-        
-        
-        

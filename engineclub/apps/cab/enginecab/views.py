@@ -57,6 +57,12 @@ def user_add(request, template_name='enginecab/user_edit.html'):
     return account_add(request, template_name, next='cab_user_detail')
 
 @user_passes_test(lambda u: u.is_staff)
+def user_password_reset(request, object_id):
+    object = get_one_or_404(Account, id=ObjectId(object_id))
+    from django.contrib.auth.views import password_reset
+    return password_reset(request, extra_context={'def_email': object.email})
+
+@user_passes_test(lambda u: u.is_staff)
 def reindex(request, template_name=''):
     reindex_accounts()
     messages.success(request, 'Accounts have been reindexed.')

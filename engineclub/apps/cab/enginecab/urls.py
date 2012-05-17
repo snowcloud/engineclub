@@ -20,6 +20,7 @@ urlpatterns = patterns('enginecab.views',
     url(r'^tags/(?P<object_id>[^/]+)/remove/$', 'tags_remove', name='cab_tags_remove'),
     url(r'^users/$', 'users', name='cab_users'),
     url(r'^users/add/$', 'user_add', name='cab_user_add'),
+    url(r'^users/(?P<object_id>\w+)/password_reset/$', 'user_password_reset', name='cab_user_password_reset'),
     url(r'^users/(?P<object_id>\w+)/$', 'user_detail', name='cab_user_detail'),
     url(r'^users/(?P<object_id>\w+)/edit/$', 'user_edit', name='cab_user_edit'),
 
