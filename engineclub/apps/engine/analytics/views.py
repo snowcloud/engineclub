@@ -3,11 +3,17 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
 from django.utils import simplejson as json
 
 from analytics.models import OverallAnalytics, AccountAnalytics
 
+
+@login_required
+def analytics_index(request, template_name='analytics/analytics_index.html'):
+    context = {}
+    return render_to_response(template_name, RequestContext(request, context))
 
 @login_required
 def stat_json(request, stat_name):
