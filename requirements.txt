@@ -16,6 +16,7 @@ flup
 beautifulsoup
 feedparser
 requests
+httpagentparser
 
 # mongo stuff
 pymongo==2.2
