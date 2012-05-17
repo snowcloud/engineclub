@@ -27,7 +27,7 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
     district =None
     pc = False
 
-    if len(namestr) > 2 and namestr[2].isdigit():
+    if len(namestr) > 2 and namestr.replace(' ', '').strip()[2].isdigit():
         name = namestr.upper().replace(' ', '').strip()
         field = '_id'
         pc = True

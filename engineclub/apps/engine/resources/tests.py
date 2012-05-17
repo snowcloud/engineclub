@@ -148,6 +148,9 @@ class SearchTest(MongoTestCase):
         loc = get_location('muirhouse:  City of Edinburgh')
         self.assertEqual(loc['district'], 'City of Edinburgh')
 
+        loc = get_location('G4 0QR')
+        self.assertEqual(loc['place_name'], 'Anderston/City, Glasgow City')
+
         # test for autosuggest matches, postcodes etc.
         # def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True):
 
