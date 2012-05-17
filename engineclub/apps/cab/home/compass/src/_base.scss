@@ -149,6 +149,14 @@ a.action {
 a.action:focus, .black.button:focus, input.input-text:focus {
     background-color: #aaf;
 }
+.home-links a.zocial {
+	font-size: 85%;
+	//display: block;
+	width: 44%;
+	margin-bottom: 0.5em;
+}
+
+/*
 .home-links {
 	margin-top: 1.5em;
 	margin-bottom: 1em;
@@ -159,6 +167,7 @@ a.action:focus, .black.button:focus, input.input-text:focus {
     padding-top: 1.2em;
     padding-bottom: 1.2em;
 }
+*/
 .breadcrumbs {
 	@include hide_it;	
 }
@@ -179,6 +188,7 @@ a.action:focus, .black.button:focus, input.input-text:focus {
 .alert-box.error {
     background-color: #eb511b;
 }
+/*
 a.email {
     background: url(../images/icons/email_32.png) no-repeat left bottom;
 }
@@ -194,6 +204,7 @@ a.facebook {
 a.github {
     background: url(../images/icons/github_32.png) no-repeat left 10px;
 }
+*/
 a.top {
     background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom;
     padding-left: 30px;
