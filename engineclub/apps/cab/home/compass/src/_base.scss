@@ -155,19 +155,6 @@ a.action:focus, .black.button:focus, input.input-text:focus {
 	width: 44%;
 	margin-bottom: 0.5em;
 }
-
-/*
-.home-links {
-	margin-top: 1.5em;
-	margin-bottom: 1em;
-}
-.home-links .action {
-    border-bottom: none;
-    margin-left: 40%;
-    padding-top: 1.2em;
-    padding-bottom: 1.2em;
-}
-*/
 .breadcrumbs {
 	@include hide_it;	
 }
@@ -188,23 +175,6 @@ a.action:focus, .black.button:focus, input.input-text:focus {
 .alert-box.error {
     background-color: #eb511b;
 }
-/*
-a.email {
-    background: url(../images/icons/email_32.png) no-repeat left bottom;
-}
-a.twitter {
-    background: url(../images/icons/twitter_32.png) no-repeat left 10px;
-}
-a.blog {
-    background: url(../images/icons/wordpress_32.png) no-repeat left 10px;
-}
-a.facebook {
-    background: url(../images/icons/facebook_32.png) no-repeat left 10px;
-}
-a.github {
-    background: url(../images/icons/github_32.png) no-repeat left 10px;
-}
-*/
 a.top {
     background: url(../images/icons/arrow_up_16x16.png) no-repeat left bottom;
     padding-left: 30px;

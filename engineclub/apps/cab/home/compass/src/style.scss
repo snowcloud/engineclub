@@ -90,21 +90,44 @@ p { font-size: 16px; font-size: 1.5rem; line-height: 1.25; margin: 0 0 18px; }
 		color: white;
 	}
 }
+.home-links-alt {
+	visibility: hidden;
+	display: none;
+}
 
-.home-links {
-	padding-top: 1em;
+.home-links-alt {
+	//padding-top: 4em;
 	//float: left;
-}
-/* My Comment 
+	//background-color: green;
+	//margin-top: 14.5em;
+	margin-bottom: 1em;
+	.action {
+	    border-bottom: none;
+	    margin-left: 10%;
+	    padding-top: 1.2em;
+	    padding-bottom: 1.2em;
+	}
+	p {
+		padding-top: 0.2em;
+		//display: inline;
+	}
+	a.email {
+	    background: url(../images/icons/email_32.png) no-repeat left bottom;
+	}
+	a.twitter {
+	    background: url(../images/icons/twitter_32.png) no-repeat left 10px;
+	}
+	a.blog {
+	    background: url(../images/icons/wordpress_32.png) no-repeat left 10px;
+	}
+	a.facebook {
+	    background: url(../images/icons/facebook_32.png) no-repeat left 10px;
+	}
+	a.github-alt {
+	    background: url(../images/icons/github_32.png) no-repeat left 10px;
+	}
 
-.home-links .action {
-    margin-left: 30%;
 }
-.home-links p {
-	padding-top: 1em;
-	//display: inline;
-}
-*/
 
 #top {
 	margin-bottom: 1.8em;
@@ -334,6 +357,10 @@ dl.nice.tabs.vertical dd a:hover {
 		// visibility: visible;
 		line-height: 1.2em;
 	}
+	.home #top {
+		visibility: hidden;
+		display: none;
+	}
 	.breadcrumbs {
 		display: block !important;
 		color: red;		
@@ -345,6 +372,14 @@ dl.nice.tabs.vertical dd a:hover {
 				padding: 0em 1.8em 0em;
 			}
 		}
+	}
+	.home-links {
+		visibility: hidden;
+		display: none;
+	}
+	.home-links-alt {
+		display: inline;
+		visibility: visible;
 	}
 	.pres-slide {
 		clear: both;
