@@ -18,7 +18,7 @@
 	<dl class="sub-nav">
 	    <dt>Actions:</dt>
         <dd><a href="{% url 'cab_user_edit' object.id %}">Edit</a></dd>
-        <dd><a href="#">Reset password</a></dd>
+        <dd><a href="{% url 'cab_user_password_reset' object.id %}"/>Reset password</a></dd>
 	</dl>
 
 

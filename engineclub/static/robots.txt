@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /search/
+Disallow: /users/find/
+Disallow: /depot/resource/find/
+Disallow: /acct/

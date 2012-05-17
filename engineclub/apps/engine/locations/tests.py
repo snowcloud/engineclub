@@ -19,10 +19,15 @@ def setUpLocations(self):
     data = { "id" : "33195942", "accuracy" : "6", "country_code" : "SCT", "district" : "City of Edinburgh", "lat_lon" : [ 55.9687743, -3.2607252 ], "loc_type" : "OSM_PLACENAME", "place_name" : "Muirhouse" }
     self.loc3 = Location.objects.create(**data)
 
+    data = { "id" : "G40QR", "accuracy" : "6", "postcode" : "G4 0QR", "district" : "Glasgow City", "loc_type" : "POSTCODE", "country_code" : "SCT", "lat_lon" : [ 55.8607, -4.2397 ], "place_name" : "Anderston/City, Glasgow City" }
+    self.loc4 = Location.objects.create(**data)
+
+    data = { "id" : "G5", "accuracy" : 4, "country_code" : "SCT", "district" : "", "lat_lon" : [ 55.8432784, -4.245007699999999 ], "loc_type" : "POSTCODEDISTRICT", "place_name" : "Glasgow", "postcode" : "G5" }
+    self.loc5 = Location.objects.create(**data)
 
 class LocationTest(MongoTestCase):
     def setUp(self):
         setUpLocations(self)
 
     def test_locations(self):
-        self.assertEqual(Location.objects.count(), 3)
+        self.assertEqual(Location.objects.count(), 5)
