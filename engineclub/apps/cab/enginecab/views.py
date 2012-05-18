@@ -94,6 +94,11 @@ def list_detail(request, object_id, template_name='enginecab/list_detail.html'):
     # context = {'object': object}
     # return render_to_response(template_name, RequestContext(request, context))
 
+@user_passes_test(lambda u: u.is_staff)
+def analytics(request, template_name='enginecab/analytics.html'):
+    from analytics.views import analytics_index
+    return analytics_index(request, template_name=template_name)
+
 @user_passes_test(lambda u: u.is_superuser)
 def locations_index(request, template_name='enginecab/locations_index.html'):
 

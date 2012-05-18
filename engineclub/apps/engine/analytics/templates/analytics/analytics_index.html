@@ -1,1 +1,7 @@
-analytics_index.html
+{% load url from future %}
+
+<ul class="disc">
+{% for obj in objects  %}
+	<li><a href="{% url 'analytics_detail' obj.0 %}">{{obj.1.0}}</a> {{ob}}</li>
+{% endfor %}
+</ul>

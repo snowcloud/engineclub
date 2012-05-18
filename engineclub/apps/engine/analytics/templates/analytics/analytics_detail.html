@@ -12,6 +12,7 @@
   {% if user.is_authenticated %}
     <ul class="breadcrumbs">
         <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
+        <li><a href="{% url 'analytics' %}">analytics</a></li>
     </ul>
   {% endif %}
 {% endblock %}
@@ -20,10 +21,14 @@
 
 <h1>Analytics</h1>
 
-{% include 'analytics/analytics_index.html' %}
+<table>
+	<thead><tr><th>Value</th><th>Count</th></tr></thead>
+	<tbody>
+		{% for obj in objects  %}
+			<tr><td>{{ obj.0 }}</td><td>{{ obj.1 }}</td></tr>
+		{% endfor %}
+	</tbody>
+</table>
 
 {% endblock %}
-
-
-
 
