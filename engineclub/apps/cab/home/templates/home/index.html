@@ -4,32 +4,44 @@
 
 {% block title %}home{% endblock %}
 
-{% block head_extra %}<meta name="google-site-verification" content="87UGwy7ABIHE8hpWYg6JaoPb3H9umNIY2xhvc3tNKXc" />{% endblock %}
+{% block head-extra %}
+  <meta name="google-site-verification" content="87UGwy7ABIHE8hpWYg6JaoPb3H9umNIY2xhvc3tNKXc" />  <link rel="stylesheet" type="text/css" href="/static/css/socbuttons/zocial.css" />
+  <link href='http://fonts.googleapis.com/css?family=Pompiere' rel='stylesheet' type='text/css'>
+{% endblock head-extra %}
 
 {% block body_class %}home{% endblock %}
 {% block nav_link %}{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="welcome"><p>Welcome to ALISS: access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p></div>
-    </div>
+  <div class="row">
+    <div class="welcome"><p>Welcome to ALISS: access to local information to support self&nbsp;management for people with long&nbsp;term health&nbsp;conditions.</p></div>
+  </div>
 
-    <div class="row">
-        <div class="page-nav">
-            <p><a href="/info/" class="nice radius black button"><span>Find out more</span></a></p>
-            <p><a href="{% url 'search' %}" class="nice radius black button">Explore Aliss</a></p>
-            <p><a href="{% url 'contact' %}" class="nice radius black button">Contact us</a></p>
-            <p><a href="{% url 'youraliss' %}" class="nice radius black button">Your account</a></p>
-            <p><a href="{% url 'resource_add' %}" class="nice radius black button">Add a new resource</a></p>
-            {% if user.is_staff %}<p><a href="{% url 'cab' %}" class="nice radius blue button">Caboose</a></p>{% endif %}
+  <div class="row">
+    <div class="page-nav">
+      <p><a href="/info/" class="nice radius black button"><span>Find out more</span></a></p>
+      <p><a href="{% url 'search' %}" class="nice radius black button">Explore Aliss</a></p>
+      <!-- <p><a href="{% url 'contact' %}" class="nice radius black button">Contact us</a></p> -->
+      <p><a href="{% url 'youraliss' %}" class="nice radius black button">Your account</a></p>
+      <p><a href="{% url 'resource_add' %}" class="nice radius black button">Add a new resource</a></p>
+      {% if user.is_staff %}<p><a href="{% url 'cab' %}" class="nice radius blue button">Caboose</a></p>{% endif %}
 
-            <div class="home-links">
-                <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
-                <p><a href="http://www.facebook.com/pages/Access-to-local-information-to-support-self-management-ALISS/330391253673253" class="action facebook">Facebook</a></p>
-                <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
-                <p><a href="http://github.com/snowcloud/engineclub/" class="action github">Github</a></p>
-            </div>
+      <div class="home-links">
 
+        <a href="{% url 'contact' %}" class="zocial email">Contact us</a>
+        <a href="http://twitter.com/alissproject/" class="zocial twitter right">twitter</a>
+        <a href="http://www.facebook.com/pages/Access-to-local-information-to-support-self-management-ALISS/330391253673253" class="zocial facebook">Facebook</a>
+        <a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="zocial wordpress right">Blog</a>
+        <a href="http://github.com/snowcloud/engineclub/" class="zocial github">Github</a>
+      </div>
+
+      <div class="home-links-alt">
+        <br>
+        <p><a href="http://twitter.com/alissproject/" class="action twitter">Twitter</a></p>
+        <p><a href="http://www.facebook.com/pages/Access-to-local-information-to-support-self-management-ALISS/330391253673253" class="action facebook">Facebook</a></p>
+        <p><a href="http://www.aliss.scot.nhs.uk/index.php/blog" class="action blog">Blog</a></p>
+        <p><a href="http://github.com/snowcloud/engineclub/" class="action github-alt">Github</a></p>
+      </div>
     </div>
 
     {% carousel %}
@@ -38,18 +50,18 @@
 {% endblock %}
 {% block script-extra %}
   <script type="text/javascript">
-     $(window).load(function() {
-         $('#carousel').orbit({
-            animation: 'fade',
-            animationSpeed: 1600,
-            pauseOnHover: true,
-            startClockOnMouseOut: true,
-            // directionalNav: true,
-            captions: true,
-            bullets: true
-         });
-         $('.carousel').css('visibility','visible');
+   $(window).load(function() {
+     $('#carousel').orbit({
+      animation: 'fade',
+      animationSpeed: 1600,
+      pauseOnHover: true,
+      startClockOnMouseOut: true,
+      // directionalNav: true,
+      captions: true,
+      bullets: true
      });
      $('.carousel').css('visibility','visible');
+   });
+   $('.carousel').css('visibility','visible');
 
 </script>{% endblock %}
