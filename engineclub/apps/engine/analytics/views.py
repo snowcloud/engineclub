@@ -16,14 +16,14 @@ def _parse_date(date_str, default):
     except ValueError:
         return default
 
-@login_required
+# @login_required
 def analytics_index(request, template_name='analytics/analytics_base.html'):
     analytics = OverallAnalytics()
     objects = sorted(analytics.sum_keys.items())
     context = {'objects': objects}
     return render_to_response(template_name, RequestContext(request, context))
 
-@login_required
+# @login_required
 def analytics_detail(request, stat_name, template_name='analytics/analytics_detail.html'):
     analytics = OverallAnalytics()
     start = _parse_date(request.GET.get('start', ''), date.today() - timedelta(days=7))
