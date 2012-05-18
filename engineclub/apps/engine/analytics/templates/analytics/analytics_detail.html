@@ -9,12 +9,12 @@
 {% block nav_link %}{{ block.super }}{% endblock %}
 
 {% block breadcrumbs %}
+<ul class="breadcrumbs">
   {% if user.is_authenticated %}
-    <ul class="breadcrumbs">
-        <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
-        <li><a href="{% url 'analytics' %}">analytics</a></li>
-    </ul>
+    <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
   {% endif %}
+    <li><a href="{% url 'analytics' %}">analytics</a></li>
+</ul>
 {% endblock %}
 
 {% block content %}
