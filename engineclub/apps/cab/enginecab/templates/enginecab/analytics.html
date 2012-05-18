@@ -1,0 +1,20 @@
+{% extends "enginecab/base.html" %}
+{% load url from future %}
+
+{% block title %}engine cab analytics{% endblock %}
+
+{% block breadcrumb-add %}
+    <li class="current"><a href="#">Analytics</a></li>
+{% endblock breadcrumb-add %}
+
+
+{% block mod-nav-analytics %}active{% endblock %}
+
+{% block module-content %}
+
+<h2>Analytics</h2>
+
+{% include 'analytics/analytics_index.html' %}
+
+{% endblock %}
+

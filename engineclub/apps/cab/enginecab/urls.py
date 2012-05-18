@@ -4,6 +4,7 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('enginecab.views',
     
     url(r'^$', 'users', name='cab'),
+    url(r'^analytics/$', 'analytics', name='cab_analytics'),
     url(r'^issues/$', 'issues', name='cab_issues'),
     url(r'^issues/(?P<object_id>\w+)/$', 'issue_detail', name='cab_issue_detail'),
     url(r'^locations/$', 'locations_index', name='cab_locations'),

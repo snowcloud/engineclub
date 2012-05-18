@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load markup utils %}
+{% load url from future %}
+
+
+{% block title %}analytics{% endblock %}
+
+{% block body_class %}{{ block.super }} analytics{% endblock %}
+{% block nav_link %}{{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+  {% if user.is_authenticated %}
+    <ul class="breadcrumbs">
+        <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
+    </ul>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Analytics</h1>
+
+{% include 'analytics/analytics_index.html' %}
+
+{% endblock %}
+
+
+
+

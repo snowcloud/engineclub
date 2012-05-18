@@ -196,6 +196,20 @@ try:
             super(OverallAnalytics, self).__init__(*args, **kwargs)
             self.account = None
 
+            self.sum_keys = {
+                'top_tags': ('Tags', 'search_tags'),
+                'top_queries': ('Queries', 'search_queries'),
+                'top_failed_locations': ('Failed locations', 'failed_search_locations'),
+                'top_locations': ('Locations', 'search_locations'),
+                'top_api_queries': ('API queries', 'search_api_queries'),
+                'top_api_locations': ('API locations', 'search_api_locations'),
+                'top_resources': ('Resources', 'resource_access'),
+                'top_api_resources': ('API resources', 'api_resource_access'),
+            }
+            self.flat_keys = {
+                
+            }
+
             self.tags_key = 'search_tags'
             self.queries_key = 'search_queries'
             self.failed_locations_key = 'failed_search_locations'
@@ -211,6 +225,9 @@ try:
 
         def top_queries(self, *args, **kwargs):
             return self.sum_hash(self.queries_key, *args, **kwargs)
+
+        def top_failed_locations(self, *args, **kwargs):
+            return self.sum_hash(self.failed_locations_key, *args, **kwargs)
 
         def top_locations(self, *args, **kwargs):
             return self.sum_hash(self.locations_key, *args, **kwargs)
