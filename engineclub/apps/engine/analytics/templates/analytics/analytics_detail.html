@@ -14,6 +14,7 @@
     <li><a href="{% url 'youraliss' %}">logged in as: {{ user.username }}</a></li>
   {% endif %}
     <li><a href="{% url 'analytics' %}">analytics</a></li>
+    <li class= "current"><a href="#">{{ stat.0 }}</a></li>
 </ul>
 {% endblock %}
 
