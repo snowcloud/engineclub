@@ -29,7 +29,8 @@ def analytics_detail(request, stat_name, template_name='analytics/analytics_deta
     start = _parse_date(request.GET.get('start', ''), date.today() - timedelta(days=7))
     end = _parse_date(request.GET.get('end', ''), date.today())
     objects = getattr(analytics, stat_name)(start_date=start, end_date=end)
-    context = {'objects': objects}
+    stat = analytics.sum_keys.get(stat_name)
+    context = {'objects': objects, 'stat': stat}
     return render_to_response(template_name, RequestContext(request, context))
 
 @login_required
