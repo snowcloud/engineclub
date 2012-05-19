@@ -18,19 +18,82 @@
 {% endblock %}
 
 {% block content %}
+<style type="text/css">
+li h3 {
+  font-size: 90%;
+  padding: 7px;
+  color: white;
+  margin: 0;
+  //width: 20%;
+  float: left;
+}
+li p {
+  margin: 0;
+  padding: 0;
+}
+.chart div, .barholder {
+  font: 90% sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 7px;
+  margin: 0px;
+  //margin-left: 25%;
+  color: white;
+}
+</style>
+
+
 
 <h1>{{ stat.0 }}</h1>
 
-<table>
-	<thead><tr><th>Value</th><th>Count</th></tr></thead>
-	<tbody>
-		{% for obj in objects  %}
-			<tr><td>{{ obj.0 }}</td><td>{{ obj.1 }}</td></tr>
-		{% empty %}
-			<tr><td colspan="2">no data</td></tr>
-		{% endfor %}
-	</tbody>
-</table>
+<div id="bars" class="chart"></div>
+  <ul>
+    {% for obj in objects  %}
+      <li>
+      <h3>{{ obj.0 }}</h3>
+      <p class="barholder" style="width: {% chartbar obj.1 maxw 60 20 %}%">{{ obj.1 }}</p>
+      </li>
+    {% empty %}
+      <li>no data</li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}
 
+{% comment %}
+
+{% block script-extra %}
+<script type='text/javascript' src='/static/js/d3.v2.min.js'></script>
+{% endblock script-extra %}
+
+{% block document-ready %}
+
+// var data = [4, 8, 15, 16, 23, 42];
+
+// var x = d3.scale.linear()
+//   .domain([0, d3.max(data)])
+//   .range(["0px", "30%"]);
+
+// var chart = d3.select("#bars")
+
+// chart.selectAll("div")
+//     .data(data)
+//     .enter().append("div")
+//     .style("width", x)
+//     .text(function(d) { return d; });
+
+// var chart = d3.select('#bars2')
+
+// chart.selectAll("div")
+//     .data(data)
+//     .enter().append("div").append("div")
+//     .style("width", x)
+//     .text(function(d) { return d; });
+
+// $(".barholder").attr('style', 'width: 42%').text('42');
+//$("td.holder").append('<div style="width: 42%">42</div>');
+//.attr('style', 'width: 42%').text('42');
+
+{% endblock %}
+
+{% endcomment %}

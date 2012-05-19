@@ -30,7 +30,8 @@ def analytics_detail(request, stat_name, template_name='analytics/analytics_deta
     end = _parse_date(request.GET.get('end', ''), date.today())
     objects = getattr(analytics, stat_name)(start_date=start, end_date=end)
     stat = analytics.sum_keys.get(stat_name)
-    context = {'objects': objects, 'stat': stat}
+    maxw = objects[0][1] if objects else 0
+    context = {'objects': objects, 'stat': stat, 'maxw': maxw}
     return render_to_response(template_name, RequestContext(request, context))
 
 @login_required

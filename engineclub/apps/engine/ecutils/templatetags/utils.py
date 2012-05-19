@@ -180,6 +180,12 @@ def get_lon(value):
         return value.split(settings.LATLON_SEP)[1]
     return ''
 
+@register.simple_tag
+def chartbar(value, maxw, width, add=0):
+    result = (float(value) / float(maxw)) * float(width)
+    return int(result) + add 
+    return ((int(value) * width) / (int(maxw) * width)) + add
+
 # @register.filter
 # def placetype(pt):
 #     if pt == 'Zip':
