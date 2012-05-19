@@ -50,7 +50,7 @@ li p {
   <ul>
     {% for obj in objects  %}
       <li>
-      <h3>{{ obj.0 }}</h3>
+      <h3>{{ obj.0|truncatechars:40 }}</h3>
       <p class="barholder" style="width: {% chartbar obj.1 maxw 60 20 %}%">{{ obj.1 }}</p>
       </li>
     {% empty %}
