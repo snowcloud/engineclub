@@ -1,6 +1,6 @@
 {% extends "accounts/accounts_base.html" %}
 {% load url from future %}
-{% load markup %}
+{% load depot_tags markup %}
 
 {% block title %}groups{% endblock %}
 
@@ -21,11 +21,11 @@
 
 <dl>
 {% for object in objects %}
-
-    <dt><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a></dt>
+	{% with cur_count=object|curation_count %}
+    <dt><a href="{% url 'accounts_detail' object.id %}">{{ object.name }}</a> ({{ cur_count }} curation{{ cur_count|pluralize }})</dt>
     	<dd>{{ object.description|truncatewords:20 }}</dd>
     
-
+    {% endwith %}
 {% empty %}
     <dt>no user accounts found. There's probably something wrong here.</t>
 {% endfor %}
