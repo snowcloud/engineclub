@@ -7,13 +7,14 @@ from pymongo import Connection, DESCENDING, ASCENDING, GEO2D
 from pysolr import Solr
 
 from ecutils.utils import minmax, lat_lon_to_str
+from locations.models import Location
 
 POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9]'
 
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
-def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True):
+def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True, create_location=False):
     """
     namestr can be postcode, placename, or 'placename: district' for places with same name
     """
@@ -55,10 +56,13 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
         find_dict['postcode'] = None
     result = coll.find_one(find_dict) if just_one else coll.find(find_dict).limit(20)
     if result and (type(result) == dict or result.count() > 0):
-
         return result
-    else:
-        return []
+    elif create_location:
+        loc = Location.create_from(namestr)
+        print ' ###################### CREATED LOCATION ######################'
+        return loc.to_mongo()
+
+    return []
 
 
 ###############################################################
