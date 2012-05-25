@@ -7,6 +7,7 @@ from django.template.defaultfilters import date
 
 from accounts.models import get_account
 from issues.models import Issue
+from resources.models import Resource, Curation
 from resources.views import get_curation_for_acct_resource
 
 register = Library()
@@ -81,4 +82,12 @@ def search_url(obj, tag):
     else:
         url_name = 'accounts_find'
     return '%s?kwords=%s&post_code=%s&result=Find+items' % (reverse(url_name), tag, loc)
+
+@register.filter
+def curation_count(acct):
+    return Curation.objects(owner=acct).count()
+
+@register.filter
+def resource_count(acct):
+    return Resource.objects(owner=acct).count()
 
