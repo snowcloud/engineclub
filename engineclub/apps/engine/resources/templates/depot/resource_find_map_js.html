@@ -1,7 +1,7 @@
 {# Just needs rev_url set to work for Resource or Account #}
 {% load utils depot_tags markup %}
 {% load url from future %}
-  {% if pt_results %}
+  {% if centres or pt_results %}
     mapstraction = new mxn.Mapstraction('map','google');
     //mapstraction = new mxn.Mapstraction('map','openlayers');
 
