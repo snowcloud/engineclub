@@ -4,12 +4,14 @@
   {% if pt_results %}
     mapstraction = new mxn.Mapstraction('map','google');
     //mapstraction = new mxn.Mapstraction('map','openlayers');
-    {% if centre %}
-      var centre_pin =  new mxn.Marker(new mxn.LatLonPoint({{centre.location.0}}, {{centre.location.1}}))
+
+    var centre_pin;
+    {% for pin in centres %}
+      centre_pin =  new mxn.Marker(new mxn.LatLonPoint({{pin.location.0}}, {{pin.location.1}}))
       centre_pin.setIcon("/static/images/misc/blue-pin.png", [21,34], [10,34]);
       centre_pin.setShadowIcon('/static/images/misc/pin-shadow50.png')     
       mapstraction.addMarker(centre_pin);      
-    {% endif %}
+    {% endfor %}
 
     {% for loc, res_objs in pt_results.items %}
         advancedMarker({{ loc.0 }}, {{ loc.1 }}, '{% for id, title in res_objs %}<p><a href="{% url rev_url id %}">{{ title }}</a></p>{% endfor %}');
