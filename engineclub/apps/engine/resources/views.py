@@ -297,23 +297,6 @@ def resource_find(request, template_name='depot/resource_find.html'):
             for result in form.results:
                 resource = get_one_or_404(Resource, id=ObjectId(result['res_id']))
                 result['resource'] = resource
-                # try:
-                #     curation_index, curation = get_curation_for_user_resource(user, resource)
-                #     print curation
-                # except TypeError:
-                #     curation_index = curation = None
-
-                # curation_form = CurationForm(
-                #         initial={'outcome': STATUS_OK},
-                #         instance=curation)
-                # resource_report_form = ResourceReportForm()
-                # results.append({
-                #     'resource_result': result,
-                #     'curation': curation,
-                #     'curation_form': curation_form,
-                #     'resource_report_form': resource_report_form,
-                #     'curation_index': curation_index
-                # })
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
             centres = [form.centre] if form.centre else []
@@ -326,16 +309,18 @@ def resource_find(request, template_name='depot/resource_find.html'):
     # see also accounts.view.accounts_find
 
     # just north of Perth
-    default_centres = [{'location': ('56.5', '-3.5')}]
+    # default_centres = [{'location': ('56.5', '-3.5')}]
+
+    print bool(centres or pt_results)
 
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': form.results,
         'pt_results': pt_results,
-        'centres': centres or default_centres if pt_results else None,
+        'centres': centres, # or default_centres if pt_results else None,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': pt_results,
+        'show_map': bool(centres or pt_results),
         'new_search': new_search
     }
     return render_to_response(template_name, RequestContext(request, context))

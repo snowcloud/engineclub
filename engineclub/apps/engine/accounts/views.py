@@ -105,16 +105,16 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
     # see also resources.view.resource_find
 
     # just north of Perth
-    default_centres = [{'location': ('56.5', '-3.5')}]
+    # default_centres = [{'location': ('56.5', '-3.5')}]
 
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
         'pt_results': pt_results,
-        'centres': centres or default_centres if pt_results else None,
+        'centres': centres, # or default_centres if pt_results else None,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': pt_results,
+        'show_map': bool(centres or pt_results),
         'new_search': new_search
     }
     return render_to_response(template_name, RequestContext(request, context))
