@@ -311,8 +311,6 @@ def resource_find(request, template_name='depot/resource_find.html'):
     # just north of Perth
     # default_centres = [{'location': ('56.5', '-3.5')}]
 
-    print bool(centres or pt_results)
-
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,

@@ -143,6 +143,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'analytics.middleware.AnalyticsMiddleware',
     # "sitedown.middleware.SitedownMiddleware",
 )
 

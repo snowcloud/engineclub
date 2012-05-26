@@ -528,3 +528,24 @@ class TestSearchStats(MongoTestCase):
         self.assertEqual(analytics.top_api_resources(yesterday, tomorrow), [
             (oid, 1),
         ])
+
+    def test_middleware_stats(self):
+        from django.core.urlresolvers import reverse, resolve, Resolver404
+
+        url = reverse('resource', args=['2'])
+        print url
+
+        # /depot/resource/2/
+        try:
+            match = resolve('/depotxx/resource/2/')
+        except Resolver404:
+            pass
+        match = resolve('/depot/resource/2/')
+        # Print the URL pattern that matches the URL
+        print match.url_name, match.args, match.kwargs
+
+        # print 'cooo'
+
+
+
+
