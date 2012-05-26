@@ -95,7 +95,7 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
                 results.append({'resource_result': result})
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
-            centres = [form.centre]
+            centres = [form.centre] if form.centre else []
     else:
         form = FindAccountForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
