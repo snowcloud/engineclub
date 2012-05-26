@@ -36,8 +36,10 @@
       map_type: true 
     });
     
-    //mapstraction.setCenterAndZoom(centre_pt, 12);
-    mapstraction.autoCenterAndZoom()
+    mapstraction.autoCenterAndZoom();
+    {% if pt_results|length < 2 and centres|length < 2 %} 
+      mapstraction.setZoom(12);
+    {% endif %}
 
   {% endif %}
   $('.sub-nav a').click(function() {
