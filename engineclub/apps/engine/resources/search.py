@@ -14,6 +14,9 @@ POSTCODE_START_REGEX = r'^[a-zA-Z]{1,2}[0-9]'
 ###############################################################
 # LOCATION STUFF - PUBLIC
 
+def get_or_create_location(namestr):
+    return get_location(namestr, create_location=True)
+
 def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True, create_location=False):
     """
     namestr can be postcode, placename, or 'placename: district' for places with same name
@@ -24,14 +27,18 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
     # check parts 1 and 2 (trimmed) convert to real
     # return {'lat_lon': [real, real] }
 
+    default = []
+    namestr = namestr.strip()
+    if not namestr:
+        return default
     db = get_db()
     coll = db.location
     district =None
     pc = False
     pc_matcher = re.compile(POSTCODE_START_REGEX)
 
-    if pc_matcher.match(namestr.strip()):
-        name = namestr.upper().replace(' ', '').strip()
+    if pc_matcher.match(namestr):
+        name = namestr.upper().replace(' ', '')
         field = '_id'
         pc = True
     else:
@@ -59,10 +66,11 @@ def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, st
         return result
     elif create_location:
         loc = Location.create_from(namestr)
-        print ' ###################### CREATED LOCATION ######################'
-        return loc.to_mongo()
+        # print ' ###################### CREATED LOCATION ######################'
+        if loc:
+            return loc.to_mongo()
 
-    return []
+    return default
 
 
 ###############################################################
@@ -104,7 +112,7 @@ def _make_fq(event, accounts, collections, res_type):
 
 
 def find_by_place(name, kwords, loc_boost=None, start=0, max=None, accounts=None, collections=None, event=None, res_type=settings.SOLR_RES):
-    loc = get_location(name)
+    loc = get_or_create_location(name)
     if loc:
         kw = {
             'start': start,

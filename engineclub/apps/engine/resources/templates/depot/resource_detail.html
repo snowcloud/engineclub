@@ -130,8 +130,11 @@
         map_type: true 
     });
     
-    //mapstraction.autoCenterAndZoom();
-    mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 14);
+    {% if object.locations|length > 1 %} 
+        mapstraction.autoCenterAndZoom();
+    {% else %}    
+        mapstraction.setCenterAndZoom(new mxn.LatLonPoint({{object.locations.0.lat_lon.0}}, {{object.locations.0.lat_lon.1}}), 14);
+    {% endif %}
 
 {% endif %}
 {% endblock %}

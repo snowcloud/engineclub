@@ -168,8 +168,8 @@ class SearchTest(MongoTestCase):
         self.assertFalse(matcher.match('portob'))
         self.assertTrue(matcher.match('g4  '))
 
-    def test_location(self):
-        from resources.search import get_location
+    def test_get_location(self):
+        from resources.search import get_location, get_or_create_location
 
         loc = get_location('muirhouse')
         self.assertEqual(loc['district'], 'North Lanarkshire')
@@ -186,6 +186,18 @@ class SearchTest(MongoTestCase):
         loc = get_location('g5')
         self.assertEqual(loc['place_name'], 'Glasgow')
         self.assertEqual(loc['postcode'], 'G5')
+
+        loc = get_location('hounslow')
+        self.assertEqual(loc, [])
+        loc = get_or_create_location('hounslow')
+        self.assertEqual(loc['_id'], 'Hounslow_Greater London')
+        loc = get_location('hounslow')
+        self.assertEqual(loc['_id'], 'Hounslow_Greater London')
+
+        self.assertEqual(get_or_create_location('zzzzzzz'), [])
+        self.assertEqual(get_or_create_location(' zzzzzzz     '), [])
+        self.assertEqual(get_or_create_location(''), [])
+        self.assertEqual(get_or_create_location('    '), [])
 
         # test for autosuggest matches, postcodes etc.
         # def get_location(namestr, dbname=settings.MONGO_DATABASE_NAME, just_one=True, starts_with=False, postcodes=True):

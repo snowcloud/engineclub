@@ -70,6 +70,14 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'resources_cache',
+        'TIMEOUT': 60 * 60 * 24, # 24 hours
+    }
+}
+
 LATLON_SEP= ', '
 
 # set/override these in settings_local

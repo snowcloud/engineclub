@@ -279,7 +279,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
     """docstring for resource_find"""
     results = []
     pt_results = {}
-    centre = None
+    centres = None
     new_search = False
 
     result = request.REQUEST.get('result', '')
@@ -316,7 +316,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
                 # })
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
-            centre = form.centre
+            centres = [form.centre]
     else:
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
@@ -326,14 +326,14 @@ def resource_find(request, template_name='depot/resource_find.html'):
     # see also accounts.view.accounts_find
 
     # just north of Perth
-    default_centre = {'location': ('56.5', '-3.5')}
+    default_centres = [{'location': ('56.5', '-3.5')}]
 
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': form.results,
         'pt_results': pt_results,
-        'centre': centre or default_centre if pt_results else None,
+        'centres': centres or default_centres if pt_results else None,
         'google_key': settings.GOOGLE_KEY,
         'show_map': pt_results,
         'new_search': new_search

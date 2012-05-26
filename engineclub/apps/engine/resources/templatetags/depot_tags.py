@@ -83,11 +83,21 @@ def search_url(obj, tag):
         url_name = 'accounts_find'
     return '%s?kwords=%s&post_code=%s&result=Find+items' % (reverse(url_name), tag, loc)
 
+from django.core.cache import cache
+
 @register.filter
 def curation_count(acct):
-    return Curation.objects(owner=acct).count()
+    result = cache.get('account_curations_count.%s' % acct.id, None)
+    if result is None:
+        result = Curation.objects(owner=acct).count()
+        cache.set('account_curations_count.%s' % acct.id, result)
+    return result
 
 @register.filter
 def resource_count(acct):
-    return Resource.objects(owner=acct).count()
+    result = cache.get('account_resources_count.%s' % acct.id, None)
+    if result is None:
+        result = Resource.objects(owner=acct).count()
+        cache.set('account_resources_count.%s' % acct.id, result)
+    return result
 

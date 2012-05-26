@@ -20,7 +20,7 @@ httpagentparser
 
 # mongo stuff
 pymongo==2.2
-mongoengine==0.6.8
+mongoengine==0.6.10
 
 # reqd by mongoengine and not in python 2.5
 # multiprocessing

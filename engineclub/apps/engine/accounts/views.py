@@ -40,10 +40,12 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html', ne
     account = get_one_or_404(Account, id=object_id)
     user = request.user
     pt_results = {}
-    centre = None
+    centres = None
 
-    if account.locations:
-        centre = {'name': unicode(account.locations[0]), 'location': (account.locations[0].lat_lon) }
+    # if account.locations:
+    #     centres = [{'name': unicode(account.locations[0]), 'location': (account.locations[0].lat_lon) }]
+
+    centres = [{'name': unicode(loc), 'location': (loc.lat_lon) } for loc in account.locations]
 
     # curations = Curation.objects(owner=account).order_by('-item_metadata__last_modified')[:40]
     curations = get_pages(request, Curation.objects(owner=account).order_by('-item_metadata__last_modified'), 20)
@@ -56,7 +58,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html', ne
         'curations': curations,
         'curations_count': Curation.objects(owner=account).count(),
         'pt_results': pt_results,
-        'centre': centre,
+        'centres': centres,
         'google_key': settings.GOOGLE_KEY,
         'show_map': pt_results,
         'next': next or '%s?page=%s' % (reverse('accounts_detail', args=[account.id]), curations.number)
@@ -72,7 +74,7 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
     """docstring for accounts_find"""
     results = []
     pt_results = {}
-    centre = None
+    centres = None
     new_search = False
 
     result = request.REQUEST.get('result', '')
@@ -93,7 +95,7 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
                 results.append({'resource_result': result})
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
-            centre = form.centre
+            centres = [form.centre]
     else:
         form = FindAccountForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
@@ -103,14 +105,14 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
     # see also resources.view.resource_find
 
     # just north of Perth
-    default_centre = {'location': ('56.5', '-3.5')}
+    default_centres = [{'location': ('56.5', '-3.5')}]
 
     context = {
         'next': urlquote_plus(request.get_full_path()),
         'form': form,
         'results': results,
         'pt_results': pt_results,
-        'centre': centre or default_centre if pt_results else None,
+        'centres': centres or default_centres if pt_results else None,
         'google_key': settings.GOOGLE_KEY,
         'show_map': pt_results,
         'new_search': new_search

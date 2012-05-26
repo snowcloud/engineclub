@@ -4,6 +4,7 @@ from copy import deepcopy
 from datetime import datetime
 
 from django.conf import settings
+from django.core.cache import cache
 
 from mongoengine import *
 from mongoengine.connection import _get_db as get_db
@@ -65,6 +66,17 @@ class Curation(Document):
     owner = ReferenceField(Account)
     item_metadata = EmbeddedDocumentField(ItemMetadata,default=ItemMetadata)
 
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        super(Curation, self).save(*args, **kwargs)
+        if created:
+            cache.delete('account_curations_count.%s' % self.owner.id)
+
+    def delete(self, *args, **kwargs):
+        """docstring for delete"""
+        cache.delete('account_curations_count.%s' % self.owner.id)
+        super(Curation, self).delete(*args, **kwargs)
+        
     def perm_can_edit(self, user):
         """docstring for perm_can_edit"""
         acct = get_account(user.id)
@@ -114,6 +126,7 @@ class Resource(Document):
                 obj.resource = self
                 obj.save()
                 self.curations.append(obj)
+            cache.delete('account_resources_count.%s' % self.owner.id)
             super(Resource, self).save(*args, **kwargs)
         if reindex:
             self.reindex()
@@ -123,6 +136,7 @@ class Resource(Document):
         for c in self.curations:
             c.delete()
         self.reindex(remove=True)
+        cache.delete('account_resources_count.%s' % self.owner.id)
         super(Resource, self).delete(*args, **kwargs)
 
     def add_curation(self, curation, reindex=True):
