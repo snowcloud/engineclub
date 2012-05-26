@@ -316,7 +316,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
                 # })
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
-            centres = [form.centre]
+            centres = [form.centre] if form.centre else []
     else:
         form = FindResourceForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True

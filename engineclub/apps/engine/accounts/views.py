@@ -60,7 +60,7 @@ def detail(request, object_id, template_name='accounts/accounts_detail.html', ne
         'pt_results': pt_results,
         'centres': centres,
         'google_key': settings.GOOGLE_KEY,
-        'show_map': pt_results,
+        'show_map': centres or pt_results,
         'next': next or '%s?page=%s' % (reverse('accounts_detail', args=[account.id]), curations.number)
     }
     return render_to_response(
@@ -95,7 +95,7 @@ def accounts_find(request, template_name='accounts/accounts_find.html'):
                 results.append({'resource_result': result})
                 if 'pt_location' in result:
                     pt_results.setdefault(tuple(result['pt_location'][0].split(', ')), []).append((result['res_id'], result['title']))
-            centres = [form.centre]
+            centres = [form.centre] if form.centre else []
     else:
         form = FindAccountForm(initial={'boost_location': settings.SOLR_LOC_BOOST_DEFAULT})
         new_search = True
