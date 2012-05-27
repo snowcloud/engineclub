@@ -47,6 +47,7 @@ class AnalyticsMiddleware(object):
 			SERVER_PORT -- The port of the server (as a string).
     	"""
         analytics = AccountAnalytics(None)
+        log = True
 
         META_KEYS = ['HTTP_USER_AGENT', ]
         for key in META_KEYS:
@@ -54,24 +55,25 @@ class AnalyticsMiddleware(object):
             if value:
                 if key == 'HTTP_USER_AGENT':
                     try:
+                        # parser.detect gives more detail- could break out into OS, browser, version stats...
+                        # simple_detect -> ('Linux', 'Chrome 5.0.307.11')
                         value = httpagentparser.simple_detect(value)[1]
+                        log = value != 'Unknown Browser'
                     except IndexError:
                         pass
                 analytics.increment(key, field=value)
-                # print httpagentparser.simple_detect(value)[1]
 
-        # print request.path
+        request.META["ENGINE_LOG"] = log
+        if log:
+            DETAIL_PATHS = ['resource', 'accounts_detail']
+            try:
+                match = resolve(request.path)
+                # print match.url_name, match.args, match.kwargs
+                if match.url_name in DETAIL_PATHS and 'object_id' in match.kwargs:
+                    analytics.increment(match.url_name, field=match.kwargs['object_id'])
 
-        DETAIL_PATHS = ['resource']
-
-        try:
-            match = resolve(request.path)
-            # print match.url_name, match.args, match.kwargs
-            if match.url_name in DETAIL_PATHS and 'object_id' in match.kwargs:
-                analytics.increment(match.url_name, field=match.kwargs['object_id'])
-
-        except Resolver404:
-            pass
+            except Resolver404:
+                pass
 
     	
     	return None

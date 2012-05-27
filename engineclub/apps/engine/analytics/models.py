@@ -209,6 +209,7 @@ try:
                 'top_user_agents': ('Browser type', 'HTTP_USER_AGENT'),
                 'top_remote_addr': ('REMOTE_ADDR', 'REMOTE_ADDR'),
                 'top_resource': ('Resources (2)', 'resource'),
+                'top_accounts': ('Accounts', 'accounts_detail'),
             }
             self.flat_keys = {
                 

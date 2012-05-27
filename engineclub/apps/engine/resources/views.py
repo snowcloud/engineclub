@@ -290,6 +290,7 @@ def resource_find(request, template_name='depot/resource_find.html'):
         if form.is_valid():
             user = get_account(request.user.id)
 
+            # print request.META.get("ENGINE_LOG")
             increment_queries(form.cleaned_data['kwords'], account=user)
             # print form.centre['loc'] if form.centre else None
             increment_locations(unicode(form.centre['loc']) if form.centre else None, account=user)
