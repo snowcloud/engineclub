@@ -8,7 +8,7 @@ class RedisAnalyticsTestCase(MongoTestCase):
     def setUp(self):
 
         from analytics.models import BaseAnalytics
-        self.analytics = BaseAnalytics(redis_db=15)
+        self.analytics = BaseAnalytics(redis_db=settings.TEST_REDIS_ANALYTICS_DATABASE)
         self.redis = self.analytics.conn
         self.redis.flushdb()
 
@@ -404,8 +404,8 @@ class TestSearchStats(MongoTestCase):
 
         self.account = Account.objects[2]
 
-        self.account_analytics = AccountAnalytics(self.account, redis_db=15)
-        self.overall_analytics = OverallAnalytics(redis_db=15)
+        self.account_analytics = AccountAnalytics(self.account, redis_db=settings.TEST_REDIS_ANALYTICS_DATABASE)
+        self.overall_analytics = OverallAnalytics(redis_db=settings.TEST_REDIS_ANALYTICS_DATABASE)
         self.redis = self.account_analytics.conn
         self.redis.flushdb()
 
@@ -431,8 +431,7 @@ class TestSearchStats(MongoTestCase):
         result = self.client.get(url, {
             'post_code': '',
             'kwords': '',
-            'result': 1,
-        })
+            'result': 1,})
         self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.top_queries(yesterday, tomorrow), [])
@@ -531,9 +530,14 @@ class TestSearchStats(MongoTestCase):
 
     def test_middleware_stats(self):
         from django.core.urlresolvers import reverse, resolve, Resolver404
+        from datetime import date, timedelta
 
-        url = reverse('resource', args=['2'])
-        print url
+        analytics = self.overall_analytics
+        yesterday = date.today() - timedelta(days=1)
+        tomorrow = date.today() + timedelta(days=1)
+
+        # url = reverse('resource', args=['2'])
+        # print url
 
         # /depot/resource/2/
         try:
@@ -542,10 +546,22 @@ class TestSearchStats(MongoTestCase):
             pass
         match = resolve('/depot/resource/2/')
         # Print the URL pattern that matches the URL
-        print match.url_name, match.args, match.kwargs
+        # print match.url_name, match.args, match.kwargs
 
-        # print 'cooo'
+        oid = str(self.resource1.id)
+        url = reverse('resource', args=[self.resource1.id])
+        ip = '127.0.0.9'
+        agent1 = 'engine_tests'
+        agent2 = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.57.2 (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2'
+        result = self.client.get(url, HTTP_USER_AGENT=agent1, REMOTE_ADDR=ip)
+        result = self.client.get(url, HTTP_USER_AGENT=agent1, REMOTE_ADDR=ip)
+        result = self.client.get(url, HTTP_USER_AGENT=agent2, REMOTE_ADDR=ip)
+        self.assertEqual(result.status_code, 200)
 
+        self.assertEqual(analytics.sum_hash('HTTP_USER_AGENT', yesterday, tomorrow),
+            [(agent1, 2), (agent2, 1)])
+        self.assertEqual(analytics.sum_hash('REMOTE_ADDR', yesterday, tomorrow),
+            [(ip, 3)])
 
 
 

@@ -205,6 +205,9 @@ try:
                 'top_api_locations': ('API locations', 'search_api_locations'),
                 'top_resources': ('Resources', 'resource_access'),
                 'top_api_resources': ('API resources', 'api_resource_access'),
+                'top_user_agents': ('HTTP_USER_AGENT', 'HTTP_USER_AGENT'),
+                'top_remote_addr': ('REMOTE_ADDR', 'REMOTE_ADDR'),
+                'top_resource': ('Resources (2)', 'resource'),
             }
             self.flat_keys = {
                 
@@ -218,6 +221,7 @@ try:
             self.api_locations_key = 'search_api_locations'
             self.resources_key = 'resource_access'
             self.api_resources_key = 'api_resource_access'
+            self.top_user_agents_key = 'HTTP_USER_AGENT'
             self.resource_crud_key = 'resource_create'
 
         def top_tags(self, *args, **kwargs):
@@ -241,8 +245,17 @@ try:
         def top_resources(self, *args, **kwargs):
             return self.sum_hash(self.resources_key, *args, **kwargs)
 
+        def top_resource(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_resource'][1], *args, **kwargs)
+
         def top_api_resources(self, *args, **kwargs):
             return self.sum_hash(self.api_resources_key, *args, **kwargs)
+
+        def top_user_agents(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_user_agents'][1], *args, **kwargs)
+
+        def top_remote_addr(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_remote_addr'][1], *args, **kwargs)
 
         def top_resource_crud(self, *args, **kwargs):
             return self.flat_data(self.resource_crud_key, *args, **kwargs)

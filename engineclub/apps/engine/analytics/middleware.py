@@ -7,6 +7,9 @@
 
 # import urlparse
 
+from django.core.urlresolvers import resolve, Resolver404
+from analytics.models import AccountAnalytics
+
 # class HttpResponseServiceUnavailable(HttpResponse):
 #     status_code = 503
     
@@ -42,30 +45,27 @@ class AnalyticsMiddleware(object):
 			SERVER_NAME -- The hostname of the server.
 			SERVER_PORT -- The port of the server (as a string).
     	"""
-    	# print request.path
-    	# print request.META.get('HTTP_USER_AGENT')
+        analytics = AccountAnalytics(None)
+
+        META_KEYS = ['HTTP_USER_AGENT', 'REMOTE_ADDR']
+        for key in META_KEYS:
+            value = request.META.get(key)
+            if value:
+                analytics.increment(key, field=value)
+
+        # print request.path
+
+        DETAIL_PATHS = ['resource']
+
+        try:
+            match = resolve(request.path)
+            print match.url_name, match.args, match.kwargs
+            if match.url_name in DETAIL_PATHS and 'object_id' in match.kwargs:
+                analytics.increment(match.url_name, field=match.kwargs['object_id'])
+
+        except Resolver404:
+            pass
+
     	
     	return None
-
-        # if  self.disabled or \
-        #     request.path.startswith('/admin') or \
-        #     request.path.startswith(urlparse.urlparse(settings.MEDIA_URL).path) or \
-        #     (self.static_url and request.path.startswith(urlparse.urlparse(settings.STATIC_URL).path)):
-        #     return None
-        # if request.path == self.redirect:
-        #     return render_to_response(self.template,
-        #         RequestContext( request, {}))
-        # if self.use_302:
-        #     return HttpResponseRedirect(self.redirect)
-        # else:
-        #     response = HttpResponseServiceUnavailable(mimetype='text/html')
-        #     t = loader.get_template(self.template)
-        #     if self.flatpage:
-        #         fp = FlatPage.objects.get(url=self.flatpage)
-        #         title = fp.title
-        #         message = fp.content
-        #     else:
-        #         title = message = ''
-        #     response.write(t.render(RequestContext( request, { 'title': title, 'message': message })))
-        #     return response
         
