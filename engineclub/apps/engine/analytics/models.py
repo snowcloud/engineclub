@@ -205,7 +205,7 @@ try:
                 'top_api_locations': ('API locations', 'search_api_locations'),
                 'top_resources': ('Resources', 'resource_access'),
                 'top_api_resources': ('API resources', 'api_resource_access'),
-                'top_user_agents': ('HTTP_USER_AGENT', 'HTTP_USER_AGENT'),
+                'top_user_agents': ('Browser type', 'HTTP_USER_AGENT'),
                 'top_remote_addr': ('REMOTE_ADDR', 'REMOTE_ADDR'),
                 'top_resource': ('Resources (2)', 'resource'),
             }

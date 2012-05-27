@@ -47,7 +47,7 @@ class AnalyticsMiddleware(object):
     	"""
         analytics = AccountAnalytics(None)
 
-        META_KEYS = ['HTTP_USER_AGENT', 'REMOTE_ADDR']
+        META_KEYS = ['HTTP_USER_AGENT', ]
         for key in META_KEYS:
             value = request.META.get(key)
             if value:
@@ -59,7 +59,7 @@ class AnalyticsMiddleware(object):
 
         try:
             match = resolve(request.path)
-            print match.url_name, match.args, match.kwargs
+            # print match.url_name, match.args, match.kwargs
             if match.url_name in DETAIL_PATHS and 'object_id' in match.kwargs:
                 analytics.increment(match.url_name, field=match.kwargs['object_id'])
 
