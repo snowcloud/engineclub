@@ -8,6 +8,7 @@
 # import urlparse
 
 from django.core.urlresolvers import resolve, Resolver404
+import httpagentparser
 from analytics.models import AccountAnalytics
 
 # class HttpResponseServiceUnavailable(HttpResponse):
@@ -51,7 +52,13 @@ class AnalyticsMiddleware(object):
         for key in META_KEYS:
             value = request.META.get(key)
             if value:
+                if key == 'HTTP_USER_AGENT':
+                    try:
+                        value = httpagentparser.simple_detect(value)[1]
+                    except IndexError:
+                        pass
                 analytics.increment(key, field=value)
+                # print httpagentparser.simple_detect(value)[1]
 
         # print request.path
 

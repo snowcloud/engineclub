@@ -232,38 +232,38 @@ try:
                 return self.sum_hash(attr[1], *args, **kwargs)
             raise AttributeError, attrname
 
-        # def top_tags(self, *args, **kwargs):
-        #     return self.sum_hash(self.tags_key, *args, **kwargs)
+        def top_tags(self, *args, **kwargs):
+            return self.sum_hash(self.tags_key, *args, **kwargs)
 
-        # def top_queries(self, *args, **kwargs):
-        #     return self.sum_hash(self.queries_key, *args, **kwargs)
+        def top_queries(self, *args, **kwargs):
+            return self.sum_hash(self.queries_key, *args, **kwargs)
 
-        # def top_failed_locations(self, *args, **kwargs):
-        #     return self.sum_hash(self.failed_locations_key, *args, **kwargs)
+        def top_failed_locations(self, *args, **kwargs):
+            return self.sum_hash(self.failed_locations_key, *args, **kwargs)
 
-        # def top_locations(self, *args, **kwargs):
-        #     return self.sum_hash(self.locations_key, *args, **kwargs)
+        def top_locations(self, *args, **kwargs):
+            return self.sum_hash(self.locations_key, *args, **kwargs)
 
-        # def top_api_queries(self, *args, **kwargs):
-        #     return self.sum_hash(self.api_queries_key, *args, **kwargs)
+        def top_api_queries(self, *args, **kwargs):
+            return self.sum_hash(self.api_queries_key, *args, **kwargs)
 
-        # def top_api_locations(self, *args, **kwargs):
-        #     return self.sum_hash(self.api_locations_key, *args, **kwargs)
+        def top_api_locations(self, *args, **kwargs):
+            return self.sum_hash(self.api_locations_key, *args, **kwargs)
 
-        # def top_resources(self, *args, **kwargs):
-        #     return self.sum_hash(self.resources_key, *args, **kwargs)
+        def top_resources(self, *args, **kwargs):
+            return self.sum_hash(self.resources_key, *args, **kwargs)
 
-        # def top_resource(self, *args, **kwargs):
-        #     return self.sum_hash(self.sum_keys['top_resource'][1], *args, **kwargs)
+        def top_resource(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_resource'][1], *args, **kwargs)
 
-        # def top_api_resources(self, *args, **kwargs):
-        #     return self.sum_hash(self.api_resources_key, *args, **kwargs)
+        def top_api_resources(self, *args, **kwargs):
+            return self.sum_hash(self.api_resources_key, *args, **kwargs)
 
-        # def top_user_agents(self, *args, **kwargs):
-        #     return self.sum_hash(self.sum_keys['top_user_agents'][1], *args, **kwargs)
+        def top_user_agents(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_user_agents'][1], *args, **kwargs)
 
-        # def top_remote_addr(self, *args, **kwargs):
-        #     return self.sum_hash(self.sum_keys['top_remote_addr'][1], *args, **kwargs)
+        def top_remote_addr(self, *args, **kwargs):
+            return self.sum_hash(self.sum_keys['top_remote_addr'][1], *args, **kwargs)
 
         def top_resource_crud(self, *args, **kwargs):
             return self.flat_data(self.resource_crud_key, *args, **kwargs)

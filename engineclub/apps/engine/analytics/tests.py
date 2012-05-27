@@ -559,7 +559,7 @@ class TestSearchStats(MongoTestCase):
         self.assertEqual(result.status_code, 200)
 
         self.assertEqual(analytics.sum_hash('HTTP_USER_AGENT', yesterday, tomorrow),
-            [(agent1, 2), (agent2, 1)])
+            [('Unknown Browser', 2), ('Safari 5.1.7', 1)])
         # self.assertEqual(analytics.sum_hash('REMOTE_ADDR', yesterday, tomorrow),
         #     [(ip, 3)])
 
