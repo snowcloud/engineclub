@@ -61,7 +61,8 @@ class AnalyticsMiddleware(object):
                         log = value != 'Unknown Browser'
                     except IndexError:
                         pass
-                analytics.increment(key, field=value)
+                if log:
+                    analytics.increment(key, field=value)
 
         request.META["ENGINE_LOG"] = log
         if log:
