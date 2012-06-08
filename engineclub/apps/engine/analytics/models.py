@@ -212,7 +212,8 @@ try:
                 'top_accounts': ('Accounts', 'accounts_detail'),
             }
             self.flat_keys = {
-                
+                'user_agents': ('Browser type', 'HTTP_USER_AGENT'),
+                'queries': ('Queries', 'search_queries'),
             }
 
             self.tags_key = 'search_tags'
@@ -231,7 +232,10 @@ try:
             attr = self.sum_keys.get(stat_name)
             if attr:
                 return self.sum_hash(attr[1], *args, **kwargs)
-            raise AttributeError, attrname
+            attr = self.flat_keys.get(stat_name)
+            if attr:
+                return self.flat_data(attr[1], *args, **kwargs)
+            raise AttributeError, stat_name
 
         def top_tags(self, *args, **kwargs):
             return self.sum_hash(self.tags_key, *args, **kwargs)
