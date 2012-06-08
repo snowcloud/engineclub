@@ -51,11 +51,12 @@ def stat_json(request, stat_name):
     else:
         analytics = OverallAnalytics()
 
-    if not hasattr(analytics, stat_name):
-        raise Http404("Stat not found.")
+    # if not hasattr(analytics, stat_name):
+    #     raise Http404("Stat not found.")
 
     data = {
-        'result': getattr(analytics, stat_name)(start_date=start, end_date=end)
+        'result': analytics.get_stats(stat_name, start_date=start, end_date=end)
+        # 'result': getattr(analytics, stat_name)(start_date=start, end_date=end)
     }
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
