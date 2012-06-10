@@ -13,7 +13,7 @@ body {
 	font-family: "freight-sans-pro", "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	//font-size: 13px; 
 	-webkit-font-smoothing: subpixel-antialiased; // needed for white on black
-
+	//text-rendering: optimizeLegibility; // need to test this cross browser
 }
 h1, h2, h3, h4, h5, h6, .button { color: #181818; font-family: "adelle",serif; font-weight: normal; line-height: 1.25 }
 .button {
