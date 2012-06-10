@@ -39,7 +39,7 @@ def resources(request, template_name='enginecab/resources.html'):
 
 @user_passes_test(lambda u: u.is_staff)
 def users(request, template_name='enginecab/users.html'):
-    context = {'objects': Account.objects.all()[:40]}
+    context = {'objects': Account.objects.all()}
     return render_to_response(template_name, RequestContext(request, context))
 
 @user_passes_test(lambda u: u.is_staff)
