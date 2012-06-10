@@ -58,11 +58,11 @@ class AnalyticsMiddleware(object):
                         # parser.detect gives more detail- could break out into OS, browser, version stats...
                         # simple_detect -> ('Linux', 'Chrome 5.0.307.11')
 
-                        values = httpagentparser.detect(value)
-                        # print values
+                        agent_data = httpagentparser.detect(value)
+                        # print agent_data
                         value = None
-                        if values:
-                            value = values.get('browser')
+                        if agent_data:
+                            value = agent_data.get('browser')
                             if value:
                                 value = '%s %s' % (value.get('name', 'no name'), value.get('version','').split('.')[0])
 
@@ -73,8 +73,8 @@ class AnalyticsMiddleware(object):
                         # value = httpagentparser.simple_detect(value)[1]
                         # print httpagentparser.detect(value)
                         # log = value != 'Unknown Browser'
-                        # values = value.split()
-                        # value = '%s %s' % (' '.join(values[:-1]), values[-1].split('.')[0])
+                        # agent_data = value.split()
+                        # value = '%s %s' % (' '.join(agent_data[:-1]), agent_data[-1].split('.')[0])
 
                         # print value
                     except IndexError:

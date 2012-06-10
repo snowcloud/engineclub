@@ -558,8 +558,9 @@ class TestSearchStats(MongoTestCase):
         result = self.client.get(url, HTTP_USER_AGENT=agent2, REMOTE_ADDR=ip)
         self.assertEqual(result.status_code, 200)
 
+        # 'Unknown Browser' not logged
         self.assertEqual(analytics.sum_hash('HTTP_USER_AGENT', yesterday, tomorrow),
-            [('Unknown Browser', 2), ('Safari 5', 1)])
+            [('Safari 5', 1)])
         # self.assertEqual(analytics.sum_hash('REMOTE_ADDR', yesterday, tomorrow),
         #     [(ip, 3)])
 
