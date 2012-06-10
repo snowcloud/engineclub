@@ -348,7 +348,9 @@ caption, th, td {
 /* @end */
 
 /* @group presentations */
-.presentation dt, .presentation h3 {
+.presentation h3 {
+}
+.presentation dt {
 	visibility: hidden;
 	height: 0.1em;
 	padding: 0;
